@@ -3,6 +3,10 @@
 <?import bfst19.osmdrawing.MapCanvas?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.Scene?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
 <Scene xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="bfst19.osmdrawing.Controller"
@@ -11,6 +15,20 @@
 >
     <root>
         <BorderPane prefHeight="400.0" prefWidth="600.0">
+            <top>
+                <ToolBar>
+                    <items>
+                        <Region styleClass="spacer" />
+                        <HBox styleClass="segmented-button-bar">
+                            <Button fx:id="routes" text="Rutes" styleClass="first" />
+                            <Button fx:id="water"  text="Water" />
+                            <Button fx:id="buildings"  text="Buildings" />
+                            <Button fx:id="noColors"  text="No colors " />
+                            <Button fx:id="colors"  text="Colors" styleClass="last" />
+                        </HBox>
+                    </items>
+                </ToolBar>
+            </top>
             <center>
                 <MapCanvas fx:id="mapCanvas"
                            width="${scene.width}"
