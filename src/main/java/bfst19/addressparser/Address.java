@@ -1,9 +1,6 @@
 
 package bfst19.addressparser;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
@@ -45,42 +42,20 @@ public class Address {
 	public String postcode() { return postcode; }
 	public String city()     { return city; }
 
+
 	final static String[] regex = {
-			//simpel
-			"^ *(?<street>[ÆØÅA-Zæøåa-z\\- ]+?)?[ \\.,]*(?<house>[0-9]+)? *$",
-			//full simpel
-			"^ *(?<street>[ÉÜÆØÅA-Züéäÿëèé(),\\/;.\\-'æøåa-z \\.]+?)?[ \\.,]*(?<house>[0-9]+? ??[ÆØÅæøåa-zA-Z]?)?[ \\.,]*(?<floor>[0-9]\\.)?[ \\.,]*(?<side>th|tv|mf)?[ \\.,]*(?<postcode>[0-9]{4})?[ \\.,]*(?<city>[æøåÆØÅA-Za-z\\. ]+?)?[ \\.,]*$",
-			//full advanced: postcode city
-			"^[ \\.,]*(?<street>(([A-Za-zæøåÆØÅ ])|([A-ZÆØÅ]\\.))*)?[ \\.,]*(?<house>([0-9]* ?[a-z]?))?[ \\.,]*(?<floor>([1-9][0-9]?\\.?)|(st\\.)|ST\\.)?[ \\.,]*(?<side>th|tv|mf|TH|TV|MF|([0-9][0-9]?[0-9]?))?[ \\.,]*(?<postcode>[0-9]{4})?[ \\.,]*(?<city>[æøåÆØÅA-Za-z\\. ]+?)?[ \\.,]*$",
-			//full advanced: city postcode
-			"^[ \\.,]*(?<street>(([A-Za-zæøåÆØÅ ])|([A-ZÆØÅ]\\.))*)?[ \\.,]*(?<house>([0-9]* ?[a-z]?))?[ \\.,]*(?<floor>([1-9][0-9]?\\.?)|(st\\.)|ST\\.)?[ \\.,]*(?<side>th|tv|mf|TH|TV|MF|([0-9][0-9]?[0-9]?))?[ \\.,]*(?<city>[æøåÆØÅA-Za-z\\. ]+?)?[ \\.,]*(?<postcode>[0-9]{4})?[ \\\\.,]*$",
-			//haveforening full forkortede måneder
-			"^[ \\.,]*(?<street>(([A-Za-zæøåÆØÅ ])|([A-ZÆØÅ]\\.)|(af[ \\.,]*([0-9][0-9]?)?[ \\.,]*(jan|feb|mar|apr|maj|jun|jul|aug|sep|oct|nov|dec)?[ \\.,]*([0-9]{4})?[ \\.,]*))*)?[ \\.,]*(?<house>([0-9]* ?[a-z]?))?[ \\.,]*(?<floor>([1-9][0-9]?\\.?)|(st)|(ST)|(St))?[ \\.,]*(?<side>th|tv|mf|TH|TV|MF|Th|Tv|Mf|([0-9][0-9]?[0-9]?))?[ \\.,]*(?<postcode>[0-9]{4})?[ \\.,]*(?<city>[æøåÆØÅA-Za-z\\. ]+?)?[ \\.,]*$",
-			//haveforening fucked fx. "10. Februar Vej 11 Christiansfeld" and for some reason it parses the previous adress on regex101.com but not in the tests
-			"^[ \\.,]*(?<Street>[0-9][0-9]?\\. ?[a-zA-Z ]*)?[ \\.,]*(?<house>[0-9]{1,3} ?[a-z]?)?[ \\.,]*(?<postcode>[0-9]{4})?[ \\.,]*(?<city>[a-zA-Z]*)?[ \\.,]*$"
+			"^ *(?<street>[A-Za-z ]+?) +(?<house>[0-9]+) *$",
+			"^ *(?<street>[A-Za-z ]+?) +(?<house>[0-9]+)[ ,]+(?<postcode>[0-9]{4}) +(?<city>[æøåÆØÅA-Za-z ]+?) *$"
 	};
 
 	final static Pattern[] patterns =
 			Arrays.stream(regex).map(Pattern::compile).toArray(Pattern[]::new);
 
 	private static void tryExtract(Matcher m, String group, Consumer<String> c) {
-		try {
+		String pattern = ".*\\(\\?\\<("+group+")\\>.*";
+		if (m.pattern().pattern().matches(pattern)) {
 			c.accept(m.group(group));
-		} catch (IllegalArgumentException e) {
-			// Uncle Bob is going to kill me... ignore
 		}
-	}
-
-	public String getStreetFromString(String adress)throws IOException {
-
-		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-		String obs;
-
-		while((obs = in.readLine())!=null){
-		    
-        }
-
-		return adress;
 	}
 
 	public static Address parse(String s) {

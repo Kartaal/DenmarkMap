@@ -14,13 +14,13 @@ plugins {
     id 'application'
 	id 'org.openjfx.javafxplugin' version '0.0.7'
 }
-compileJava.options.encoding = "UTF-8"
+
 javafx {
     modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
 // Define the main class for the application
-mainClassName = 'bfst19.addressparser.AddressBook'
+mainClassName = 'bfst19.osmdrawing.Main'
 
 dependencies {
     // This dependency is found on compile classpath of this component and consumers.
@@ -35,4 +35,18 @@ repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
+run {
+    args = ['data/zealand.osm']
 }
