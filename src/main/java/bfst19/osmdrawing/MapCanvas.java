@@ -145,6 +145,10 @@ public class MapCanvas extends Canvas {
         wayColors.put(WayType.MOTORWAY ,Color.LIGHTGRAY);
         wayColors.put(WayType.BOUNDARY_ADMINISTRATIVE,Color.TRANSPARENT);
         wayColors.put(WayType.COMMERCIAL,Color.PALEVIOLETRED);
+        wayColors.put(WayType.RAILWAY,Color.BLACK);
+        wayColors.put(WayType.MILLITARY,Color.BLACK);
+        wayColors.put(WayType.UNDERBRIDGE,Color.BLACK);
+        wayColors.put(WayType.PEDESTRIAN,Color.BLACK);
     }
 
     public void pan(double dx, double dy) {

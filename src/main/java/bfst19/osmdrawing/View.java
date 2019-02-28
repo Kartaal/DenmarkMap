@@ -23,4 +23,6 @@ public class View {
 		stage.show();
 		controller.init(model);
 	}
+
+
 }

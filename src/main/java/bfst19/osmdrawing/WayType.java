@@ -51,7 +51,13 @@ public enum WayType {
 	QUARRY(false,12),
 	UNKNOWN(true,Integer.MIN_VALUE),
 	DITCH(true,17),
-	BOUNDARY_ADMINISTRATIVE(true,1 );
+	BOUNDARY_ADMINISTRATIVE(true,1 ),
+	RAILWAY(true, Integer.MIN_VALUE),
+	MILLITARY(false, 14),
+	UNDERBRIDGE(true, 9 ),
+	PEDESTRIAN(true,8 );
+
+
 
 
 
