@@ -110,40 +110,54 @@ public class Model {
 							String k = reader.getAttributeValue(null, "k");
 							String v = reader.getAttributeValue(null, "v");
 
-							if (k.equals("waterway") && v.equals("ditch") || k.equals("waterway") && v.equals("stream") || k.equals("waterway") && v.equals("canal")) {
+							if (k.equals("waterway")&&v.equals("drain")) {
 								type = WayType.DITCH;
 							} else if (k.equals("landuse") && v.equals("railway") || k.equals("man_made") && v.equals("works") || k.equals("man_made") && v.equals("embankment") || k.equals("location") && v.equals("underground") || k.equals("operator") && v.equals("Energinet.dk")) {
 								type = WayType.INVISIBLE;
 							} else if (k.equals("natural") && v.equals("tree_row") || k.equals("landuse") && v.equals("greenfield") || k.equals("highway") && v.equals("proposed") || k.equals("natural") && v.equals("cliff") || k.equals("natural") && v.equals("wetland")) {
 								type = WayType.INVISIBLE;
-							} else if (k.equals("leisure") && v.equals("fitness_station") || k.equals("leisure") && v.equals("horse_riding") || k.equals("tourism") && v.equals("caravan_site") || k.equals("man_made") && v.equals("pipeline")) {
+							} else if (k.equals("leisure") && v.equals("fitness_station") || k.equals("leisure") && v.equals("horse_riding") || k.equals("tourism") && v.equals("caravan_site") || k.equals("man_made") && v.equals("pipeline")||k.equals("removed:building")&&v.equals("yes")) {
 								type = WayType.INVISIBLE;
-							} else if (v.equals("pitch")) {
-								type = WayType.PITCH;
 							} else if (v.equals("artwork")) {
 								type = WayType.ARTWORK;
 							} else if (v.equals("brownfield")) {
 								type = WayType.BROWNFIELD;
 							} else if (v.equals("allotments")) {
 								type = WayType.ALLOTMENTS;
-							} else if (v.equals("cemetery")) {
-								type = WayType.CEMETERY;
-							} else if (v.equals("square")) {
-								type = WayType.SQUARE;
-							} else if (v.equals("playground")) {
-								type = WayType.PLAYGROUND;
-							} else if (v.equals("service")) {
-								type = WayType.SERVICE;
-							} else if (v.equals("coastline")) {
-								type = WayType.COASTLINE;
 							}
-
 							switch (k) {
 								case "building":
-									if (v.equals("yes")) {
-										type = WayType.BUILDING;
+									switch (v) {
+										case "yes":
+										case "house":
+										case "residential":
+										case "apartments":
+										case "industrial":
+										case "train_station":
+										case "school":
+										case "terrace":
+										case "garage":
+										case "university":
+										case "dormitory":
+										case "office":
+										case "roof":
+										case "warehouse":
+										case "manor":
+										case "hospital":
+										case "church":
+										case "kindergarten":
+											type = WayType.BUILDING;
+											break;
+										case "commercial":
+										case "retail":
+											type = WayType.COMMERCIAL;
+											break;
+										case "construction":
+											type = WayType.CONSTRUCTION;
+											break;
 									}
 									break;
+
 								case "bridge":
 									if (v.equals("yes")) {
 										type = WayType.BRIDGE;
@@ -178,6 +192,40 @@ public class Model {
 									break;
 								case "railway":
 									switch (v) {
+										case "light_rail":
+										case "subway":
+											type = WayType.SUBWAY;
+											break;
+										case "platform":
+											type = WayType.RAILWAY_PLATFORM;
+											break;
+										case "rail"	:
+										case "narrow_gauge":
+											type = WayType.RAILWAY;
+									}
+									break;
+								case "construction:railway":
+									if(v.equals("subway")){
+										type = WayType.RAILCONSTRUCTION;
+									}
+									break;
+								case "waterway":
+									switch (v){
+										case "ditch":
+										case "stream":
+										case "canal":
+										case "drain":
+										case "river":
+											type = WayType.DITCH;
+											break;
+										case "riverbank":
+											type = WayType.WATER;
+											break;
+									}
+									break;
+
+								case "trailway":
+									switch (v) {
 										case "rail":
 											type = WayType.RAILWAY;
 											break;
@@ -190,6 +238,11 @@ public class Model {
 										case "disused":
 											type = WayType.DISUSED;
 											break;
+									}
+									break;
+								case "route":
+									if(v.equals("ferry")){
+										type = WayType.BOAT;
 									}
 									break;
 								case "landuse":
@@ -257,12 +310,14 @@ public class Model {
 										type = WayType.UNDERBRIDGE;
 									} else if (v.equals("pier")) {
 										type = WayType.PIER;
+									}else if(v.equals("breakwater")){
+										type = WayType.BREAKWATER;
 									}
 									break;
 								case "highway":
 									switch (v) {
 										case "residential":
-											type = WayType.RESIDENTIAL;
+											type = WayType.ROAD_RESIDENTIAL;
 											break;
 										case "service":
 											type = WayType.SERVICE;
@@ -336,6 +391,9 @@ public class Model {
 										case "scrub":
 											type = WayType.SCRUB;
 											break;
+										case "sand":
+											type = WayType.BEACH;
+											break;
 									}
 									break;
 								case "pier":
@@ -362,6 +420,13 @@ public class Model {
 								case "tourism":
 									if (v.equals("camp_site")) {
 										type = WayType.PARK;
+									}else if(v.equals("picnic_site")) {
+										type = WayType.GRASS;
+									}
+									break;
+								case "type":
+									if(v.equals("building")){
+										type = WayType.BUILDING;
 									}
 									break;
 								case "construction":
@@ -431,6 +496,8 @@ public class Model {
 							}else if(type == WayType.RECREATION){
 								ways.get(type).add(new MultiPolyline(rel));
 							}else if(type == WayType.BOUNDARY_ADMINISTRATIVE){
+								ways.get(type).add(new MultiPolyline(rel));
+							}else if(type == WayType.RAILWAY_PLATFORM){
 								ways.get(type).add(new MultiPolyline(rel));
 							}
 							break;

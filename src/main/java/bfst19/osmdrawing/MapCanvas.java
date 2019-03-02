@@ -67,6 +67,7 @@ public class MapCanvas extends Canvas {
 
                     } else if (type == WayType.WATER) {
 
+
                     } else
                         gc.setStroke(getColor(type));
                         for (Drawable way : model.getWaysOfType(type)) way.stroke(gc);
@@ -116,6 +117,7 @@ public class MapCanvas extends Canvas {
         wayColors.put(WayType.SQUARE,Color.AZURE);
         wayColors.put(WayType.PLAYGROUND,Color.MEDIUMAQUAMARINE);
         wayColors.put(WayType.BARRIER,Color.BROWN);
+        wayColors.put(WayType.BEACH,Color.LEMONCHIFFON);
         wayColors.put(WayType.AMENITY,Color.LIGHTSALMON);
         wayColors.put(WayType.FOOTWAY,Color.LIGHTCORAL);
         wayColors.put(WayType.PRIMARY,Color.LIGHTGRAY);
@@ -134,7 +136,7 @@ public class MapCanvas extends Canvas {
         wayColors.put(WayType.FARMLAND,Color.LIGHTYELLOW);
         wayColors.put(WayType.FARMYARD,Color.ROSYBROWN);
         wayColors.put(WayType.SCRUB ,Color.DARKOLIVEGREEN);
-        wayColors.put(WayType.TAXIWAY,Color.SLATEGRAY);
+        wayColors.put(WayType.TAXIWAY,Color.BLUE);
         wayColors.put(WayType.RUNWAY ,Color.SLATEGRAY);
         wayColors.put(WayType.RACEWAY ,Color.LIGHTPINK);
         wayColors.put(WayType.QUARRY ,Color.DARKSLATEBLUE);
@@ -145,10 +147,13 @@ public class MapCanvas extends Canvas {
         wayColors.put(WayType.MOTORWAY ,Color.LIGHTGRAY);
         wayColors.put(WayType.BOUNDARY_ADMINISTRATIVE,Color.TRANSPARENT);
         wayColors.put(WayType.COMMERCIAL,Color.PALEVIOLETRED);
-        wayColors.put(WayType.RAILWAY,Color.BLACK);
+        wayColors.put(WayType.RAILWAY,Color.ORANGE);
         wayColors.put(WayType.MILLITARY,Color.BLACK);
         wayColors.put(WayType.UNDERBRIDGE,Color.BLACK);
         wayColors.put(WayType.PEDESTRIAN,Color.BLACK);
+        wayColors.put(WayType.RAILWAY_PLATFORM,Color.DARKGRAY);
+        wayColors.put(WayType.HELIPAD,Color.LAVENDER);
+        wayColors.put(WayType.BREAKWATER,Color.SLATEGREY);
     }
 
     public void pan(double dx, double dy) {
