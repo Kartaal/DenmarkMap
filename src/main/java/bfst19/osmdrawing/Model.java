@@ -146,6 +146,9 @@ public class Model {
 										case "hospital":
 										case "church":
 										case "kindergarten":
+										case "hotel":
+										case "chapel":
+										case "hangar":
 											type = WayType.BUILDING;
 											break;
 										case "commercial":
@@ -411,10 +414,13 @@ public class Model {
 									break;
 								case "aeroway":
 									if (v.equals("runway)")) {
-										type = WayType.RUNWAY;
+										type = WayType.AIRPORT_RUNWAY;
 									}
 									if (v.equals("taxiway)")) {
-										type = WayType.TAXIWAY;
+										type = WayType.AIRPORT_TAXIWAY;
+									}
+									if (v.equals("apron")) {
+									type = WayType.AIRPORT_APRON;
 									}
 									break;
 								case "tourism":
@@ -430,7 +436,9 @@ public class Model {
 									}
 									break;
 								case "construction":
-									type = WayType.CONSTRUCTION;
+									if(v.equals("subway")){
+										type = WayType.RAILCONSTRUCTION;
+									}
 									break;
 								case "barrier":
 									type = WayType.BARRIER;
@@ -442,6 +450,9 @@ public class Model {
 									break;
 								case "amenity":
 									type = WayType.AMENITY;
+									if(k.equals("parking")){
+										type = WayType.PARKING;
+									}
 									break;
 								case "sport":
 									if (v.equals("running")) {
@@ -498,6 +509,12 @@ public class Model {
 							}else if(type == WayType.BOUNDARY_ADMINISTRATIVE){
 								ways.get(type).add(new MultiPolyline(rel));
 							}else if(type == WayType.RAILWAY_PLATFORM){
+								ways.get(type).add(new MultiPolyline(rel));
+							}else if(type == WayType.CONSTRUCTION){
+								ways.get(type).add(new MultiPolyline(rel));
+							}else if(type == WayType.RECREATION){
+								ways.get(type).add(new MultiPolyline(rel));
+							}else if(type == WayType.PARKING){
 								ways.get(type).add(new MultiPolyline(rel));
 							}
 							break;

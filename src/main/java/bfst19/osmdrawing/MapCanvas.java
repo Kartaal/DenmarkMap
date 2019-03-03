@@ -1,15 +1,12 @@
 package bfst19.osmdrawing;
 
 import javafx.geometry.Point2D;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.FillRule;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
-import javafx.stage.Stage;
 
 import java.util.HashMap;
 
@@ -56,22 +53,27 @@ public class MapCanvas extends Canvas {
             for (WayType type : WayType.values()) {
 
                 if (!(type.isRoadOrSimilar())&&type.levelOfDetail()<detailLevel) {
-                    if(type==WayType.COASTLINE){
-
+                    if(type==WayType.COASTLINE) {
+                    }else if(type==WayType.UNKNOWN) {
                     }else{
+                        gc.setStroke(Color.TRANSPARENT);
                         gc.setFill(getColor(type));
                         for (Drawable way : model.getWaysOfType(type)) way.fill(gc);
+                        gc.setFill(Color.TRANSPARENT);
+
                     }
                 } else if (type.isRoadOrSimilar()&&type.levelOfDetail()<detailLevel) {
                     if (type == WayType.COASTLINE) {
-
+                    }else if(type==WayType.UNKNOWN) {
                     } else if (type == WayType.WATER) {
 
-
-                    } else
+                    } else {
+                        gc.setFill(Color.TRANSPARENT);
                         gc.setStroke(getColor(type));
                         for (Drawable way : model.getWaysOfType(type)) way.stroke(gc);
+                        gc.setStroke(Color.TRANSPARENT);
                     }
+                }
             }
 
         }else{
@@ -92,6 +94,7 @@ public class MapCanvas extends Canvas {
 
     }
 
+
     private Color getColor(WayType type) { return wayColors.get(type); }
 
     public void setTypeColors(){//this really shouldn't be here, it should be in WayType is one of it's fields
@@ -101,9 +104,9 @@ public class MapCanvas extends Canvas {
         wayColors.put(WayType.BUILDING,Color.DARKGRAY);
         wayColors.put(WayType.RESIDENTIAL,Color.LAVENDER);
         wayColors.put(WayType.PIER,Color.WHITESMOKE);
-        wayColors.put(WayType.TREE,Color.DARKGREEN);
-        wayColors.put(WayType.GRASS,Color.LAWNGREEN);
-        wayColors.put(WayType.FOREST,Color.DARKGREEN);
+        wayColors.put(WayType.TREE,Color.DARKSEAGREEN);
+        wayColors.put(WayType.GRASS,Color.LIGHTGREEN);
+        wayColors.put(WayType.FOREST,Color.DARKSEAGREEN);
         wayColors.put(WayType.BRIDGE,Color.DARKKHAKI);
         wayColors.put(WayType.WATER,Color.LIGHTSKYBLUE);
         wayColors.put(WayType.PARK,Color.PALEGREEN);
@@ -113,7 +116,7 @@ public class MapCanvas extends Canvas {
         wayColors.put(WayType.BROWNFIELD,Color.TAN);
         wayColors.put(WayType.INDUSTRIAL,Color.THISTLE);
         wayColors.put(WayType.ALLOTMENTS,Color.PALEGREEN);
-        wayColors.put(WayType.CEMETERY,Color.OLIVEDRAB);
+        wayColors.put(WayType.CEMETERY,Color.DARKKHAKI);
         wayColors.put(WayType.SQUARE,Color.AZURE);
         wayColors.put(WayType.PLAYGROUND,Color.MEDIUMAQUAMARINE);
         wayColors.put(WayType.BARRIER,Color.BROWN);
@@ -134,12 +137,13 @@ public class MapCanvas extends Canvas {
         wayColors.put(WayType.BOAT,Color.MEDIUMSLATEBLUE);
         wayColors.put(WayType.RECREATION,Color.LIGHTGREEN);
         wayColors.put(WayType.FARMLAND,Color.LIGHTYELLOW);
-        wayColors.put(WayType.FARMYARD,Color.ROSYBROWN);
-        wayColors.put(WayType.SCRUB ,Color.DARKOLIVEGREEN);
-        wayColors.put(WayType.TAXIWAY,Color.BLUE);
-        wayColors.put(WayType.RUNWAY ,Color.SLATEGRAY);
+        wayColors.put(WayType.FARMYARD,Color.SANDYBROWN);
+        wayColors.put(WayType.SCRUB ,Color.DARKSEAGREEN);
+        wayColors.put(WayType.AIRPORT_APRON, Color.LIGHTSTEELBLUE);
+        wayColors.put(WayType.AIRPORT_TAXIWAY,Color.RED);
+        wayColors.put(WayType.AIRPORT_RUNWAY,Color.BLUE);
         wayColors.put(WayType.RACEWAY ,Color.LIGHTPINK);
-        wayColors.put(WayType.QUARRY ,Color.DARKSLATEBLUE);
+        wayColors.put(WayType.QUARRY ,Color.DARKGRAY);
         wayColors.put(WayType.MILITARY ,Color.DARKSALMON);
         wayColors.put(WayType.STADIUM ,Color.LIGHTGRAY);
         wayColors.put(WayType.TRACK ,Color.PALEVIOLETRED);
@@ -149,7 +153,7 @@ public class MapCanvas extends Canvas {
         wayColors.put(WayType.COMMERCIAL,Color.PALEVIOLETRED);
         wayColors.put(WayType.RAILWAY,Color.ORANGE);
         wayColors.put(WayType.MILLITARY,Color.BLACK);
-        wayColors.put(WayType.UNDERBRIDGE,Color.BLACK);
+        wayColors.put(WayType.UNDERBRIDGE,Color.DARKGRAY);
         wayColors.put(WayType.PEDESTRIAN,Color.BLACK);
         wayColors.put(WayType.RAILWAY_PLATFORM,Color.DARKGRAY);
         wayColors.put(WayType.HELIPAD,Color.LAVENDER);
