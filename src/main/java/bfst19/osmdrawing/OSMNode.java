@@ -20,6 +20,7 @@ public class OSMNode implements LongSupplier {
 		this.lon = lon;
 	}
 
+	//A functional method given by the LongSupplier interface
 	public long getAsLong() {
 		return id;
 	}

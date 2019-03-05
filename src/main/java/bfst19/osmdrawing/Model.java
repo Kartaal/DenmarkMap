@@ -16,6 +16,7 @@ public class Model {
 			ways.put(type, new ArrayList<>());
 		}
 	}
+
 	List<Runnable> observers = new ArrayList<>();
 	float minlat, minlon, maxlat, maxlon;
 

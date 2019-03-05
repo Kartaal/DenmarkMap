@@ -4,11 +4,12 @@ import javafx.scene.canvas.GraphicsContext;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-
+//TODO: Refactor to contain arraylist, same rational
 public class MultiPolyline extends ArrayList<Polyline> implements Drawable, Serializable {
 	public MultiPolyline(OSMRelation rel) {
 		for (OSMWay way : rel) add(new Polyline(way));
 	}
+
 
 	@Override
 	public void stroke(GraphicsContext gc) {

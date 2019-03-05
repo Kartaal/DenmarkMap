@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 public class MapCanvas extends Canvas {
     GraphicsContext gc = getGraphicsContext2D();
+    //linear transformation object used to transform our data while preserving proportions between nodes
     Affine transform = new Affine();
     Model model;
     HashMap<WayType,Color> wayColors = new HashMap<>();
@@ -20,28 +21,34 @@ public class MapCanvas extends Canvas {
 
     public void init(Model model) {
         this.model = model;
+        //conventions in screen coords and map coords are not the same, so we convert to screen convention by flipping x y
         pan(-model.minlon, -model.maxlat);
-        setTypeColors();
+        setTypeColors();//#soup
+        //sets an initial zoom level, 800 for now because it works
         zoom(800/(model.maxlon-model.minlon), 0,0);
         transform.prependScale(1,-1, 0, 0);
-        model.addObserver(this::repaint);
         model.addObserver(this::repaint);
         repaint();
     }
 
     public void repaint() {
+        //to clearly communicate that the fillRect should fill the entire screen
         gc.setTransform(new Affine());
-
+        //checks if the file contains coastlines or not, if not set bacground color to white otherwise blue
         if (model.getWaysOfType(WayType.COASTLINE).iterator().hasNext()) {
             gc.setFill(getColor(WayType.WATER));
         } else {
             gc.setFill(Color.WHITE);
         }
+        //clears screen by painting a color on the entire screen not background
         gc.fillRect(0, 0, getWidth(), getHeight());
         gc.setTransform(transform);
-        gc.setStroke(getColor(WayType.UNKNOWN));
+        //linewidth equals 1 px wide relative to the screen no matter zoom level
         gc.setLineWidth(1/Math.sqrt(Math.abs(transform.determinant())));
+        //
         gc.setFillRule(FillRule.EVEN_ODD);
+
+        //color for landmasses with nothing drawn on top
         gc.setFill(Color.WHITE);
         for (Drawable way : model.getWaysOfType(WayType.COASTLINE)) way.fill(gc);
         gc.setFill(getColor(WayType.WATER));
@@ -56,22 +63,18 @@ public class MapCanvas extends Canvas {
                     if(type==WayType.COASTLINE) {
                     }else if(type==WayType.UNKNOWN) {
                     }else{
-                        gc.setStroke(Color.TRANSPARENT);
                         gc.setFill(getColor(type));
                         for (Drawable way : model.getWaysOfType(type)) way.fill(gc);
-                        gc.setFill(Color.TRANSPARENT);
 
                     }
                 } else if (type.isRoadOrSimilar()&&type.levelOfDetail()<detailLevel) {
                     if (type == WayType.COASTLINE) {
                     }else if(type==WayType.UNKNOWN) {
-                    } else if (type == WayType.WATER) {
 
                     } else {
-                        gc.setFill(Color.TRANSPARENT);
                         gc.setStroke(getColor(type));
                         for (Drawable way : model.getWaysOfType(type)) way.stroke(gc);
-                        gc.setStroke(Color.TRANSPARENT);
+
                     }
                 }
             }
@@ -96,7 +99,7 @@ public class MapCanvas extends Canvas {
 
 
     private Color getColor(WayType type) { return wayColors.get(type); }
-
+    //TODO:setTypeColors should read from a file
     public void setTypeColors(){//this really shouldn't be here, it should be in WayType is one of it's fields
         wayColors.put(WayType.INVISIBLE,Color.TRANSPARENT);
         wayColors.put(WayType.AREA,Color.LAVENDER);
@@ -175,14 +178,7 @@ public class MapCanvas extends Canvas {
         repaint();
     }
 
-    public Point2D modelCoords(double x, double y) {
-        try {
-            return transform.inverseTransform(x, y);
-        } catch (NonInvertibleTransformException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+
 
     public void toggleNonRoads() {
         paintNonRoads = !paintNonRoads;

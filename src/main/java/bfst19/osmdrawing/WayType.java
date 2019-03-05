@@ -1,5 +1,6 @@
 package bfst19.osmdrawing;
 public enum WayType {
+	//TODO: separate into different waytypes
 	INVISIBLE(true,Integer.MIN_VALUE),
 	RECREATION(false,10 ),
 	PARKING(false, 7),

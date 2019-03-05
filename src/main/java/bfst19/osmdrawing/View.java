@@ -16,10 +16,13 @@ import java.io.IOException;
 
 public class View {
 	public View(Model model, Stage stage) throws IOException {
+		//Finds the .fxml file.
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("View.fxml"));
+		//The loader loads the scene found in the .fxml file
 		Scene scene = loader.load();
-		Controller controller = loader.getController();
-		stage.setScene(scene);
+        //The loader loads the controller found in the .fxml file
+        Controller controller = loader.getController();
+        stage.setScene(scene);
 		stage.show();
 		controller.init(model);
 	}
