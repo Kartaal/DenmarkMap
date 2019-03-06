@@ -101,8 +101,6 @@ public class MapCanvas extends Canvas {
     private Color getColor(WayType type) { return wayColors.get(type); }
     //TODO:setTypeColors should read from a file
     public void setTypeColors(){//this really shouldn't be here, it should be in WayType is one of it's fields
-        wayColors.put(WayType.INVISIBLE,Color.TRANSPARENT);
-        wayColors.put(WayType.AREA,Color.LAVENDER);
         wayColors.put(WayType.UNKNOWN,Color.BLACK);
         wayColors.put(WayType.BUILDING,Color.DARKGRAY);
         wayColors.put(WayType.RESIDENTIAL,Color.LAVENDER);
@@ -114,14 +112,11 @@ public class MapCanvas extends Canvas {
         wayColors.put(WayType.WATER,Color.LIGHTSKYBLUE);
         wayColors.put(WayType.PARK,Color.PALEGREEN);
         wayColors.put(WayType.PITCH,Color.MEDIUMAQUAMARINE);
-        wayColors.put(WayType.ARTWORK,Color.MEDIUMAQUAMARINE);
         wayColors.put(WayType.CONSTRUCTION,Color.DARKSEAGREEN);
-        wayColors.put(WayType.BROWNFIELD,Color.TAN);
         wayColors.put(WayType.INDUSTRIAL,Color.THISTLE);
         wayColors.put(WayType.ALLOTMENTS,Color.PALEGREEN);
         wayColors.put(WayType.CEMETERY,Color.DARKKHAKI);
         wayColors.put(WayType.SQUARE,Color.AZURE);
-        wayColors.put(WayType.PLAYGROUND,Color.MEDIUMAQUAMARINE);
         wayColors.put(WayType.BARRIER,Color.BROWN);
         wayColors.put(WayType.BEACH,Color.LEMONCHIFFON);
         wayColors.put(WayType.AMENITY,Color.LIGHTSALMON);
@@ -135,7 +130,6 @@ public class MapCanvas extends Canvas {
         wayColors.put(WayType.SUBWAY,Color.ORANGE);
         wayColors.put(WayType.RAILCONSTRUCTION,Color.GRAY);
         wayColors.put(WayType.DISUSED,Color.DARKGRAY);
-        wayColors.put(WayType.ROAD_BRIDGE,Color.YELLOW);
         wayColors.put(WayType.COASTLINE,Color.MEDIUMPURPLE);
         wayColors.put(WayType.BOAT,Color.MEDIUMSLATEBLUE);
         wayColors.put(WayType.RECREATION,Color.LIGHTGREEN);
@@ -159,7 +153,6 @@ public class MapCanvas extends Canvas {
         wayColors.put(WayType.UNDERBRIDGE,Color.DARKGRAY);
         wayColors.put(WayType.PEDESTRIAN,Color.BLACK);
         wayColors.put(WayType.RAILWAY_PLATFORM,Color.DARKGRAY);
-        wayColors.put(WayType.HELIPAD,Color.LAVENDER);
         wayColors.put(WayType.BREAKWATER,Color.SLATEGREY);
     }
 

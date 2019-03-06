@@ -1,12 +1,10 @@
 package bfst19.osmdrawing;
 public enum WayType {
 	//TODO: separate into different waytypes
-	INVISIBLE(true,Integer.MIN_VALUE),
 	RECREATION(false,10 ),
 	PARKING(false, 7),
 	FARMLAND(false,10),
 	FARMYARD(false,10),
-	AREA(true,10),
 	MILITARY(false,12),
 	AMENITY(false,8),
 	RESIDENTIAL(false,5),
@@ -22,13 +20,11 @@ public enum WayType {
 	PITCH(false,5),
 	STADIUM(false,13 ),
 	TRACK(true,13),
-	ARTWORK(false,6),
-	BROWNFIELD(false,4),
+	BROWNFIELD(false,4),//redundant maybe?
 	CONSTRUCTION(false,6),
 	ALLOTMENTS(false,8),
 	CEMETERY(false,6),
 	SQUARE(false,5),
-	PLAYGROUND(false,10),
 	SCRUB(false,10),
 	BARRIER(true,14),
 	UNDERBRIDGE(false, 12 ),
@@ -44,23 +40,21 @@ public enum WayType {
 	BRIDGE(false,6),
 	RAILCONSTRUCTION(true,9),
 	DISUSED(true,14),
-	ROAD_BRIDGE(false,3),
 	COASTLINE(true,12),
 	BOAT(true,Integer.MIN_VALUE),
 	COMMERCIAL(false,14 ),
 	BUILDING(false,7),
-	HELIPAD(false,10),
 	RACEWAY(true,17),
 	QUARRY(false,12),
-	UNKNOWN(true,Integer.MIN_VALUE),
+	UNKNOWN(true,Integer.MIN_VALUE), //should not be anywhere STRICTLY FOR TESTING
 	DITCH(true,17),
 	BOUNDARY_ADMINISTRATIVE(true,1 ),
 	RAILWAY(true, Integer.MIN_VALUE),
 	MILLITARY(false, 14),
 	PEDESTRIAN(true,8 ),
 	RAILWAY_PLATFORM(false,12 ),
-    AIRPORT_RUNWAY(true,10),
-    AIRPORT_TAXIWAY(true,10),
+	AIRPORT_RUNWAY(true,10),
+	AIRPORT_TAXIWAY(true,10),
 	BREAKWATER(false,12 );
 
 

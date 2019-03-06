@@ -16,10 +16,11 @@ public class Model {
 			ways.put(type, new ArrayList<>());
 		}
 	}
-
 	List<Runnable> observers = new ArrayList<>();
 	float minlat, minlon, maxlat, maxlon;
+	Map<String, WayType> waytypes = new HashMap<>();
 
+	ArrayList<String[]> cases = new ArrayList<>();
 	public Iterable<Drawable> getWaysOfType(WayType type) {
 		return ways.get(type);
 	}
@@ -33,6 +34,13 @@ public class Model {
 	}
 
 	public Model(List<String> args) throws IOException, XMLStreamException, ClassNotFoundException {
+
+		for(WayType type: WayType.values()){
+			waytypes.put(type.name(),type);
+		}
+
+		parseCases("data/Waytype_cases3.txt");
+
 		String filename = args.get(0);
 		InputStream osmsource;
 		if (filename.endsWith(".obj")) {
@@ -75,9 +83,12 @@ public class Model {
 		LongIndex<OSMNode> idToNode = new LongIndex<OSMNode>();
 		LongIndex<OSMWay> idToWay = new LongIndex<OSMWay>();
 		List<OSMWay> coast = new ArrayList<>();
+
+
 		OSMWay way = null;
 		OSMRelation rel = null;
 		WayType type = null;
+
 		while (reader.hasNext()) {
 			switch (reader.next()) {
 				case START_ELEMENT:
@@ -111,355 +122,14 @@ public class Model {
 							String k = reader.getAttributeValue(null, "k");
 							String v = reader.getAttributeValue(null, "v");
 
-							if (k.equals("waterway")&&v.equals("drain")) {
-								type = WayType.DITCH;
-							} else if (k.equals("landuse") && v.equals("railway") || k.equals("man_made") && v.equals("works") || k.equals("man_made") && v.equals("embankment") || k.equals("location") && v.equals("underground") || k.equals("operator") && v.equals("Energinet.dk")) {
-								type = WayType.INVISIBLE;
-							} else if (k.equals("natural") && v.equals("tree_row") || k.equals("landuse") && v.equals("greenfield") || k.equals("highway") && v.equals("proposed") || k.equals("natural") && v.equals("cliff") || k.equals("natural") && v.equals("wetland")) {
-								type = WayType.INVISIBLE;
-							} else if (k.equals("leisure") && v.equals("fitness_station") || k.equals("leisure") && v.equals("horse_riding") || k.equals("tourism") && v.equals("caravan_site") || k.equals("man_made") && v.equals("pipeline")||k.equals("removed:building")&&v.equals("yes")) {
-								type = WayType.INVISIBLE;
-							} else if (v.equals("artwork")) {
-								type = WayType.ARTWORK;
-							} else if (v.equals("brownfield")) {
-								type = WayType.BROWNFIELD;
-							} else if (v.equals("allotments")) {
-								type = WayType.ALLOTMENTS;
+							for(String[] strings : cases){
+								if(k.equals(strings[1])&&v.equals(strings[2])){
+									type = waytypes.get(strings[0]);
+									break;
+								}
 							}
-							switch (k) {
-								case "building":
-									switch (v) {
-										case "yes":
-										case "house":
-										case "residential":
-										case "apartments":
-										case "industrial":
-										case "train_station":
-										case "school":
-										case "terrace":
-										case "garage":
-										case "university":
-										case "dormitory":
-										case "office":
-										case "roof":
-										case "warehouse":
-										case "manor":
-										case "hospital":
-										case "church":
-										case "kindergarten":
-										case "hotel":
-										case "chapel":
-										case "hangar":
-											type = WayType.BUILDING;
-											break;
-										case "commercial":
-										case "retail":
-											type = WayType.COMMERCIAL;
-											break;
-										case "construction":
-											type = WayType.CONSTRUCTION;
-											break;
-									}
-									break;
+							switch (k){
 
-								case "bridge":
-									if (v.equals("yes")) {
-										type = WayType.BRIDGE;
-									}
-									break;
-								case "leisure":
-									switch (v) {
-										case "playground":
-										case "recreation_ground":
-											type = WayType.RECREATION;
-											break;
-										case "common":
-											type = WayType.GRASS;
-											break;
-										case "park":
-										case "golf_course":
-										case "camp_site":
-										case "garden":
-											type = WayType.PARK;
-											break;
-										case "pitch":
-											type = WayType.PITCH;
-											break;
-										case "stadium":
-											type = WayType.STADIUM;
-											break;
-										case "track":
-											type = WayType.TRACK;
-											break;
-
-									}
-									break;
-								case "railway":
-									switch (v) {
-										case "light_rail":
-										case "subway":
-											type = WayType.SUBWAY;
-											break;
-										case "platform":
-											type = WayType.RAILWAY_PLATFORM;
-											break;
-										case "rail"	:
-										case "narrow_gauge":
-											type = WayType.RAILWAY;
-									}
-									break;
-								case "construction:railway":
-									if(v.equals("subway")){
-										type = WayType.RAILCONSTRUCTION;
-									}
-									break;
-								case "waterway":
-									switch (v){
-										case "ditch":
-										case "stream":
-										case "canal":
-										case "drain":
-										case "river":
-											type = WayType.DITCH;
-											break;
-										case "riverbank":
-											type = WayType.WATER;
-											break;
-									}
-									break;
-
-								case "trailway":
-									switch (v) {
-										case "rail":
-											type = WayType.RAILWAY;
-											break;
-										case "construction":
-											type = WayType.RAILCONSTRUCTION;
-											break;
-										case "subway":
-											type = WayType.SUBWAY;
-											break;
-										case "disused":
-											type = WayType.DISUSED;
-											break;
-									}
-									break;
-								case "route":
-									if(v.equals("ferry")){
-										type = WayType.BOAT;
-									}
-									break;
-								case "landuse":
-									switch (v) {
-										case "recreation_ground":
-											type = WayType.RECREATION;
-											break;
-										case "farmyard":
-											type = WayType.FARMYARD;
-											break;
-										case "basin":
-											type = WayType.WATER;
-											break;
-										case "farmland":
-											type = WayType.FARMLAND;
-											break;
-										case "meadow":
-										case "grass":
-											type = WayType.GRASS;
-											break;
-										case "quarry":
-											type = WayType.QUARRY;
-											break;
-										case "industrial":
-											type = WayType.INDUSTRIAL;
-											break;
-										case "brownfield":
-											type = WayType.BROWNFIELD;
-											break;
-										case "cemetery":
-											type = WayType.CEMETERY;
-											break;
-										case "allotments":
-											type = WayType.ALLOTMENTS;
-											break;
-										case "forest":
-											type = WayType.FOREST;
-											break;
-										case "residential":
-											type = WayType.RESIDENTIAL;
-											break;
-										case "commercial":
-											type = WayType.COMMERCIAL;
-											break;
-										case "millitary":
-											type = WayType.MILLITARY;
-											break;
-										case "construction":
-											type = WayType.CONSTRUCTION;
-											break;
-									}
-									break;
-								case "place":
-									if (v.equals("square")) {
-										type = WayType.SQUARE;
-									}
-									break;
-								case "residential":
-									if (v.equals("yes")) {
-										type = WayType.RESIDENTIAL;
-									}
-									break;
-								case "man_made":
-									if (v.equals("bridge")) {
-										type = WayType.UNDERBRIDGE;
-									} else if (v.equals("pier")) {
-										type = WayType.PIER;
-									}else if(v.equals("breakwater")){
-										type = WayType.BREAKWATER;
-									}
-									break;
-								case "highway":
-									switch (v) {
-										case "residential":
-											type = WayType.ROAD_RESIDENTIAL;
-											break;
-										case "service":
-											type = WayType.SERVICE;
-											break;
-										case "tertiary":
-											type = WayType.TERTIARY;
-											break;
-										case "pedestrian":
-											type = WayType.PEDESTRIAN;
-											break;
-										case "steps":
-										case "unclassified":
-										case "footway":
-											type = WayType.FOOTWAY;
-											break;
-										case "cycleway":
-											type = WayType.CYCLEWAY;
-											break;
-										case "construction":
-											type = WayType.CONSTRUCTION;
-											break;
-										case "motorway":
-										case "motorway_link":
-											type = WayType.MOTORWAY;
-											break;
-										case "raceway":
-											type = WayType.RACEWAY;
-											break;
-										case "primary":
-										case "primary_link":
-											type = WayType.PRIMARY;
-											break;
-										case "secondary":
-										case "secondary_link":
-										case "trunk":
-											type = WayType.SECONDARY;
-											break;
-										case "tertiary_link":
-											type = WayType.TERTIARY;
-											break;
-										case "track":
-										case "bridleway":
-										case "path":
-											type = WayType.TRACK;
-											break;
-									}
-									break;
-								case "boundary":
-									if (v.equals("administrative")) {
-										type = WayType.BOUNDARY_ADMINISTRATIVE;
-									}
-									break;
-								case "natural":
-									switch (v) {
-										case "water":
-											type = WayType.WATER;
-											break;
-										case "grassland":
-											type = WayType.GRASS;
-											break;
-										case "coastline":
-											type = WayType.COASTLINE;
-											break;
-										case "beach":
-											type = WayType.BEACH;
-											break;
-										case "tree":
-										case "wood":
-											type = WayType.TREE;
-											break;
-										case "scrub":
-											type = WayType.SCRUB;
-											break;
-										case "sand":
-											type = WayType.BEACH;
-											break;
-									}
-									break;
-								case "pier":
-									if (v.equals("yes")) {
-										type = WayType.PIER;
-									}
-									break;
-								case "boat":
-									if (v.equals("ferry")) {
-										type = WayType.BOAT;
-									}
-									if (v.equals("tour")) {
-										type = WayType.BOAT;
-									}
-									break;
-								case "aeroway":
-									if (v.equals("runway)")) {
-										type = WayType.AIRPORT_RUNWAY;
-									}
-									if (v.equals("taxiway)")) {
-										type = WayType.AIRPORT_TAXIWAY;
-									}
-									if (v.equals("apron")) {
-									type = WayType.AIRPORT_APRON;
-									}
-									break;
-								case "tourism":
-									if (v.equals("camp_site")) {
-										type = WayType.PARK;
-									}else if(v.equals("picnic_site")) {
-										type = WayType.GRASS;
-									}
-									break;
-								case "type":
-									if(v.equals("building")){
-										type = WayType.BUILDING;
-									}
-									break;
-								case "construction":
-									if(v.equals("subway")){
-										type = WayType.RAILCONSTRUCTION;
-									}
-									break;
-								case "barrier":
-									type = WayType.BARRIER;
-									break;
-								case "power":
-									if (v.equals("plant")) {
-										type = WayType.BARRIER;
-									}
-									break;
-								case "amenity":
-									type = WayType.AMENITY;
-									if(k.equals("parking")){
-										type = WayType.PARKING;
-									}
-									break;
-								case "sport":
-									if (v.equals("running")) {
-										type = WayType.TRACK;
-									}
-									break;
 								case "relation":
 									type = WayType.UNKNOWN;
 									rel = new OSMRelation();
@@ -480,7 +150,6 @@ public class Model {
 							OSMWay member = idToWay.get(ref);
 							if (member != null) rel.add(member);
 							break;
-
 					}
 					break;
 				case END_ELEMENT:
@@ -541,6 +210,34 @@ public class Model {
 			}
 		}
 	}
+
+	public void parseCases(String pathToCasesFile){
+		try {
+
+			BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(pathToCasesFile),"UTF-8"));
+			int n = Integer.parseInt(in.readLine().trim());
+			for(int i = 0; i<n;i++) {
+				String waytype = in.readLine();
+				String waycase = in.readLine();
+				
+				while((waycase!=null)&&!(waycase.startsWith("$"))){
+					String[] tokens = waycase.split(" ");
+					cases.add(new String[]{waytype,tokens[0],tokens[1]});
+					waycase = in.readLine();
+				}
+			}
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+
+
 
 	private Iterable<OSMWay> merge(List<OSMWay> coast) {
 		Map<OSMNode,OSMWay> pieces = new HashMap<>();
