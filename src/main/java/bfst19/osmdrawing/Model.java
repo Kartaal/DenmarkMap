@@ -18,9 +18,11 @@ public class Model {
 	}
 	List<Runnable> observers = new ArrayList<>();
 	float minlat, minlon, maxlat, maxlon;
-	Map<String, WayType> waytypes = new HashMap<>();
 
+	String CurrentTypeColorTxt  = "data/TypeColorsNormal.txt";
+	Map<String, WayType> waytypes = new HashMap<>();
 	ArrayList<String[]> cases = new ArrayList<>();
+
 	public Iterable<Drawable> getWaysOfType(WayType type) {
 		return ways.get(type);
 	}
@@ -76,6 +78,25 @@ public class Model {
 		}
 	}
 
+	ArrayList<String> parseWayColors(String CurrentTypeColorTxt){
+		ArrayList<String> WayTypeColors = new ArrayList<>();
+
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(CurrentTypeColorTxt));
+			int m = Integer.parseInt(br.readLine());
+
+			for (int i = 0; i < m; i++) {
+				String[] strArr = br.readLine().split(" ");
+				WayTypeColors.add(strArr[0]);
+				WayTypeColors.add(strArr[1]);
+			}
+		}
+		catch(Exception e){
+			System.out.println("something went wrong"); //TODO: fix this, uncle bob wont like this one hehe;)
+		}
+		return WayTypeColors;
+	}
+
 	private void parseOSM(InputStream osmsource) throws XMLStreamException {
 		XMLStreamReader reader = XMLInputFactory
 				.newInstance()
@@ -83,7 +104,6 @@ public class Model {
 		LongIndex<OSMNode> idToNode = new LongIndex<OSMNode>();
 		LongIndex<OSMWay> idToWay = new LongIndex<OSMWay>();
 		List<OSMWay> coast = new ArrayList<>();
-
 
 		OSMWay way = null;
 		OSMRelation rel = null;
@@ -235,9 +255,6 @@ public class Model {
 		}
 
 	}
-
-
-
 
 	private Iterable<OSMWay> merge(List<OSMWay> coast) {
 		Map<OSMNode,OSMWay> pieces = new HashMap<>();

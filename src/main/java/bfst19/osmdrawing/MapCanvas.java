@@ -8,6 +8,7 @@ import javafx.scene.shape.FillRule;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MapCanvas extends Canvas {
@@ -18,6 +19,7 @@ public class MapCanvas extends Canvas {
     HashMap<WayType,Color> wayColors = new HashMap<>();
     boolean paintNonRoads = true;
     int detailLevel =1;
+    private boolean isEnabled = false;
 
     public void init(Model model) {
         this.model = model;
@@ -97,63 +99,36 @@ public class MapCanvas extends Canvas {
 
     }
 
-
     private Color getColor(WayType type) { return wayColors.get(type); }
-    //TODO:setTypeColors should read from a file
-    public void setTypeColors(){//this really shouldn't be here, it should be in WayType is one of it's fields
-        wayColors.put(WayType.UNKNOWN,Color.BLACK);
-        wayColors.put(WayType.BUILDING,Color.DARKGRAY);
-        wayColors.put(WayType.RESIDENTIAL,Color.LAVENDER);
-        wayColors.put(WayType.PIER,Color.WHITESMOKE);
-        wayColors.put(WayType.TREE,Color.DARKSEAGREEN);
-        wayColors.put(WayType.GRASS,Color.LIGHTGREEN);
-        wayColors.put(WayType.FOREST,Color.DARKSEAGREEN);
-        wayColors.put(WayType.BRIDGE,Color.DARKKHAKI);
-        wayColors.put(WayType.WATER,Color.LIGHTSKYBLUE);
-        wayColors.put(WayType.PARK,Color.PALEGREEN);
-        wayColors.put(WayType.PITCH,Color.MEDIUMAQUAMARINE);
-        wayColors.put(WayType.CONSTRUCTION,Color.DARKSEAGREEN);
-        wayColors.put(WayType.INDUSTRIAL,Color.THISTLE);
-        wayColors.put(WayType.ALLOTMENTS,Color.PALEGREEN);
-        wayColors.put(WayType.CEMETERY,Color.DARKKHAKI);
-        wayColors.put(WayType.SQUARE,Color.AZURE);
-        wayColors.put(WayType.BARRIER,Color.BROWN);
-        wayColors.put(WayType.BEACH,Color.LEMONCHIFFON);
-        wayColors.put(WayType.AMENITY,Color.LIGHTSALMON);
-        wayColors.put(WayType.FOOTWAY,Color.LIGHTCORAL);
-        wayColors.put(WayType.PRIMARY,Color.LIGHTGRAY);
-        wayColors.put(WayType.SECONDARY,Color.LIGHTGRAY);
-        wayColors.put(WayType.TERTIARY,Color.LIGHTGRAY);
-        wayColors.put(WayType.SERVICE,Color.LIGHTGRAY);
-        wayColors.put(WayType.ROAD_RESIDENTIAL,Color.DIMGRAY);
-        wayColors.put(WayType.CYCLEWAY,Color.LIGHTSLATEGRAY);
-        wayColors.put(WayType.SUBWAY,Color.ORANGE);
-        wayColors.put(WayType.RAILCONSTRUCTION,Color.GRAY);
-        wayColors.put(WayType.DISUSED,Color.DARKGRAY);
-        wayColors.put(WayType.COASTLINE,Color.MEDIUMPURPLE);
-        wayColors.put(WayType.BOAT,Color.MEDIUMSLATEBLUE);
-        wayColors.put(WayType.RECREATION,Color.LIGHTGREEN);
-        wayColors.put(WayType.FARMLAND,Color.LIGHTYELLOW);
-        wayColors.put(WayType.FARMYARD,Color.SANDYBROWN);
-        wayColors.put(WayType.SCRUB ,Color.DARKSEAGREEN);
-        wayColors.put(WayType.AIRPORT_APRON, Color.LIGHTSTEELBLUE);
-        wayColors.put(WayType.AIRPORT_TAXIWAY,Color.RED);
-        wayColors.put(WayType.AIRPORT_RUNWAY,Color.BLUE);
-        wayColors.put(WayType.RACEWAY ,Color.LIGHTPINK);
-        wayColors.put(WayType.QUARRY ,Color.DARKGRAY);
-        wayColors.put(WayType.MILITARY ,Color.DARKSALMON);
-        wayColors.put(WayType.STADIUM ,Color.LIGHTGRAY);
-        wayColors.put(WayType.TRACK ,Color.PALEVIOLETRED);
-        wayColors.put(WayType.DITCH ,Color.LIGHTSKYBLUE);
-        wayColors.put(WayType.MOTORWAY ,Color.LIGHTGRAY);
-        wayColors.put(WayType.BOUNDARY_ADMINISTRATIVE,Color.TRANSPARENT);
-        wayColors.put(WayType.COMMERCIAL,Color.PALEVIOLETRED);
-        wayColors.put(WayType.RAILWAY,Color.ORANGE);
-        wayColors.put(WayType.MILLITARY,Color.BLACK);
-        wayColors.put(WayType.UNDERBRIDGE,Color.DARKGRAY);
-        wayColors.put(WayType.PEDESTRIAN,Color.BLACK);
-        wayColors.put(WayType.RAILWAY_PLATFORM,Color.DARKGRAY);
-        wayColors.put(WayType.BREAKWATER,Color.SLATEGREY);
+
+    private void setTypeColors(){//this really shouldn't be here, it should be in WayType is one of it's fields
+
+        ArrayList<String> ArrList = model.parseWayColors(model.CurrentTypeColorTxt);
+
+        for (int i = 0; i < ArrList.size(); i+=2){
+            String sWay = ArrList.get(i);
+            String sColor = ArrList.get(i+1);
+            WayType sEnum = WayType.valueOf(sWay);
+            Color actualColor = Color.valueOf(sColor);
+            wayColors.put(sEnum,actualColor);
+        }
+    }
+
+    private void setCurrentTypeColorTxt(String currentTypeColorTxt) {
+        model.CurrentTypeColorTxt = currentTypeColorTxt;
+    }
+
+    void toggleColorblind() {
+        isEnabled = !isEnabled;
+        System.out.println("Colorblind mode: " + isEnabled);
+
+        if (isEnabled){
+            setCurrentTypeColorTxt("data/TypeColorsColorblind.txt");
+        }
+        else{
+            setCurrentTypeColorTxt("data/TypeColorsNormal.txt");
+        }
+        setTypeColors();
     }
 
     public void pan(double dx, double dy) {
@@ -170,8 +145,6 @@ public class MapCanvas extends Canvas {
         }
         repaint();
     }
-
-
 
     public void toggleNonRoads() {
         paintNonRoads = !paintNonRoads;

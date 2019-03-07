@@ -34,7 +34,7 @@
                 <items>
                     <Region styleClass="spacer" />
                     <HBox styleClass="segmented-button-bar">
-                        <Button fx:id="routes" text="Rutes" styleClass="first" />
+                        <Button fx:id="routes" text="Routes" styleClass="first" />
                         <Button fx:id="water"  text="Water" />
                         <Button fx:id="buildings"  text="Buildings" />
                         <Button fx:id="noColors"  text="No colors " />

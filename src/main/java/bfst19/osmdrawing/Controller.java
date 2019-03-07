@@ -26,6 +26,10 @@ public class Controller {
 				mapCanvas.toggleNonRoads();
 				mapCanvas.repaint();
 				break;
+			case C: //Toggle colorblind colorfile
+				mapCanvas.toggleColorblind();
+				mapCanvas.repaint();
+				break;
 		}
 	}
 
