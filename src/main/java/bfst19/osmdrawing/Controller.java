@@ -1,9 +1,20 @@
 package bfst19.osmdrawing;
 
+import javafx.collections.ObservableArray;
 import javafx.fxml.FXML;
+import javafx.scene.control.ListView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.control.TextField;
+import java.net.URL;
+import java.util.ResourceBundle;
+
+import javafx.collections.ObservableList;
+
+import javafx.fxml.Initializable;
+
+import java.awt.*;
 
 public class Controller {
 	private Model model;
@@ -12,11 +23,16 @@ public class Controller {
 	//This only means that .fxml can use this field despite visibility
     @FXML
 	private MapCanvas mapCanvas;
+	@FXML
+	TextField textField;
+	@FXML
+	ListView listView;
 
 	public void init(Model model) {
 		//TODO: figure out init methods
 	    this.model = model;
 		mapCanvas.init(model);
+		listView.setItems(model.addresses);
 	}
 
 	@FXML
@@ -27,9 +43,13 @@ public class Controller {
 				mapCanvas.repaint();
 				break;
 			case C: //Toggle colorblind colorfile
-				mapCanvas.toggleColorblind();
-				mapCanvas.repaint();
+				model.switchColorScheme();
 				break;
+			case ENTER:
+				model.parseSearch(textField.getText());
+				textField.clear();
+				break;
+
 		}
 	}
 
@@ -54,4 +74,9 @@ public class Controller {
 		x = e.getX();
 		y = e.getY();
 	}
+
+	private ListView getListView(){
+		return listView;
+	}
 }
+

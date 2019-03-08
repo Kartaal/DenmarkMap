@@ -1,5 +1,8 @@
 package bfst19.osmdrawing;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -11,7 +14,10 @@ import static javax.xml.stream.XMLStreamConstants.*;
 
 public class Model {
 	float lonfactor = 1.0f;
-	Map<WayType,List<Drawable>> ways = new EnumMap<>(WayType.class); {
+	Map<WayType,List<Drawable>> ways = new EnumMap<>(WayType.class);
+	private boolean isEnabled;
+
+	{
 		for (WayType type : WayType.values()) {
 			ways.put(type, new ArrayList<>());
 		}
@@ -22,6 +28,9 @@ public class Model {
 	String CurrentTypeColorTxt  = "data/TypeColorsNormal.txt";
 	Map<String, WayType> waytypes = new HashMap<>();
 	ArrayList<String[]> cases = new ArrayList<>();
+	ObservableList<Address> addresses = FXCollections.observableArrayList();
+	ObservableList<String> typeColors = FXCollections.observableArrayList();
+
 
 	public Iterable<Drawable> getWaysOfType(WayType type) {
 		return ways.get(type);
@@ -42,6 +51,8 @@ public class Model {
 		}
 
 		parseCases("data/Waytype_cases3.txt");
+		cleanerParseWayColors();
+
 
 		String filename = args.get(0);
 		InputStream osmsource;
@@ -78,6 +89,38 @@ public class Model {
 		}
 	}
 
+	void cleanerParseWayColors(){
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(CurrentTypeColorTxt));
+			int m = Integer.parseInt(br.readLine());
+
+			for (int i = 0; i < m; i++) {
+				String[] strArr = br.readLine().split(" ");
+				typeColors.add(strArr[0]);
+				typeColors.add(strArr[1]);
+			}
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			System.out.println("something went wrong"); //TODO: fix this, uncle bob wont like this one hehe;)
+		}
+		System.out.println("tried");
+		notifyObservers();
+	}
+
+	public void switchColorScheme(){
+		isEnabled = !isEnabled;
+		System.out.println("Colorblind mode: " + isEnabled);
+
+			if (isEnabled){
+				CurrentTypeColorTxt = ("data/TypeColorsColorblind.txt");
+			}
+			else{
+				CurrentTypeColorTxt = ("data/TypeColorsNormal.txt");
+			}
+			cleanerParseWayColors();
+		}
+
 	ArrayList<String> parseWayColors(String CurrentTypeColorTxt){
 		ArrayList<String> WayTypeColors = new ArrayList<>();
 
@@ -92,6 +135,7 @@ public class Model {
 			}
 		}
 		catch(Exception e){
+			e.printStackTrace();
 			System.out.println("something went wrong"); //TODO: fix this, uncle bob wont like this one hehe;)
 		}
 		return WayTypeColors;
@@ -279,5 +323,13 @@ public class Model {
 			pieces.put(res.getLast(), res);
 		}
 		return pieces.values();
+	}
+
+	public void parseSearch(String proposedAdress) {
+		addresses.add(Address.parse(proposedAdress));
+	}
+
+	public Iterator<String> colorIterator() {
+		return typeColors.iterator();
 	}
 }

@@ -54,9 +54,10 @@
             </BorderPane>
 
 
-            <TextField GridPane.columnIndex="1" GridPane.rowIndex="0" ></TextField>
+            <TextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="textField" />
 
-            <ListView GridPane.columnIndex="1" GridPane.rowIndex="1" ></ListView>
+
+            <ListView GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="listView" />
 
 
         </GridPane>

@@ -1,5 +1,6 @@
 package bfst19.osmdrawing;
 
+import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -8,8 +9,10 @@ import javafx.scene.shape.FillRule;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class MapCanvas extends Canvas {
     GraphicsContext gc = getGraphicsContext2D();
@@ -21,6 +24,7 @@ public class MapCanvas extends Canvas {
     int detailLevel =1;
     private boolean isEnabled = false;
 
+
     public void init(Model model) {
         this.model = model;
         //conventions in screen coords and map coords are not the same, so we convert to screen convention by flipping x y
@@ -29,7 +33,8 @@ public class MapCanvas extends Canvas {
         //sets an initial zoom level, 800 for now because it works
         zoom(800/(model.maxlon-model.minlon), 0,0);
         transform.prependScale(1,-1, 0, 0);
-        model.addObserver(this::repaint);
+        //model.addObserver(this::repaint);
+        model.addObserver(this::setTypeColors);
         repaint();
     }
 
@@ -101,34 +106,12 @@ public class MapCanvas extends Canvas {
 
     private Color getColor(WayType type) { return wayColors.get(type); }
 
-    private void setTypeColors(){//this really shouldn't be here, it should be in WayType is one of it's fields
-
-        ArrayList<String> ArrList = model.parseWayColors(model.CurrentTypeColorTxt);
-
-        for (int i = 0; i < ArrList.size(); i+=2){
-            String sWay = ArrList.get(i);
-            String sColor = ArrList.get(i+1);
-            WayType sEnum = WayType.valueOf(sWay);
-            Color actualColor = Color.valueOf(sColor);
-            wayColors.put(sEnum,actualColor);
+    private void setTypeColors(){
+        Iterator<String> iterator = model.colorIterator();
+        while(iterator.hasNext()){
+            wayColors.put(WayType.valueOf(iterator.next()),Color.valueOf(iterator.next()));
         }
-    }
-
-    private void setCurrentTypeColorTxt(String currentTypeColorTxt) {
-        model.CurrentTypeColorTxt = currentTypeColorTxt;
-    }
-
-    void toggleColorblind() {
-        isEnabled = !isEnabled;
-        System.out.println("Colorblind mode: " + isEnabled);
-
-        if (isEnabled){
-            setCurrentTypeColorTxt("data/TypeColorsColorblind.txt");
-        }
-        else{
-            setCurrentTypeColorTxt("data/TypeColorsNormal.txt");
-        }
-        setTypeColors();
+        repaint();
     }
 
     public void pan(double dx, double dy) {

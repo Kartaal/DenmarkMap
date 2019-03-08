@@ -1,0 +1,220 @@
+52
+BUILDING
+building yes
+building house
+building residential
+building apartments
+building industrial
+building train_station
+building school
+building terrace
+building garage
+building university
+building dormitory
+building office
+building roof
+building warehouse
+building manor
+building hospital
+building church
+building kindergarten
+building hotel
+building chapel
+building hangar
+type building
+
+RECREATION
+leisure playground
+leisure recreation_ground
+landuse recreation_ground
+
+PARKING
+amenity parking
+
+FARMLAND
+landuse farmland
+
+FARMYARD
+landuse farmyard
+
+MILLITARY
+landuse millitary
+
+RESIDENTIAL
+landuse residential
+residential yes
+
+INDUSTRIAL
+landuse industrial
+
+AIRPORT_APRON
+aeroway apron
+
+AIRPORT_RUNWAY
+aeroway runway
+
+AIRPORT_TAXIWAY
+aeroway taxiway
+
+PIER
+man_made pier
+pier yes
+
+TREE
+natural tree
+natural wood
+
+PARK
+tourism camp_site
+leisure park
+leisure golf_course
+leisure camp_site
+leisure garden
+
+FOREST
+landuse forest
+
+BEACH
+natural beach
+natural sand
+
+GRASS
+tourism picnic_site
+leisure common
+landuse meadow
+landuse grass
+natural grassland
+
+WATER
+natural water
+landuse basin
+waterway riverbank
+
+PITCH
+leisure pitch
+
+STADIUM
+leisure stadium
+
+TRACK
+leisure track
+sport running
+highway track
+highway bridleway
+highway path
+
+BROWNFIELD
+landuse brownfield
+
+CONSTRUCTION
+landuse construction
+highway construction
+
+ALLOTMENTS
+landuse allotments
+
+CEMETERY
+landuse cemetery
+
+SQUARE
+place square
+
+SCRUB
+natural scrub
+
+BARRIER
+power plant
+
+UNDERBRIDGE
+man_made bridge
+
+FOOTWAY
+highway steps
+highway unclassified
+highway footway
+
+MOTORWAY
+highway motorway
+highway motorway_link
+
+PRIMARY
+highway primary
+highway primary_link
+
+SECONDARY
+highway secondary
+highway secondary_link
+highway trunk
+
+TERTIARY
+highway tertiary
+highway tertiary_link
+
+SERVICE
+highway service
+
+ROAD_RESIDENTIAL
+highway residential
+
+CYCLEWAY
+highway cycleway
+
+SUBWAY
+railway light_rail
+railway subway
+trailway subway
+
+BRIDGE
+bridge yes
+
+RAILCONSTRUCTION
+construction subway
+trailway construction
+construction:railway subway
+
+DISUSED
+trailway disused
+
+COASTLINE
+natural coastline
+
+BOAT
+route ferry
+boat ferry
+boat tour
+
+COMMERCIAL
+landuse commercial
+building commercial
+building retail
+
+RACEWAY
+highway raceway
+
+QUARRY
+landuse quarry
+
+DITCH
+waterway drain
+waterway ditch
+waterway stream
+waterway canal
+waterway drain
+waterway river
+
+BOUNDARY_ADMINISTRATIVE
+boundary administrative
+
+RAILWAY
+trailway rail
+railway rail
+railway narrow_gauge
+
+RAILWAY_PLATFORM
+railway platform
+
+PEDESTRIAN
+highway pedestrian
+
+BREAKWATER
+man_made breakwater
