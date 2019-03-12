@@ -48,5 +48,5 @@ tasks.withType(JavaCompile) {
 }
 
 run {
-    args = ['data/zealand.osm.obj']
+    args = ['data/zealand.zip']
 }
