@@ -11,6 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.stage.Stage;
+import javafx.scene.shape.Line;
 
 import java.io.IOException;
 
@@ -26,7 +27,6 @@ public class View {
 		stage.show();
 		controller.init(model);
 	}
-
 
 }
 

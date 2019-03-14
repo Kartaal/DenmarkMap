@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+
 <?import bfst19.osmdrawing.MapCanvas?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.Scene?>
@@ -12,6 +13,10 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.layout.*?>
+<?import java.lang.*?>
+<?import javafx.scene.shape.*?>
 <Scene xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="bfst19.osmdrawing.Controller"
@@ -39,6 +44,12 @@
                         <Button fx:id="buildings"  text="Buildings" />
                         <Button fx:id="noColors"  text="No colors " />
                         <Button fx:id="colors"  text="Colors" styleClass="last" />
+                        <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="86.0" prefWidth="99.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+                            <children>
+                                <SVGPath content="M40,0 L20,0" layoutX="18.0" layoutY="2.0" stroke="BLACK" strokeWidth="3.0" />
+                            </children>
+                        </Pane>
+
                     </HBox>
                 </items>
             </ToolBar>
