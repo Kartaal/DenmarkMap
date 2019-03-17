@@ -24,14 +24,6 @@ public class Address {
 	}
 
 	public String toString() {
-		/* if you want punctuation after floor,
-		not in use because i might just switch to not accepting floor without punctuation.
-
-		String floorWithPunctuation = floor;
-		if(!floor.endsWith(".")){
-			floorWithPunctuation = floor + ".";
-
-		}*/
 		return ""+street + " " + house + ", " + floor + " " + side + "\n" + postcode + " " + city;
 	}
 
@@ -60,26 +52,7 @@ public class Address {
 	final static String rSide = "(?<side>th|tv|mf|TH|TV|MF|([0-9][0-9]?[0-9]?))";
 
 	final static String[] regex = {
-
-			//"(?<house>([0-9]{1,3} ?[a-z]?))",
-			//rHouse+rFloor,
-			//rHouse+rFloor+rSide,
-			"^(?<house>([0-9]{1,3} ?[a-zA-Z]?))?,? ?(?<floor>([1-9]{1,3}\\.?)|(1st\\.)|(st\\.)|ST\\.)?,? ?(?<side>th\\.?|tv\\.?|mf\\.?|md\\.?|([0-9]{1,3}\\.?))?,?$"
-
-			/*
-			//simpel
-			"^ *(?<street>[ÆØÅA-Zæøåa-z\\- ]+?)?[ \\.,]*(?<house>[0-9])? *$",
-			//full simpel
-			"^ *(?<street>[ÉÜÆØÅA-Züéäÿëèé(),\\/;.\\-'æøåa-z \\.]+?)?[ \\.,]*(?<house>[0-9]+? ??[ÆØÅæøåa-zA-Z]?)?[ \\.,]*(?<floor>[0-9]\\.)?[ \\.,]*(?<side>th|tv|mf)?[ \\.,]*(?<postcode>[0-9]{4})?[ \\.,]*(?<city>[æøåÆØÅA-Za-z\\. ]+?)?[ \\.,]*$",
-			//full advanced: postcode city
-			"^[ \\.,]*(?<street>(([A-Za-zæøåÆØÅ ])|([A-ZÆØÅ]\\.))*)?[ \\.,]*(?<house>([0-9]* ?[a-z]?))?[ \\.,]*(?<floor>([1-9][0-9]?\\.?)|(st\\.)|ST\\.)?[ \\.,]*(?<side>th|tv|mf|TH|TV|MF|([0-9][0-9]?[0-9]?))?[ \\.,]*(?<postcode>[0-9]{4})?[ \\.,]*(?<city>[æøåÆØÅA-Za-z\\. ]+?)?[ \\.,]*$",
-			//full advanced: city postcode
-			"^[ \\.,]*(?<street>(([A-Za-zæøåÆØÅ ])|([A-ZÆØÅ]\\.))*)?[ \\.,]*(?<house>([0-9]* ?[a-z]?))?[ \\.,]*(?<floor>([1-9][0-9]?\\.?)|(st\\.)|ST\\.)?[ \\.,]*(?<side>th|tv|mf|TH|TV|MF|([0-9][0-9]?[0-9]?))?[ \\.,]*(?<city>[æøåÆØÅA-Za-z\\. ]+?)?[ \\.,]*(?<postcode>[0-9]{4})?[ \\\\.,]*$",
-			//haveforening full forkortede måneder
-			"^[ \\.,]*(?<street>(([A-Za-zæøåÆØÅ ])|([A-ZÆØÅ]\\.)|(af[ \\.,]*([0-9][0-9]?)?[ \\.,]*(jan|feb|mar|apr|maj|jun|jul|aug|sep|oct|nov|dec)?[ \\.,]*([0-9]{4})?[ \\.,]*))*)?[ \\.,]*(?<house>([0-9]* ?[a-z]?))?[ \\.,]*(?<floor>([1-9][0-9]?\\.?)|(st)|(ST)|(St))?[ \\.,]*(?<side>th|tv|mf|TH|TV|MF|Th|Tv|Mf|([0-9][0-9]?[0-9]?))?[ \\.,]*(?<postcode>[0-9]{4})?[ \\.,]*(?<city>[æøåÆØÅA-Za-z\\. ]+?)?[ \\.,]*$",
-			//haveforening fucked fx. "10. Februar Vej 11 Christiansfeld" and for some reason it parses the previous adress on regex101.com but not in the tests
-			"^[ \\.,]*(?<Street>[0-9][0-9]?\\. ?[a-zA-Z ]*)?[ \\.,]*(?<house>[0-9]{1,3} ?[a-z]?)?[ \\.,]*(?<postcode>[0-9]{4})?[ \\.,]*(?<city>[a-zA-Z]*)?[ \\.,]*$"
-			*/
+			"^(?<house>([0-9]{1,3} ?[a-zA-Z]?))?,? ?(?<floor>([1-9]{1,3}\\.?)|(1st\\.)|(st\\.)?,? ?(?<side>th\\.?|tv\\.?|mf\\.?|md\\.?|([0-9]{1,3}\\.?))?,?$"
 	};
 
 	final static Pattern[] patterns =
@@ -93,6 +66,12 @@ public class Address {
 		}
 	}
 
+	public static Address betterParse(String proposedAddress){
+		Builder b = new Builder();
+
+		return b.build();
+	}
+
 	public static Address parse(String adress){
 		Builder b = new Builder();
 		try {
@@ -101,7 +80,7 @@ public class Address {
 			if (!streetMatch.equals("")) {
 				adress = adress.replace(streetMatch, ""); //if a match is found, it is removed from the string.
 			}
-			String[] cityMatch = betterCityCheck(adress); //same as the other one, but checking for cities/postcodes
+			String[] cityMatch = CityCheck(adress); //same as the other one, but checking for cities/postcodes
 			if (!(cityMatch[0].equals(""))) {
 				adress = adress.replace(cityMatch[0], "");
 				b.postcode = cityMatch[1];
@@ -145,7 +124,7 @@ public class Address {
 		return mostCompleteMatch.toLowerCase();
 	}
 
-	public static String[] betterCityCheck(String proposedAdress)throws Exception{
+	public static String[] CityCheck(String proposedAdress)throws Exception{
 		if(cities.isEmpty()&&postcodes.isEmpty()){
 			parseCitiesAndPostCodes();
 		}

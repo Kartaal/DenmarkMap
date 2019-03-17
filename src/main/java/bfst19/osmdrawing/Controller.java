@@ -1,20 +1,11 @@
 package bfst19.osmdrawing;
 
-import javafx.collections.ObservableArray;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.control.TextField;
-import java.net.URL;
-import java.util.ResourceBundle;
-
-import javafx.collections.ObservableList;
-
-import javafx.fxml.Initializable;
-
-import java.awt.*;
 
 public class Controller {
 	private Model model;
@@ -32,7 +23,7 @@ public class Controller {
 		//TODO: figure out init methods
 	    this.model = model;
 		mapCanvas.init(model);
-		listView.setItems(model.addresses);
+		listView.setItems(model.searchedAdresses);
 	}
 
 	@FXML
