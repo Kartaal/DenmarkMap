@@ -15,7 +15,7 @@ import static javax.xml.stream.XMLStreamConstants.*;
 public class Model {
 	float lonfactor = 1.0f;
 	Map<WayType,List<Drawable>> ways = new EnumMap<>(WayType.class);
-	private boolean isEnabled;
+	private boolean colorBlindEnabled;
 
 	{
 		for (WayType type : WayType.values()) {
@@ -27,8 +27,8 @@ public class Model {
 
 	String CurrentTypeColorTxt  = "data/TypeColorsNormal.txt";
 	Map<String, WayType> waytypes = new HashMap<>();
-	ArrayList<String[]> cases = new ArrayList<>();
-	ObservableList<Address> searchedAdresses = FXCollections.observableArrayList();
+	ArrayList<String[]> wayTypeCases = new ArrayList<>();
+	ObservableList<Address> searchAddresses = FXCollections.observableArrayList();
 	ObservableList<String> typeColors = FXCollections.observableArrayList();
 	public Iterable<Drawable> getWaysOfType(WayType type) {
 		return ways.get(type);
@@ -48,6 +48,7 @@ public class Model {
 			waytypes.put(type.name(),type);
 		}
 
+		//TODO rename file and clean up WayType cases files
 		parseCases("data/Waytype_cases3.txt");
 		ParseWayColors();
 
@@ -100,16 +101,17 @@ public class Model {
 		}
 		catch(Exception e){
 			e.printStackTrace();
-			System.out.println("something went wrong"); //TODO: fix this, uncle bob wont like this one hehe;)
+			//TODO: fix this, uncle bob wont like this one hehe;)
+			System.out.println("something went wrong");
 		}
 		notifyObservers();
 	}
 
 	public void switchColorScheme(){
-		isEnabled = !isEnabled;
-		System.out.println("Colorblind mode: " + isEnabled);
+		colorBlindEnabled = !colorBlindEnabled;
+		System.out.println("Colorblind mode enabled: " + colorBlindEnabled);
 
-			if (isEnabled){
+			if (colorBlindEnabled){
 				CurrentTypeColorTxt = ("data/TypeColorsColorblind.txt");
 			}
 			else{
@@ -126,17 +128,19 @@ public class Model {
 		LongIndex<OSMWay> idToWay = new LongIndex<OSMWay>();
 		List<OSMWay> coast = new ArrayList<>();
 		ArrayList<String[]> cityBoundaries = new ArrayList<>();
-		TreeMap<String,ArrayList<String[]>> adressNodes = new TreeMap<>();
+		TreeMap<String, ArrayList<String[]>> addressNodes = new TreeMap<>();
 
 		OSMWay way = null;
 		OSMRelation rel = null;
 		WayType type = null;
-		//variables for adressParsing
+
+		//variables for addressParsing
 		String houseNumber = "";
 		String streetName = "";
 		String name = "";
-		boolean isAdress = false;
+		boolean isAddress = false;
 		boolean isCity = false;
+
 		//might be better solutions
 		long id = 0;
 		float lat = 0;
@@ -159,7 +163,7 @@ public class Model {
 							id = Long.parseLong(reader.getAttributeValue(null, "id"));
 							lat = Float.parseFloat(reader.getAttributeValue(null, "lat"));
 							lon = lonfactor * Float.parseFloat(reader.getAttributeValue(null, "lon"));
-							idToNode.add(new OSMNode(id,lon, lat));
+							idToNode.add(new OSMNode(id, lon, lat));
 							break;
 						case "way":
 							id = Long.parseLong(reader.getAttributeValue(null, "id"));
@@ -177,29 +181,29 @@ public class Model {
 
 							if(k.equals("addr:housenumber")){
 								houseNumber = v;
-								isAdress = true;
+								isAddress = true;
 							}
 							if(k.equals("addr:street")){
 								streetName = v;
-								isAdress = true;
+								isAddress = true;
 							}
 
 							if(k.equals("name")){
 								name = v;
 							}
-							if(k.equals("admin_level")&&v.equals("7")){
+							//TODO add explanatory comment. Why 7?
+							if(k.equals("admin_level") && v.equals("7")){
 								isCity = true;
 							}
 
 
-							for(String[] strings : cases){
-								if(k.equals(strings[1])&&v.equals(strings[2])){
+							for(String[] strings : wayTypeCases){
+								if(k.equals(strings[1]) && v.equals(strings[2])){
 									type = waytypes.get(strings[0]);
 									break;
 								}
 							}
 							switch (k){
-
 								case "relation":
 									type = WayType.UNKNOWN;
 									rel = new OSMRelation();
@@ -231,27 +235,29 @@ public class Model {
 								ways.get(type).add(new Polyline(way));
 							}
 
-							if(isAdress){
-								String[] adress = new String[4];
+							if(isAddress){
+								//TODO Make address class to prevent awkward array index contrivances
+								String[] address = new String[4];
 								OSMNode node = way.get(0);
-								adress[0] = String.valueOf(node.getAsLong());
-								adress[1] = String.valueOf(node.getLat());
-								adress[2] = String.valueOf(node.getLon());
-								adress[3] = houseNumber;
-								putAddressNodes(adressNodes,streetName,adress);
-								isAdress = false;
+								address[0] = String.valueOf(node.getAsLong());
+								address[1] = String.valueOf(node.getLat());
+								address[2] = String.valueOf(node.getLon());
+								address[3] = houseNumber;
+								putAddressNodes(addressNodes,streetName,address);
+								isAddress = false;
 							}
 							way = null;
 							break;
 						case "node":
-							if(isAdress){
-								String[] adress = new String[4];
-								adress[0] = String.valueOf(id);
-								adress[1] = String.valueOf(lat);
-								adress[2] = String.valueOf(lon);
-								adress[3] = houseNumber;
-								putAddressNodes(adressNodes,streetName,adress);
-								isAdress = false;
+							if(isAddress){
+								//TODO Make address class to prevent awkward array index contrivances
+								String[] address = new String[4];
+								address[0] = String.valueOf(id);
+								address[1] = String.valueOf(lat);
+								address[2] = String.valueOf(lon);
+								address[3] = houseNumber;
+								putAddressNodes(addressNodes,streetName,address);
+								isAddress = false;
 							}
 							break;
 						case "relation":
@@ -274,13 +280,12 @@ public class Model {
 								ways.get(type).add(new MultiPolyline(rel));
 							}else if(type == WayType.CONSTRUCTION){
 								ways.get(type).add(new MultiPolyline(rel));
-							}else if(type == WayType.RECREATION){
-								ways.get(type).add(new MultiPolyline(rel));
 							}else if(type == WayType.PARKING){
 								ways.get(type).add(new MultiPolyline(rel));
 							}
 
 							if(isCity){
+								//TODO Maybe make city class to prevent awkward array index contrivances
 								String[] city = new String[5];
 								city[0] = name;
 								String[] boundingBox = findRelBoundingBox(rel);
@@ -303,11 +308,11 @@ public class Model {
 					File parseCheck = new File("data/denmark");
 					if(!parseCheck.isDirectory()) {
 						makeCityDirectories(cityBoundaries);
-						for (Map.Entry<String, ArrayList<String[]>> entry : adressNodes.entrySet()) {
+						for (Map.Entry<String, ArrayList<String[]>> entry : addressNodes.entrySet()) {
 							putAddresses(entry, cityBoundaries);
 						}
 					}
-					adressNodes = null;
+					addressNodes = null;
 					cityBoundaries = null;
 
 					for (OSMWay c : merge(coast)) {
@@ -336,26 +341,34 @@ public class Model {
 			float cityMaxLat = Float.valueOf(city[2]);
 			float cityMinLon = Float.valueOf(city[3]);
 			float cityMaxLon = Float.valueOf(city[4]);
+
 			if((cityMinLat<=streetLat)&&(streetLat<=cityMaxLat)){
 				if((cityMinLon<=streetLon)&&(streetLon<=cityMaxLon)){
 					try {
-						BufferedWriter writer = new BufferedWriter(new FileWriter("data/denmark/"+cityName+"/"+entry.getKey()+".txt"));
-						for(String[] adress :street){
-							writer.write(adress[0] +" "+adress[1] +" "+adress[2] +" "+adress[3]);
+						BufferedWriter writer = new BufferedWriter(
+								new FileWriter("data/denmark/" + cityName + "/" + entry.getKey() + ".txt"));
+						for(String[] address : street){
+							String addressString = address[0] + " " + address[1] + " " + address[2] + " " + address[3];
+							writer.write(addressString);
 						}
-						File streetsInCity = new File("data/denmark/"+cityName+"/"+"streets"+".txt");
+
+						String streetsFile = "data/denmark/" + cityName + "/" + "streets" + ".txt";
+						File streetsInCity = new File(streetsFile);
+
 						if(streetsInCity.isFile()){
-							BufferedWriter streetsInCityWriter = new BufferedWriter(new FileWriter("data/denmark/"+cityName+"/"+"streets"+".txt",true));
-							streetsInCityWriter.write(entry.getKey()+"\n");
+							BufferedWriter streetsInCityWriter = new BufferedWriter(new FileWriter(streetsFile,true));
+							streetsInCityWriter.write(entry.getKey() + "\n");
 							streetsInCityWriter.close();
 						}else{
-							BufferedWriter streetsInCityWriter = new BufferedWriter(new FileWriter("data/denmark/"+cityName+"/"+	"streets"+".txt"));
+							BufferedWriter streetsInCityWriter = new BufferedWriter(new FileWriter(streetsFile));
 							streetsInCityWriter.write(entry.getKey()+"\n");
 							streetsInCityWriter.close();
 						}
 						writer.close();
 					} catch (IOException e) {
+						//TODO Handle exception better
 						e.printStackTrace();
+						System.out.println("IOException when making BufferedWriter for streets");
 						System.out.println("likely a mistake relating to / or  \\ in streetnames");
 					}
 				}
@@ -374,34 +387,36 @@ public class Model {
 			for(OSMNode node:way){
 				float nodeLat = node.getLat();
 				float nodeLon = node.getLon();
-				if(nodeLat<minLat) minLat = nodeLat;
-				if(nodeLat>maxLat) maxLat = nodeLat;
-				if(nodeLon<minLon) minLon = nodeLon;
-				if(nodeLon>maxLon) maxLon = nodeLon;
+				if(nodeLat < minLat) minLat = nodeLat;
+				if(nodeLat > maxLat) maxLat = nodeLat;
+				if(nodeLon < minLon) minLon = nodeLon;
+				if(nodeLon > maxLon) maxLon = nodeLon;
 			}
 		}
-		String[] boundingBox = new String[]{String.valueOf(minLat),String.valueOf(maxLat),String.valueOf(minLon),String.valueOf(maxLon)};
-		return boundingBox;
+		return new String[]{ String.valueOf(minLat),
+							  String.valueOf(maxLat),
+							  String.valueOf(minLon),
+							  String.valueOf(maxLon)
+							};
 	}
 
 	public void parseCases(String pathToCasesFile){
 		try {
 
-			BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(pathToCasesFile),"UTF-8"));
+			BufferedReader in = new BufferedReader(new InputStreamReader(
+								new FileInputStream(pathToCasesFile),"UTF-8"));
 			int n = Integer.parseInt(in.readLine().trim());
-			for(int i = 0; i<n;i++) {
-				String waytype = in.readLine();
-				String waycase = in.readLine();
+			for(int i = 0; i < n ; i++) {
+				String wayType = in.readLine();
+				String wayCase = in.readLine();
 				
-				while((waycase!=null)&&!(waycase.startsWith("$"))){
-					String[] tokens = waycase.split(" ");
-					cases.add(new String[]{waytype,tokens[0],tokens[1]});
-					waycase = in.readLine();
+				while((wayCase != null) && !(wayCase.startsWith("$"))){
+					String[] tokens = wayCase.split(" ");
+					wayTypeCases.add(new String[]{wayType,tokens[0],tokens[1]});
+					wayCase = in.readLine();
 				}
 			}
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
+		} catch (UnsupportedEncodingException | FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -410,7 +425,7 @@ public class Model {
 	}
 
 	private Iterable<OSMWay> merge(List<OSMWay> coast) {
-		Map<OSMNode,OSMWay> pieces = new HashMap<>();
+		Map<OSMNode, OSMWay> pieces = new HashMap<>();
 		for (OSMWay way : coast) {
 			OSMWay res = new OSMWay(0);
 			OSMWay before = pieces.remove(way.getFirst());
@@ -439,10 +454,10 @@ public class Model {
 			File denmarkDir = new File("data/denmark");
 			denmarkDir.mkdir();
 			BufferedWriter writer = new BufferedWriter(new FileWriter("data/denmark/cities.txt"));
-			writer.write(cityBoundaries.size()+"\n");
+			writer.write(cityBoundaries.size() + "\n");
 			for(String[] city :cityBoundaries){
-				writer.write(city[0]+"\n"+city[1]+"\n"+city[2]+"\n"+city[3]+"\n"+city[4]+"\n$\n");
-				File cityDir = new File("data/denmark/"+city[0]);
+				writer.write(city[0] + "\n" + city[1] + "\n"+city[2] + "\n" + city[3] + "\n" + city[4] + "\n$\n");
+				File cityDir = new File("data/denmark/" + city[0]);
 				cityDir.mkdir();
 			}
 			writer.close();
@@ -453,18 +468,18 @@ public class Model {
 
 	}
 
-	public void putAddressNodes(TreeMap<String, ArrayList<String[]>> adressNodes, String streetName, String[] adress){
-		if(adressNodes.get(streetName)==null){
-			ArrayList<String[]> streetAdresses = new ArrayList<>();
-			streetAdresses.add(adress);
-			adressNodes.put(streetName,streetAdresses);
+	public void putAddressNodes(TreeMap<String, ArrayList<String[]>> addressNodes, String streetName, String[] address){
+		if(addressNodes.get(streetName) == null){
+			ArrayList<String[]> streetAddresses = new ArrayList<>();
+			streetAddresses.add(address);
+			addressNodes.put(streetName, streetAddresses);
 		}else{
-			adressNodes.get(streetName).add(adress);
+			addressNodes.get(streetName).add(address);
 		}
 	}
 
-	public void parseSearch(String proposedAdress) {
-		searchedAdresses.add(Address.parse(proposedAdress));
+	public void parseSearch(String proposedAddress) {
+		searchAddresses.add(Address.parse(proposedAddress));
 	}
 
 	public String getCountry(){
@@ -473,16 +488,16 @@ public class Model {
 
 	public String[] getCities(String country){
 		try {
-			BufferedReader reader= new BufferedReader(new InputStreamReader(new FileInputStream("data/"+country+"/cities.txt"),"UTF-8"));
+			BufferedReader reader= new BufferedReader(new InputStreamReader(
+					new FileInputStream("data/" + country + "/cities.txt"),"UTF-8"));
+			//TODO Fix duplicate code
 			String[] cities = new String[Integer.valueOf(reader.readLine())];
 			String line;
-			for(int i=0;(line = reader.readLine())!=null;i++){
+			for(int i = 0 ; (line = reader.readLine()) != null ; i++){
 				cities[i] = line;
 			}
 			return cities;
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
+		} catch (UnsupportedEncodingException | FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -492,16 +507,16 @@ public class Model {
 
 	public String[] getStreets(String country,String city){
 		try {
-			BufferedReader reader= new BufferedReader(new InputStreamReader(new FileInputStream("data/"+country+"/"+city+"/streets.txt"),"UTF-8"));
+			BufferedReader reader= new BufferedReader(new InputStreamReader(
+					new FileInputStream("data/" + country + "/" + city + "/streets.txt"),"UTF-8"));
+			//TODO Fix duplicate code
 			String[] streets = new String[Integer.valueOf(reader.readLine())];
 			String line;
-			for(int i=0;(line = reader.readLine())!=null;i++){
+			for(int i = 0 ; (line = reader.readLine()) != null ; i++){
 				streets[i] = line;
 			}
 			return streets;
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
+		} catch (UnsupportedEncodingException | FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();

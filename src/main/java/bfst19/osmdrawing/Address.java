@@ -47,9 +47,9 @@ public class Address {
 	public String postcode() { return postcode; }
 	public String city()     { return city; }
 
-	final static String rHouse = "(?<house>([0-9]{1,3} ?[a-z]?))";
-	final static String rFloor = "(?<floor>([1-9][0-9]?\\.?)|(st\\.)|ST\\.)";
-	final static String rSide = "(?<side>th|tv|mf|TH|TV|MF|([0-9][0-9]?[0-9]?))";
+	final static String houseRegex = "(?<house>([0-9]{1,3} ?[a-z]?))";
+	final static String floorRegex = "(?<floor>([1-9][0-9]?\\.?)|(st\\.)|ST\\.)";
+	final static String sideRegex = "(?<side>th|tv|mf|TH|TV|MF|([0-9][0-9]?[0-9]?))";
 
 	final static String[] regex = {
 			"^(?<house>([0-9]{1,3} ?[a-zA-Z]?))?,? ?(?<floor>([1-9]{1,3}\\.?)|(1st\\.)|(st\\.)?,? ?(?<side>th\\.?|tv\\.?|mf\\.?|md\\.?|([0-9]{1,3}\\.?))?,?$"
@@ -66,31 +66,35 @@ public class Address {
 		}
 	}
 
-	public static Address betterParse(String proposedAddress){
+	public static Address parseAddressString(String proposedAddress){
 		Builder b = new Builder();
 
 		return b.build();
 	}
 
-	public static Address parse(String adress){
+	public static Address parse(String address){
 		Builder b = new Builder();
 		try {
-			adress = adress.toLowerCase().trim();
-			String streetMatch = checkStreet(adress, b);//this finds a potential street for the adress and if this is "", there is no match.
+			address = address.toLowerCase().trim();
+			//this finds a potential street for the address and if this is "", there is no match.
+			String streetMatch = checkStreet(address, b);
 			if (!streetMatch.equals("")) {
-				adress = adress.replace(streetMatch, ""); //if a match is found, it is removed from the string.
+				//if a match is found, it is removed from the string.
+				address = address.replace(streetMatch, "");
 			}
-			String[] cityMatch = CityCheck(adress); //same as the other one, but checking for cities/postcodes
+			//"same as the other one"? TODO comment rewording
+			//same as the other one, but checking for cities/postcodes
+			String[] cityMatch = CityCheck(address);
 			if (!(cityMatch[0].equals(""))) {
-				adress = adress.replace(cityMatch[0], "");
+				address = address.replace(cityMatch[0], "");
 				b.postcode = cityMatch[1];
 				b.city = cityMatch[2];
 			}
-			//check the remaining part of the proposed adress against a pattern in regex
-			adress = adress.trim();
+			//check the remaining part of the proposed address against a regex pattern
+			address = address.trim();
 
 			for (Pattern pattern : patterns) {
-				Matcher match = pattern.matcher(adress);
+				Matcher match = pattern.matcher(address);
 				if (match.matches()) {
 					tryExtract(match, "house", b::house);
 					tryExtract(match, "floor", b::floor);
@@ -98,8 +102,6 @@ public class Address {
 					return b.build();
 				}
 			}
-
-
 			return b.build();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -107,37 +109,41 @@ public class Address {
 		return b.build();
 	}
 
-	//This method checks if the start of the proposed adress matches any the streets found in the streenames file, and if a match is found, it is given to the builder and returned to be removed from the adress.
-	public static String checkStreet(String adress,Builder b)throws IOException {
+	//Checks if start of the address matches any the streets in the street names file
+	// if a match is found, the builders street field is set to the match
+	// which is returned to be removed from the address.
+	public static String checkStreet(String address, Builder b) throws IOException {
 		BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream("data/streetnames.txt"),"UTF-8"));
 		String line = in.readLine();
 		String mostCompleteMatch = "";
-		while(line!=null){
-			if(adress.startsWith(line.toLowerCase())){
-				if(line.length()>mostCompleteMatch.length()){
-					mostCompleteMatch=line;
+		while(line != null){
+			if(address.startsWith(line.toLowerCase())){
+				if(line.length() > mostCompleteMatch.length()){
+					mostCompleteMatch = line;
 				}
 			}
 			line = in.readLine();
 		}
-		b.street=mostCompleteMatch;
+		b.street = mostCompleteMatch;
 		return mostCompleteMatch.toLowerCase();
 	}
 
-	public static String[] CityCheck(String proposedAdress)throws Exception{
-		if(cities.isEmpty()&&postcodes.isEmpty()){
+	public static String[] CityCheck(String proposedAddress) throws Exception{
+		if(cities.isEmpty() && postcodes.isEmpty()){
 			parseCitiesAndPostCodes();
 		}
-		String currentCity = "", currentPostcode = "",mostCompleteMatch = "",bestPostCodeMatch = "", bestCityMatch = "";
+		String currentCity = "", currentPostcode = "", mostCompleteMatch = "",
+				bestPostCodeMatch = "", bestCityMatch = "";
 
-		for(int i=0;i<cities.size();i++){
+		for(int i = 0 ; i < cities.size() ; i++){
 			currentCity = cities.get(i);
 			currentPostcode = postcodes.get(i);
 
-			String checkSecondToLastToken = checkSecondToLastTokenForPostcode(proposedAdress, currentPostcode).toLowerCase();
-			String checkThirdToLastToken = checkThirdToLastTokenForPostcode(proposedAdress, currentPostcode).toLowerCase();
+			//TODO these need rewriting badly, two methods that basically do the same thing??
+			String checkSecondToLastToken = checkSecondToLastTokenForPostcode(proposedAddress, currentPostcode).toLowerCase();
+			String checkThirdToLastToken = checkThirdToLastTokenForPostcode(proposedAddress, currentPostcode).toLowerCase();
 
-			if(proposedAdress.endsWith(currentPostcode.toLowerCase() +" "+ currentCity.toLowerCase())){
+			if(proposedAddress.endsWith(currentPostcode.toLowerCase() +" "+ currentCity.toLowerCase())){
 				mostCompleteMatch = currentPostcode +" "+ currentCity;
 				bestPostCodeMatch = currentPostcode;
 				bestCityMatch = currentCity;
@@ -149,11 +155,11 @@ public class Address {
 				mostCompleteMatch = checkThirdToLastToken;
 				bestPostCodeMatch = currentPostcode;
 				bestCityMatch = currentCity;
-			}else if((proposedAdress.endsWith(currentPostcode.toLowerCase()))){
+			}else if((proposedAddress.endsWith(currentPostcode.toLowerCase()))){
 				mostCompleteMatch = currentPostcode;
 				bestCityMatch = currentCity;
 				bestPostCodeMatch = currentPostcode;
-			}else if(proposedAdress.endsWith(currentCity.toLowerCase())){
+			}else if(proposedAddress.endsWith(currentCity.toLowerCase())){
 				mostCompleteMatch = currentCity;
 				bestPostCodeMatch = currentPostcode;
 				bestCityMatch = currentCity;
@@ -162,26 +168,29 @@ public class Address {
 		}
 		//if not "" it means it has found a match inside the loop
 		if(!(mostCompleteMatch.equals(""))){
-			return new String[]{mostCompleteMatch,bestCityMatch,bestPostCodeMatch};
+			return new String[]{mostCompleteMatch, bestCityMatch, bestPostCodeMatch};
 		}
 
 		return new String[]{""};
 	}
 
-	//if second to last token in the proposed adress is the given postcode, it returns the part of the adress to remove, if not it returns "".
+	//if second to last token in the proposed address is the given postcode,
+	// it returns the part of the address to remove, if not it returns "".
 	public static String checkSecondToLastTokenForPostcode(String proposedAdress,String postcode){
-		String[] adressTokens = proposedAdress.split(" ");
-		if(adressTokens.length>=2&&adressTokens[adressTokens.length-2].equals(postcode)) {
-			return (adressTokens[adressTokens.length - 2] + " " + adressTokens[adressTokens.length - 1]);
+		String[] addressTokens = proposedAdress.split(" ");
+		if(addressTokens.length>=2 && addressTokens[addressTokens.length-2].equals(postcode)) {
+			return (addressTokens[addressTokens.length - 2] + " " + addressTokens[addressTokens.length - 1]);
 		}
 		return "";
 	}
 
-	//if third to last token in the proposed adress is the given postcode, it returns the part of the adress to remove, if not it returns "".
+	//if third to last token in the proposed address is the given postcode,
+	// it returns the part of the address to remove, if not it returns "".
 	public static String checkThirdToLastTokenForPostcode(String proposedAdress,String postcode){
 		String[] adressTokens = proposedAdress.split(" ");
-		if(adressTokens.length>=3&&adressTokens[adressTokens.length-3].equals(postcode)) {
-			return (adressTokens[adressTokens.length - 3] + " " + adressTokens[adressTokens.length - 2] + " " + adressTokens[adressTokens.length-1]);
+		if(adressTokens.length>=3 && adressTokens[adressTokens.length-3].equals(postcode)) {
+			return (adressTokens[adressTokens.length - 3] + " " + adressTokens[adressTokens.length - 2]
+							+ " " + adressTokens[adressTokens.length-1]);
 		}
 		return "";
 	}
@@ -189,10 +198,12 @@ public class Address {
 	public static void parseCitiesAndPostCodes()throws Exception{
 
 		BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream("data/postnumre.txt"),"UTF-8"));
-		String line = in.readLine(); //the first line of the file starts with a ?, to combat this i've moved everything 1 line down, so now i skip the first line.
+		//the first line of the file starts with a ?,
+		// to combat this i've moved everything 1 line down, so now i skip the first line.
+		String line = in.readLine();
 		line = in.readLine().toLowerCase();
 
-		while(line!=null){
+		while(line != null){
 			String[] tokens = line.split(" ",2);
 			postcodes.add(tokens[0]);
 			cities.add(tokens[1]);

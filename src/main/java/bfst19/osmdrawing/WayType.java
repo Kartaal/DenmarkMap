@@ -1,6 +1,6 @@
 package bfst19.osmdrawing;
 public enum WayType {
-	//TODO: separate into different waytypes
+	//TODO: separate into different WayTypes
 	RECREATION(false,10 ),
 	PARKING(false, 7),
 	FARMLAND(false,10),
@@ -58,7 +58,9 @@ public enum WayType {
 	BREAKWATER(false,12 );
 
     private boolean isRoadOrSimilar;
-	//Originally it was shouldFill, because that is functionally the case, however the true commonallity is that they are meant to be strokes lines or similiar, but i could not come up with a better name.
+	//Originally it was shouldFill, because that is functionally the case,
+	// however the true commonality is that they are meant to be strokes, lines or similar
+	// and I could not come up with a better name.
 
 	private int levelOfDetail;
 	//This value is intended to implement primitive or naive level of detail, and needs polish currently.

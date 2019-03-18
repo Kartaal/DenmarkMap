@@ -23,17 +23,20 @@ public class Controller {
 		//TODO: figure out init methods
 	    this.model = model;
 		mapCanvas.init(model);
-		listView.setItems(model.searchedAdresses);
+		listView.setItems(model.searchAddresses);
 	}
 
 	@FXML
 	private void onKeyPressed(KeyEvent e) {
-		switch (e.getCode()) {//e.getcode() gets the specific keycode for the pressed key
-		    case T: //toggle so that the canvas only draws roads or similar draws everything by default
+		//e.getcode() gets the specific keycode for the pressed key
+		switch (e.getCode()) {
+			//toggle so that the canvas only draws roads or similar draws everything by default
+			case T:
 				mapCanvas.toggleNonRoads();
 				mapCanvas.repaint();
 				break;
-			case C: //Toggle colorblind colorfile
+			//Toggle colorblind mode
+			case C:
 				model.switchColorScheme();
 				break;
 			case ENTER:
@@ -46,7 +49,8 @@ public class Controller {
 
 	@FXML
 	private void onScroll(ScrollEvent e) {
-        //because scrollwheels/touchpads scroll by moving up and down the zoomfactor as calculated based on the distance moved by the "scroll"
+        //because scroll wheels/touchpads scroll by moving up and down
+		// the zoom factor as calculated based on the distance moved by the "scroll"
         //The pow part is just about trial and error to find a good amount of zoom per "scroll"
         double factor = Math.pow(1.01, e.getDeltaY());
 		mapCanvas.zoom(factor, e.getX(), e.getY());
