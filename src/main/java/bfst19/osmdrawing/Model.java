@@ -126,6 +126,7 @@ public class Model {
 		LongIndex<OSMNode> idToNode = new LongIndex<OSMNode>();
 		LongIndex<OSMWay> idToWay = new LongIndex<OSMWay>();
 		List<OSMWay> coast = new ArrayList<>();
+		ArrayList<String[]>  postBoxes = new ArrayList<>();
 		ArrayList<String[]> cityBoundaries = new ArrayList<>();
 		TreeMap<String, ArrayList<String[]>> addressNodes = new TreeMap<>();
 
@@ -137,9 +138,10 @@ public class Model {
 		String houseNumber = "";
 		String streetName = "";
 		String name = "";
+		String postcode= "";
 		boolean isAddress = false;
 		boolean isCity = false;
-
+		boolean isPostBox = false;
 		//might be better solutions
 		long id = 0;
 		float lat = 0;
@@ -191,12 +193,19 @@ public class Model {
 								name = v;
 							}
 
+							if(k.equals("postal_code")){
+								postcode = v;
+							}
+
 							//This is perhaps not general enough. It is flagged as defacto on the OSM wiki
 							//but it seems that admin level 7 is the consensus for danish city boundaries
 							if(k.equals("admin_level") && v.equals("7")){
 								isCity = true;
 							}
 
+							if(k.equals("amenity")&&v.equals("post_box")){
+								isPostBox = true;
+							}
 
 							for(String[] strings : wayTypeCases){
 								if(k.equals(strings[1]) && v.equals(strings[2])){
@@ -259,6 +268,11 @@ public class Model {
 								address[3] = houseNumber;
 								putAddressNodes(addressNodes,streetName,address);
 								isAddress = false;
+							}
+							if(isPostBox){
+								String[] postBox = new String[5];
+
+								postBoxes.add(postBox);
 							}
 							break;
 						case "relation":
@@ -418,7 +432,6 @@ public class Model {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	private Iterable<OSMWay> merge(List<OSMWay> coast) {
