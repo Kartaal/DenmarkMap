@@ -48,8 +48,7 @@ public class Model {
 			waytypes.put(type.name(),type);
 		}
 
-		//TODO rename file and clean up WayType cases files
-		parseCases("data/Waytype_cases3.txt");
+		parseCases("data/Waytype_cases.txt");
 		ParseWayColors();
 
 
@@ -191,7 +190,9 @@ public class Model {
 							if(k.equals("name")){
 								name = v;
 							}
-							//TODO add explanatory comment. Why 7?
+
+							//This is perhaps not general enough. It is flagged as defacto on the OSM wiki
+							//but it seems that admin level 7 is the consensus for danish city boundaries
 							if(k.equals("admin_level") && v.equals("7")){
 								isCity = true;
 							}
@@ -305,16 +306,13 @@ public class Model {
 				case SPACE: break;
 				case START_DOCUMENT: break;
 				case END_DOCUMENT:
-					File parseCheck = new File("data/denmark");
+					File parseCheck = new File("data/"+getCountry());
 					if(!parseCheck.isDirectory()) {
 						makeCityDirectories(cityBoundaries);
-						for (Map.Entry<String, ArrayList<String[]>> entry : addressNodes.entrySet()) {
-							putAddresses(entry, cityBoundaries);
-						}
+						makeStreetFiles(addressNodes, cityBoundaries);
 					}
 					addressNodes = null;
 					cityBoundaries = null;
-
 					for (OSMWay c : merge(coast)) {
 						ways.get(WayType.COASTLINE).add(new Polyline(c));
 					}
@@ -330,51 +328,50 @@ public class Model {
 		}
 	}
 
-	private void putAddresses(Map.Entry<String, ArrayList<String[]>> entry, ArrayList<String[]> cityBoundaries) {
-		ArrayList<String[]> street = entry.getValue();
-		String[] firstAdress = street.get(0);
-		float streetLat = Float.valueOf(firstAdress[1]);
-		float streetLon = Float.valueOf(firstAdress[2]);
-		for(String[] city :cityBoundaries){
-			String cityName = city[0];
-			float cityMinLat = Float.valueOf(city[1]);
-			float cityMaxLat = Float.valueOf(city[2]);
-			float cityMinLon = Float.valueOf(city[3]);
-			float cityMaxLon = Float.valueOf(city[4]);
+	private void makeStreetFiles(TreeMap<String,ArrayList<String[]>> addressNodes, ArrayList<String[]> cityBoundaries){
+			for (Map.Entry<String, ArrayList<String[]>> entry : addressNodes.entrySet()) {
+				ArrayList<String[]> street = entry.getValue();
+				String[] firstAdress = street.get(0);
+				float streetLat = Float.valueOf(firstAdress[1]);
+				float streetLon = Float.valueOf(firstAdress[2]);
+				try {
+					for (String[] city : cityBoundaries) {
+						String cityName = city[0];
+						float cityMinLat = Float.valueOf(city[1]);
+						float cityMaxLat = Float.valueOf(city[2]);
+						float cityMinLon = Float.valueOf(city[3]);
+						float cityMaxLon = Float.valueOf(city[4]);
+						if ((cityMinLat <= streetLat) && (streetLat <= cityMaxLat)) {
+							if ((cityMinLon <= streetLon) && (streetLon <= cityMaxLon)) {
+								String streetsFile = "data/"+getCountry()+"/" + cityName + "/" + "streets" + ".txt";
+								File streetsInCity = new File(streetsFile);
 
-			if((cityMinLat<=streetLat)&&(streetLat<=cityMaxLat)){
-				if((cityMinLon<=streetLon)&&(streetLon<=cityMaxLon)){
-					try {
-						BufferedWriter writer = new BufferedWriter(
-								new FileWriter("data/denmark/" + cityName + "/" + entry.getKey() + ".txt"));
-						for(String[] address : street){
-							String addressString = address[0] + " " + address[1] + " " + address[2] + " " + address[3];
-							writer.write(addressString);
+								BufferedWriter streetsInCityWriter;
+
+								if (streetsInCity.isFile()) {
+									streetsInCityWriter = new BufferedWriter(new FileWriter(streetsFile, true));
+								} else {
+									streetsInCityWriter = new BufferedWriter(new FileWriter(streetsFile));
+								}
+
+								streetsInCityWriter.write(entry.getKey() + "\n");
+								for (String[] address : street) {
+									String addressString = address[0] + " " + address[1] + " " + address[2] + " " + address[3] + "\n";
+									streetsInCityWriter.write(addressString);
+								}
+								streetsInCityWriter.write("$\n");
+								streetsInCityWriter.close();
+							}
 						}
-
-						String streetsFile = "data/denmark/" + cityName + "/" + "streets" + ".txt";
-						File streetsInCity = new File(streetsFile);
-
-						if(streetsInCity.isFile()){
-							BufferedWriter streetsInCityWriter = new BufferedWriter(new FileWriter(streetsFile,true));
-							streetsInCityWriter.write(entry.getKey() + "\n");
-							streetsInCityWriter.close();
-						}else{
-							BufferedWriter streetsInCityWriter = new BufferedWriter(new FileWriter(streetsFile));
-							streetsInCityWriter.write(entry.getKey()+"\n");
-							streetsInCityWriter.close();
-						}
-						writer.close();
-					} catch (IOException e) {
-						//TODO Handle exception better
-						e.printStackTrace();
-						System.out.println("IOException when making BufferedWriter for streets");
-						System.out.println("likely a mistake relating to / or  \\ in streetnames");
 					}
+				} catch (IOException e) {
+					//TODO Handle exception better
+					e.printStackTrace();
+					System.out.println("IOException when making BufferedWriter for streets");
+					System.out.println("likely a mistake relating to / or  \\ in streetnames");
 				}
 			}
 		}
-	}
 
 
 
@@ -451,13 +448,13 @@ public class Model {
 
 	public void makeCityDirectories( ArrayList<String[]> cityBoundaries){
 		try {
-			File denmarkDir = new File("data/denmark");
-			denmarkDir.mkdir();
-			BufferedWriter writer = new BufferedWriter(new FileWriter("data/denmark/cities.txt"));
+			File countryDir = new File("data/"+getCountry());
+			countryDir.mkdir();
+			BufferedWriter writer = new BufferedWriter(new FileWriter("data/"+getCountry()+"/cities.txt"));
 			writer.write(cityBoundaries.size() + "\n");
 			for(String[] city :cityBoundaries){
 				writer.write(city[0] + "\n" + city[1] + "\n"+city[2] + "\n" + city[3] + "\n" + city[4] + "\n$\n");
-				File cityDir = new File("data/denmark/" + city[0]);
+				File cityDir = new File("data/"+getCountry()+"/" + city[0]);
 				cityDir.mkdir();
 			}
 			writer.close();
@@ -482,45 +479,33 @@ public class Model {
 		searchAddresses.add(Address.parse(proposedAddress));
 	}
 
+
+	//it's only denmark right now.
 	public String getCountry(){
 		return "denmark";
 	}
 
-	public String[] getCities(String country){
+	//generalized getCities and getStreets to getTextFile, might not be final.
+	public String[] getTextFile(String filepath){
 		try {
 			BufferedReader reader= new BufferedReader(new InputStreamReader(
-					new FileInputStream("data/" + country + "/cities.txt"),"UTF-8"));
-			//TODO Fix duplicate code
-			String[] cities = new String[Integer.valueOf(reader.readLine())];
+					new FileInputStream(filepath),"UTF-8"));
+			String[] textFile = new String[Integer.valueOf(reader.readLine())];
 			String line;
 			for(int i = 0 ; (line = reader.readLine()) != null ; i++){
-				cities[i] = line;
+				textFile[i] = line;
+				return textFile;
 			}
-			return cities;
-		} catch (UnsupportedEncodingException | FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
 
-	public String[] getStreets(String country,String city){
-		try {
-			BufferedReader reader= new BufferedReader(new InputStreamReader(
-					new FileInputStream("data/" + country + "/" + city + "/streets.txt"),"UTF-8"));
-			//TODO Fix duplicate code
-			String[] streets = new String[Integer.valueOf(reader.readLine())];
-			String line;
-			for(int i = 0 ; (line = reader.readLine()) != null ; i++){
-				streets[i] = line;
-			}
-			return streets;
-		} catch (UnsupportedEncodingException | FileNotFoundException e) {
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+
 		return null;
 	}
 

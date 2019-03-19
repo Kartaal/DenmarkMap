@@ -69,6 +69,8 @@ public class Address {
 	public static Address parseAddressString(String proposedAddress){
 		Builder b = new Builder();
 
+
+
 		return b.build();
 	}
 
@@ -82,8 +84,7 @@ public class Address {
 				//if a match is found, it is removed from the string.
 				address = address.replace(streetMatch, "");
 			}
-			//"same as the other one"? TODO comment rewording
-			//same as the other one, but checking for cities/postcodes
+			//This finds a potential city + postcode for the proposed address, if no match it return "".
 			String[] cityMatch = CityCheck(address);
 			if (!(cityMatch[0].equals(""))) {
 				address = address.replace(cityMatch[0], "");

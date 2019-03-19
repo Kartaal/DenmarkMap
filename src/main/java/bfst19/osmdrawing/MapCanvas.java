@@ -72,8 +72,6 @@ public class MapCanvas extends Canvas {
 
                 if (!(type.isRoadOrSimilar()) && type.levelOfDetail()<detailLevel) {
                     if(type == WayType.COASTLINE) {
-                    //TODO Keep this or delete it
-                    //}else if(type==WayType.UNKNOWN) {
                     }else{
                         gc.setFill(getColor(type));
                         for (Drawable way : model.getWaysOfType(type)) way.fill(gc);
@@ -82,7 +80,7 @@ public class MapCanvas extends Canvas {
                 } else if (type.isRoadOrSimilar() && type.levelOfDetail()<detailLevel) {
                     if (type == WayType.COASTLINE) {
                     //TODO Keep this or delete it
-                    //}else if(type==WayType.UNKNOWN) {
+                    }else if(type==WayType.UNKNOWN) {
 
                     } else {
                         gc.setStroke(getColor(type));
