@@ -126,7 +126,6 @@ public class Model {
 		LongIndex<OSMNode> idToNode = new LongIndex<OSMNode>();
 		LongIndex<OSMWay> idToWay = new LongIndex<OSMWay>();
 		List<OSMWay> coast = new ArrayList<>();
-		ArrayList<String[]>  postBoxes = new ArrayList<>();
 		ArrayList<String[]> cityBoundaries = new ArrayList<>();
 		TreeMap<String, ArrayList<String[]>> addressNodes = new TreeMap<>();
 
@@ -137,11 +136,12 @@ public class Model {
 		//variables for addressParsing
 		String houseNumber = "";
 		String streetName = "";
-		String name = "";
+		String cityName = "";
 		String postcode= "";
 		boolean isAddress = false;
 		boolean isCity = false;
-		boolean isPostBox = false;
+		int addressCount = 0;
+		int citycount=0;
 		//might be better solutions
 		long id = 0;
 		float lat = 0;
@@ -189,8 +189,15 @@ public class Model {
 								isAddress = true;
 							}
 
+							if(k.equals("addr:postcode")){
+								postcode = v;
+							}
+
 							if(k.equals("name")){
-								name = v;
+								cityName = v;
+							}
+							if(k.equals("addr:city")){
+								cityName = v;
 							}
 
 							if(k.equals("postal_code")){
@@ -201,10 +208,6 @@ public class Model {
 							//but it seems that admin level 7 is the consensus for danish city boundaries
 							if(k.equals("admin_level") && v.equals("7")){
 								isCity = true;
-							}
-
-							if(k.equals("amenity")&&v.equals("post_box")){
-								isPostBox = true;
 							}
 
 							for(String[] strings : wayTypeCases){
@@ -247,32 +250,37 @@ public class Model {
 
 							if(isAddress){
 								//TODO Make address class to prevent awkward array index contrivances
-								String[] address = new String[4];
+								String[] address = new String[6];
 								OSMNode node = way.get(0);
 								address[0] = String.valueOf(node.getAsLong());
 								address[1] = String.valueOf(node.getLat());
 								address[2] = String.valueOf(node.getLon());
 								address[3] = houseNumber;
-								putAddressNodes(addressNodes,streetName,address);
+								address[4] = postcode;
+								address[5] = cityName;
+								putAddress(addressNodes,streetName,address);
 								isAddress = false;
+								postcode = "";
+								cityName = "";
+								streetName = "";
 							}
 							way = null;
 							break;
 						case "node":
 							if(isAddress){
 								//TODO Make address class to prevent awkward array index contrivances
-								String[] address = new String[4];
+								String[] address = new String[6];
 								address[0] = String.valueOf(id);
 								address[1] = String.valueOf(lat);
 								address[2] = String.valueOf(lon);
 								address[3] = houseNumber;
-								putAddressNodes(addressNodes,streetName,address);
+								address[4] = postcode;
+								address[5] = cityName;
+								putAddress(addressNodes,streetName,address);
 								isAddress = false;
-							}
-							if(isPostBox){
-								String[] postBox = new String[5];
-
-								postBoxes.add(postBox);
+								postcode = "";
+								cityName = "";
+								streetName = "";
 							}
 							break;
 						case "relation":
@@ -302,7 +310,7 @@ public class Model {
 							if(isCity){
 								//TODO Maybe make city class to prevent awkward array index contrivances
 								String[] city = new String[5];
-								city[0] = name;
+								city[0] = cityName;
 								String[] boundingBox = findRelBoundingBox(rel);
 								city[1] = boundingBox[0];
 								city[2] = boundingBox[1];
@@ -310,6 +318,7 @@ public class Model {
 								city[4] = boundingBox[3];
 								cityBoundaries.add(city);
 								isCity = false;
+								cityName = "";
 							}
 							break;
 					}
@@ -325,6 +334,7 @@ public class Model {
 						makeCityDirectories(cityBoundaries);
 						makeStreetFiles(addressNodes, cityBoundaries);
 					}
+					System.out.println(addressCount+" "+citycount);
 					addressNodes = null;
 					cityBoundaries = null;
 					for (OSMWay c : merge(coast)) {
@@ -370,7 +380,7 @@ public class Model {
 
 								streetsInCityWriter.write(entry.getKey() + "\n");
 								for (String[] address : street) {
-									String addressString = address[0] + " " + address[1] + " " + address[2] + " " + address[3] + "\n";
+									String addressString = address[0] + " " + address[1] + " " + address[2] + " " + address[3] +" "+address[4]+" "+address[5]+ "\n";
 									streetsInCityWriter.write(addressString);
 								}
 								streetsInCityWriter.write("$\n");
@@ -464,7 +474,6 @@ public class Model {
 			File countryDir = new File("data/"+getCountry());
 			countryDir.mkdir();
 			BufferedWriter writer = new BufferedWriter(new FileWriter("data/"+getCountry()+"/cities.txt"));
-			writer.write(cityBoundaries.size() + "\n");
 			for(String[] city :cityBoundaries){
 				writer.write(city[0] + "\n" + city[1] + "\n"+city[2] + "\n" + city[3] + "\n" + city[4] + "\n$\n");
 				File cityDir = new File("data/"+getCountry()+"/" + city[0]);
@@ -478,7 +487,7 @@ public class Model {
 
 	}
 
-	public void putAddressNodes(TreeMap<String, ArrayList<String[]>> addressNodes, String streetName, String[] address){
+	public void putAddress(TreeMap<String, ArrayList<String[]>> addressNodes, String streetName, String[] address){
 		if(addressNodes.get(streetName) == null){
 			ArrayList<String[]> streetAddresses = new ArrayList<>();
 			streetAddresses.add(address);
