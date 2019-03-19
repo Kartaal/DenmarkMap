@@ -9,24 +9,30 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.control.TextField;
 import java.net.URL;
 import java.util.ResourceBundle;
-
+import javafx.event.ActionEvent;
 import javafx.collections.ObservableList;
-
 import javafx.fxml.Initializable;
+import javafx.scene.shape.SVGPath;
+import javafx.scene.control.TextField;
 
-import java.awt.*;
+//import java.awt.*;
 
 public class Controller {
 	private Model model;
 	double x, y;
+	private double factor,oldfactor,zoomLevel;
 
 	//This only means that .fxml can use this field despite visibility
     @FXML
 	private MapCanvas mapCanvas;
 	@FXML
-	TextField textField;
+	private TextField textField;
 	@FXML
-	ListView listView;
+	private ListView listView;
+	@FXML
+	private SVGPath scalebarMiddle;
+	@FXML
+	private SVGPath scalebarRight;
 
 	public void init(Model model) {
 		//TODO: figure out init methods
@@ -57,8 +63,20 @@ public class Controller {
 	private void onScroll(ScrollEvent e) {
         //because scrollwheels/touchpads scroll by moving up and down the zoomfactor as calculated based on the distance moved by the "scroll"
         //The pow part is just about trial and error to find a good amount of zoom per "scroll"
-        double factor = Math.pow(1.01, e.getDeltaY());
+		oldfactor = factor;
+        factor = Math.pow(1.01, e.getDeltaY());
+		System.out.println("Factor: "+factor);
+        zoomLevel = zoomLevel +oldfactor + factor ;
 		mapCanvas.zoom(factor, e.getX(), e.getY());
+		if ( zoomLevel<=10){
+			System.out.println("Zoom: "+ zoomLevel);
+			scalebarMiddle.setContent("M10,0 L100,0");
+			scalebarRight.setContent("M100,-10 L100,0");
+		}else {
+			scalebarMiddle.setContent("M10,0 L400,0");
+			scalebarRight.setContent("M400,-10 L400,0");
+		}
+
 	}
 
 	@FXML
