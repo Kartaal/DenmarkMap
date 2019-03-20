@@ -1,6 +1,7 @@
 data/zealand.zip
 data/zealand.zip.obj
 data/denmark
+build.gradle
 
 # Created by https://www.gitignore.io/api/vim,java,linux,macos,gradle,windows,notepadpp,sublimetext,intellij+all,visualstudio,visualstudiocode
 # Edit at https://www.gitignore.io/?templates=vim,java,linux,macos,gradle,windows,notepadpp,sublimetext,intellij+all,visualstudio,visualstudiocode
