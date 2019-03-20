@@ -75,7 +75,7 @@ public class KDTree {
 
 
 
-        //TODO: set boundaries
+        //TODO: set boundaries(make boxes;) ) (low bound = max value, high bound min val)
         //TODO: if tree not empty, create new high/low tree with boundaries (equal to LOW / HIGH above)
 
 
