@@ -28,23 +28,23 @@
        onKeyPressed="#onKeyPressed"
 >
     <root>
-        <BorderPane fx:id="gridPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" >
+        <BorderPane fx:id="borderpane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" >
             <center>
                 <StackPane>
+                    <children>
+                        <MapCanvas fx:id="mapCanvas" width="${borderpane.width}" height="${borderpane.height}"
+                                   onScroll="#onScroll"
+                                   onMousePressed="#onMousePressed"
+                                   onMouseDragged="#onMouseDragged"
+                        />
+                        <HBox StackPane.alignment="TOP_CENTER" alignment="TOP_LEFT">
+                            <HBox alignment="TOP_LEFT">
+                                <Button text="sup"></Button>
+                                <TextField  fx:id="textField"  />
+                            </HBox>
 
-                    <MapCanvas fx:id="mapCanvas"
-                               onScroll="#onScroll"
-                               onMousePressed="#onMousePressed"
-                               onMouseDragged="#onMouseDragged"
-                    />
-                    <HBox StackPane.alignment="TOP_CENTER" alignment="TOP_LEFT">
-                        <HBox alignment="TOP_LEFT">
-                            <Button text="sup"></Button>
-                            <TextField  fx:id="textField"  />
                         </HBox>
-
-                    </HBox>
-                    <Pane fx:id="scalebar" BorderPane.alignment="BOTTOM_RIGHT" maxHeight="-Infinity" maxWidth="20" minHeight="-Infinity" minWidth="20" prefHeight="20.0" prefWidth="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" >
+                        <Pane fx:id="scalebar" BorderPane.alignment="BOTTOM_RIGHT" maxHeight="-Infinity" maxWidth="20" minHeight="-Infinity" minWidth="20" prefHeight="20.0" prefWidth="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" >
 
                             <children>
                                 <Text fx:id="scaleText" layoutX="140.0" layoutY="15.0" text="100km"/>
@@ -58,6 +58,8 @@
                                          strokeWidth="3.0" />
                             </children>
                         </Pane>
+                    </children>
+
 
                 </StackPane>
 
