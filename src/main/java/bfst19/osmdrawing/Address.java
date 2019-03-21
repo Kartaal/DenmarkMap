@@ -1,10 +1,7 @@
 package bfst19.osmdrawing;
 
 public class Address extends OSMNode{
-    private String city;
-    private String streetName;
-    private String postcode;
-    private String housenumber;
+    private String city,streetName,postcode,housenumber,floor,side;
 
     public Address(long id,float lat,float lon,String streetName,String houseNumber,String postcode,String city){
         super(id,lat,lon);
@@ -13,6 +10,17 @@ public class Address extends OSMNode{
         this.postcode = postcode;
         this.city = city;
     }
+
+    public Address(long id, float lat, float lon, String streetName, String houseNumber, String postcode, String city, String floor, String side) {
+        super(id,lat,lon);
+        this.streetName = streetName;
+        this.housenumber = houseNumber;
+        this.postcode = postcode;
+        this.city = city;
+        this.floor = floor;
+        this.side = side;
+    }
+
 
     public String getCity() {
         return city;

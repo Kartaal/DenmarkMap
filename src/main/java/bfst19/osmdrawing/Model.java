@@ -140,8 +140,6 @@ public class Model {
 		LongIndex<OSMWay> idToWay = new LongIndex<OSMWay>();
 		TreeMap<String,TreeMap<String,ArrayList<Address>>> addresses = new TreeMap<>();
 		List<OSMWay> coast = new ArrayList<>();
-		ArrayList<String[]> cityBoundaries = new ArrayList<>();
-		TreeMap<String, ArrayList<String[]>> addressNodes = new TreeMap<>();
 
 		OSMWay way = null;
 		OSMRelation rel = null;
@@ -149,16 +147,6 @@ public class Model {
 
 		//variables for addressParsing
 		Builder b = new Builder();
-		String houseNumber = "";
-		String streetName = "";
-		String cityName = "";
-		String postcode= "";
-		String municipality = "";
-		boolean isAddress = false;
-		boolean isCity = false;
-		int addressCount = 0;
-		int citycount=0;
-		//might be better solutions
 		long id = 0;
 		float lat = 0;
 		float lon = 0;
@@ -198,30 +186,19 @@ public class Model {
 
 							if(k.equals("addr:housenumber")){
 								b.houseNumber = v;
-								houseNumber =v;
 							}
 
 							if(k.equals("addr:street")){
 								b.streetName = v;
-								streetName = v;
 							}
 
 							if(k.equals("addr:postcode")){
 								b.postcode = v;
-								postcode = v;
 							}
 
 
 							if(k.equals("addr:city")){
 								b.city = v;
-								cityName = v;
-							}
-
-
-							//This is perhaps not general enough. It is flagged as defacto on the OSM wiki
-							//but it seems that admin level 7 is the consensus for danish city boundaries
-							if(k.equals("admin_level") && v.equals("7")) {
-								isCity = true;
 							}
 
 							for(String[] strings : wayTypeCases){
@@ -261,37 +238,12 @@ public class Model {
 							} else {
 								ways.get(type).add(new Polyline(way));
 							}
-							if(b.hasFields()){
+							if(b.hasFields()) {
 								b.id = id;
 								b.lat = lat;
 								b.lon = lon;
-
-								if(addresses.get(b.city)==null){
-									addresses.put(b.city,new TreeMap<>());
-								}
-								if(addresses.get(b.city).get(b.streetName)==null){
-									addresses.get(b.city).put(b.streetName,new ArrayList<>());
-								}
-								addresses.get(b.city).get(b.streetName).add(b.build());
-								b = new Builder();
+								putAddress(addresses,b);
 							}
-							if(isAddress){
-								//TODO Make address class to prevent awkward array index contrivances
-								String[] address = new String[6];
-								OSMNode node = way.get(0);
-								address[0] = String.valueOf(node.getAsLong());
-								address[1] = String.valueOf(node.getLat());
-								address[2] = String.valueOf(node.getLon());
-								address[3] = houseNumber;
-								address[4] = postcode;
-								address[5] = cityName;
-								putAddress(addressNodes,streetName,address);
-								isAddress = false;
-							}
-							postcode = "";
-							cityName = "";
-							streetName = "";
-							houseNumber = "";
 							way = null;
 							break;
 						case "node":
@@ -299,36 +251,8 @@ public class Model {
 								b.id = id;
 								b.lat = lat;
 								b.lon = lon;
-
-								if(addresses.get(b.city)==null){
-									addresses.put(b.city,new TreeMap<>());
-								}
-								if(addresses.get(b.city).get(b.streetName)==null){
-									addresses.get(b.city).put(b.streetName,new ArrayList<>());
-								}
-								addresses.get(b.city).get(b.streetName).add(b.build());
-								b = new Builder();
+								putAddress(addresses,b);
 							}
-							postcode = "";
-							cityName = "";
-							streetName = "";
-							houseNumber = "";
-							if(isAddress){
-								//TODO Make address class to prevent awkward array index contrivances
-								String[] address = new String[6];
-								address[0] = String.valueOf(id);
-								address[1] = String.valueOf(lat);
-								address[2] = String.valueOf(lon);
-								address[3] = houseNumber;
-								address[4] = postcode;
-								address[5] = cityName;
-								putAddress(addressNodes,streetName,address);
-								isAddress = false;
-							}
-							postcode = "";
-							cityName = "";
-							streetName = "";
-							houseNumber = "";
 							break;
 						case "relation":
 							if (type == WayType.WATER) {
@@ -353,20 +277,6 @@ public class Model {
 							}else if(type == WayType.PARKING){
 								ways.get(type).add(new MultiPolyline(rel));
 							}
-
-							if(isCity){
-								//TODO Maybe make city class to prevent awkward array index contrivances
-								String[] city = new String[5];
-								city[0] = cityName;
-								String[] boundingBox = findRelBoundingBox(rel);
-								city[1] = boundingBox[0];
-								city[2] = boundingBox[1];
-								city[3] = boundingBox[2];
-								city[4] = boundingBox[3];
-								cityBoundaries.add(city);
-								isCity = false;
-								cityName = "";
-							}
 							break;
 					}
 					break;
@@ -376,14 +286,13 @@ public class Model {
 				case SPACE: break;
 				case START_DOCUMENT: break;
 				case END_DOCUMENT:
+
 					File parseCheck = new File("data/"+getCountry());
 					if(!parseCheck.isDirectory()) {
 						makeCityDirectories(addresses.keySet(),getCountry());
 						makeStreetFiles(addresses);
 					}
-					System.out.println(addressCount);
-					addressNodes = null;
-					cityBoundaries = null;
+
 					for (OSMWay c : merge(coast)) {
 						ways.get(WayType.COASTLINE).add(new Polyline(c));
 					}
@@ -400,21 +309,26 @@ public class Model {
 	}
 
 	private void makeStreetFiles(TreeMap<String,TreeMap<String, ArrayList<Address>>> addresses) {
-		BufferedWriter streetsInCityWriter;
-		for (TreeMap<String, ArrayList<Address>> streetsInCity : addresses.values()) {
-			for (ArrayList<Address> street : streetsInCity.values()) {
-				for (Address address : street) {
-					try {
-						streetsInCityWriter = new BufferedWriter(new FileWriter("data/" + getCountry() + "/" + address.getCity() + "/streets.txt",true));
-						streetsInCityWriter.write(address.toString() + "\n");
-						streetsInCityWriter.close();
-					} catch (IOException e) {
-						//TODO Handle exception better
-						e.printStackTrace();
-						System.out.println("IOException when making BufferedWriter for streets");
-						System.out.println("likely a mistake relating to / or  \\ in streetnames");
+		for (Map.Entry<String, TreeMap<String, ArrayList<Address>>> entry : addresses.entrySet()) {
+			String city = entry.getKey();
+			try {
+				BufferedWriter streetsInCityWriter = new BufferedWriter(new FileWriter("data/" + getCountry() + "/" + city + "/streets.txt", true));
+				for (Map.Entry<String, ArrayList<Address>> street : entry.getValue().entrySet()) {
+					String streetName = street.getKey();
+					System.out.println(streetName);
+					streetsInCityWriter.write(streetName+"\n");
+					BufferedWriter streetFilesWriter = new BufferedWriter(new FileWriter("data/" + getCountry() + "/" + city+"/"+streetName+ ".txt"));
+					for (Address address : street.getValue()) {
+						streetFilesWriter.write(address.toString() + "\n");
 					}
+					streetFilesWriter.close();
 				}
+				streetsInCityWriter.close();
+			} catch (IOException e) {
+				//TODO Handle exception better
+				e.printStackTrace();
+				System.out.println("IOException when making BufferedWriter for streets");
+				System.out.println("likely a mistake relating to / or  \\ in streetnames");
 			}
 		}
 	}
@@ -512,14 +426,15 @@ public class Model {
 
 	}
 
-	public void putAddress(TreeMap<String, ArrayList<String[]>> addressNodes, String streetName, String[] address){
-		if(addressNodes.get(streetName) == null){
-			ArrayList<String[]> streetAddresses = new ArrayList<>();
-			streetAddresses.add(address);
-			addressNodes.put(streetName, streetAddresses);
-		}else{
-			addressNodes.get(streetName).add(address);
+	public void putAddress(TreeMap<String, TreeMap<String, ArrayList<Address>>> addresses, Builder b){
+		if(addresses.get(b.city)==null){
+			addresses.put(b.city,new TreeMap<>());
 		}
+		if(addresses.get(b.city).get(b.streetName)==null){
+			addresses.get(b.city).put(b.streetName,new ArrayList<>());
+		}
+		addresses.get(b.city).get(b.streetName).add(b.build());
+		b = new Builder();
 	}
 
 	public void parseSearch(String proposedAddress) {
@@ -530,6 +445,14 @@ public class Model {
 	//it's only denmark right now.
 	public String getCountry(){
 		return "denmark";
+	}
+
+	public String[] getStreetsInCity(String country,String city){
+		return getTextFile("data/"+country+"/"+city+"/streets.txt");
+	}
+
+	public String[] getCities(String country){
+		return getTextFile("data/"+country+"cities.txt");
 	}
 
 	//generalized getCities and getStreets to getTextFile, might not be final.
