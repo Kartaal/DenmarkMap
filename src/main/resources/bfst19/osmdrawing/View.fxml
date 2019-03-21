@@ -31,38 +31,18 @@
         <BorderPane fx:id="gridPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" >
             <center>
                 <StackPane>
-                    <BorderPane fx:id="borderpane1" StackPane.alignment="CENTER" >
-                        <top>
-                            <ToolBar fx:id="toolbar" StackPane.alignment="TOP_LEFT">
-                                <items>
-                                    <Region styleClass="spacer" />
-                                    <HBox styleClass="segmented-button-bar" alignment="TOP_CENTER" >
-                                        <Button fx:id="routes" text="Routes" styleClass="first" />
-                                        <Button fx:id="water"  text="Water" />
-                                        <Button fx:id="buildings"  text="Buildings" />
-                                        <Button fx:id="noColors"  text="No colors " />
-                                        <Button fx:id="colors"  text="Colors" styleClass="last" />
 
-                                    </HBox>
-                                </items>
-                            </ToolBar>
-                        </top>
+                    <MapCanvas fx:id="mapCanvas"
+                               onScroll="#onScroll"
+                               onMousePressed="#onMousePressed"
+                               onMouseDragged="#onMouseDragged"
+                    />
+                    <HBox StackPane.alignment="TOP_CENTER" alignment="TOP_LEFT">
+                        <ListView fx:id="listView" />
 
-                        <center>
-                            <MapCanvas fx:id="mapCanvas" width="${borderpane1.width}" height="${borderpane1.height}"
-                                       onScroll="#onScroll"
-                                       onMousePressed="#onMousePressed"
-                                       onMouseDragged="#onMouseDragged"
-                            />
-                            <HBox StackPane.alignment="TOP_CENTER" alignment="TOP_LEFT">
-                                <ListView fx:id="listView" />
-
-                                <TextField  fx:id="textField"  />
-                            </HBox>
-
-                        </center>
-
-                        <Pane fx:id="scalebar" BorderPane.alignment="BOTTOM_RIGHT" maxHeight="-Infinity" maxWidth="20" minHeight="-Infinity" minWidth="20" prefHeight="20.0" prefWidth="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" >
+                        <TextField  fx:id="textField"  />
+                    </HBox>
+                    <Pane fx:id="scalebar" BorderPane.alignment="BOTTOM_RIGHT" maxHeight="-Infinity" maxWidth="20" minHeight="-Infinity" minWidth="20" prefHeight="20.0" prefWidth="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" >
 
                             <children>
                                 <Text fx:id="scaleText" layoutX="140.0" layoutY="15.0" text="100km"/>
@@ -76,16 +56,10 @@
                                          strokeWidth="3.0" />
                             </children>
                         </Pane>
-                    </BorderPane>
-
-
 
                 </StackPane>
 
-
             </center>
-
         </BorderPane>
-
     </root>
 </Scene>
