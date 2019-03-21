@@ -13,10 +13,17 @@ plugins {
     // Apply the application plugin to add support for building an application
     id 'application'
 	id 'org.openjfx.javafxplugin' version '0.0.7'
+    id 'jacoco'
 }
 
 javafx {
     modules = [ 'javafx.controls', 'javafx.fxml' ]
+}
+jacoco { toolVersion = "0.8.3"
+}
+
+test{
+    useJUnitPlatform();
 }
 
 // Define the main class for the application
@@ -28,6 +35,14 @@ dependencies {
 
     // Use JUnit test framework
     testCompile 'junit:junit:4.12'
+
+    // se lec 2
+    // Use JUnit 5 test framework 
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.2'
+    // Use JUnit 5’s legacy support for JUnit 4 
+    testCompileOnly 'junit:junit: 4.12'
+    testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.3.1'
 }
 
 // In this section you declare where to find the dependencies of your project

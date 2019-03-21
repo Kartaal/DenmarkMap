@@ -9,4 +9,5 @@ public class AddressTest {
 		Address address = Address.parse("");
         assertNotNull("Address.parse should not return null", address);
     }
+    
 }
