@@ -46,12 +46,12 @@ public class Controller implements Initializable{
 		//TODO: figure out init methods
 	    this.model = model;
 		mapCanvas.init(model);
-		//listView.setItems(model.addresses);
+		listView.setItems(model.addresses);
 		oldDeterminant=mapCanvas.getDeterminant();
 
 	}
 
-    @Override
+    @Override /* Called to initialize a controller after its root element has been completely processed.*/
     public void initialize(URL location, ResourceBundle resources) {
         // TODO Auto-generated method stub
         hamburger.setOnAction(this::getMenu);
