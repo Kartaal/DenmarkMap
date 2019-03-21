@@ -2,12 +2,11 @@ package bfst19.osmdrawing;
 
 import javafx.collections.ObservableArray;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.control.TextField;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -44,7 +43,12 @@ public class Controller implements Initializable{
     private Button closeListPane;
     @FXML
     private Pane listPane;
-
+    @FXML
+    private Button closeTogglePane;
+    @FXML
+    private Pane togglePane;
+    @FXML
+    private ToggleButton toggleColorBlindMode;
 
 
     public void init(Model model) {
@@ -54,6 +58,7 @@ public class Controller implements Initializable{
 		listView.setItems(model.addresses);
 		oldDeterminant=mapCanvas.getDeterminant();
 		listPane.setVisible(false);
+        togglePane.setVisible(false);
 
 	}
 
@@ -62,10 +67,12 @@ public class Controller implements Initializable{
         // TODO Auto-generated method stub
         hamburger.setOnAction(this::getMenu);
         closeListPane.setOnAction(this::closeListPane);
+        closeTogglePane.setOnAction(this::closeTogglePane);
+        toggleColorBlindMode.setOnAction(this::toggleColorBlindMode);
     }
 
     private void getMenu(ActionEvent event) {
-        System.out.println(hamburger+"was clikced");
+        togglePane.setVisible(true);
     }
 
     private void closeListPane(ActionEvent event) {
@@ -73,6 +80,13 @@ public class Controller implements Initializable{
 
     }
 
+    private void closeTogglePane(ActionEvent event) {
+        togglePane.setVisible(false);
+    }
+
+    private void toggleColorBlindMode(ActionEvent event) {
+        model.switchColorScheme();
+    }
 
     @FXML
 	private void onKeyPressed(KeyEvent e) {

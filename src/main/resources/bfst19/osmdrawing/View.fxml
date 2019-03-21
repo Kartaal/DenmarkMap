@@ -27,6 +27,7 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
+<?import javafx.geometry.Insets?>
 <Scene xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="bfst19.osmdrawing.Controller"
@@ -61,29 +62,29 @@
                         </Pane>
 
 
-                    <HBox StackPane.alignment="TOP_LEFT" maxWidth="150" maxHeight="30">
-                        <HBox alignment="TOP_LEFT">
+                    <HBox fx:id="listPaneHBox" StackPane.alignment="TOP_LEFT" maxWidth="250" maxHeight="30">
+                        <HBox alignment="TOP_LEFT"  maxWidth="${listPaneHBox.width}">
                             <VBox>
                                 <HBox>
                                     <Button fx:id ="hamburger">
                                         <graphic>
-                                            <VBox>
-                                                <SVGPath fx:id="one"  content="M0,0 L20,0" layoutX="180.0" layoutY="350.0" stroke="#800400"
-                                                         strokeWidth="5.0" />
-                                                <SVGPath fx:id="two"  content="M0,0 L20,0" layoutX="180.0" layoutY="350.0" stroke="#008002"
-                                                         strokeWidth="5.0" />
-                                                <SVGPath fx:id="tree"  content="M0,0 L20,0" layoutX="180.0" layoutY="350.0" stroke="#002480"
-                                                         strokeWidth="5.0" />
+                                            <VBox spacing="2">
+                                                <SVGPath fx:id="one"  content="M0,0 L20,0" layoutX="180.0" layoutY="350.0" stroke="#000000"
+                                                         strokeWidth="3.0" />
+                                                <SVGPath fx:id="two"  content="M0,0 L20,0" layoutX="180.0" layoutY="350.0" stroke="#000000"
+                                                         strokeWidth="3.0" />
+                                                <SVGPath fx:id="tree"  content="M0,0 L20,0" layoutX="180.0" layoutY="350.0" stroke="#000000"
+                                                         strokeWidth="3.0" />
                                             </VBox>
 
                                         </graphic>
 
                                     </Button>
-                                    <TextField StackPane.alignment="TOP_LEFT" fx:id="textField"  />
+                                    <TextField StackPane.alignment="TOP_LEFT" fx:id="textField" minWidth="210" />
                                 </HBox>
                                 <Pane fx:id="listPane">
-                                    <ListView StackPane.alignment="TOP_LEFT" fx:id="listView"  minHeight="200" maxHeight="500" maxWidth="150" />
-                                    <Button fx:id="closeListPane" text="close" layoutX="100" layoutY="350">
+                                    <ListView StackPane.alignment="TOP_LEFT" fx:id="listView"  maxWidth="${listPaneHBox.width}"   />
+                                    <Button fx:id="closeListPane" text="close" layoutX="200" layoutY="350">
 
                                     </Button>
                                 </Pane>
@@ -92,6 +93,20 @@
 
                         </HBox>
                     </HBox>
+
+                    <Pane fx:id="togglePane" maxWidth="${listPaneHBox.width}" style="-fx-background-color: white;" StackPane.alignment="TOP_LEFT" maxHeight="380" >
+                        <HBox>
+                            <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
+
+                            <Label text="Colorblind mode: " />
+                            <ToggleButton fx:id="toggleColorBlindMode"></ToggleButton>
+                        </HBox>
+
+
+                        <Button fx:id="closeTogglePane" text="close" layoutX="200" layoutY="350">
+
+                        </Button>
+                    </Pane>
 
                 </StackPane>
 
