@@ -23,7 +23,7 @@ public class Controller {
 		//TODO: figure out init methods
 	    this.model = model;
 		mapCanvas.init(model);
-		listView.setItems(model.searchAddresses);
+		listView.setItems(model.searchAddressParsers);
 	}
 
 	@FXML
