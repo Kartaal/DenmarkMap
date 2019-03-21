@@ -38,6 +38,10 @@ public class MapCanvas extends Canvas {
         repaint();
     }
 
+    public double getDeterminant(){
+        return transform.determinant();
+    }
+
     public void repaint() {
         //to clearly communicate that the fillRect should fill the entire screen
         gc.setTransform(new Affine());
@@ -51,7 +55,7 @@ public class MapCanvas extends Canvas {
         gc.fillRect(0, 0, getWidth(), getHeight());
         gc.setTransform(transform);
         //linewidth equals 1 px wide relative to the screen no matter zoom level
-        gc.setLineWidth(1/Math.sqrt(Math.abs(transform.determinant())));
+        gc.setLineWidth(1/Math.sqrt(Math.abs(getDeterminant())));
         //
         gc.setFillRule(FillRule.EVEN_ODD);
 

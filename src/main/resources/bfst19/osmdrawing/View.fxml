@@ -18,6 +18,7 @@
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
+<?import javafx.scene.text.Text?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.shape.*?>
 <Scene xmlns="http://javafx.com/javafx"
@@ -27,64 +28,64 @@
        onKeyPressed="#onKeyPressed"
 >
     <root>
-        <GridPane fx:id="gridPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" hgap="0" vgap="0" >
+        <BorderPane fx:id="gridPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" >
+            <center>
+                <StackPane>
+                    <BorderPane fx:id="borderpane1" StackPane.alignment="CENTER" >
+                        <top>
+                            <ToolBar fx:id="toolbar" StackPane.alignment="TOP_LEFT">
+                                <items>
+                                    <Region styleClass="spacer" />
+                                    <HBox styleClass="segmented-button-bar" alignment="TOP_CENTER" >
+                                        <Button fx:id="routes" text="Routes" styleClass="first" />
+                                        <Button fx:id="water"  text="Water" />
+                                        <Button fx:id="buildings"  text="Buildings" />
+                                        <Button fx:id="noColors"  text="No colors " />
+                                        <Button fx:id="colors"  text="Colors" styleClass="last" />
 
-            <columnConstraints>
-                <ColumnConstraints percentWidth="70"/>
-                <ColumnConstraints percentWidth="30" />
-            </columnConstraints>
-            <rowConstraints>
-                <RowConstraints percentHeight="10"/>
-                <RowConstraints percentHeight="90"/>
-            </rowConstraints>
+                                    </HBox>
+                                </items>
+                            </ToolBar>
+                        </top>
 
-            <ToolBar fx:id="borderpane3" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                <items>
-                    <Region styleClass="spacer" />
-                    <HBox styleClass="segmented-button-bar">
-                        <Button fx:id="routes" text="Routes" styleClass="first" />
-                        <Button fx:id="water"  text="Water" />
-                        <Button fx:id="buildings"  text="Buildings" />
-                        <Button fx:id="noColors"  text="No colors " />
-                        <Button fx:id="colors"  text="Colors" styleClass="last" />
+                        <center>
+                            <MapCanvas fx:id="mapCanvas" width="${borderpane1.width}" height="${borderpane1.height}"
+                                       onScroll="#onScroll"
+                                       onMousePressed="#onMousePressed"
+                                       onMouseDragged="#onMouseDragged"
+                            />
+                            <HBox StackPane.alignment="TOP_CENTER" alignment="TOP_LEFT">
+                                <ListView fx:id="listView" />
 
-                        <Pane fx:id="scalebar" maxHeight="-Infinity" maxWidth="20" minHeight="-Infinity" minWidth="20" prefHeight="86.0" prefWidth="99.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" >
+                                <TextField  fx:id="textField"  />
+                            </HBox>
+
+                        </center>
+
+                        <Pane fx:id="scalebar" BorderPane.alignment="BOTTOM_RIGHT" maxHeight="-Infinity" maxWidth="20" minHeight="-Infinity" minWidth="20" prefHeight="20.0" prefWidth="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" >
 
                             <children>
-                                <Button fx:id="scale" text="100km"/>
-                                <SVGPath fx:id="scalebarLeft"  content="M10,-10 L10,0" layoutX="180.0" layoutY="20.0" stroke="#800400"
+                                <Text fx:id="scaleText" layoutX="140.0" layoutY="15.0" text="100km"/>
+                                <SVGPath fx:id="scalebarLeft"  content="M10,-10 L10,0" layoutX="180.0" layoutY="320.0" stroke="#800400"
                                          strokeWidth="3.0" />
-                                                                          <!-- It is this value   --> <!-- skal bruge atributten onAction="#"-->
-                                <SVGPath fx:id="scalebarMiddle"   content="M10,0 L200,0" layoutX="180.0" layoutY="20.0" stroke="#008002"
+                                <!--   It is this value   -->
+                                <SVGPath fx:id="scalebarMiddle"   content="M10,0 L200,0" layoutX="180.0" layoutY="320.0" stroke="#008002"
                                          strokeWidth="3.0" />
-                                                             <!-- and  this     +this one witch has to be changed in order to make the scalebar longer -->
-                                <SVGPath fx:id="scalebarRight" content="M200,-10 L200,0" layoutX="180.0" layoutY="20.0" stroke="#001280"
+                                <!-- and  this     +this one witch has to be changed in order to make the scalebar longer -->
+                                <SVGPath fx:id="scalebarRight" content="M200,-10 L200,0" layoutX="180.0" layoutY="320.0" stroke="#001280"
                                          strokeWidth="3.0" />
                             </children>
                         </Pane>
-
-                    </HBox>
-                </items>
-            </ToolBar>
-
-            <BorderPane fx:id="borderpane1" GridPane.columnIndex="0" GridPane.rowIndex="1" >
-                <center>
-                    <MapCanvas fx:id="mapCanvas" width="${borderpane1.width}" height="${borderpane1.height}"
-                               onScroll="#onScroll"
-                               onMousePressed="#onMousePressed"
-                               onMouseDragged="#onMouseDragged"
-                    />
-                </center>
-            </BorderPane>
+                    </BorderPane>
 
 
-            <TextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="textField" />
+
+                </StackPane>
 
 
-            <ListView GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="listView" />
+            </center>
 
-
-        </GridPane>
+        </BorderPane>
 
     </root>
 </Scene>

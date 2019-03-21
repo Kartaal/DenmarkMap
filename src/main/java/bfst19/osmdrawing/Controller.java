@@ -14,13 +14,14 @@ import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 
 //import java.awt.*;
 
 public class Controller {
 	private Model model;
 	double x, y;
-	private double factor,oldfactor,zoomLevel;
+	private double factor,oldDeterminant,zoomLevel;
 
 	//This only means that .fxml can use this field despite visibility
     @FXML
@@ -33,12 +34,15 @@ public class Controller {
 	private SVGPath scalebarMiddle;
 	@FXML
 	private SVGPath scalebarRight;
+	@FXML
+	private Text scaleText;
 
 	public void init(Model model) {
 		//TODO: figure out init methods
 	    this.model = model;
 		mapCanvas.init(model);
-		listView.setItems(model.addresses);
+		//listView.setItems(model.addresses);
+		oldDeterminant=mapCanvas.getDeterminant();
 	}
 
 	@FXML
@@ -61,20 +65,25 @@ public class Controller {
 
 	@FXML
 	private void onScroll(ScrollEvent e) {
+		System.out.println("OldDeterminant: "+ mapCanvas.getDeterminant());
+		double determinant= mapCanvas.getDeterminant();
         //because scrollwheels/touchpads scroll by moving up and down the zoomfactor as calculated based on the distance moved by the "scroll"
         //The pow part is just about trial and error to find a good amount of zoom per "scroll"
-		oldfactor = factor;
+
         factor = Math.pow(1.01, e.getDeltaY());
-		System.out.println("Factor: "+factor);
-        zoomLevel = zoomLevel +oldfactor + factor ;
 		mapCanvas.zoom(factor, e.getX(), e.getY());
-		if ( zoomLevel<=10){
-			System.out.println("Zoom: "+ zoomLevel);
-			scalebarMiddle.setContent("M10,0 L100,0");
-			scalebarRight.setContent("M100,-10 L100,0");
+
+
+		if ( (determinant - oldDeterminant)>0){
+			oldDeterminant= determinant;
+			System.out.println("getDeterminant: "+ mapCanvas.getDeterminant());
+			scaleText.setText("100km");
+			//scalebarMiddle.setContent("M10,0 L100,0");
+			//scalebarRight.setContent("M100,-10 L100,0");
 		}else {
-			scalebarMiddle.setContent("M10,0 L400,0");
-			scalebarRight.setContent("M400,-10 L400,0");
+			scaleText.setText("10km");
+			//scalebarMiddle.setContent("M10,0 L400,0");
+			//scalebarRight.setContent("M400,-10 L400,0");
 		}
 
 	}
