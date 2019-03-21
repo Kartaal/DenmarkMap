@@ -38,9 +38,11 @@
                                onMouseDragged="#onMouseDragged"
                     />
                     <HBox StackPane.alignment="TOP_CENTER" alignment="TOP_LEFT">
-                        <ListView fx:id="listView" />
+                        <HBox alignment="TOP_LEFT">
+                            <Button text="sup"></Button>
+                            <TextField  fx:id="textField"  />
+                        </HBox>
 
-                        <TextField  fx:id="textField"  />
                     </HBox>
                     <Pane fx:id="scalebar" BorderPane.alignment="BOTTOM_RIGHT" maxHeight="-Infinity" maxWidth="20" minHeight="-Infinity" minWidth="20" prefHeight="20.0" prefWidth="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" >
 
