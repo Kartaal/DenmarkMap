@@ -3,15 +3,14 @@ package bfst19.osmdrawing.KDTree;
 import bfst19.osmdrawing.OSMWay;
 import bfst19.osmdrawing.WayType;
 
-public class Edge { // TODO: add necessary information here
-
+public class KDNode { // TODO: add necessary fields here
 
     private final OSMWay path; // TODO: OSMRelation instead?
     private final String roadname;
     private final WayType wayType;
     private final float centerX, centerY;
 
-    public Edge(OSMWay path, String roadname, WayType wayType) {
+    public KDNode(OSMWay path, String roadname, WayType wayType) {
         this.path = path;
         if (wayType == WayType.COASTLINE){ //Coastlines dont have a name
             this.roadname = null;
@@ -38,8 +37,7 @@ public class Edge { // TODO: add necessary information here
         this.centerY = (yMin + yMax) / 2;
     }
 
-
-    //Getters
+    // Getter methods
 
     public OSMWay getPath() {
         return path;

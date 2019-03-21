@@ -6,7 +6,6 @@ public class UnexpectedSizeException extends Throwable {
 
     public UnexpectedSizeException(String s) {
         this.message = s;
-
     }
 
     @Override

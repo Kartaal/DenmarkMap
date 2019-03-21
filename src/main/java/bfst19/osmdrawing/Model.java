@@ -14,7 +14,7 @@ import static javax.xml.stream.XMLStreamConstants.*;
 
 public class Model {
 	float lonfactor = 1.0f;
-	Map<WayType,List<Drawable>> ways = new EnumMap<>(WayType.class);
+	Map<WayType, List<Drawable>> ways = new EnumMap<>(WayType.class);
 	private boolean colorBlindEnabled;
 
 	{
@@ -244,7 +244,7 @@ public class Model {
 								address[1] = String.valueOf(node.getLat());
 								address[2] = String.valueOf(node.getLon());
 								address[3] = houseNumber;
-								putAddressNodes(addressNodes,streetName,address);
+								putAddressNodes(addressNodes, streetName, address);
 								isAddress = false;
 							}
 							way = null;
@@ -257,7 +257,7 @@ public class Model {
 								address[1] = String.valueOf(lat);
 								address[2] = String.valueOf(lon);
 								address[3] = houseNumber;
-								putAddressNodes(addressNodes,streetName,address);
+								putAddressNodes(addressNodes, streetName, address);
 								isAddress = false;
 							}
 							break;
@@ -306,7 +306,7 @@ public class Model {
 				case SPACE: break;
 				case START_DOCUMENT: break;
 				case END_DOCUMENT:
-					File parseCheck = new File("data/"+getCountry());
+					File parseCheck = new File("data/" + getCountry());
 					if(!parseCheck.isDirectory()) {
 						makeCityDirectories(cityBoundaries);
 						makeStreetFiles(addressNodes, cityBoundaries);
@@ -406,7 +406,7 @@ public class Model {
 			for(int i = 0; i < n ; i++) {
 				String wayType = in.readLine();
 				String wayCase = in.readLine();
-				
+
 				while((wayCase != null) && !(wayCase.startsWith("$"))){
 					String[] tokens = wayCase.split(" ");
 					wayTypeCases.add(new String[]{wayType,tokens[0],tokens[1]});
