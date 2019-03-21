@@ -13,6 +13,7 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
+import javafx.scene.layout.Pane;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
@@ -37,17 +38,22 @@ public class Controller implements Initializable{
 	private SVGPath scalebarRight;
 	@FXML
 	private Text scaleText;
-
     @FXML
     private Button hamburger;
+    @FXML
+    private Button closeListPane;
+    @FXML
+    private Pane listPane;
 
 
-	public void init(Model model) {
+
+    public void init(Model model) {
 		//TODO: figure out init methods
 	    this.model = model;
 		mapCanvas.init(model);
 		listView.setItems(model.addresses);
 		oldDeterminant=mapCanvas.getDeterminant();
+		listPane.setVisible(false);
 
 	}
 
@@ -55,12 +61,17 @@ public class Controller implements Initializable{
     public void initialize(URL location, ResourceBundle resources) {
         // TODO Auto-generated method stub
         hamburger.setOnAction(this::getMenu);
+        closeListPane.setOnAction(this::closeListPane);
     }
 
     private void getMenu(ActionEvent event) {
         System.out.println(hamburger+"was clikced");
     }
 
+    private void closeListPane(ActionEvent event) {
+        listPane.setVisible(false);
+
+    }
 
 
     @FXML
@@ -75,6 +86,8 @@ public class Controller implements Initializable{
 				break;
 			case ENTER:
 				model.parseSearch(textField.getText());
+                listPane.setVisible(true);
+
 				textField.clear();
 				break;
 

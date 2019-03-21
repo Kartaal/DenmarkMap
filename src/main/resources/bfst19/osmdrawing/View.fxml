@@ -81,7 +81,13 @@
                                     </Button>
                                     <TextField StackPane.alignment="TOP_LEFT" fx:id="textField"  />
                                 </HBox>
-                                <ListView StackPane.alignment="TOP_LEFT" fx:id="listView"  minHeight="200" maxHeight="500" maxWidth="150" />
+                                <Pane fx:id="listPane">
+                                    <ListView StackPane.alignment="TOP_LEFT" fx:id="listView"  minHeight="200" maxHeight="500" maxWidth="150" />
+                                    <Button fx:id="closeListPane" text="close" layoutX="100" layoutY="350">
+
+                                    </Button>
+                                </Pane>
+
                             </VBox>
 
                         </HBox>
