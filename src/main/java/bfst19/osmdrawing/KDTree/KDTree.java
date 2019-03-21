@@ -17,7 +17,7 @@ public class KDTree {
 		 return size == null;
 	 }
 
-     public KDTree(ArrayList<KDNode> nodes, double xLeft, double yBot, double xRight, double yTop, Dimension dimension){
+     public KDTree(ArrayList<KDNode> nodes, double xLeft, double yBot, double xRight, double yTop){
 
         try {
 
@@ -25,17 +25,15 @@ public class KDTree {
         yMin = yBot;
         xMax = xRight;
         yMax = yTop;
-        this.dimension = dimension;
         int size = nodes.size();
         int addedSize = 0;
-
         ArrayList<KDNode> low = new ArrayList<>();
         ArrayList<KDNode> high = new ArrayList<>();
         splitNode = nodes.get(size / 2);
 
         if (yMax - yMin < xMax - xMin) {
-            // x is greater
-            dimension = Dimension.X;
+            // x is greater. This depends on the program being in a widescreen format when opening. TODO: change later
+            this.dimension = Dimension.X;
             for (KDNode node : nodes) {
                 // if node centerX is lower than splitNode centerX then add to low, else high.
                 // If they are same, then its split node
@@ -53,7 +51,7 @@ public class KDTree {
             }
         } else {
             // y must be same or greater
-			dimension = Dimension.Y;
+			this.dimension = Dimension.Y;
             for (KDNode node : nodes) {
                 // if node centerY is lower than splitNode centerY then add to low, else high.
                 // If they are same, then its split node
@@ -87,13 +85,13 @@ public class KDTree {
 
         createBoundsArrays();
 
-        flipDimension();
+        //flipDimension();
 
 		if(!low.isEmpty) {
-			LOW = new KDTree(low, lowbounds[0], lowBounds[1], lowBounds[2], lowBounds[3], dimension);
+			LOW = new KDTree(low, lowbounds[0], lowBounds[1], lowBounds[2], lowBounds[3]);
 		}
 		if(!high.isEmpty) {
-			HIGH = new KDTree(high, highBounds[0], highBounds[1], highBounds[2], highBounds[3], dimension);
+			HIGH = new KDTree(high, highBounds[0], highBounds[1], highBounds[2], highBounds[3]);
 		}
 
         } catch (UnexpectedSizeException e) {
@@ -106,7 +104,7 @@ public class KDTree {
     }
 
     private void createBounds() {
-        if (dimension == Dimension.X){
+        if (this.dimension == Dimension.X){
 			lowbounds[0] = xMin;
 			lowbounds[1] = yMin;
 			lowbounds[2] = splitNode.getCenterX();
@@ -130,7 +128,7 @@ public class KDTree {
     }
 
     private void flipDimension() {
-        if(dimension == Dimension.X) dimension = Dimension.Y;
-        else dimension = Dimension.X;
+        if(this.dimension == Dimension.X) this.dimension = Dimension.Y;
+        else this.dimension = Dimension.X;
     }
 }
