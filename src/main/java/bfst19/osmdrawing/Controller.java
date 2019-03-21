@@ -2,6 +2,7 @@ package bfst19.osmdrawing;
 
 import javafx.collections.ObservableArray;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -18,7 +19,7 @@ import javafx.scene.text.Text;
 
 //import java.awt.*;
 
-public class Controller {
+public class Controller implements Initializable{
 	private Model model;
 	double x, y;
 	private double factor,oldDeterminant,zoomLevel;
@@ -37,15 +38,32 @@ public class Controller {
 	@FXML
 	private Text scaleText;
 
+    @FXML
+    private Button hamburger;
+
+
 	public void init(Model model) {
 		//TODO: figure out init methods
 	    this.model = model;
 		mapCanvas.init(model);
 		//listView.setItems(model.addresses);
 		oldDeterminant=mapCanvas.getDeterminant();
+
 	}
 
-	@FXML
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        // TODO Auto-generated method stub
+        hamburger.setOnAction(this::getMenu);
+    }
+
+    private void getMenu(ActionEvent event) {
+        System.out.println(hamburger+"was clikced");
+    }
+
+
+
+    @FXML
 	private void onKeyPressed(KeyEvent e) {
 		switch (e.getCode()) {//e.getcode() gets the specific keycode for the pressed key
 		    case T: //toggle so that the canvas only draws roads or similar draws everything by default
