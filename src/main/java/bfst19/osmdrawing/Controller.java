@@ -40,6 +40,8 @@ public class Controller implements Initializable{
     @FXML
     private Button hamburger;
     @FXML
+    private Button ruteInstructions;
+    @FXML
     private Button closeListPane;
     @FXML
     private Pane listPane;
@@ -49,6 +51,10 @@ public class Controller implements Initializable{
     private Pane togglePane;
     @FXML
     private ToggleButton toggleColorBlindMode;
+    @FXML
+    private Pane rutePane;
+    @FXML
+    private Button closeRutePane;
 
 
     public void init(Model model) {
@@ -59,6 +65,7 @@ public class Controller implements Initializable{
 		oldDeterminant=mapCanvas.getDeterminant();
 		listPane.setVisible(false);
         togglePane.setVisible(false);
+        rutePane.setVisible(false);
 
 	}
 
@@ -68,7 +75,9 @@ public class Controller implements Initializable{
         hamburger.setOnAction(this::getMenu);
         closeListPane.setOnAction(this::closeListPane);
         closeTogglePane.setOnAction(this::closeTogglePane);
+        closeRutePane.setOnAction(this::closeRutePane);
         toggleColorBlindMode.setOnAction(this::toggleColorBlindMode);
+        ruteInstructions.setOnAction(this::openRutePane);
     }
 
     private void getMenu(ActionEvent event) {
@@ -79,9 +88,15 @@ public class Controller implements Initializable{
         listPane.setVisible(false);
 
     }
-
     private void closeTogglePane(ActionEvent event) {
         togglePane.setVisible(false);
+    }
+
+    private void closeRutePane(ActionEvent event) {
+        rutePane.setVisible(false);
+    }
+    private void openRutePane(ActionEvent event) {
+        rutePane.setVisible(true);
     }
 
     private void toggleColorBlindMode(ActionEvent event) {

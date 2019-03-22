@@ -38,18 +38,19 @@
         <BorderPane fx:id="borderpane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" >
             <center>
                 <StackPane fx:id="stackpane">
-
-                        <MapCanvas fx:id="mapCanvas" width="${stackpane.width}" height="${stackpane.height}"
+                    <!-- Map -->
+                    <MapCanvas fx:id="mapCanvas" width="${stackpane.width}" height="${stackpane.height}"
                                    onScroll="#onScroll"
                                    onMousePressed="#onMousePressed"
                                    onMouseDragged="#onMouseDragged"
-                        />
+                     />
 
-
-                    <HBox fx:id="listPaneHBox" StackPane.alignment="TOP_LEFT" maxWidth="250" maxHeight="30">
+                    <!--Start TextFeild, hamburger menu and list of addresses  -->
+                    <HBox fx:id="listPaneHBox" StackPane.alignment="TOP_LEFT" maxWidth="350" maxHeight="30">
                         <HBox alignment="TOP_LEFT"  maxWidth="${listPaneHBox.width}">
                             <VBox>
                                 <HBox>
+                                    <!-- Hamburger menu -->
                                     <Button fx:id ="hamburger">
                                         <graphic>
                                             <VBox spacing="2">
@@ -64,38 +65,70 @@
                                         </graphic>
 
                                     </Button>
-                                    <TextField StackPane.alignment="TOP_LEFT" fx:id="textField" minWidth="210" />
+                                    <TextField StackPane.alignment="TOP_LEFT" fx:id="textField" minWidth="310" />
                                 </HBox>
+                                <!-- List of addresses -->
                                 <Pane fx:id="listPane">
-                                    <ListView StackPane.alignment="TOP_LEFT" fx:id="listView"  maxWidth="${listPaneHBox.width}"   />
-                                    <Button fx:id="closeListPane" text="close" layoutX="200" layoutY="350">
+                                    <ListView StackPane.alignment="TOP_LEFT" fx:id="listView"  prefWidth="${listPaneHBox.width}"   />
+                                    <Pane  layoutY="${listPane.width}" prefWidth="${listPane.width}">
+                                        <HBox spacing="40" prefWidth="${listPaneHBox.width}" layoutY="20">
+                                            <padding><Insets right="25" left="25"/></padding>
+                                            <Button fx:id="add" text="tilføj" ></Button>
+                                            <Button fx:id="ruteInstructions" text="rutevejledning"></Button>
+                                            <Button fx:id="closeListPane" text="close"></Button>
+                                        </HBox>
 
-                                    </Button>
+                                    </Pane>
+
                                 </Pane>
 
                             </VBox>
 
                         </HBox>
                     </HBox>
+                    <!--End TextFeild, hamburger menu and list of addresses  -->
 
-                    <Pane fx:id="togglePane" maxWidth="${listPaneHBox.width}" style="-fx-background-color: white;" StackPane.alignment="TOP_LEFT" maxHeight="380" >
+                    <!--Start Rute NOTE: change this window and the toggle menu follows-->
+                    <Pane fx:id="rutePane" maxWidth="${listPaneHBox.width}" style="-fx-background-color: white;" StackPane.alignment="TOP_LEFT" maxHeight="450" >
                         <HBox>
                             <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
+                            <VBox>
+                                <Label text="Rute  " />
+                                <Label text="Til:  " />
+                                <Label text="Fra:  " />
 
+                                <VBox prefWidth="${listPaneHBox.width}">
+                                    <padding><Insets top="25"/></padding>
+                                    <Label text="500m:         til højre" />
+                                    <Label text="500m:         til venstre" />
+                                </VBox>
+                            </VBox>
+
+
+                        </HBox>
+                        <Button fx:id="closeRutePane" text="close" layoutX="300" layoutY="420">
+                        </Button>
+                    </Pane>
+                    <!-- End Rute-->
+
+                    <!--Start Hamburger menu contens/ toggle menu -->
+                    <Pane fx:id="togglePane" maxWidth="${listPaneHBox.width}" style="-fx-background-color: white;" StackPane.alignment="TOP_LEFT" maxHeight="${rutePane.maxHeight}" >
+                        <HBox>
+                            <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
                             <Label text="Colorblind mode: " />
                             <ToggleButton fx:id="toggleColorBlindMode"></ToggleButton>
                         </HBox>
-
-
-                        <Button fx:id="closeTogglePane" text="close" layoutX="200" layoutY="350">
-
+                        <Button fx:id="closeTogglePane" text="close" layoutX="${closeRutePane.layoutX}" layoutY="${closeRutePane.layoutY}">
                         </Button>
                     </Pane>
+                    <!-- End Hamburger menu contens/ toggle menu -->
+
 
                 </StackPane>
 
             </center>
             <bottom >
+                <!--Start  Scalebar -->
                 <Pane fx:id="scalebar" BorderPane.alignment="BOTTOM_RIGHT" style="-fx-background-color: white;" maxHeight="40" maxWidth="40" minHeight="-Infinity" minWidth="350" prefHeight="20.0" prefWidth="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" layoutX="180.0" layoutY="350.0" >
 
                     <children >
@@ -110,6 +143,7 @@
                                  strokeWidth="3.0" />
                     </children>
                 </Pane>
+                <!--End Scalebar  -->
             </bottom>
         </BorderPane>
     </root>
