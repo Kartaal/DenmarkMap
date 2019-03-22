@@ -77,13 +77,9 @@
                                             <Button fx:id="ruteInstructions" text="rutevejledning"></Button>
                                             <Button fx:id="closeListPane" text="close"></Button>
                                         </HBox>
-
                                     </Pane>
-
                                 </Pane>
-
                             </VBox>
-
                         </HBox>
                     </HBox>
                     <!--End TextFeild, hamburger menu and list of addresses  -->
@@ -96,6 +92,11 @@
                                 <Label text="Rute  " />
                                 <Label fx:id="to" text="Til:  " />
                                 <Label fx:id="from" text="Fra:  " />
+                                <VBox>
+                                    <padding><Insets top="10" bottom="10" /></padding>
+                                    <RadioButton fx:id="carRute"> Bil</RadioButton>
+                                    <RadioButton fx:id="bikeRute"> Cykel</RadioButton>
+                                </VBox>
 
                                 <VBox prefWidth="${listPaneHBox.width}">
                                     <padding><Insets top="25"/></padding>
@@ -103,8 +104,6 @@
                                     <Label text="500m:         til venstre" />
                                 </VBox>
                             </VBox>
-
-
                         </HBox>
                         <Button fx:id="closeRutePane" text="close" layoutX="300" layoutY="420">
                         </Button>

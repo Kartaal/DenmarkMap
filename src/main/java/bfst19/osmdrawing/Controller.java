@@ -32,37 +32,59 @@ public class Controller implements Initializable{
     @FXML
 	private MapCanvas mapCanvas;
 	@FXML
-	private TextField textField;
-	@FXML
 	private ListView listView;
+
+
+	// SVGPath
 	@FXML
 	private SVGPath scalebarMiddle;
 	@FXML
 	private SVGPath scalebarRight;
+
+	//Text + TextField
 	@FXML
 	private Text scaleText;
+	@FXML
+    private Pane listPane;
+    @FXML
+    private TextField textField;
+
+    // Labels
+    @FXML
+    private Label to;
+    @FXML
+    private Label from;
+
+    // Buttons
+    @FXML
+    private Button closeTogglePane;
+    @FXML
+    private Button closeRutePane;
     @FXML
     private Button hamburger;
     @FXML
     private Button ruteInstructions;
     @FXML
     private Button closeListPane;
+
+    // ToggleButtons
     @FXML
-    private Pane listPane;
+    private ToggleButton toggleColorBlindMode;
+
+    //Radio buttons
     @FXML
-    private Button closeTogglePane;
+    private RadioButton carRute;
+    @FXML
+    private RadioButton bikeRute;
+
+
+    // Panes
     @FXML
     private Pane togglePane;
     @FXML
-    private ToggleButton toggleColorBlindMode;
-    @FXML
     private Pane rutePane;
-    @FXML
-    private Button closeRutePane;
-    @FXML
-    private Label to;
-    @FXML
-    private Label from;
+
+
 
 
     public void init(Model model) {
@@ -77,6 +99,8 @@ public class Controller implements Initializable{
         // the initial scale
         setScalebar();
 
+        // update scalebar when the mxxproperty has changed. The lambda expression
+        // sets the method changed from the interface (ChangeListener). mxxProperty() Defines the X coordinate scaling element of the 3x4 matrix.
         mapCanvas.transform.mxxProperty().addListener((observable, oldVal, newVal)->{
             // sets the after mx is changed scale
             setScalebar();
@@ -93,11 +117,14 @@ public class Controller implements Initializable{
         closeRutePane.setOnAction(this::closeRutePane);
         toggleColorBlindMode.setOnAction(this::toggleColorBlindMode);
         ruteInstructions.setOnAction(this::openRutePane);
+        carRute.setOnAction(this::toggleRuteMode);
+        bikeRute.setOnAction(this::toggleRuteMode);
     }
 
     private void getMenu(ActionEvent event) {
         togglePane.setVisible(true);
     }
+
 
     public void setScalebar(){
         double minX = mapCanvas.getModelCoords(0,0).getY();
@@ -123,17 +150,23 @@ public class Controller implements Initializable{
         setToAndFrom(event);
     }
 
-    private void toggleColorBlindMode(ActionEvent event) {
-        model.switchColorScheme();
-    }
-
     private void setToAndFrom(ActionEvent event){
         to.setText("Til: sup" );
         from.setText("Fra: sup");
     }
     private void getSelectedAddresses(ActionEvent event){
+    }
 
+    private void toggleColorBlindMode(ActionEvent event) {
+        model.switchColorScheme();
+    }
 
+    private void toggleRuteMode(ActionEvent event) {
+        if(carRute.isPressed()){
+            bikeRute.setSelected(false);
+        } else if(bikeRute.isPressed()){
+            carRute.setSelected(false);
+        }
     }
 
 
