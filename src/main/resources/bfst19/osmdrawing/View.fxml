@@ -94,8 +94,8 @@
                             <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
                             <VBox>
                                 <Label text="Rute  " />
-                                <Label text="Til:  " />
-                                <Label text="Fra:  " />
+                                <Label fx:id="to" text="Til:  " />
+                                <Label fx:id="from" text="Fra:  " />
 
                                 <VBox prefWidth="${listPaneHBox.width}">
                                     <padding><Insets top="25"/></padding>

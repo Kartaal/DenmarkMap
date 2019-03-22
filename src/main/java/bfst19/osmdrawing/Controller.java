@@ -8,6 +8,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.collections.ObservableList;
@@ -16,6 +17,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
+import javafx.scene.control.MultipleSelectionModel;
 
 //import java.awt.*;
 
@@ -23,6 +25,8 @@ public class Controller implements Initializable{
 	private Model model;
 	double x, y;
 	private double factor,oldDeterminant,zoomLevel;
+	private ArrayList<String> selectedAddresse;
+
 
 	//This only means that .fxml can use this field despite visibility
     @FXML
@@ -55,6 +59,10 @@ public class Controller implements Initializable{
     private Pane rutePane;
     @FXML
     private Button closeRutePane;
+    @FXML
+    private Label to;
+    @FXML
+    private Label from;
 
 
     public void init(Model model) {
@@ -97,11 +105,23 @@ public class Controller implements Initializable{
     }
     private void openRutePane(ActionEvent event) {
         rutePane.setVisible(true);
+        getSelectedAddresses(event);
+        setToAndFrom(event);
     }
 
     private void toggleColorBlindMode(ActionEvent event) {
         model.switchColorScheme();
     }
+
+    private void setToAndFrom(ActionEvent event){
+        to.setText("Til: sup" );
+        from.setText("Fra: sup");
+    }
+    private void getSelectedAddresses(ActionEvent event){
+
+
+    }
+
 
     @FXML
 	private void onKeyPressed(KeyEvent e) {
