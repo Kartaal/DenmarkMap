@@ -74,6 +74,13 @@ public class Controller implements Initializable{
 		listPane.setVisible(false);
         togglePane.setVisible(false);
         rutePane.setVisible(false);
+        // the initial scale
+        setScalebar();
+
+        mapCanvas.transform.mxxProperty().addListener((observable, oldVal, newVal)->{
+            // sets the after mx is changed scale
+            setScalebar();
+        });
 
 	}
 
@@ -90,6 +97,13 @@ public class Controller implements Initializable{
 
     private void getMenu(ActionEvent event) {
         togglePane.setVisible(true);
+    }
+
+    public void setScalebar(){
+        double minX = mapCanvas.getModelCoords(0,0).getY();
+        double maxX = mapCanvas.getModelCoords(0,mapCanvas.getHeight()).getY();
+        double y = mapCanvas.getModelCoords(0,0).getX();
+        scaleText.setText(Scalebar.getScaleText(minX,y,maxX,y,mapCanvas.getWidth()));
     }
 
     private void closeListPane(ActionEvent event) {
@@ -145,26 +159,12 @@ public class Controller implements Initializable{
 
 	@FXML
 	private void onScroll(ScrollEvent e) {
-		System.out.println("OldDeterminant: "+ mapCanvas.getDeterminant());
-		double determinant= mapCanvas.getDeterminant();
         //because scrollwheels/touchpads scroll by moving up and down the zoomfactor as calculated based on the distance moved by the "scroll"
         //The pow part is just about trial and error to find a good amount of zoom per "scroll"
 
         factor = Math.pow(1.01, e.getDeltaY());
 		mapCanvas.zoom(factor, e.getX(), e.getY());
 
-
-		if ( (determinant - oldDeterminant)>0){
-			oldDeterminant= determinant;
-			System.out.println("getDeterminant: "+ mapCanvas.getDeterminant());
-			scaleText.setText("100km");
-			//scalebarMiddle.setContent("M10,0 L100,0");
-			//scalebarRight.setContent("M100,-10 L100,0");
-		}else {
-			scaleText.setText("10km");
-			//scalebarMiddle.setContent("M10,0 L400,0");
-			//scalebarRight.setContent("M400,-10 L400,0");
-		}
 
 	}
 

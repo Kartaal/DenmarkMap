@@ -136,4 +136,15 @@ public class MapCanvas extends Canvas {
     public void toggleNonRoads() {
         paintNonRoads = !paintNonRoads;
     }
+
+    /// get mouse coords
+    public Point2D getModelCoords(double x, double y) {
+        try{
+            return transform.inverseTransform(x,y);
+        }catch (NonInvertibleTransformException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
 }

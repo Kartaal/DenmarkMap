@@ -129,17 +129,17 @@
             </center>
             <bottom >
                 <!--Start  Scalebar -->
-                <Pane fx:id="scalebar" BorderPane.alignment="BOTTOM_RIGHT" style="-fx-background-color: white;" maxHeight="40" maxWidth="40" minHeight="-Infinity" minWidth="350" prefHeight="20.0" prefWidth="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" layoutX="180.0" layoutY="350.0" >
+                <Pane fx:id="scalebar" BorderPane.alignment="BOTTOM_RIGHT" style="-fx-background-color: white;" maxHeight="40" maxWidth="80" minHeight="-Infinity" minWidth="350" prefHeight="20.0" prefWidth="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" layoutX="180.0" layoutY="350.0" >
 
                     <children >
-                        <Text fx:id="scaleText" layoutY="10.0"  text="100km"/>
+                        <Text fx:id="scaleText" layoutY="10.0"  text=""/>
                         <SVGPath fx:id="scalebarLeft"  content="M40,-10 L40,0" layoutY="10.0"  stroke="#800400"
                                  strokeWidth="3.0" />
                         <!--   It is this value   -->
-                        <SVGPath fx:id="scalebarMiddle"   content="M40,0 L240,0" layoutY="10.0"  stroke="#008002"
+                        <SVGPath fx:id="scalebarMiddle"   content="M40,0 L100,0" layoutY="10.0"  stroke="#008002"
                                  strokeWidth="3.0" />
                         <!-- and  this     +this one witch has to be changed in order to make the scalebar longer -->
-                        <SVGPath fx:id="scalebarRight" content="M240,-10 L240,0" layoutY="10.0"  stroke="#001280"
+                        <SVGPath fx:id="scalebarRight" content="M100,-10 L100,0" layoutY="10.0"  stroke="#001280"
                                  strokeWidth="3.0" />
                     </children>
                 </Pane>
