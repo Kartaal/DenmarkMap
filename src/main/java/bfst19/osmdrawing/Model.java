@@ -28,7 +28,7 @@ public class Model {
 	String CurrentTypeColorTxt  = "data/TypeColorsNormal.txt";
 	Map<String, WayType> waytypes = new HashMap<>();
 	ArrayList<String[]> wayTypeCases = new ArrayList<>();
-	ObservableList<AddressParser> searchAddressParsers = FXCollections.observableArrayList();
+	ObservableList<Address> searchedAddresses = FXCollections.observableArrayList();
 	ObservableList<String> typeColors = FXCollections.observableArrayList();
 
 	public static class Builder {
@@ -309,27 +309,29 @@ public class Model {
 	}
 
 	private void makeStreetFiles(TreeMap<String,TreeMap<String, ArrayList<Address>>> addresses) {
+		try {
+			BufferedWriter allStreetsInCountryWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("data/"+getCountry()+"/streets.txt")),"UTF-8"));
 		for (Map.Entry<String, TreeMap<String, ArrayList<Address>>> entry : addresses.entrySet()) {
 			String city = entry.getKey();
-			try {
-				BufferedWriter streetsInCityWriter = new BufferedWriter(new FileWriter("data/" + getCountry() + "/" + city + "/streets.txt", true));
+			BufferedWriter streetsInCityWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("data/" + getCountry() + "/" + city + "/streets.txt")),"UTF-8"));
 				for (Map.Entry<String, ArrayList<Address>> street : entry.getValue().entrySet()) {
 					String streetName = street.getKey();
-					System.out.println(streetName);
 					streetsInCityWriter.write(streetName+"\n");
-					BufferedWriter streetFilesWriter = new BufferedWriter(new FileWriter("data/" + getCountry() + "/" + city+"/"+streetName+ ".txt"));
+					allStreetsInCountryWriter.write(streetName+"\n");
+					BufferedWriter streetFilesWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("data/" + getCountry() + "/" + city+"/"+streetName+ ".txt")),"UTF-8"));
 					for (Address address : street.getValue()) {
-						streetFilesWriter.write(address.toString() + "\n");
+						streetFilesWriter.write(address.getId()+" "+address.getLat()+" "+address.getLon()+" "+address.getHousenumber()+ "\n");
 					}
 					streetFilesWriter.close();
 				}
 				streetsInCityWriter.close();
-			} catch (IOException e) {
-				//TODO Handle exception better
-				e.printStackTrace();
-				System.out.println("IOException when making BufferedWriter for streets");
-				System.out.println("likely a mistake relating to / or  \\ in streetnames");
-			}
+
+		}
+		} catch (IOException e) {
+			//TODO Handle exception better
+			e.printStackTrace();
+			System.out.println("IOException when making BufferedWriter for streets");
+			System.out.println("likely a mistake relating to / or  \\ in streetnames");
 		}
 	}
 
@@ -409,7 +411,7 @@ public class Model {
 		try {
 			File countryDir = new File("data/"+country);
 			countryDir.mkdir();
-			BufferedWriter writer = new BufferedWriter(new FileWriter("data/"+getCountry()+"/cities.txt"));
+			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("data/"+getCountry()+"/cities.txt")),"UTF-8"));
 			for(String city :cities){
 				writer.write(city+"\n");
 				File cityDir = new File("data/"+country+"/" + city);
@@ -427,18 +429,18 @@ public class Model {
 	}
 
 	public void putAddress(TreeMap<String, TreeMap<String, ArrayList<Address>>> addresses, Builder b){
-		if(addresses.get(b.city)==null){
-			addresses.put(b.city,new TreeMap<>());
+		if(addresses.get(b.city+" "+b.postcode)==null){
+			addresses.put(b.city+" "+b.postcode,new TreeMap<>());
 		}
-		if(addresses.get(b.city).get(b.streetName)==null){
-			addresses.get(b.city).put(b.streetName,new ArrayList<>());
+		if(addresses.get(b.city+" "+b.postcode).get(b.streetName)==null){
+			addresses.get(b.city+" "+b.postcode).put(b.streetName,new ArrayList<>());
 		}
-		addresses.get(b.city).get(b.streetName).add(b.build());
+		addresses.get(b.city+" "+b.postcode).get(b.streetName).add(b.build());
 		b = new Builder();
 	}
 
 	public void parseSearch(String proposedAddress) {
-		searchAddressParsers.add(AddressParser.parse(proposedAddress));
+		searchedAddresses.add(AddressParser.AddressParser().Parse(proposedAddress,getCountry()));
 	}
 
 
