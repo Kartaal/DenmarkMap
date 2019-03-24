@@ -65,8 +65,8 @@ public class AddressParser {
 
 			if (!(cityMatch[0].equals(""))) {
 				proposedAddress = proposedAddress.replaceAll(cityMatch[0].toLowerCase(), "");
-				b.postcode = cityMatch[2];
 				b.city = cityMatch[1];
+				b.postcode = cityMatch[2];
 			}
 
 			String streetMatch = checkStreet(proposedAddress,country,cityMatch);
@@ -132,10 +132,8 @@ public class AddressParser {
 		if(cityMatch[0].equals("")){
 
 			in = new BufferedReader(new InputStreamReader(new FileInputStream("data/"+country+"/streets.txt"),"UTF-8"));
-			System.out.println("no city");
 		}else{
 			in = new BufferedReader(new InputStreamReader(new FileInputStream("data/" + country + "/" + cityMatch[1] + " " + cityMatch[2] + "/streets.txt"),"UTF-8"));
-			System.out.println(cityMatch[2]+" "+cityMatch[1]);
 		}
 		String line = in.readLine();
 		String mostCompleteMatch = "";
@@ -222,8 +220,8 @@ public class AddressParser {
 
 		while(line != null){
 			String[] tokens = line.split(" ",2);
-			postcodes.add(tokens[1]);
 			cities.add(tokens[0]);
+			postcodes.add(tokens[1]);
 			line = in.readLine();
 		}
 	}
