@@ -1,175 +1,131 @@
 package bfst19.osmdrawing.KDTree;
 
+import bfst19.osmdrawing.BoundingBoxable;
 import bfst19.osmdrawing.Drawable;
-import com.sun.source.tree.Tree;
-import javafx.geometry.Bounds;
+import javafx.geometry.BoundingBox;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class KDTree {
+	KDNode root;
 
+	public KDTree(){
+		root = null;
+	}
 
-
-    enum Dimension {
-        X, Y
-    }
-
-     //Used for later, when making tree structure , recursion :)
-     KDTree HIGH, LOW;
-     private KDNode splitNode;
-     private double xMin, yMin, xMax, yMax;
-     private Dimension dimension;
-     private int size;
-     private double[] highBounds;
-     private double[] lowBounds;
-     private int Treesize;
-     private ArrayList<KDNode> leaf;
-
-
-    public KDTree(ArrayList<KDNode> nodes, double xLeft, double yBot, double xRight, double yTop){
-
-        try {
-
-        xMin = xLeft;
-        yMin = yBot;
-        xMax = xRight;
-        yMax = yTop;
-        this.size = nodes.size();
-        Treesize++;
-        int addedSize = 0;
-        ArrayList<KDNode> low = new ArrayList<>();
-        ArrayList<KDNode> high = new ArrayList<>();
-        leaf = new ArrayList<>();
-        splitNode = nodes.get(size / 2);
-
-        if (yMax - yMin < xMax - xMin) {
-            // x is greater. This depends on the program being in a widescreen format when opening. TODO: change later
-            this.dimension = Dimension.X;
-            for (KDNode node : nodes) {
-                if(nodes.size() > 1000){
-                // if node centerX is lower than splitNode centerX then add to low, else high.
-                // If they are same, then its split node
-                    if (node == splitNode) {
-                        // Go to next node
-                        continue;
-                    }
-                    if (node.getCenterX() < splitNode.getCenterX()) {
-                        low.add(node);
-                        addedSize++;
-                    } else {
-                        high.add(node);
-                        addedSize++;
-                    }
-                } else{
-                    leaf.add(node);
-                }
-            }
-        } else {
-            // y must be same or greater
-			this.dimension = Dimension.Y;
-            for (KDNode node : nodes) {
-                if(nodes.size() > 1000){
-                    // if node centerY is lower than splitNode centerY then add to low, else high.
-                    // If they are same, then its split node
-                    if (node == splitNode) {
-                        // Go to next node
-                        continue;
-                    }
-                    if (node.getCenterY() < splitNode.getCenterY()) {
-                        low.add(node);
-                        addedSize++;
-                    } else {
-                        high.add(node);
-                        addedSize++;
-                    }
-                } else{
-                    leaf.add(node);
-                }
-            }
-        }
-        if (size != addedSize + 1){
-            //makes sure if size is equals to addedSize + 1. The +1 is from the split Node
-            if (size < addedSize + 1){
-                throw new UnexpectedSizeException("Size larger than expected");
-            }
-            if (size > addedSize + 1){
-                throw new UnexpectedSizeException("Size smaller than expected");
-            } else {
-                throw new UnexpectedSizeException("I have no idea what happened, but sizes are not equal");
-            }
-        }
-
-		this.lowBounds = new double[4];
-		this.highBounds = new double[4];
-
-        createBounds();
-
-        //flipDimension();
-
-
-		if(!low.isEmpty()) {
-			LOW = new KDTree(low, lowBounds[0], lowBounds[1], lowBounds[2], lowBounds[3]);
+	public void insert(BoundingBoxable value){
+		if(root == null) {
+			List<BoundingBoxable> list = new ArrayList<>();
+			list.add(value);
+			root = new KDNode(list, value.getCenterX(), false);
+		} else {
+			//recursive insert, third parameter is for splitting dimension
+			// 0 means split is on x-axis, 1 means split is on y-axis
+			root = insert(root, value, false);
 		}
-		if(!high.isEmpty()) {
-			HIGH = new KDTree(high, highBounds[0], highBounds[1], highBounds[2], highBounds[3]);
+	}
+
+	private KDNode insert(KDNode x, BoundingBoxable value, boolean vertical) {
+		//If an empty leaf has been reached, create a new KDNode and return
+		if(x == null) {
+			//Ensure the new node has the correct axis split value
+			float splitValue;
+			if(vertical) {
+				splitValue = value.getCenterY();
+			} else {
+				splitValue = value.getCenterX();
+			}
+			List<BoundingBoxable> list = new ArrayList<>();
+			list.add(value);
+
+			return new KDNode(list, splitValue, vertical);
 		}
 
-        } catch (UnexpectedSizeException e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
-        } catch (Exception e){
-            e.printStackTrace();
-            System.out.println("Something in general went wrong");
-        }
-    }
-
-    private void createBounds() {
-        if (this.dimension == Dimension.X){
-			lowBounds[0] = xMin;
-			lowBounds[1] = yMin;
-			lowBounds[2] = splitNode.getCenterX();
-			lowBounds[3] = yMax;
-
-			highBounds[0] = splitNode.getCenterX();
-			highBounds[1] = yMin;
-			highBounds[2] = xMax;
-			highBounds[3] = yMax;
-		} else { // dimension must be y
-			lowBounds[0] = xMin;
-			lowBounds[1] = splitNode.getCenterY();
-			lowBounds[2] = xMax;
-			lowBounds[3] = yMax;
-
-			highBounds[0] = xMin;
-			highBounds[1] = yMin;
-	 		highBounds[2] = xMax;
-			highBounds[3] = splitNode.getCenterY();
+		//TODO improve on this, KDNode.getSplit gets the correct dimensional split value
+		//Split on x
+		if(!vertical) {
+			//if current BoundingBoxable has a centerX less than current KDNode
+			// recursive insert the BoundingBoxable to left child
+			//Otherwise, insert BoundingBoxable to right child
+			if(value.getCenterX() <= x.getSplit()) {
+				x.nodeL = insert(x.nodeL, value, false);
+			} else {
+				x.nodeR = insert(x.nodeR, value, false);
+			}
+		} else {
+			if(value.getCenterY() <= x.getSplit()) {
+				x.nodeL = insert(x.nodeL, value, true);
+			} else {
+				x.nodeR = insert(x.nodeR, value, true);
+			}
 		}
-    }
 
-    public Iterable<Drawable> rangeQuery(Bounds bbox) {
-        List<Drawable> returnElements = new ArrayList<>();
-        rangeQuery(bbox, returnElements);
-        return returnElements;
-    }
+		return x;
+	}
 
-    private void rangeQuery(Bounds bbox, List<Drawable> returnElements) {
-        if(bbox.contains(KDNode.))
+	public Iterable<Drawable> rangeQuery(BoundingBox bbox) {
+		List<Drawable> returnElements = new ArrayList<>();
+		rangeQuery(bbox, root, returnElements);
+		return returnElements;
+	}
 
-    }
+	private List<Drawable> rangeQuery(BoundingBox bb, KDNode node, List<Drawable> returnElements) {
+		/*if(bbox.contains(KDNode.))*/
+		//Ugly casting to Drawable...
+		if(bb.contains(root.getBB())) {
+			returnElements.add((Drawable) root);
+		}
+		ArrayList<Drawable> subElements = new ArrayList<>();
+		subElements.addAll(rangeQuery(bb, node.nodeL, returnElements));
+		subElements.addAll(rangeQuery(bb, node.nodeR, returnElements));
 
-    public int getTreesize() {
-        return Treesize;
-    }
+		return subElements;
+	}
 
 
-    public boolean isEmpty(){
-        return size == 0;
-    }
+	public class KDNode {
+		private List<BoundingBoxable> values = new ArrayList<>();
+		public float split;
+		public boolean vertical;
+		public KDNode nodeL; //child
+		public KDNode nodeR; //child
+		private final int listSize = 100;
 
-    private void flipDimension() {
-        if(this.dimension == Dimension.X) this.dimension = Dimension.Y;
-        else this.dimension = Dimension.X;
-    }
+		public KDNode(List<BoundingBoxable> value, float split, boolean vertical) {
+			values.addAll(value);
+			this.split = split;
+			this.vertical = vertical;
+			nodeL = nodeR = null;
+		}
+
+		public float getSplit() {
+			return split;
+		}
+
+
+		//Returns a bounds object representing the bounding box of all the elements in the node
+		public BoundingBox getBB() {
+
+			//Duplicate code from MultiPolyline
+			//Arbitrary values that should exceed the coords on Denmark
+			double minX = 100, maxX = 0, minY = 100, maxY = 0;
+			for(BoundingBoxable valueBB : values) {
+				BoundingBox lineBB = valueBB.getBB();
+				if (lineBB.getMinX() < minX) {
+					minX = lineBB.getMinX();
+				}
+				if (lineBB.getMaxX() > maxX) {
+					maxX = lineBB.getMaxX();
+				}
+				if (lineBB.getMinY() < minY) {
+					minY = lineBB.getMinY();
+				}
+				if (lineBB.getMaxY() > maxY) {
+					maxY = lineBB.getMaxY();
+				}
+			}
+
+			return new BoundingBox(minX, minY, maxX-minX, maxY-minY);
+		}
+	}
 }

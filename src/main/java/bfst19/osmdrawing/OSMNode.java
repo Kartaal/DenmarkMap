@@ -2,6 +2,7 @@ package bfst19.osmdrawing;
 
 import java.util.function.LongSupplier;
 
+//TODO make BoundingBoxable for addresses and such on map? Handled through addressParsing?
 public class OSMNode implements LongSupplier {
 	private float lat, lon;
 	private long id;

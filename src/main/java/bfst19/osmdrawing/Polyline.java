@@ -1,5 +1,6 @@
 package bfst19.osmdrawing;
 
+import javafx.geometry.BoundingBox;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.io.Serializable;
@@ -9,6 +10,7 @@ public class Polyline implements Drawable, Serializable, BoundingBoxable {
 	// it can serialize objects of this type to be saved in .obj files
 	private float[] coord;
 	private final float centerX, centerY;
+	private BoundingBox bb;
 
 	public float getCenterX() {
 		return centerX;
@@ -18,6 +20,10 @@ public class Polyline implements Drawable, Serializable, BoundingBoxable {
 		return centerY;
 	}
 
+	@Override
+	public BoundingBox getBB() {
+		return bb;
+	}
 
 
 	public Polyline(OSMWay way) {
@@ -44,6 +50,8 @@ public class Polyline implements Drawable, Serializable, BoundingBoxable {
 
 		this.centerX = (xMin + xMax) / 2;
 		this.centerY = (yMin + yMax) / 2;
+
+		bb = new BoundingBox((double) xMin, (double) yMin, (xMax-xMin), (double) (yMax-yMin));
 	}
 
 	public void stroke(GraphicsContext gc) {
