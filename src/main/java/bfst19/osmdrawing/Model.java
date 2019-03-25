@@ -1,9 +1,10 @@
 package bfst19.osmdrawing;
 
 import bfst19.osmdrawing.KDTree.KDNode;
+import bfst19.osmdrawing.KDTree.KDTree;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import org.w3c.dom.NodeList;
+import javafx.geometry.Bounds;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -38,8 +39,10 @@ public class Model {
 	ArrayList<String[]> wayTypeCases = new ArrayList<>();
 	ObservableList<Address> searchAddresses = FXCollections.observableArrayList();
 	ObservableList<String> typeColors = FXCollections.observableArrayList();
-	public Iterable<Drawable> getWaysOfType(WayType type) {
-		return ways.get(type);
+	Map<WayType, KDTree> kdTreeMap;
+
+	public Iterable<Drawable> getWaysOfType(WayType type, Bounds bbox) {
+		return kdTreeMap.get(type).rangeQuery(bbox);
 	}
 
 	public void addObserver(Runnable observer) {
@@ -246,7 +249,7 @@ public class Model {
 								//ways.get(type).add(new Polyline(way));
 								if (way != null){
 								Polyline addingLine = new Polyline(way);
-								KDNode node = new KDNode( addingLine, "lol", type);
+								KDNode node = new KDNode(addingLine);
 								KDNodeList.add(node);}
 							}
 

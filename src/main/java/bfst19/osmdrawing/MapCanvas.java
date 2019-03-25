@@ -1,18 +1,13 @@
 package bfst19.osmdrawing;
 
-import bfst19.osmdrawing.KDTree.KDNode;
 import bfst19.osmdrawing.KDTree.KDTree;
-import javafx.fxml.FXML;
-import javafx.geometry.Point2D;
+import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.FillRule;
 import javafx.scene.transform.Affine;
-import javafx.scene.transform.NonInvertibleTransformException;
 
-import java.awt.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -54,7 +49,7 @@ public class MapCanvas extends Canvas {
         gc.setTransform(new Affine());
         //checks if the file contains coastlines or not, if not set background color to white
         // otherwise set background color to blue
-        if (model.getWaysOfType(WayType.COASTLINE).iterator().hasNext()) {
+        if (model.getWaysOfType(WayType.COASTLINE, getExtentInModel()).iterator().hasNext()) {
             gc.setFill(getColor(WayType.WATER));
         } else {
             gc.setFill(Color.WHITE);
@@ -69,9 +64,9 @@ public class MapCanvas extends Canvas {
 
         //color for landmasses with nothing drawn on top
         gc.setFill(Color.WHITE);
-        for (Drawable way : model.getWaysOfType(WayType.COASTLINE)) way.fill(gc);
+        for (Drawable way : model.getWaysOfType(WayType.COASTLINE, getExtentInModel())) way.fill(gc);
         gc.setFill(getColor(WayType.WATER));
-        for (Drawable way : model.getWaysOfType(WayType.WATER)) way.fill(gc);
+        for (Drawable way : model.getWaysOfType(WayType.WATER, getExtentInModel())) way.fill(gc);
 
 
         gc.setFillRule(null);
@@ -83,7 +78,7 @@ public class MapCanvas extends Canvas {
                     if(type == WayType.COASTLINE) {
                     }else{
                         gc.setFill(getColor(type));
-                        for (Drawable way : model.getWaysOfType(type)) way.fill(gc);
+                        for (Drawable way : model.getWaysOfType(type, getExtentInModel())) way.fill(gc);
 
                     }
                 } else if (type.isRoadOrSimilar() && type.levelOfDetail()<detailLevel) {
@@ -93,7 +88,7 @@ public class MapCanvas extends Canvas {
 
                     } else {
                         gc.setStroke(getColor(type));
-                        for (Drawable way : model.getWaysOfType(type)) way.stroke(gc);
+                        for (Drawable way : model.getWaysOfType(type, getExtentInModel())) way.stroke(gc);
 
                     }
                 }
@@ -107,7 +102,7 @@ public class MapCanvas extends Canvas {
                     // so it's better to exclude it.
                     }else{
                         gc.setStroke(getColor(type));
-                        for (Drawable way : model.getWaysOfType(type)) way.stroke(gc);
+                        for (Drawable way : model.getWaysOfType(type, getExtentInModel())) way.stroke(gc);
 
 
 
@@ -116,6 +111,11 @@ public class MapCanvas extends Canvas {
                 }
             }
         }
+    }
+
+    private Bounds getExtentInModel(){
+       return this.getBoundsInLocal();
+
     }
 
     private Color getColor(WayType type) { return wayColors.get(type); }

@@ -1,10 +1,16 @@
 package bfst19.osmdrawing.KDTree;
 
+import bfst19.osmdrawing.Drawable;
 import com.sun.source.tree.Tree;
+import javafx.geometry.Bounds;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class KDTree { //When we create this tree somewhere, wrap it in a for-loop to determine tree size.
+public class KDTree {
+
+
+
     enum Dimension {
         X, Y
     }
@@ -18,9 +24,10 @@ public class KDTree { //When we create this tree somewhere, wrap it in a for-loo
      private double[] highBounds;
      private double[] lowBounds;
      private int Treesize;
+     private ArrayList<KDNode> leaf;
 
 
-     public KDTree(ArrayList<KDNode> nodes, double xLeft, double yBot, double xRight, double yTop){
+    public KDTree(ArrayList<KDNode> nodes, double xLeft, double yBot, double xRight, double yTop){
 
         try {
 
@@ -33,42 +40,51 @@ public class KDTree { //When we create this tree somewhere, wrap it in a for-loo
         int addedSize = 0;
         ArrayList<KDNode> low = new ArrayList<>();
         ArrayList<KDNode> high = new ArrayList<>();
+        leaf = new ArrayList<>();
         splitNode = nodes.get(size / 2);
 
         if (yMax - yMin < xMax - xMin) {
             // x is greater. This depends on the program being in a widescreen format when opening. TODO: change later
             this.dimension = Dimension.X;
             for (KDNode node : nodes) {
+                if(nodes.size() > 1000){
                 // if node centerX is lower than splitNode centerX then add to low, else high.
                 // If they are same, then its split node
-                if (node == splitNode) {
-                    // Go to next node
-                    continue;
-                }
-                if (node.getCenterX() < splitNode.getCenterX()) {
-                    low.add(node);
-                    addedSize++;
-                } else {
-                    high.add(node);
-                    addedSize++;
+                    if (node == splitNode) {
+                        // Go to next node
+                        continue;
+                    }
+                    if (node.getCenterX() < splitNode.getCenterX()) {
+                        low.add(node);
+                        addedSize++;
+                    } else {
+                        high.add(node);
+                        addedSize++;
+                    }
+                } else{
+                    leaf.add(node);
                 }
             }
         } else {
             // y must be same or greater
 			this.dimension = Dimension.Y;
             for (KDNode node : nodes) {
-                // if node centerY is lower than splitNode centerY then add to low, else high.
-                // If they are same, then its split node
-                if (node == splitNode) {
-                    // Go to next node
-                    continue;
-                }
-                if (node.getCenterY() < splitNode.getCenterY()) {
-                    low.add(node);
-                    addedSize++;
-                } else {
-                    high.add(node);
-                    addedSize++;
+                if(nodes.size() > 1000){
+                    // if node centerY is lower than splitNode centerY then add to low, else high.
+                    // If they are same, then its split node
+                    if (node == splitNode) {
+                        // Go to next node
+                        continue;
+                    }
+                    if (node.getCenterY() < splitNode.getCenterY()) {
+                        low.add(node);
+                        addedSize++;
+                    } else {
+                        high.add(node);
+                        addedSize++;
+                    }
+                } else{
+                    leaf.add(node);
                 }
             }
         }
@@ -91,13 +107,13 @@ public class KDTree { //When we create this tree somewhere, wrap it in a for-loo
 
         //flipDimension();
 
-        //while(getTreesize() <= 1000){ // Tree Size
+
 		if(!low.isEmpty()) {
 			LOW = new KDTree(low, lowBounds[0], lowBounds[1], lowBounds[2], lowBounds[3]);
 		}
 		if(!high.isEmpty()) {
 			HIGH = new KDTree(high, highBounds[0], highBounds[1], highBounds[2], highBounds[3]);
-		}//}
+		}
 
         } catch (UnexpectedSizeException e) {
             e.printStackTrace();
@@ -132,6 +148,16 @@ public class KDTree { //When we create this tree somewhere, wrap it in a for-loo
 		}
     }
 
+    public Iterable<Drawable> rangeQuery(Bounds bbox) {
+        List<Drawable> returnElements = new ArrayList<>();
+        rangeQuery(bbox, returnElements);
+        return returnElements;
+    }
+
+    private void rangeQuery(Bounds bbox, List<Drawable> returnElements) {
+        if(bbox.contains(KDNode.))
+
+    }
 
     public int getTreesize() {
         return Treesize;
