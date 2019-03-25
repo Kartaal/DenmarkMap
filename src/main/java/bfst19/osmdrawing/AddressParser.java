@@ -73,9 +73,10 @@ public class AddressParser {
                 proposedAddress = proposedAddress.replaceAll(streetMatch[0],"");
                 b.streetName = streetMatch[0];
                 if(!streetMatch[1].equals("")){
-                    String[] tokens = streetMatch[1].split(" ");
-                    b.city = tokens[0];
-                    b.postcode = tokens[1];
+                    System.out.println(streetMatch[1]);
+                    System.out.println(streetMatch[2]);
+                    b.city = streetMatch[1];
+                    b.postcode = streetMatch[2];
                 }
             }
 
@@ -132,30 +133,40 @@ public class AddressParser {
     // which is returned to be removed from the address.
     public String[] checkStreet(String address,String country,String[] cityMatch) throws IOException {
         BufferedReader in;
-        String[] match = new String[]{"",""};
+        String[] match = new String[]{"","",""};
         if (cityMatch[0].equals("")) {
             in = new BufferedReader(new InputStreamReader(new FileInputStream("data/" + country + "/streets.txt"), "UTF-8"));
             String line = in.readLine();
             String mostCompleteMatch = "";
             String mostCompleteMatchCity = "";
-            while(line != null){
+            String mostCompleteMatchPostcode = "";
+            while(line.endsWith("$")){
                 //splits at arbitrary dilimiter for proper splitting of streetnames and citynames
+                //todo fix $ line end delimiter with for each city in country/cities.txt and for each street in country/city/streets.txt
+                line = line.replace("$","");
                 String[] tokens = line.split(" streetNameAndCityDelimiter ");
                 String streetToken = tokens[0];
                 //split is supposed to split at a delimiter and not include the delimiter in the tokens but it deosn't so i replace them instead
-                String cityAndPostcodeToken = tokens[1].replace(" streetNameAndCityDelimiter ","").replace(" cityAndPostcodeDelimiter "," ");
-
+                String cityAndPostcodeToken = tokens[1].replace(" streetNameAndCityDelimiter ","");
+                String[] cityAndPostcodeTokens = cityAndPostcodeToken.split(" cityAndPostcodeDelimiter ");
+                String cityToken = cityAndPostcodeTokens[0];
+                String postcodeToken = cityAndPostcodeTokens[1].replace(" cityAndPostcodeDelimiter ","");
 
                 if(address.startsWith(streetToken.toLowerCase())){
                     if(streetToken.length() > mostCompleteMatch.length()){
                         mostCompleteMatch = tokens[0];
-                        mostCompleteMatchCity = cityAndPostcodeToken;
+                        mostCompleteMatchCity = cityAndPostcodeTokens[0];
+                        mostCompleteMatchPostcode = cityAndPostcodeTokens[1];
                     }
                 }
                 line = in.readLine();
             }
+            System.out.println(mostCompleteMatch);
+            System.out.println(mostCompleteMatchCity);
+            System.out.println(mostCompleteMatchPostcode);
             match[0] = mostCompleteMatch;
             match[1] = mostCompleteMatchCity;
+            match[2] = mostCompleteMatchPostcode;
         } else {
             System.out.println("city: "+cityMatch[1]+"postcode: "+cityMatch[2]);
             in = new BufferedReader(new InputStreamReader(new FileInputStream("data/" + country + "/" + cityMatch[1] + " " + cityMatch[2]+ "/streets.txt"), "UTF-8"));

@@ -327,7 +327,8 @@ public class Model {
 				for (Map.Entry<String, ArrayList<Address>> street : entry.getValue().entrySet()) {
 					String streetName = street.getKey();
 					streetsInCityWriter.write(streetName+"\n");
-					allStreetsInCountryWriter.write(streetName+" streetNameAndCityDelimiter "+ city +"\n");
+					//TODO: the $ at the end is a temp fix for the problem that not all adresses are written to the streets file
+					allStreetsInCountryWriter.write(streetName+" streetNameAndCityDelimiter "+ city +"$\n");
 					BufferedWriter streetFilesWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(cityDirPath+"/"+streetName+ ".txt")),"UTF-8"));
 					for (Address address : street.getValue()) {
 						streetFilesWriter.write(address.getId()+" "+address.getLat()+" "+address.getLon()+" "+address.getHousenumber()+ "\n");
@@ -335,8 +336,8 @@ public class Model {
 					streetFilesWriter.close();
 				}
 				streetsInCityWriter.close();
-
 			}
+			allStreetsInCountryWriter.close();
 		} catch (IOException e) {
 			//TODO Handle exception better
 			e.printStackTrace();

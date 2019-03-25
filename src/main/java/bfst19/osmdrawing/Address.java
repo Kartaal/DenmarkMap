@@ -44,6 +44,14 @@ public class Address extends OSMNode{
         return housenumber;
     }
 
+    public String getFloor(){
+        return floor;
+    }
+
+    public String getSide(){
+        return side;
+    }
+
     @Override
     public String toString(){
         return id+" "+lat+" "+lon+" "+streetName+" "+housenumber+" "+postcode+" "+city;
