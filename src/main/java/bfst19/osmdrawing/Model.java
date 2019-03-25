@@ -1,6 +1,5 @@
 package bfst19.osmdrawing;
 
-import bfst19.osmdrawing.KDTree.KDNode;
 import bfst19.osmdrawing.KDTree.KDTree;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,19 +19,8 @@ public class Model {
 	Map<WayType, List<Drawable>> ways = new EnumMap<>(WayType.class);
 	private boolean colorBlindEnabled;
 
-	{
-		for (WayType type : WayType.values()) {
-			ways.put(type, new ArrayList<>());
-		}
-	}
 	List<Runnable> observers = new ArrayList<>();
 	float minlat, minlon, maxlat, maxlon;
-
-	public ArrayList<KDNode> getKDNodeList() {
-		return KDNodeList;
-	}
-
-	ArrayList<KDNode> KDNodeList;
 
 	String CurrentTypeColorTxt  = "data/TypeColorsNormal.txt";
 	Map<String, WayType> waytypes = new HashMap<>();
@@ -40,9 +28,11 @@ public class Model {
 	ObservableList<Address> searchAddresses = FXCollections.observableArrayList();
 	ObservableList<String> typeColors = FXCollections.observableArrayList();
 	Map<WayType, KDTree> kdTreeMap;
+	KDTree tree;
 
+	//TODO filthy disgusting typecasting
 	public Iterable<Drawable> getWaysOfType(WayType type, Bounds bbox) {
-		return kdTreeMap.get(type).rangeQuery(bbox);
+		return kdTreeMap.get(type).rangeQuery((BoundingBox) bbox);
 	}
 
 	public void addObserver(Runnable observer) {
@@ -55,7 +45,9 @@ public class Model {
 
 	public Model(List<String> args) throws IOException, XMLStreamException, ClassNotFoundException {
 
-		KDNodeList = new ArrayList<>();
+		for (WayType type : WayType.values()) {
+			ways.put(type, new ArrayList<>());
+		}
 
 		for(WayType type: WayType.values()){
 			waytypes.put(type.name(),type);
@@ -246,11 +238,7 @@ public class Model {
 							if (type == WayType.COASTLINE) {
 								coast.add(way);
 							} else {
-								//ways.get(type).add(new Polyline(way));
-								if (way != null){
-								Polyline addingLine = new Polyline(way);
-								KDNode node = new KDNode(addingLine);
-								KDNodeList.add(node);}
+								ways.get(type).add(new Polyline(way));
 							}
 
 							if(isAddress){

@@ -20,16 +20,10 @@ public class MapCanvas extends Canvas {
     boolean paintNonRoads = true;
     int detailLevel =1;
     private boolean colorBlindEnabled = false;
-    KDTree kdtree;
 
 
     public void init(Model model) {
         this.model = model;
-
-
-        this.kdtree = new KDTree(model.getKDNodeList(), -1, -1, 500, 500);
-
-
 
         //conventions in screen coords and map coords are not the same,
         // so we convert to screen convention by flipping x y
@@ -74,14 +68,14 @@ public class MapCanvas extends Canvas {
         if(paintNonRoads) {
             for (WayType type : WayType.values()) {
 
-                if (!(type.isRoadOrSimilar()) && type.levelOfDetail()<detailLevel) {
+                if (!(type.isRoadOrSimilar()) && type.levelOfDetail() < detailLevel) {
                     if(type == WayType.COASTLINE) {
                     }else{
                         gc.setFill(getColor(type));
                         for (Drawable way : model.getWaysOfType(type, getExtentInModel())) way.fill(gc);
 
                     }
-                } else if (type.isRoadOrSimilar() && type.levelOfDetail()<detailLevel) {
+                } else if (type.isRoadOrSimilar() && type.levelOfDetail() < detailLevel) {
                     if (type == WayType.COASTLINE) {
                     //TODO Keep this or delete it
                     }else if(type==WayType.UNKNOWN) {
@@ -96,7 +90,7 @@ public class MapCanvas extends Canvas {
 
         }else{
             for(WayType type : WayType.values()){
-                if(type.isRoadOrSimilar() && type.levelOfDetail()<detailLevel){
+                if(type.isRoadOrSimilar() && type.levelOfDetail() < detailLevel){
                     if(type == WayType.UNKNOWN){
                     // The unknown WayType is ways that have not been parsed to an implemented WayType,
                     // so it's better to exclude it.

@@ -1,6 +1,5 @@
 package bfst19.osmdrawing;
 
-import javafx.geometry.BoundingBox;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.io.Serializable;
