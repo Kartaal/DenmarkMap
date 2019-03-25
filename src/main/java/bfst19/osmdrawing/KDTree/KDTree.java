@@ -1,8 +1,10 @@
 package bfst19.osmdrawing.KDTree;
 
+import com.sun.source.tree.Tree;
+
 import java.util.ArrayList;
 
-public class KDTree {
+public class KDTree { //When we create this tree somewhere, wrap it in a for-loop to determine tree size.
     enum Dimension {
         X, Y
     }
@@ -12,10 +14,11 @@ public class KDTree {
      private KDNode splitNode;
      private double xMin, yMin, xMax, yMax;
      private Dimension dimension;
+     private int size;
+     private double[] highBounds;
+     private double[] lowBounds;
+     private int Treesize;
 
-	 public boolean isEmpty(){
-		 return size == null;
-	 }
 
      public KDTree(ArrayList<KDNode> nodes, double xLeft, double yBot, double xRight, double yTop){
 
@@ -25,7 +28,8 @@ public class KDTree {
         yMin = yBot;
         xMax = xRight;
         yMax = yTop;
-        int size = nodes.size();
+        this.size = nodes.size();
+        Treesize++;
         int addedSize = 0;
         ArrayList<KDNode> low = new ArrayList<>();
         ArrayList<KDNode> high = new ArrayList<>();
@@ -75,24 +79,25 @@ public class KDTree {
             }
             if (size > addedSize + 1){
                 throw new UnexpectedSizeException("Size smaller than expected");
-            }   else{
+            } else {
                 throw new UnexpectedSizeException("I have no idea what happened, but sizes are not equal");
             }
         }
 
-		double[] lowBounds = new double[4];
-		double[] highBounds = new double[4];
+		this.lowBounds = new double[4];
+		this.highBounds = new double[4];
 
-        createBoundsArrays();
+        createBounds();
 
         //flipDimension();
 
-		if(!low.isEmpty) {
-			LOW = new KDTree(low, lowbounds[0], lowBounds[1], lowBounds[2], lowBounds[3]);
+        //while(getTreesize() <= 1000){ // Tree Size
+		if(!low.isEmpty()) {
+			LOW = new KDTree(low, lowBounds[0], lowBounds[1], lowBounds[2], lowBounds[3]);
 		}
-		if(!high.isEmpty) {
+		if(!high.isEmpty()) {
 			HIGH = new KDTree(high, highBounds[0], highBounds[1], highBounds[2], highBounds[3]);
-		}
+		}//}
 
         } catch (UnexpectedSizeException e) {
             e.printStackTrace();
@@ -105,26 +110,36 @@ public class KDTree {
 
     private void createBounds() {
         if (this.dimension == Dimension.X){
-			lowbounds[0] = xMin;
-			lowbounds[1] = yMin;
-			lowbounds[2] = splitNode.getCenterX();
-			lowbounds[3] = yMax;
+			lowBounds[0] = xMin;
+			lowBounds[1] = yMin;
+			lowBounds[2] = splitNode.getCenterX();
+			lowBounds[3] = yMax;
 
-			highbounds[0] = splitNode.getCenterX();
-			highbounds[1] = yMin;
-			highbounds[2] = xMax;
-			highbounds[3] = yMax;
+			highBounds[0] = splitNode.getCenterX();
+			highBounds[1] = yMin;
+			highBounds[2] = xMax;
+			highBounds[3] = yMax;
 		} else { // dimension must be y
-			lowbounds[0] = xMin;
-			lowbounds[1] = splitNode.getCenterY();
-			lowbounds[2] = xMax;
-			lowbounds[3] = yMax;
+			lowBounds[0] = xMin;
+			lowBounds[1] = splitNode.getCenterY();
+			lowBounds[2] = xMax;
+			lowBounds[3] = yMax;
 
-			highbounds[0] = xMin;
-			highbounds[1] = yMin;
-	 		highbounds[2] = xMax;
-			highbounds[3] = splitNode.getCenterY();
+			highBounds[0] = xMin;
+			highBounds[1] = yMin;
+	 		highBounds[2] = xMax;
+			highBounds[3] = splitNode.getCenterY();
 		}
+    }
+
+
+    public int getTreesize() {
+        return Treesize;
+    }
+
+
+    public boolean isEmpty(){
+        return size == 0;
     }
 
     private void flipDimension() {

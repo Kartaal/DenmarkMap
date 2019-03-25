@@ -1,7 +1,9 @@
 package bfst19.osmdrawing;
 
+import bfst19.osmdrawing.KDTree.KDNode;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.w3c.dom.NodeList;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -25,6 +27,12 @@ public class Model {
 	List<Runnable> observers = new ArrayList<>();
 	float minlat, minlon, maxlat, maxlon;
 
+	public ArrayList<KDNode> getKDNodeList() {
+		return KDNodeList;
+	}
+
+	ArrayList<KDNode> KDNodeList;
+
 	String CurrentTypeColorTxt  = "data/TypeColorsNormal.txt";
 	Map<String, WayType> waytypes = new HashMap<>();
 	ArrayList<String[]> wayTypeCases = new ArrayList<>();
@@ -43,6 +51,8 @@ public class Model {
 	}
 
 	public Model(List<String> args) throws IOException, XMLStreamException, ClassNotFoundException {
+
+		KDNodeList = new ArrayList<>();
 
 		for(WayType type: WayType.values()){
 			waytypes.put(type.name(),type);
@@ -233,7 +243,11 @@ public class Model {
 							if (type == WayType.COASTLINE) {
 								coast.add(way);
 							} else {
-								ways.get(type).add(new Polyline(way));
+								//ways.get(type).add(new Polyline(way));
+								if (way != null){
+								Polyline addingLine = new Polyline(way);
+								KDNode node = new KDNode( addingLine, "lol", type);
+								KDNodeList.add(node);}
 							}
 
 							if(isAddress){

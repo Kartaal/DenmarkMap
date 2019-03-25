@@ -1,5 +1,7 @@
 package bfst19.osmdrawing;
 
+import bfst19.osmdrawing.KDTree.KDNode;
+import bfst19.osmdrawing.KDTree.KDTree;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -23,10 +25,17 @@ public class MapCanvas extends Canvas {
     boolean paintNonRoads = true;
     int detailLevel =1;
     private boolean colorBlindEnabled = false;
+    KDTree kdtree;
 
 
     public void init(Model model) {
         this.model = model;
+
+
+        this.kdtree = new KDTree(model.getKDNodeList(), -1, -1, 500, 500);
+
+
+
         //conventions in screen coords and map coords are not the same,
         // so we convert to screen convention by flipping x y
         pan(-model.minlon, -model.maxlat);
@@ -99,6 +108,8 @@ public class MapCanvas extends Canvas {
                     }else{
                         gc.setStroke(getColor(type));
                         for (Drawable way : model.getWaysOfType(type)) way.stroke(gc);
+
+
 
                     }
 
