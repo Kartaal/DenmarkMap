@@ -35,9 +35,18 @@ public class Model {
 		private long id;
 		private float lat, lon;
 		private String streetName = "Unknown", houseNumber="", postcode="", city="";
+		public void reset(){
+			id = 0;
+			lat =0;
+			lon = 0;
+			streetName = "Unknown";
+			houseNumber = "";
+			postcode = "";
+			city="";
+		}
 		public boolean hasFields(){
 			if(!streetName.equals("Unknown")&&!houseNumber.equals("")&&!postcode.equals("")&&!city.equals("")) return true;
-		return false;}
+			return false;}
 		public Address build() {
 			return new Address(id,lat,lon,streetName, houseNumber, postcode, city);
 		}
@@ -89,7 +98,7 @@ public class Model {
 			}
 			parseOSM(osmsource);
 			time += System.nanoTime();
-			System.out.printf("Parse time: %.1fs\n", time / 1e9);
+			System.out.printf("parse time: %.1fs\n", time / 1e9);
 			try (ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(filename + ".obj")))) {
 				output.writeObject(ways);
 				output.writeFloat(minlat);
@@ -123,14 +132,14 @@ public class Model {
 		colorBlindEnabled = !colorBlindEnabled;
 		System.out.println("Colorblind mode enabled: " + colorBlindEnabled);
 
-			if (colorBlindEnabled){
-				CurrentTypeColorTxt = ("data/TypeColorsColorblind.txt");
-			}
-			else{
-				CurrentTypeColorTxt = ("data/TypeColorsNormal.txt");
-			}
-			ParseWayColors();
+		if (colorBlindEnabled){
+			CurrentTypeColorTxt = ("data/TypeColorsColorblind.txt");
 		}
+		else{
+			CurrentTypeColorTxt = ("data/TypeColorsNormal.txt");
+		}
+		ParseWayColors();
+	}
 
 	private void parseOSM(InputStream osmsource) throws XMLStreamException {
 		XMLStreamReader reader = XMLInputFactory
@@ -311,14 +320,15 @@ public class Model {
 	private void makeStreetFiles(TreeMap<String,TreeMap<String, ArrayList<Address>>> addresses) {
 		try {
 			BufferedWriter allStreetsInCountryWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("data/"+getCountry()+"/streets.txt")),"UTF-8"));
-		for (Map.Entry<String, TreeMap<String, ArrayList<Address>>> entry : addresses.entrySet()) {
-			String city = entry.getKey();
-			BufferedWriter streetsInCityWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("data/" + getCountry() + "/" + city + "/streets.txt")),"UTF-8"));
+			for (Map.Entry<String, TreeMap<String, ArrayList<Address>>> entry : addresses.entrySet()) {
+				String city = entry.getKey();
+				String cityDirPath = "data/"+getCountry()+"/"+entry.getKey().replace(" cityAndPostcodeDelimiter "," ");
+				BufferedWriter streetsInCityWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(cityDirPath + "/streets.txt")),"UTF-8"));
 				for (Map.Entry<String, ArrayList<Address>> street : entry.getValue().entrySet()) {
 					String streetName = street.getKey();
 					streetsInCityWriter.write(streetName+"\n");
-					allStreetsInCountryWriter.write(streetName+"\n");
-					BufferedWriter streetFilesWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("data/" + getCountry() + "/" + city+"/"+streetName+ ".txt")),"UTF-8"));
+					allStreetsInCountryWriter.write(streetName+" streetNameAndCityDelimiter "+ city +"\n");
+					BufferedWriter streetFilesWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(cityDirPath+"/"+streetName+ ".txt")),"UTF-8"));
 					for (Address address : street.getValue()) {
 						streetFilesWriter.write(address.getId()+" "+address.getLat()+" "+address.getLon()+" "+address.getHousenumber()+ "\n");
 					}
@@ -326,7 +336,7 @@ public class Model {
 				}
 				streetsInCityWriter.close();
 
-		}
+			}
 		} catch (IOException e) {
 			//TODO Handle exception better
 			e.printStackTrace();
@@ -353,22 +363,22 @@ public class Model {
 			}
 		}
 		return new String[]{ String.valueOf(minLat),
-							  String.valueOf(maxLat),
-							  String.valueOf(minLon),
-							  String.valueOf(maxLon)
-							};
+				String.valueOf(maxLat),
+				String.valueOf(minLon),
+				String.valueOf(maxLon)
+		};
 	}
 
 	public void parseCases(String pathToCasesFile){
 		try {
 
 			BufferedReader in = new BufferedReader(new InputStreamReader(
-								new FileInputStream(pathToCasesFile),"UTF-8"));
+					new FileInputStream(pathToCasesFile),"UTF-8"));
 			int n = Integer.parseInt(in.readLine().trim());
 			for(int i = 0; i < n ; i++) {
 				String wayType = in.readLine();
 				String wayCase = in.readLine();
-				
+
 				while((wayCase != null) && !(wayCase.startsWith("$"))){
 					String[] tokens = wayCase.split(" ");
 					wayTypeCases.add(new String[]{wayType,tokens[0],tokens[1]});
@@ -407,16 +417,17 @@ public class Model {
 		return pieces.values();
 	}
 
-	public void makeCityDirectories(Set<String> cities,String country){
+	public void makeCityDirectories(Set<String> citiesAndPostcodes,String country){
 		try {
 			File countryDir = new File("data/"+country);
 			countryDir.mkdir();
 			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("data/"+getCountry()+"/cities.txt")),"UTF-8"));
-			for(String city :cities){
-				writer.write(city+"\n");
-				File cityDir = new File("data/"+country+"/" + city);
+			for(String cityAndPostcode :citiesAndPostcodes){
+				writer.write(cityAndPostcode+"\n");
+				String[] tokens = cityAndPostcode.split(" cityAndPostcodeDelimiter ");
+				File cityDir = new File("data/" + country + "/" + tokens[0] + " " + tokens[1]);
 				cityDir.mkdir();
-				String streetsFile = "data/"+getCountry()+"/" + city + "/" + "streets" + ".txt";
+				String streetsFile = "data/" + getCountry() + "/" + tokens[0] + " " + tokens[1] + "/" + "streets" + ".txt";
 				File streetsInCityFile = new File(streetsFile);
 				streetsInCityFile.createNewFile();
 			}
@@ -429,18 +440,19 @@ public class Model {
 	}
 
 	public void putAddress(TreeMap<String, TreeMap<String, ArrayList<Address>>> addresses, Builder b){
-		if(addresses.get(b.city+" "+b.postcode)==null){
-			addresses.put(b.city+" "+b.postcode,new TreeMap<>());
+		String cityAndPostcode = b.city+" cityAndPostcodeDelimiter "+b.postcode;
+		if(addresses.get(cityAndPostcode)==null){
+			addresses.put(cityAndPostcode,new TreeMap<>());
 		}
-		if(addresses.get(b.city+" "+b.postcode).get(b.streetName)==null){
-			addresses.get(b.city+" "+b.postcode).put(b.streetName,new ArrayList<>());
+		if(addresses.get(cityAndPostcode).get(b.streetName)==null){
+			addresses.get(cityAndPostcode).put(b.streetName,new ArrayList<>());
 		}
-		addresses.get(b.city+" "+b.postcode).get(b.streetName).add(b.build());
-		b = new Builder();
+		addresses.get(cityAndPostcode).get(b.streetName).add(b.build());
+		b.reset();
 	}
 
 	public void parseSearch(String proposedAddress) {
-		searchedAddresses.add(AddressParser.AddressParser().Parse(proposedAddress,getCountry()));
+		searchedAddresses.add(AddressParser.getInstance().parse(proposedAddress,getCountry()));
 	}
 
 
