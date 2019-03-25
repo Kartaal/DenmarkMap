@@ -6,18 +6,47 @@
 <?import javafx.scene.layout.HBox?>
 
 
-<HBox  xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="bfst19.osmdrawing.ControllerBarPanel" fx:id="BarPanel">
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.text.Font?>
+<HBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="bfst19.osmdrawing.ControllerBarPanel" fx:id="BarPanel">
    <children>
-      <Button fx:id="menuButton" mnemonicParsing="false" text="Menu">
+      <Button fx:id="menuButton" mnemonicParsing="false">
          <HBox.margin>
             <Insets right="5.0" />
          </HBox.margin>
+         <graphic>
+            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="/menu.png"/>
+               </image>
+            </ImageView>
+         </graphic>
       </Button>
-      <TextField prefWidth="300.0" promptText="Adresse" />
-      <Button fx:id="ruteButton" mnemonicParsing="false" text="Rute" onAction="#openRute">
+      <TextField prefWidth="300.0" prefHeight="30.0" promptText="Adresse" />
+      <Button fx:id="searchButton" mnemonicParsing="false">
          <HBox.margin>
             <Insets left="5.0" />
          </HBox.margin>
+         <graphic>
+            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="/search.png"/>
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <Button fx:id="ruteButton" mnemonicParsing="false" onAction="#openRute">
+         <HBox.margin>
+            <Insets left="5.0" />
+         </HBox.margin>
+         <graphic>
+            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="/directions.png"/>
+               </image>
+            </ImageView>
+         </graphic>
       </Button>
    </children>
    <padding>
