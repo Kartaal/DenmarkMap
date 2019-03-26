@@ -140,17 +140,17 @@ public class AddressParser {
             String mostCompleteMatch = "";
             String mostCompleteMatchCity = "";
             String mostCompleteMatchPostcode = "";
-            while(line.endsWith("$")){
+            while(line!=null){
                 //splits at arbitrary dilimiter for proper splitting of streetnames and citynames
                 //todo fix $ line end delimiter with for each city in country/cities.txt and for each street in country/city/streets.txt
                 line = line.replace("$","");
-                String[] tokens = line.split(" streetNameAndCityDelimiter ");
+                String[] tokens = line.split(" ZZZ ");
                 String streetToken = tokens[0];
                 //split is supposed to split at a delimiter and not include the delimiter in the tokens but it deosn't so i replace them instead
-                String cityAndPostcodeToken = tokens[1].replace(" streetNameAndCityDelimiter ","");
-                String[] cityAndPostcodeTokens = cityAndPostcodeToken.split(" cityAndPostcodeDelimiter ");
+                String cityAndPostcodeToken = tokens[1].replace(" ZZZ ","");
+                String[] cityAndPostcodeTokens = cityAndPostcodeToken.split(" QQQ ");
                 String cityToken = cityAndPostcodeTokens[0];
-                String postcodeToken = cityAndPostcodeTokens[1].replace(" cityAndPostcodeDelimiter ","");
+                String postcodeToken = cityAndPostcodeTokens[1].replace(" QQQ ","");
 
                 if(address.startsWith(streetToken.toLowerCase())){
                     if(streetToken.length() > mostCompleteMatch.length()){
@@ -255,9 +255,9 @@ public class AddressParser {
         String line = in.readLine();
 
         while(line != null){
-            String[] tokens = line.split(" cityAndPostcodeDelimiter ");
+            String[] tokens = line.split(" QQQ ");
             cities.add(tokens[0]);
-            String postcode = tokens[1].replace(" cityAndPostcodeDelimiter ","");
+            String postcode = tokens[1].replace(" QQQ ","");
             postcodes.add(postcode);
             line = in.readLine();
         }
