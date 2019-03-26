@@ -23,7 +23,7 @@
             </ImageView>
          </graphic>
       </Button>
-      <TextField prefWidth="300.0" prefHeight="30.0" promptText="Adresse" />
+      <TextField fx:id = "searchText" prefWidth="300.0" prefHeight="30.0" promptText="Adresse" onKeyPressed="#giveText"/>
       <Button fx:id="searchButton" mnemonicParsing="false" style="-fx-background-color: white;  -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);">
          <HBox.margin>
             <Insets left="5.0" />

@@ -19,6 +19,7 @@ public class Controller {
 
 
     //This only means that .fxml can use this field despite visibility
+
     @FXML
     private MapCanvas mapCanvas;
 
@@ -129,9 +130,6 @@ public class Controller {
             case C: //Toggle colorblind colorfile
                 model.switchColorScheme();
                 break;
-            case ENTER:
-                break;
-
         }
     }
 

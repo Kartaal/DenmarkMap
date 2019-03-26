@@ -295,7 +295,6 @@ public class Model {
 				case SPACE: break;
 				case START_DOCUMENT: break;
 				case END_DOCUMENT:
-
 					File parseCheck = new File("data/"+getCountry());
 					if(!parseCheck.isDirectory()) {
 						makeCityDirectories(addresses.keySet(),getCountry());
