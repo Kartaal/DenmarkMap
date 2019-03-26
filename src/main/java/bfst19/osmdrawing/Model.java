@@ -15,7 +15,7 @@ import static javax.xml.stream.XMLStreamConstants.*;
 public class Model {
 	float lonfactor = 1.0f;
 	Map<WayType,List<Drawable>> ways = new EnumMap<>(WayType.class);
-	private boolean isEnabled;
+	private boolean colorBlindEnabled;
 
 	{
 		for (WayType type : WayType.values()) {
@@ -27,10 +27,30 @@ public class Model {
 
 	String CurrentTypeColorTxt  = "data/TypeColorsNormal.txt";
 	Map<String, WayType> waytypes = new HashMap<>();
-	ArrayList<String[]> cases = new ArrayList<>();
-	ObservableList<Address> addresses = FXCollections.observableArrayList();
+	ArrayList<String[]> wayTypeCases = new ArrayList<>();
+	ObservableList<Address> searchedAddresses = FXCollections.observableArrayList();
 	ObservableList<String> typeColors = FXCollections.observableArrayList();
 
+	public static class Builder {
+		private long id;
+		private float lat, lon;
+		private String streetName = "Unknown", houseNumber="", postcode="", city="";
+		public void reset(){
+			id = 0;
+			lat =0;
+			lon = 0;
+			streetName = "Unknown";
+			houseNumber = "";
+			postcode = "";
+			city="";
+		}
+		public boolean hasFields(){
+			if(!streetName.equals("Unknown")&&!houseNumber.equals("")&&!postcode.equals("")&&!city.equals("")) return true;
+			return false;}
+		public Address build() {
+			return new Address(id,lat,lon,streetName, houseNumber, postcode, city);
+		}
+	}
 
 	public Iterable<Drawable> getWaysOfType(WayType type) {
 		return ways.get(type);
@@ -50,8 +70,8 @@ public class Model {
 			waytypes.put(type.name(),type);
 		}
 
-		parseCases("data/Waytype_cases3.txt");
-		cleanerParseWayColors();
+		parseCases("data/Waytype_cases.txt");
+		ParseWayColors();
 
 
 		String filename = args.get(0);
@@ -78,7 +98,7 @@ public class Model {
 			}
 			parseOSM(osmsource);
 			time += System.nanoTime();
-			System.out.printf("Parse time: %.1fs\n", time / 1e9);
+			System.out.printf("parse time: %.1fs\n", time / 1e9);
 			try (ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(filename + ".obj")))) {
 				output.writeObject(ways);
 				output.writeFloat(minlat);
@@ -89,7 +109,7 @@ public class Model {
 		}
 	}
 
-	void cleanerParseWayColors(){
+	public void ParseWayColors(){
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(CurrentTypeColorTxt));
 			int m = Integer.parseInt(br.readLine());
@@ -102,43 +122,23 @@ public class Model {
 		}
 		catch(Exception e){
 			e.printStackTrace();
-			System.out.println("something went wrong"); //TODO: fix this, uncle bob wont like this one hehe;)
+			//TODO: fix this, uncle bob wont like this one hehe;)
+			System.out.println("something went wrong");
 		}
-		System.out.println("tried");
 		notifyObservers();
 	}
 
 	public void switchColorScheme(){
-		isEnabled = !isEnabled;
-		System.out.println("Colorblind mode: " + isEnabled);
+		colorBlindEnabled = !colorBlindEnabled;
+		System.out.println("Colorblind mode enabled: " + colorBlindEnabled);
 
-			if (isEnabled){
-				CurrentTypeColorTxt = ("data/TypeColorsColorblind.txt");
-			}
-			else{
-				CurrentTypeColorTxt = ("data/TypeColorsNormal.txt");
-			}
-			cleanerParseWayColors();
+		if (colorBlindEnabled){
+			CurrentTypeColorTxt = ("data/TypeColorsColorblind.txt");
 		}
-
-	ArrayList<String> parseWayColors(String CurrentTypeColorTxt){
-		ArrayList<String> WayTypeColors = new ArrayList<>();
-
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(CurrentTypeColorTxt));
-			int m = Integer.parseInt(br.readLine());
-
-			for (int i = 0; i < m; i++) {
-				String[] strArr = br.readLine().split(" ");
-				WayTypeColors.add(strArr[0]);
-				WayTypeColors.add(strArr[1]);
-			}
+		else{
+			CurrentTypeColorTxt = ("data/TypeColorsNormal.txt");
 		}
-		catch(Exception e){
-			e.printStackTrace();
-			System.out.println("something went wrong"); //TODO: fix this, uncle bob wont like this one hehe;)
-		}
-		return WayTypeColors;
+		ParseWayColors();
 	}
 
 	private void parseOSM(InputStream osmsource) throws XMLStreamException {
@@ -147,11 +147,18 @@ public class Model {
 				.createXMLStreamReader(osmsource);
 		LongIndex<OSMNode> idToNode = new LongIndex<OSMNode>();
 		LongIndex<OSMWay> idToWay = new LongIndex<OSMWay>();
+		TreeMap<String,TreeMap<String,ArrayList<Address>>> addresses = new TreeMap<>();
 		List<OSMWay> coast = new ArrayList<>();
 
 		OSMWay way = null;
 		OSMRelation rel = null;
 		WayType type = null;
+
+		//variables for addressParsing
+		Builder b = new Builder();
+		long id = 0;
+		float lat = 0;
+		float lon = 0;
 
 		while (reader.hasNext()) {
 			switch (reader.next()) {
@@ -167,10 +174,10 @@ public class Model {
 							maxlon *= lonfactor;
 							break;
 						case "node":
-							long id = Long.parseLong(reader.getAttributeValue(null, "id"));
-							float lat = Float.parseFloat(reader.getAttributeValue(null, "lat"));
-							float lon = lonfactor * Float.parseFloat(reader.getAttributeValue(null, "lon"));
-							idToNode.add(new OSMNode(id,lon, lat));
+							id = Long.parseLong(reader.getAttributeValue(null, "id"));
+							lat = Float.parseFloat(reader.getAttributeValue(null, "lat"));
+							lon = lonfactor * Float.parseFloat(reader.getAttributeValue(null, "lon"));
+							idToNode.add(new OSMNode(id, lon, lat));
 							break;
 						case "way":
 							id = Long.parseLong(reader.getAttributeValue(null, "id"));
@@ -186,14 +193,30 @@ public class Model {
 							String k = reader.getAttributeValue(null, "k");
 							String v = reader.getAttributeValue(null, "v");
 
-							for(String[] strings : cases){
-								if(k.equals(strings[1])&&v.equals(strings[2])){
+							if(k.equals("addr:housenumber")){
+								b.houseNumber = v;
+							}
+
+							if(k.equals("addr:street")){
+								b.streetName = v;
+							}
+
+							if(k.equals("addr:postcode")){
+								b.postcode = v;
+							}
+
+
+							if(k.equals("addr:city")){
+								b.city = v;
+							}
+
+							for(String[] strings : wayTypeCases){
+								if(k.equals(strings[1]) && v.equals(strings[2])){
 									type = waytypes.get(strings[0]);
 									break;
 								}
 							}
 							switch (k){
-
 								case "relation":
 									type = WayType.UNKNOWN;
 									rel = new OSMRelation();
@@ -224,7 +247,21 @@ public class Model {
 							} else {
 								ways.get(type).add(new Polyline(way));
 							}
+							if(b.hasFields()) {
+								b.id = id;
+								b.lat = lat;
+								b.lon = lon;
+								putAddress(addresses,b);
+							}
 							way = null;
+							break;
+						case "node":
+							if(b.hasFields()){
+								b.id = id;
+								b.lat = lat;
+								b.lon = lon;
+								putAddress(addresses,b);
+							}
 							break;
 						case "relation":
 							if (type == WayType.WATER) {
@@ -246,8 +283,6 @@ public class Model {
 								ways.get(type).add(new MultiPolyline(rel));
 							}else if(type == WayType.CONSTRUCTION){
 								ways.get(type).add(new MultiPolyline(rel));
-							}else if(type == WayType.RECREATION){
-								ways.get(type).add(new MultiPolyline(rel));
 							}else if(type == WayType.PARKING){
 								ways.get(type).add(new MultiPolyline(rel));
 							}
@@ -260,6 +295,13 @@ public class Model {
 				case SPACE: break;
 				case START_DOCUMENT: break;
 				case END_DOCUMENT:
+
+					File parseCheck = new File("data/"+getCountry());
+					if(!parseCheck.isDirectory()) {
+						makeCityDirectories(addresses.keySet(),getCountry());
+						makeStreetFiles(addresses);
+					}
+
 					for (OSMWay c : merge(coast)) {
 						ways.get(WayType.COASTLINE).add(new Polyline(c));
 					}
@@ -275,33 +317,60 @@ public class Model {
 		}
 	}
 
+	private void makeStreetFiles(TreeMap<String,TreeMap<String, ArrayList<Address>>> addresses) {
+		try {
+			BufferedWriter allStreetsInCountryWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("data/"+getCountry()+"/streets.txt")),"UTF-8"));
+			for (Map.Entry<String, TreeMap<String, ArrayList<Address>>> entry : addresses.entrySet()) {
+				String city = entry.getKey();
+				String cityDirPath = "data/"+getCountry()+"/"+entry.getKey().replace(" cityAndPostcodeDelimiter "," ");
+				BufferedWriter streetsInCityWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(cityDirPath + "/streets.txt")),"UTF-8"));
+				for (Map.Entry<String, ArrayList<Address>> street : entry.getValue().entrySet()) {
+					String streetName = street.getKey();
+					streetsInCityWriter.write(streetName+"\n");
+					//TODO: the $ at the end is a temp fix for the problem that not all adresses are written to the streets file
+					allStreetsInCountryWriter.write(streetName+" streetNameAndCityDelimiter "+ city +"$\n");
+					BufferedWriter streetFilesWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(cityDirPath+"/"+streetName+ ".txt")),"UTF-8"));
+					for (Address address : street.getValue()) {
+						streetFilesWriter.write(address.getId()+" "+address.getLat()+" "+address.getLon()+" "+address.getHousenumber()+ "\n");
+					}
+					streetFilesWriter.close();
+				}
+				streetsInCityWriter.close();
+			}
+			allStreetsInCountryWriter.close();
+		} catch (IOException e) {
+			//TODO Handle exception better
+			e.printStackTrace();
+			System.out.println("IOException when making BufferedWriter for streets");
+			System.out.println("likely a mistake relating to / or  \\ in streetnames");
+		}
+	}
+
 	public void parseCases(String pathToCasesFile){
 		try {
 
-			BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(pathToCasesFile),"UTF-8"));
+			BufferedReader in = new BufferedReader(new InputStreamReader(
+					new FileInputStream(pathToCasesFile),"UTF-8"));
 			int n = Integer.parseInt(in.readLine().trim());
-			for(int i = 0; i<n;i++) {
-				String waytype = in.readLine();
-				String waycase = in.readLine();
-				
-				while((waycase!=null)&&!(waycase.startsWith("$"))){
-					String[] tokens = waycase.split(" ");
-					cases.add(new String[]{waytype,tokens[0],tokens[1]});
-					waycase = in.readLine();
+			for(int i = 0; i < n ; i++) {
+				String wayType = in.readLine();
+				String wayCase = in.readLine();
+
+				while((wayCase != null) && !(wayCase.startsWith("$"))){
+					String[] tokens = wayCase.split(" ");
+					wayTypeCases.add(new String[]{wayType,tokens[0],tokens[1]});
+					wayCase = in.readLine();
 				}
 			}
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
+		} catch (UnsupportedEncodingException | FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	private Iterable<OSMWay> merge(List<OSMWay> coast) {
-		Map<OSMNode,OSMWay> pieces = new HashMap<>();
+		Map<OSMNode, OSMWay> pieces = new HashMap<>();
 		for (OSMWay way : coast) {
 			OSMWay res = new OSMWay(0);
 			OSMWay before = pieces.remove(way.getFirst());
@@ -325,8 +394,80 @@ public class Model {
 		return pieces.values();
 	}
 
-	public void parseSearch(String proposedAdress) {
-		addresses.add(Address.parse(proposedAdress));
+	public void makeCityDirectories(Set<String> citiesAndPostcodes,String country){
+		try {
+			File countryDir = new File("data/"+country);
+			countryDir.mkdir();
+			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("data/"+getCountry()+"/cities.txt")),"UTF-8"));
+			for(String cityAndPostcode :citiesAndPostcodes){
+				writer.write(cityAndPostcode+"\n");
+				String[] tokens = cityAndPostcode.split(" cityAndPostcodeDelimiter ");
+				File cityDir = new File("data/" + country + "/" + tokens[0] + " " + tokens[1]);
+				cityDir.mkdir();
+				String streetsFile = "data/" + getCountry() + "/" + tokens[0] + " " + tokens[1] + "/" + "streets" + ".txt";
+				File streetsInCityFile = new File(streetsFile);
+				streetsInCityFile.createNewFile();
+			}
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+
+	}
+
+	public void putAddress(TreeMap<String, TreeMap<String, ArrayList<Address>>> addresses, Builder b){
+		String cityAndPostcode = b.city+" cityAndPostcodeDelimiter "+b.postcode;
+		if(addresses.get(cityAndPostcode)==null){
+			addresses.put(cityAndPostcode,new TreeMap<>());
+		}
+		if(addresses.get(cityAndPostcode).get(b.streetName)==null){
+			addresses.get(cityAndPostcode).put(b.streetName,new ArrayList<>());
+		}
+		addresses.get(cityAndPostcode).get(b.streetName).add(b.build());
+		b.reset();
+	}
+
+	public void parseSearch(String proposedAddress) {
+		searchedAddresses.add(AddressParser.getInstance().parse(proposedAddress,getCountry()));
+	}
+
+
+	//it's only denmark right now.
+	public String getCountry(){
+		return "denmark";
+	}
+
+	public String[] getStreetsInCity(String country,String city){
+		return getTextFile("data/"+country+"/"+city+"/streets.txt");
+	}
+
+	public String[] getCities(String country){
+		return getTextFile("data/"+country+"cities.txt");
+	}
+
+	//generalized getCities and getStreets to getTextFile, might not be final.
+	public String[] getTextFile(String filepath){
+		try {
+			BufferedReader reader= new BufferedReader(new InputStreamReader(
+					new FileInputStream(filepath),"UTF-8"));
+			String[] textFile = new String[Integer.valueOf(reader.readLine())];
+			String line;
+			for(int i = 0 ; (line = reader.readLine()) != null ; i++){
+				textFile[i] = line;
+				return textFile;
+			}
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+
+		return null;
 	}
 
 	public Iterator<String> colorIterator() {

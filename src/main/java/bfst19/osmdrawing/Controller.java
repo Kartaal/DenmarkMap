@@ -5,15 +5,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-
 import java.io.IOException;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-
-
-//import java.awt.*;
+import javafx.scene.control.TextField;
 
 public class Controller {
     private Model model;
