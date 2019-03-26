@@ -48,6 +48,7 @@ public class Model {
 			if(!streetName.equals("Unknown")&&!houseNumber.equals("")&&!postcode.equals("")&&!city.equals("")) return true;
 			return false;}
 		public Address build() {
+		    System.out.println(id+" "+lat+" "+lon+" "+streetName+" "+houseNumber+" "+postcode+" "+city);
 			return new Address(id,lat,lon,streetName, houseNumber, postcode, city);
 		}
 	}
@@ -328,14 +329,21 @@ public class Model {
 					streetsInCityWriter.write(streetName+"\n");
 					//TODO: the $ at the end is a temp fix for the problem that not all adresses are written to the streets file
 					allStreetsInCountryWriter.write(streetName+" streetNameAndCityDelimiter "+ city +"$\n");
-					BufferedWriter streetFilesWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(cityDirPath+"/"+streetName+ ".txt")),"UTF-8"));
+					//System.out.println(streetName+" streetNameAndCityDelimiter "+ city +"$");
+					BufferedWriter streetFilesWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(cityDirPath+"/"+streetName+ ".txt"),true),"UTF-8"));
 					for (Address address : street.getValue()) {
 						streetFilesWriter.write(address.getId()+" "+address.getLat()+" "+address.getLon()+" "+address.getHousenumber()+ "\n");
+						//System.out.print(address.toString());
 					}
+					allStreetsInCountryWriter.flush();
+					streetsInCityWriter.flush();
+					streetFilesWriter.flush();
 					streetFilesWriter.close();
 				}
+				streetsInCityWriter.flush();
 				streetsInCityWriter.close();
 			}
+			allStreetsInCountryWriter.flush();
 			allStreetsInCountryWriter.close();
 		} catch (IOException e) {
 			//TODO Handle exception better

@@ -63,5 +63,5 @@ tasks.withType(JavaCompile) {
 }
 
 run {
-    args = ['/Users/isabellelmmatic/Downloads/small.osm']
+    args = ['data/zealand.zip']
 }
