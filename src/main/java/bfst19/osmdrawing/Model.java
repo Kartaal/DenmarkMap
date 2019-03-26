@@ -346,30 +346,6 @@ public class Model {
 		}
 	}
 
-
-
-	private String[] findRelBoundingBox(OSMRelation rel) {
-		float minLat = maxlat;
-		float maxLat = minlat;
-		float minLon = maxlon;
-		float maxLon = minlon;
-		for(OSMWay way :rel){
-			for(OSMNode node:way){
-				float nodeLat = node.getLat();
-				float nodeLon = node.getLon();
-				if(nodeLat < minLat) minLat = nodeLat;
-				if(nodeLat > maxLat) maxLat = nodeLat;
-				if(nodeLon < minLon) minLon = nodeLon;
-				if(nodeLon > maxLon) maxLon = nodeLon;
-			}
-		}
-		return new String[]{ String.valueOf(minLat),
-				String.valueOf(maxLat),
-				String.valueOf(minLon),
-				String.valueOf(maxLon)
-		};
-	}
-
 	public void parseCases(String pathToCasesFile){
 		try {
 
