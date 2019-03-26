@@ -11,5 +11,6 @@ public class Main extends Application {
 		//Gets a string from command line arguments, this must be given for javaFX to run.
 		Model model = new Model(getParameters().getRaw());
 		View view = new View(model, stage);
+
 	}
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+
 <?import bfst19.osmdrawing.MapCanvas?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.Scene?>
@@ -12,6 +13,21 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.layout.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<?import javafx.geometry.Insets?>
 <Scene xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="bfst19.osmdrawing.Controller"
@@ -19,52 +35,35 @@
        onKeyPressed="#onKeyPressed"
 >
     <root>
-        <GridPane fx:id="gridPane"
-                  maxHeight="-Infinity" maxWidth="-Infinity"
-                  minHeight="-Infinity" minWidth="-Infinity"
-                  prefHeight="400.0" prefWidth="600.0"
-                  hgap="0" vgap="0" >
-
-            <columnConstraints>
-                <ColumnConstraints percentWidth="70"/>
-                <ColumnConstraints percentWidth="30" />
-            </columnConstraints>
-            <rowConstraints>
-                <RowConstraints percentHeight="10"/>
-                <RowConstraints percentHeight="90"/>
-            </rowConstraints>
-
-            <ToolBar fx:id="borderpane3" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                <items>
-                    <Region styleClass="spacer" />
-                    <HBox styleClass="segmented-button-bar">
-                        <Button fx:id="routes" text="Routes" styleClass="first" />
-                        <Button fx:id="water"  text="Water" />
-                        <Button fx:id="buildings"  text="Buildings" />
-                        <Button fx:id="noColors"  text="No colors " />
-                        <Button fx:id="colors"  text="Colors" styleClass="last" />
-                    </HBox>
-                </items>
-            </ToolBar>
-
-            <BorderPane fx:id="borderpane1" GridPane.columnIndex="0" GridPane.rowIndex="1" >
-                <center>
-                    <MapCanvas fx:id="mapCanvas" width="${borderpane1.width}" height="${borderpane1.height}"
-                               onScroll="#onScroll"
-                               onMousePressed="#onMousePressed"
-                               onMouseDragged="#onMouseDragged"
-                    />
-                </center>
-            </BorderPane>
+            <StackPane fx:id="stackPane">
+                <MapCanvas fx:id="mapCanvas" width="${scene.width}" height="${scene.height}"
+                           onScroll="#onScroll"
+                           onMousePressed="#onMousePressed"
+                           onMouseDragged="#onMouseDragged"
+                />
+                <BorderPane fx:id="borderPane" pickOnBounds="false" VBox.vgrow="ALWAYS">
 
 
-            <TextField GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="textField" />
+                    <bottom>
+                        <!--Start  Scalebar -->
+                        <Pane fx:id="scalebar" BorderPane.alignment="BOTTOM_RIGHT" style="-fx-background-color: white;" prefWidth="${scene.width}" maxHeight="20" prefHeight="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" layoutX="180.0" layoutY="350.0" >
 
+                            <children>
+                                <Text fx:id="scaleText" layoutY="15.0" layoutX="600.0"  text=""/>
+                                <SVGPath fx:id="scalebarLeft"  content="M40,-10 L40,0" layoutY="15.0" layoutX="600.0"  stroke="#800400"
+                                         strokeWidth="3.0" />
+                                <!--   It is this value   -->
+                                <SVGPath fx:id="scalebarMiddle"   content="M40,0 L100,0" layoutY="15.0" layoutX="600.0"  stroke="#008002"
+                                         strokeWidth="3.0" />
+                                <!-- and  this     +this one witch has to be changed in order to make the scalebar longer -->
+                                <SVGPath fx:id="scalebarRight" content="M100,-10 L100,0" layoutY="15.0" layoutX="600.0"  stroke="#001280"
+                                         strokeWidth="3.0" />
+                            </children>
+                        </Pane>
+                        <!--End Scalebar  -->
+                    </bottom>
 
-            <ListView GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="listView" />
-
-
-        </GridPane>
-
+                </BorderPane>
+            </StackPane>
     </root>
 </Scene>

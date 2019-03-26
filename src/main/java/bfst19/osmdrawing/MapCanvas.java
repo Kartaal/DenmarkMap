@@ -40,6 +40,10 @@ public class MapCanvas extends Canvas {
         repaint();
     }
 
+    public double getDeterminant(){
+        return transform.determinant();
+    }
+
     public void repaint() {
         //to clearly communicate that the fillRect should fill the entire screen
         gc.setTransform(new Affine());
@@ -53,9 +57,10 @@ public class MapCanvas extends Canvas {
         //clears screen by painting a color on the entire screen not background
         gc.fillRect(0, 0, getWidth(), getHeight());
         gc.setTransform(transform);
-        //line width equals 1 px wide relative to the screen no matter zoom level
-        gc.setLineWidth(1/Math.sqrt(Math.abs(transform.determinant())));
 
+        //linewidth equals 1 px wide relative to the screen no matter zoom level
+        gc.setLineWidth(1/Math.sqrt(Math.abs(getDeterminant())));
+        //
         gc.setFillRule(FillRule.EVEN_ODD);
 
         //color for landmasses with nothing drawn on top
@@ -137,5 +142,16 @@ public class MapCanvas extends Canvas {
 
     public void toggleNonRoads() {
         paintNonRoads = !paintNonRoads;
+    }
+
+    /// get mouse coords
+    public Point2D getModelCoords(double x, double y) {
+        try{
+            return transform.inverseTransform(x,y);
+        }catch (NonInvertibleTransformException e) {
+            e.printStackTrace();
+            return null;
+        }
+
     }
 }
