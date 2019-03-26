@@ -14,6 +14,8 @@ import java.util.zip.ZipInputStream;
 
 import static javax.xml.stream.XMLStreamConstants.*;
 
+import java.util.Random;
+
 public class Model {
 	float lonfactor = 1.0f;
 	Map<WayType, List<Drawable>> ways = new EnumMap<>(WayType.class);
@@ -321,6 +323,17 @@ public class Model {
 					for (OSMWay c : merge(coast)) {
 						ways.get(WayType.COASTLINE).add(new Polyline(c));
 					}
+
+
+					//Make comparators for X and Y
+
+					//Make and populate KDTrees for each WayType
+					for(Map.Entry<WayType, List<Drawable>> entry : ways.entrySet()) {
+						KDTree typeTree = new KDTree();
+
+						typeTree.insertAll(entry.getValue());
+
+					}
 					break;
 				case ENTITY_REFERENCE: break;
 				case ATTRIBUTE: break;
@@ -517,4 +530,5 @@ public class Model {
 	public Iterator<String> colorIterator() {
 		return typeColors.iterator();
 	}
+
 }
