@@ -48,6 +48,10 @@ public class Controller {
 
     }
 
+    public void parseSearchText(String searchText){
+        model.parseSearch(searchText);
+    }
+
     public void setUpBar(){
         if(borderPane.getLeft() != null){
             borderPane.setLeft(null);
@@ -67,6 +71,7 @@ public class Controller {
         ControllerBarPanel controllerBarPanel = fxmlLoader.getController();
         controllerBarPanel.init(this);
     }
+
 
     public void setupMenuPanel(){
         if(borderPane.getLeft() != null){

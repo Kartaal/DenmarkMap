@@ -428,9 +428,10 @@ public class Model {
 	}
 
 	public void parseSearch(String proposedAddress) {
-		searchedAddresses.add(AddressParser.getInstance().parse(proposedAddress,getCountry()));
-	}
+		System.out.println("Hey");
+		System.out.println(AddressParser.getInstance().parse(proposedAddress,getCountry()).toString());
 
+	}
 
 	//it's only denmark right now.
 	public String getCountry(){

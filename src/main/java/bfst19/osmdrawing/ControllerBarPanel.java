@@ -7,13 +7,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 
 
 public class ControllerBarPanel {
 
     @FXML
-    private TextField searchText;
+    private TextField searchTextField;
 
     @FXML
     private Button menuButton;
@@ -35,8 +37,14 @@ public class ControllerBarPanel {
         });
     }
 
-    public void giveText(){
+    @FXML
+    public void giveText(javafx.scene.input.KeyEvent event){
+            switch (event.getCode())  {//ev.getcode() gets the specific keycode for the pressed key
+                case ENTER:
+                       controller.parseSearchText(searchTextField.getText());
+                    break;
 
+            }
     }
 
     @FXML

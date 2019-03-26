@@ -30,7 +30,6 @@ public class ControllerRutePanel {
 
         DropShadow dropShadow = new DropShadow(BlurType.ONE_PASS_BOX, Color.rgb(0,0,0,0.4), 10, 0, 0, 0);
         backBtnRutePanel.setEffect(dropShadow);
-        System.out.println("Fuck this");
     }
 
     @FXML
