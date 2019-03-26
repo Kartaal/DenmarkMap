@@ -3,8 +3,8 @@ package bfst19.osmdrawing;
 import java.util.function.LongSupplier;
 
 public class OSMNode implements LongSupplier {
-	private float lat, lon;
-	private long id;
+	protected float lat, lon;
+	protected long id;
 
 	public float getLat() {
 		return lat;
