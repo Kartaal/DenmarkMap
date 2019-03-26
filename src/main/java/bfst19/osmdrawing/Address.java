@@ -34,7 +34,7 @@ public class Address extends OSMNode{
 
     public float getLat(){return lat;}
 
-    public float getLon(){return lat;}
+    public float getLon(){return lon;}
 
     public String getPostcode(){
         return postcode;

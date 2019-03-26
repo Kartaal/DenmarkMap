@@ -30,7 +30,6 @@ public class Model {
 	ArrayList<String[]> wayTypeCases = new ArrayList<>();
 	ObservableList<Address> searchedAddresses = FXCollections.observableArrayList();
 	ObservableList<String> typeColors = FXCollections.observableArrayList();
-	int addressCount = 0;
 
 	public static class Builder {
 		private long id;
@@ -305,7 +304,6 @@ public class Model {
 							e.printStackTrace();
 						}
 					}
-					System.out.println(addressCount);
 
 					for (OSMWay c : merge(coast)) {
 						ways.get(WayType.COASTLINE).add(new Polyline(c));
@@ -340,6 +338,7 @@ public class Model {
 				allStreetsInCountryWriter.flush();
 				BufferedWriter addressInStreetWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("data/"+getCountry()+"/"+cityDirPath+"/"+streetString+".txt")),"UTF-8"));
 				for(Address address:street.getValue()){
+					System.out.println(address.getId()+" "+address.getLat()+" "+address.getLon()+" "+address.getHousenumber());
 					addressInStreetWriter.write(address.getId()+" "+address.getLat()+" "+address.getLon()+" "+address.getHousenumber()+ "\n");
 					addressInStreetWriter.flush();
 				}
@@ -429,7 +428,6 @@ public class Model {
 		if(addresses.get(cityAndPostcode).get(b.streetName)==null){
 			addresses.get(cityAndPostcode).put(b.streetName,new ArrayList<>());
 		}
-		addressCount++;
 		addresses.get(cityAndPostcode).get(b.streetName).add(b.build());
 		b.reset();
 	}
