@@ -8,8 +8,8 @@ import java.util.*;
 
 public class KDTree {
 	KDNode root;
-	xComparator xComp = new xComparator();
-	yComparator yComp = new yComparator();
+	private static xComparator xComp = new xComparator();
+	private static yComparator yComp = new yComparator();
 	private Comparator<BoundingBoxable> selectComp;
 	private final int listSize = 500;
 
@@ -19,7 +19,7 @@ public class KDTree {
 
 	public void insertAll(List<Drawable> list) {
 		if(root == null) {
-			selectComp = xComp;
+			selectComp = KDTree.xComp;
 			sort(list, selectComp);
 			int splitIndex = list.size() / 2;
 
@@ -44,7 +44,7 @@ public class KDTree {
 		sort(list, selectComp);
 
 		int splitIndex = lo + (hi-lo) / 2;
-		selectComp = selectComp == xComp ? yComp : xComp;
+		selectComp = selectComp == KDTree.xComp ? KDTree.yComp : KDTree.xComp;
 		boolean horizontal = !parentNode.horizontal;
 
 		float splitVal;
@@ -193,14 +193,14 @@ public class KDTree {
 		}
 	}
 
-	public class xComparator implements Comparator<BoundingBoxable> {
+	public static class xComparator implements Comparator<BoundingBoxable> {
 
 		public int compare(BoundingBoxable a, BoundingBoxable b) {
 			return (int) (a.getCenterX() - b.getCenterX())*1000000;
 		}
 	}
 
-	public class yComparator implements Comparator<BoundingBoxable> {
+	public static class yComparator implements Comparator<BoundingBoxable> {
 
 		public int compare(BoundingBoxable a, BoundingBoxable b) {
 			return (int) (a.getCenterY() - b.getCenterY())*1000000;
