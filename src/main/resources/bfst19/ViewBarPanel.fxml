@@ -16,7 +16,7 @@
             <Insets right="5.0" />
          </HBox.margin>
          <graphic>
-            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="/menu.png"/>
                </image>
@@ -24,14 +24,14 @@
          </graphic>
       </Button>
 
-      <TextField fx:id = "searchTextField" prefWidth="300.0" prefHeight="30.0" promptText="Adresse" onKeyPressed="#giveText"/>
+      <TextField fx:id = "searchTextField" prefWidth="300.0" prefHeight="40.0" promptText="Adresse" onKeyPressed="#giveText"/>
 
       <Button fx:id="searchButton" mnemonicParsing="false" style="-fx-background-color: white;  -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);">
          <HBox.margin>
             <Insets left="5.0" />
          </HBox.margin>
          <graphic>
-            <ImageView fx:id="Btn" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="Btn" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="/search.png"/>
                </image>
@@ -44,7 +44,7 @@
             <Insets left="5.0" />
          </HBox.margin>
          <graphic>
-            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="/directions.png"/>
                </image>
