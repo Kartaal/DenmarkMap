@@ -1,4 +1,4 @@
-package bfst19.osmdrawing;
+package bfst19;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

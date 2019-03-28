@@ -1,5 +1,4 @@
-package bfst19.osmdrawing;
-
+package bfst19;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.input.KeyEvent;
@@ -10,7 +9,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.scene.control.TextField;
 
 public class Controller {
     private Model model;

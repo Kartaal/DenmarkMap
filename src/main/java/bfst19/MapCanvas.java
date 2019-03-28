@@ -1,6 +1,5 @@
-package bfst19.osmdrawing;
+package bfst19;
 
-import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -9,8 +8,6 @@ import javafx.scene.shape.FillRule;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
 
-import java.awt.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
