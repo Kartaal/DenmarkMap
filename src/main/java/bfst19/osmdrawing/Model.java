@@ -26,11 +26,13 @@ public class Model {
 	float minlat, minlon, maxlat, maxlon;
 
 	String CurrentTypeColorTxt  = "data/TypeColorsNormal.txt";
+	//TODO: change from having map waytype to it's string name, simply use waytype.valueOf()
 	Map<String, WayType> waytypes = new HashMap<>();
 	ArrayList<String[]> wayTypeCases = new ArrayList<>();
 	ObservableList<Address> searchedAddresses = FXCollections.observableArrayList();
 	ObservableList<String> typeColors = FXCollections.observableArrayList();
 
+	//for building addresses during parsing
 	public static class Builder {
 		private long id;
 		private float lat, lon;
@@ -210,6 +212,7 @@ public class Model {
 								b.city = v.trim();
 							}
 
+							//string[0]=waytype's name, strings[1] = k for the case, strings = v for the case.
 							for(String[] strings : wayTypeCases){
 								if(k.equals(strings[1]) && v.equals(strings[2])){
 									type = waytypes.get(strings[0]);
@@ -262,6 +265,8 @@ public class Model {
 								b.lon = lon;
 								putAddress(addresses,b);
 							}
+                            //todo: reset builder everytime it could be an adress.
+							//b.reset();
 							break;
 						case "relation":
 							if (type == WayType.WATER) {
@@ -321,12 +326,13 @@ public class Model {
 	}
 
 	private void makeStreetFiles(TreeMap<String,TreeMap<String, ArrayList<Address>>> addresses)throws IOException{
-
 		BufferedWriter allStreetsInCountryWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("data/"+getCountry()+"/streets.txt")),"UTF-8"));
+		//an entry of a string(cityString) and the map relating to that string.
 		for(Map.Entry<String,TreeMap<String,ArrayList<Address>>> city : addresses.entrySet()){
 			String cityAndPostcodeString = city.getKey();
 			String cityDirPath = cityAndPostcodeString.replaceAll(" QQQ "," ");
 			BufferedWriter streetInCityWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("data/"+getCountry()+"/"+cityDirPath+"/streets.txt")),"UTF-8"));
+			//an entry of a string(streetString) and the arraylist of the adresses relating to that string
 			for(Map.Entry<String,ArrayList<Address>> street : city.getValue().entrySet()){
 				String streetString = street.getKey();
 				if(streetString.contains("/")){
@@ -338,8 +344,8 @@ public class Model {
 				allStreetsInCountryWriter.flush();
 				BufferedWriter addressInStreetWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("data/"+getCountry()+"/"+cityDirPath+"/"+streetString+".txt")),"UTF-8"));
 				for(Address address:street.getValue()){
-					System.out.println(address.getId()+" "+address.getLat()+" "+address.getLon()+" "+address.getHousenumber());
-					addressInStreetWriter.write(address.getId()+" "+address.getLat()+" "+address.getLon()+" "+address.getHousenumber()+ "\n");
+					System.out.println(address.getId()+" "+address.getLat()+" "+address.getLon()+" "+address.getHouseNumber());
+					addressInStreetWriter.write(address.getId()+" "+address.getLat()+" "+address.getLon()+" "+address.getHouseNumber()+ "\n");
 					addressInStreetWriter.flush();
 				}
 				addressInStreetWriter.close();
@@ -405,22 +411,29 @@ public class Model {
 			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("data/"+getCountry()+"/cities.txt")),"UTF-8"));
 			for(String cityAndPostcode :citiesAndPostcodes){
 				writer.write(cityAndPostcode+"\n");
-				String[] tokens = cityAndPostcode.split(" QQQ ",2);
+				//splits the city and postcode at the given delimiter, currently " QQQ " tokens is just the result of this splitting.
+				String[] tokens = cityAndPostcode.split(" QQQ ");
 				File cityDir = new File("data/" + country + "/" + tokens[0] + " " + tokens[1]);
 				cityDir.mkdir();
+				//the city is currently also making the streets.txt file in it's directory,
+                // this is just to be more sure that you can find the streets.txt file even if there are no streets.
 				String streetsFile = "data/" + getCountry() + "/" + tokens[0] + " " + tokens[1] + "/" + "streets" + ".txt";
 				File streetsInCityFile = new File(streetsFile);
 				streetsInCityFile.createNewFile();
 			}
 			writer.close();
 		} catch (IOException e) {
+		    //TODO: handle better
 			e.printStackTrace();
 		}
 
 
 	}
-
+	//Method checks if the index is null, if it is, it makes fills that index with a new collection, and puts the address in it's proper place.
+    //it also resets the builder for future use.
+	//This maps a string(city+postcode) to a map, that maps a string(streetname) to the addresses(houseNumbers) on that street
 	public void putAddress(TreeMap<String, TreeMap<String, ArrayList<Address>>> addresses, Builder b){
+		// QQQ is an arbitrary delimiter between city and postcode, so that we can know with more reliabillity where to split the string later.
 		String cityAndPostcode = b.city+" QQQ "+b.postcode;
 		if(addresses.get(cityAndPostcode)==null){
 			addresses.put(cityAndPostcode,new TreeMap<>());
@@ -433,8 +446,7 @@ public class Model {
 	}
 
 	public void parseSearch(String proposedAddress) {
-		System.out.println(AddressParser.getInstance().parse(proposedAddress,getCountry()).toString());
-
+		Address address = AddressParser.getInstance().parse(proposedAddress,getCountry());
 	}
 
 	//it's only denmark right now.

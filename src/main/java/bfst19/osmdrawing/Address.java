@@ -1,20 +1,25 @@
 package bfst19.osmdrawing;
 
-public class Address extends OSMNode{
-    private String city,streetName,postcode,housenumber,floor,side;
 
-    public Address(long id,float lat,float lon,String streetName,String houseNumber,String postcode,String city){
+public class Address extends OSMNode{
+    private String city,streetName,postcode, houseNumber,floor,side;
+
+    public Address(long id,float lat,float lon,
+                   String streetName,String houseNumber,String postcode,String city){
+        //todo call the other constructor from this one to aviod code dup
         super(id,lat,lon);
         this.streetName = streetName;
-        this.housenumber = houseNumber;
+        this.houseNumber = houseNumber;
         this.postcode = postcode;
         this.city = city;
     }
 
-    public Address(long id, float lat, float lon, String streetName, String houseNumber, String postcode, String city, String floor, String side) {
+    public Address(long id, float lat, float lon,
+                   String streetName, String houseNumber, String postcode,
+                   String city, String floor, String side) {
         super(id,lat,lon);
         this.streetName = streetName;
-        this.housenumber = houseNumber;
+        this.houseNumber = houseNumber;
         this.postcode = postcode;
         this.city = city;
         this.floor = floor;
@@ -40,8 +45,8 @@ public class Address extends OSMNode{
         return postcode;
     }
 
-    public String getHousenumber(){
-        return housenumber;
+    public String getHouseNumber(){
+        return houseNumber;
     }
 
     public String getFloor(){
@@ -54,6 +59,6 @@ public class Address extends OSMNode{
 
     @Override
     public String toString(){
-        return id+" "+lat+" "+lon+" "+streetName+" "+housenumber+" "+postcode+" "+city;
+        return id+" "+lat+" "+lon+" "+streetName+" "+ houseNumber +" "+postcode+" "+city;
     }
 }

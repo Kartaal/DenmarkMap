@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 public class AddressParser {
 
+    //todo add model as a field so it can ask directly for a text file.
     private static AddressParser addressParser = null;
     private ArrayList<String> postcodes = new ArrayList<>();
     private ArrayList<String> cities = new ArrayList<>();
@@ -35,11 +36,12 @@ public class AddressParser {
 
 
 
-
+    //Todo: maybe add support for different order
     final String houseRegex = "(?<house>([0-9]{1,3} ?[a-z]?))";
     final String floorRegex = "(?<floor>([1-9][0-9]?\\.?)|(st\\.)|ST\\.)";
     final String sideRegex = "(?<side>th|tv|mf|TH|TV|MF|([0-9][0-9]?[0-9]?))";
 
+    //This only checks the remainder of the string at the end for housenumber, floor and side for the adress.
     final String[] regex = {
             "^(?<house>([0-9]{1,3} ?[a-zA-Z]?))?,? ?(?<floor>([1-9]{1,3}\\.?)|(1st\\.)|(st\\.))?,? ?(?<side>th\\.?|tv\\.?|mf\\.?|md\\.?|([0-9]{1,3}\\.?))?,?$"
     };
@@ -55,6 +57,7 @@ public class AddressParser {
         }
     }
 
+    //todo comments for this class
     public Address parse(String proposedAddress, String country){
         proposedAddress = proposedAddress.toLowerCase().trim();
         try {
@@ -73,8 +76,6 @@ public class AddressParser {
                 proposedAddress = proposedAddress.replaceAll(streetMatch[0],"");
                 b.streetName = streetMatch[0];
                 if(!streetMatch[1].equals("")){
-                    System.out.println(streetMatch[1]);
-                    System.out.println(streetMatch[2]);
                     b.city = streetMatch[1];
                     b.postcode = streetMatch[2];
                 }
@@ -118,6 +119,7 @@ public class AddressParser {
         if(houseNumber.equals("")){
             return address.split(" ");
         }
+        //todo currently only returns the first line's address while it should find the line matching the housenumber
         while(address!=null){
             adressFields=address.split(" ");
             if(adressFields[3].toLowerCase().equals(houseNumber)){
@@ -194,6 +196,8 @@ public class AddressParser {
             currentCity = cities.get(i);
             currentPostcode = postcodes.get(i);
 
+            //this was motivated by using the postcode as the most significant part of a city and postcode,
+            // so that if you write a postcode, it will use that postcodes matching city
             //TODO these need rewriting badly, two methods that basically do the same thing??
             String checkSecondToLastToken = checkSecondToLastTokenForPostcode(proposedAddress, currentPostcode).toLowerCase();
             String checkThirdToLastToken = checkThirdToLastTokenForPostcode(proposedAddress, currentPostcode).toLowerCase();
