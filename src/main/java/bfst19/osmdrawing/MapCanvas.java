@@ -1,6 +1,5 @@
 package bfst19.osmdrawing;
 
-import bfst19.osmdrawing.KDTree.KDTree;
 import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -97,18 +96,20 @@ public class MapCanvas extends Canvas {
                     }else{
                         gc.setStroke(getColor(type));
                         for (Drawable way : model.getWaysOfType(type, getExtentInModel())) way.stroke(gc);
-
-
-
                     }
-
                 }
             }
         }
     }
 
     private Bounds getExtentInModel(){
-       return this.getBoundsInLocal();
+        Bounds localBounds = this.getBoundsInLocal();
+        //Values for smaller BB don't seem to work?
+        double minX = localBounds.getMinX()+0.002;
+        double maxX = localBounds.getMaxX()-0.002;
+        double minY = localBounds.getMinY()+0.002;
+        double maxY = localBounds.getMaxY()-0.002;
+        return new BoundingBox(minX, minY, maxX-minX, maxY-minY);
 
     }
 

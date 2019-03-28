@@ -9,31 +9,15 @@ import java.util.ArrayList;
 public class MultiPolyline extends ArrayList<Polyline> implements Drawable, Serializable, BoundingBoxable {
 	private float centerX;
 	private float centerY;
+	private BoundingBox bb;
 
 	public MultiPolyline(OSMRelation rel) {
 		for (OSMWay way : rel){
 			Polyline addingLine = new Polyline(way);
 			add(addingLine);
-			//TODO fix this? probably doesnt work as intended
-			this.centerX = addingLine.getCenterX();
-			this.centerY = addingLine.getCenterY();
 		}
 
-	}
-
-	@Override
-	public float getCenterX() {
-		return centerX;
-	}
-
-	@Override
-	public float getCenterY() {
-		return centerY;
-	}
-
-	@Override
-	public BoundingBox getBB() {
-
+		//Find the limits of BoundingBox
 		//Code copy pasted to KDTree
 		//Arbitrary values that should exceed the coords on Denmark
 		double minX = 100, maxX = 0, minY = 100, maxY = 0;
@@ -53,7 +37,25 @@ public class MultiPolyline extends ArrayList<Polyline> implements Drawable, Seri
 			}
 		}
 
-		return new BoundingBox(minX, minY, maxX-minX, maxY-minY);
+		this.centerX = (float) (minX + maxX) / 2;
+		this.centerY = (float) (minY + maxY) / 2;
+		bb = new BoundingBox(minX, minY, maxX-minX, maxY-minY);
+	}
+
+	@Override
+	public float getCenterX() {
+		return centerX;
+	}
+
+	@Override
+	public float getCenterY() {
+		return centerY;
+	}
+
+	@Override
+	public BoundingBox getBB() {
+
+		return bb;
 	}
 
 	@Override

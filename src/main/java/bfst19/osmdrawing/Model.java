@@ -14,8 +14,6 @@ import java.util.zip.ZipInputStream;
 
 import static javax.xml.stream.XMLStreamConstants.*;
 
-import java.util.Random;
-
 public class Model {
 	float lonfactor = 1.0f;
 	Map<WayType, List<Drawable>> ways = new EnumMap<>(WayType.class);
@@ -29,8 +27,7 @@ public class Model {
 	ArrayList<String[]> wayTypeCases = new ArrayList<>();
 	ObservableList<Address> searchAddresses = FXCollections.observableArrayList();
 	ObservableList<String> typeColors = FXCollections.observableArrayList();
-	Map<WayType, KDTree> kdTreeMap;
-	KDTree tree;
+	Map<WayType, KDTree> kdTreeMap = new TreeMap<>();
 
 	//TODO filthy disgusting typecasting
 	public Iterable<Drawable> getWaysOfType(WayType type, Bounds bbox) {
@@ -324,15 +321,13 @@ public class Model {
 						ways.get(WayType.COASTLINE).add(new Polyline(c));
 					}
 
-
-					//Make comparators for X and Y
-
 					//Make and populate KDTrees for each WayType
 					for(Map.Entry<WayType, List<Drawable>> entry : ways.entrySet()) {
 						KDTree typeTree = new KDTree();
-
+						//Add entry values to KDTree
 						typeTree.insertAll(entry.getValue());
-
+						//Add KDTree to TreeMap
+						kdTreeMap.put(entry.getKey(), typeTree);
 					}
 					break;
 				case ENTITY_REFERENCE: break;

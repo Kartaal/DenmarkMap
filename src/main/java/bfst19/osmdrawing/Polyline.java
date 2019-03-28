@@ -1,9 +1,6 @@
 package bfst19.osmdrawing;
 
-import bfst19.osmdrawing.BoundingBox;
-import bfst19.osmdrawing.BoundingBoxable;
-import bfst19.osmdrawing.Drawable;
-import bfst19.osmdrawing.OSMWay;
+
 import javafx.scene.canvas.GraphicsContext;
 
 import java.io.Serializable;
@@ -33,13 +30,14 @@ public class Polyline implements Drawable, Serializable, BoundingBoxable {
 	    //Gets a pairs of x and y coords from the given way and stores them in the coord array
 		// with lon coordinates stored at even indices and lat coordinates stored at odd indices
 
-		//bounding box stuff
+		//Set initial min and max values
 		float xMin = way.get(0).getLon();
 		float xMax = way.get(0).getLon();
 		float yMin = way.get(0).getLat();
 		float yMax = way.get(0).getLat();
 
 		coord = new float[way.size() * 2];
+		//Update min and max values as we read through the nodes
 		for (int i = 0 ; i < way.size() ; i++) {
 			coord[2*i] = way.get(i).getLon();
 			coord[2*i+1] = way.get(i).getLat();

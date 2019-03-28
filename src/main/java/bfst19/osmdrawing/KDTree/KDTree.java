@@ -11,23 +11,34 @@ public class KDTree {
 	private static xComparator xComp = new xComparator();
 	private static yComparator yComp = new yComparator();
 	private Comparator<BoundingBoxable> selectComp;
+	//TODO static?
 	private final int listSize = 500;
 
 	public KDTree(){
 		root = null;
 	}
 
+	//Method for creating a KDTree from a list of Drawable
 	public void insertAll(List<Drawable> list) {
+		//If tree is currently empty, do a lot of work
 		if(root == null) {
+			//Set xComp as the first comparator
 			selectComp = KDTree.xComp;
+			//Use a modified QuickSort to ensure the lower values are in the left half
+			// and the higher values are in the right half
 			sort(list, selectComp);
+			//Find the middle index to find the root element
 			int splitIndex = list.size() / 2;
 
+			//Ensure that our Drawable list is not empty
 			if(list.size() > 0) {
 				//TODO figure out something about all these typecasts
+				//Find the comparator correct value of the middle element (Root so X value)
 				float splitValue = ((BoundingBoxable) list.get(splitIndex)).getCenterX();
 				root = new KDNode(null, splitValue, false);
 
+				//Start recursively creating the left and right subtrees
+				// of indexes 0 to splitIndex for left subtree and splitIndex+1 to list.size() for the right subtree
 				root.nodeL = createTree(list, root, 0, splitIndex);
 				root.nodeR = createTree(list, root, splitIndex + 1, list.size());
 			} else {
@@ -39,12 +50,16 @@ public class KDTree {
 
 	private KDNode createTree(List<Drawable> list, KDNode parentNode, int lo, int hi) {
 		//Added to prevent errors when lo == hi (there was a WayType with 2 elements that caused this problem)
-		if (hi <= lo) return new KDNode(null, -1, false);
+		//TODO ensure correctness (still?)
+		if (hi <= lo) return null;
 
+		//Change comparator
+		//? is a shorthand of if-else. (expression) ? (if expression true) : (if expression false)
+		selectComp = selectComp == KDTree.xComp ? KDTree.yComp : KDTree.xComp;
+		//Might want an overloaded version that only sorts a sublist
 		sort(list, selectComp);
 
 		int splitIndex = lo + (hi-lo) / 2;
-		selectComp = selectComp == KDTree.xComp ? KDTree.yComp : KDTree.xComp;
 		boolean horizontal = !parentNode.horizontal;
 
 		float splitVal;
@@ -76,6 +91,7 @@ public class KDTree {
 		return currNode;
 	}
 
+	//Currently never used
 	public void insert(BoundingBoxable value){
 		if(root == null) {
 			List<BoundingBoxable> list = new ArrayList<>();
@@ -104,7 +120,7 @@ public class KDTree {
 			return new KDNode(list, splitValue, horizontal);
 		}
 
-		//TODO improve on this, KDNode.getSplit gets the correct dimensional split value
+		//maybe to-do improve on this, KDNode.getSplit gets the correct dimensional split value
 		//Split on x
 		if(!horizontal) {
 			//if current BoundingBoxable has a centerX less than current KDNode
@@ -126,23 +142,43 @@ public class KDTree {
 		return x;
 	}
 
+	//Method for finding elements in the KDTree that intersects a BoundingBox
 	public Iterable<Drawable> rangeQuery(BoundingBox bbox) {
 		List<Drawable> returnElements = new ArrayList<>();
 		rangeQuery(bbox, root, returnElements);
 		return returnElements;
 	}
 
-	private List<Drawable> rangeQuery(BoundingBox bb, KDNode node, List<Drawable> returnElements) {
-		/*if(bbox.contains(KDNode.))*/
-		//Ugly casting to Drawable...
-		if(bb.contains(root.getBB())) {
-			returnElements.add((Drawable) root);
-		}
-		ArrayList<Drawable> subElements = new ArrayList<>();
-		subElements.addAll(rangeQuery(bb, node.nodeL, returnElements));
-		subElements.addAll(rangeQuery(bb, node.nodeR, returnElements));
+	//Recursive checks down through the KDTree
+	private List<Drawable> rangeQuery(BoundingBox queryBB, KDNode node, List<Drawable> returnElements) {
+		//Return null if current node is null to stop endless recursion
+		if(node == null) return null;
 
-		return subElements;
+		//Ugly casting to Drawable...
+		//if we have values, check for each if its BoundingBox intersects our query BoundingBox
+		// if true, report it
+		if(node.values != null) {
+			for (BoundingBoxable value : node.values) {
+				if (queryBB.intersects(value.getBB())) {
+					returnElements.add((Drawable) value);
+				}
+			}
+		}
+
+		//Make temporary list to keep elements, so null returns don't cause problems
+		//Check the left subtree for elements intersecting BoundingBox
+		List<Drawable> tempList = rangeQuery(queryBB, node.nodeL, returnElements);
+		if(tempList != null) {
+			returnElements.addAll(tempList);
+		}
+
+		//Check the right subtree for elements intersecting BoundingBox
+		tempList = rangeQuery(queryBB, node.nodeR, returnElements);
+		if(tempList != null) {
+			returnElements.addAll(tempList);
+		}
+
+		return returnElements;
 	}
 
 
@@ -152,6 +188,7 @@ public class KDTree {
 		public boolean horizontal; //if false, splits on x
 		public KDNode nodeL; //child
 		public KDNode nodeR; //child
+		public BoundingBox bb;
 
 		public KDNode(List<BoundingBoxable> value, float split, boolean horizontal) {
 			if(value != null) {
@@ -160,16 +197,8 @@ public class KDTree {
 			this.split = split;
 			this.horizontal = horizontal;
 			nodeL = nodeR = null;
-		}
 
-		public float getSplit() {
-			return split;
-		}
-
-
-		//Returns a bounds object representing the bounding box of all the elements in the node
-		public BoundingBox getBB() {
-
+			//Create BoundingBox for the KDNode
 			//Duplicate code from MultiPolyline
 			//Arbitrary values that should exceed the coords on Denmark
 			double minX = 100, maxX = 0, minY = 100, maxY = 0;
@@ -189,19 +218,36 @@ public class KDTree {
 				}
 			}
 
-			return new BoundingBox(minX, minY, maxX-minX, maxY-minY);
+			bb = new BoundingBox(minX, minY, maxX-minX, maxY-minY);
+		}
+
+		public float getSplit() {
+			return split;
+		}
+
+		//Returns a BoundingBox object representing the bounding box of all the elements in the node
+		public BoundingBox getBB() {
+			return bb;
 		}
 	}
 
+	//Innerclass comparator for X dimension
 	public static class xComparator implements Comparator<BoundingBoxable> {
-
+		//This calculation is made to convert from float to int because Comparator interface requires it
+		// Returns a negative integer if a's centerX value is smaller than b's centerX value
+		// Returns 0 if a's centerX value is equal to b's centerX value
+		// Returns a positive integer if a's centerX value is larger than b's centerX value
 		public int compare(BoundingBoxable a, BoundingBoxable b) {
 			return (int) (a.getCenterX() - b.getCenterX())*1000000;
 		}
 	}
 
+	//Innerclass comparator for Y dimension
 	public static class yComparator implements Comparator<BoundingBoxable> {
-
+		//This calculation is made to convert from float to int because Comparator interface requires it
+		// Returns a negative integer if a's centerY value is smaller than b's centerY value
+		// Returns 0 if a's centerY value is equal to b's centerY value
+		// Returns a positive integer if a's centerY value is larger than b's centerY value
 		public int compare(BoundingBoxable a, BoundingBoxable b) {
 			return (int) (a.getCenterY() - b.getCenterY())*1000000;
 		}
@@ -210,6 +256,7 @@ public class KDTree {
 
 
 	//TODO CLEAN THIS SHIT UP
+	//Not in use currently
 	public BoundingBoxable select(List<Drawable> a, int k, Comparator<BoundingBoxable> comp)
 	{
 		StdRandom rand = new StdRandom();
@@ -225,8 +272,7 @@ public class KDTree {
 		return (BoundingBoxable) a.get(k);
 	}
 
-	//TODO Something here is broken in the sort, it returns an array that is a lot, lot larger than its input size
-	//From Algs4 book
+	//From Algs4 book, modified
 	public void sort(List<Drawable> a, Comparator<BoundingBoxable> comp) {
 		StdRandom rand = new StdRandom();
 		rand.shuffle(a);
