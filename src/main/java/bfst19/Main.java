@@ -1,5 +1,5 @@
 
-package bfst19.osmdrawing;
+package bfst19;
 
 import javafx.application.Application;
 import javafx.stage.Stage;

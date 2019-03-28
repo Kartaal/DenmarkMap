@@ -1,5 +1,7 @@
-package bfst19.osmdrawing;
+package bfst19;
 
+import bfst19.Address;
+import bfst19.AddressParser;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

@@ -27,7 +27,7 @@ test{
 }
 
 // Define the main class for the application
-mainClassName = 'bfst19.osmdrawing.Main'
+mainClassName = 'bfst19.Main'
 
 dependencies {
     // This dependency is found on compile classpath of this component and consumers.
@@ -63,5 +63,5 @@ tasks.withType(JavaCompile) {
 }
 
 run {
-    args = ['data/zealand.zip']
+    args = ['/Users/isabellelmmatic/Downloads/small.osm']
 }

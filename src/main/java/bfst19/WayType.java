@@ -1,4 +1,4 @@
-package bfst19.osmdrawing;
+package bfst19;
 public enum WayType {
 	//TODO: separate into different WayTypes
 	RECREATION(false,10 ),
