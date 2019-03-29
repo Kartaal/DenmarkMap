@@ -59,8 +59,13 @@ public class AddressParser {
         }
     }
 
+
+    public ArrayList<String[]> parseNonSingleSearch(String proposeAddress,String country){
+        return getMatchesFromDefault(proposeAddress,false);
+    }
+
     //todo comments for this class
-    public Address parse(String proposedAddress, String country){
+    public Address parseSingleSearch(String proposedAddress, String country){
         proposedAddress = proposedAddress.toLowerCase().trim();
         try {
             parseCitiesAndPostCodes(country);
@@ -93,8 +98,8 @@ public class AddressParser {
                 }
             }
 
-            if(!b.streetName.equals("Unknown")&&!b.city.equals("")){
-                String[] address = getAddress(country, b.city, b.postcode, b.streetName, b.houseNumber);
+            if(!b.streetName.equals("Unknown")&&!b.city.equals("")&&!b.postcode.equals("")){
+                String[] address = getAddress(country, b.city, b.postcode, b.streetName, b.houseNumber,singleSearch).get(0);
                 if(address!=null) {
                     b.id = Long.valueOf(address[0]);
                     b.lat = Float.valueOf(address[1]);
@@ -112,22 +117,32 @@ public class AddressParser {
         return null;
     }
 
-    private String[] getAddress(String country, String city, String postcode, String streetName, String houseNumber) throws IOException {
+    private ArrayList<String[]> getAddress(String country, String city, String postcode, String streetName, String houseNumber,boolean singleSearch) throws IOException {
         BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream("data/"+country+"/"+city+ " QQQ " +postcode+"/"+streetName+".txt"),"UTF-8"));
         String address = in.readLine();
+        ArrayList<String[]> matches = new ArrayList<>();
         String[] adressFields;
 
-
-        if(houseNumber.equals("")){
-            return address.split(" ");
-        }
-        //todo currently only returns the first line's address while it should find the line matching the housenumber
-        while(address!=null){
-            adressFields=address.split(" ");
-            if(adressFields[3].toLowerCase().equals(houseNumber)){
-                return adressFields;
+        if(singleSearch){
+            if(houseNumber.equals("")){
+                matches.add(address.split(" "));
+                return matches;
             }
-            address = in.readLine();
+            //todo currently only returns the first line's address while it should find the line matching the housenumber
+            while(address!=null){
+                adressFields=address.split(" ");
+                if(adressFields[3].toLowerCase().equals(houseNumber)){
+                    matches.add(adressFields);
+                    return matches;
+                }
+                address = in.readLine();
+            }
+        }else{
+            while(address!=null){
+                adressFields = address.split(" ");
+                matches.add(adressFields);
+            }
+            return matches;
         }
         return null;
     }
@@ -253,19 +268,27 @@ public class AddressParser {
         return "";
     }
     //basically binary search using string.compareTo to determine if you should look in the upper or lower sub-array
-    public ArrayList<String> getMatchesFromDefault(String proposedAddress){
+    //it ignores case for compares, but returns the raw data
+    public ArrayList<String[]> getMatchesFromDefault(String proposedAddress,boolean singleSearch){
         int lo = 0;
         int hi = defaults.size()-1;
         int mid = 0;
         while(lo<=hi){
             mid = lo+(hi-lo)/2;
-            String currentDefault = defaults.get(mid);
-            if(currentDefault.startsWith(proposedAddress)){
+            String currentDefault = defaults.get(mid).toLowerCase();
+            if(currentDefault.startsWith(proposedAddress.toLowerCase())){
+                if(singleSearch){
+                    ArrayList<String[]> result = new ArrayList<>();
+                    String[] matchTokens = currentDefault.split(" QQQ ");
+                    result.add(matchTokens);
+                    return result;
+                }
                 return traverseUpAndDown(mid,proposedAddress);
             }
-            if(proposedAddress.compareTo(defaults.get(mid))<0){
+            int resultOfComparison = proposedAddress.compareToIgnoreCase(currentDefault);
+            if(resultOfComparison<0){
                 hi = mid - 1;
-            }else if (proposedAddress.compareTo(defaults.get(mid))>0){
+            }else if (resultOfComparison>0){
                 lo = mid + 1;
             }else{
                 return traverseUpAndDown(mid,proposedAddress);
@@ -276,21 +299,25 @@ public class AddressParser {
 
     //gets all possible matches from a given index,
     // from this index it traverses up and down the default array until it's no longer a match.
-    private ArrayList<String> traverseUpAndDown(int mid,String proposedAddress) {
-        ArrayList<String> matches = new ArrayList<>();
+    //it also splits the match up in a string array where the first index is the street, second is city, third is postcode.
+    private ArrayList<String[]> traverseUpAndDown(int mid,String proposedAddress) {
+        ArrayList<String[]> matches = new ArrayList<>();
         int lo = mid-1;
+        proposedAddress = proposedAddress.toLowerCase();
         String currentIndexString = defaults.get(mid);
         //traverses up the default array until it's no longer a match
-        while(currentIndexString.startsWith(proposedAddress)){
-            matches.add(currentIndexString);
+        while(currentIndexString.toLowerCase().startsWith(proposedAddress)){
+            String[] matchTokens = currentIndexString.split(" QQQ ");
+            matches.add(matchTokens);
             currentIndexString = defaults.get(lo);
             lo--;
         }
         currentIndexString = defaults.get(mid+1);
         int hi = mid + 2;
         //traverses down the default array until it's no longer a match
-        while(currentIndexString.startsWith(proposedAddress)){
-            matches.add(currentIndexString);
+        while(currentIndexString.toLowerCase().startsWith(proposedAddress)){
+            String[] matchTokens = currentIndexString.split(" QQQ ");
+            matches.add(matchTokens);
             currentIndexString = defaults.get(hi);
             hi++;
         }
@@ -301,6 +328,7 @@ public class AddressParser {
         ArrayList<String[]> addresses = new ArrayList<>();
         return addresses;
     }
+
 
     public void parseDefaults(String filepath){
         try {

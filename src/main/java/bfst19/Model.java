@@ -305,6 +305,7 @@ public class Model {
 				case END_DOCUMENT:
 					File parseCheck = new File("data/"+getCountry());
 					if(!parseCheck.isDirectory()) {
+						//todo currently the addresSsorting does not ignore case, perhaps change that if it ends up causing issues
 						addresses.sort(Address::compareTo);
 						makeDatabase(addresses,getCountry());
 						//makeCityDirectories(addresses.keySet(),getCountry());
@@ -495,12 +496,13 @@ public class Model {
 		addresses.get(cityAndPostcode).get(b.streetName).add(b.build());
 	}
 
-	public void parseSearch(String proposedAddress) {
+	public void parseSearch(String proposedAddress,boolean singleSearch) {
 		/*Address address = AddressParser.getInstance().parse(proposedAddress,getCountry());
 		System.out.println(address.toString());*/
 		AddressParser.getInstance().parseDefaults("data/"+getCountry()+"/streets.txt");
-		for(String line:AddressParser.getInstance().getMatchesFromDefault(proposedAddress)){
-			System.out.println(line);
+		ArrayList<String[]> a = AddressParser.getInstance().parse(proposedAddress,getCountry(),singleSearch);
+		for(String[] line:a){
+			System.out.println(line[0]+" "+line[1]+" "+line[2]);
 		}
 	}
 
