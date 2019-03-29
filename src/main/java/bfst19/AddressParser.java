@@ -13,6 +13,8 @@ public class AddressParser {
     private static AddressParser addressParser = null;
     private ArrayList<String> postcodes = new ArrayList<>();
     private ArrayList<String> cities = new ArrayList<>();
+    //a collection of the default searching file if there is no hit for cityCheck
+    private ArrayList<String> defaults = new ArrayList<>();
 
     public static AddressParser getInstance(){
         if(addressParser == null){
@@ -111,7 +113,7 @@ public class AddressParser {
     }
 
     private String[] getAddress(String country, String city, String postcode, String streetName, String houseNumber) throws IOException {
-        BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream("data/"+country+"/"+city+ " " +postcode+"/"+streetName+".txt"),"UTF-8"));
+        BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream("data/"+country+"/"+city+ " QQQ " +postcode+"/"+streetName+".txt"),"UTF-8"));
         String address = in.readLine();
         String[] adressFields;
 
@@ -146,19 +148,17 @@ public class AddressParser {
                 //splits at arbitrary dilimiter for proper splitting of streetnames and citynames
                 //todo fix $ line end delimiter with for each city in country/cities.txt and for each street in country/city/streets.txt
                 line = line.replace("$","");
-                String[] tokens = line.split(" ZZZ ");
+                String[] tokens = line.split(" QQQ ");
                 String streetToken = tokens[0];
+                String cityToken = tokens[1];
+                String postcodeToken = tokens[2];
                 //split is supposed to split at a delimiter and not include the delimiter in the tokens but it deosn't so i replace them instead
-                String cityAndPostcodeToken = tokens[1].replace(" ZZZ ","");
-                String[] cityAndPostcodeTokens = cityAndPostcodeToken.split(" QQQ ");
-                String cityToken = cityAndPostcodeTokens[0];
-                String postcodeToken = cityAndPostcodeTokens[1].replace(" QQQ ","");
 
                 if(address.startsWith(streetToken.toLowerCase())){
                     if(streetToken.length() > mostCompleteMatch.length()){
-                        mostCompleteMatch = tokens[0];
-                        mostCompleteMatchCity = cityAndPostcodeTokens[0];
-                        mostCompleteMatchPostcode = cityAndPostcodeTokens[1];
+                        mostCompleteMatch = streetToken;
+                        mostCompleteMatchCity = cityToken;
+                        mostCompleteMatchPostcode = postcodeToken;
                     }
                 }
                 line = in.readLine();
@@ -171,7 +171,7 @@ public class AddressParser {
             match[2] = mostCompleteMatchPostcode;
         } else {
             System.out.println("city: "+cityMatch[1]+"postcode: "+cityMatch[2]);
-            in = new BufferedReader(new InputStreamReader(new FileInputStream("data/" + country + "/" + cityMatch[1] + " " + cityMatch[2]+ "/streets.txt"), "UTF-8"));
+            in = new BufferedReader(new InputStreamReader(new FileInputStream("data/" + country + "/" + cityMatch[1] + " QQQ " + cityMatch[2]+ "/streets.txt"), "UTF-8"));
             String line = in.readLine();
             String mostCompleteMatch = "";
             while(line != null){
@@ -251,6 +251,68 @@ public class AddressParser {
                     + " " + adressTokens[adressTokens.length-1]);
         }
         return "";
+    }
+    //basically binary search using string.compareTo to determine if you should look in the upper or lower sub-array
+    public ArrayList<String> getMatchesFromDefault(String proposedAddress){
+        int lo = 0;
+        int hi = defaults.size()-1;
+        int mid = 0;
+        while(lo<=hi){
+            mid = lo+(hi-lo)/2;
+            String currentDefault = defaults.get(mid);
+            if(currentDefault.startsWith(proposedAddress)){
+                return traverseUpAndDown(mid,proposedAddress);
+            }
+            if(proposedAddress.compareTo(defaults.get(mid))<0){
+                hi = mid - 1;
+            }else if (proposedAddress.compareTo(defaults.get(mid))>0){
+                lo = mid + 1;
+            }else{
+                return traverseUpAndDown(mid,proposedAddress);
+            }
+        }
+        return null;
+    }
+
+    //gets all possible matches from a given index,
+    // from this index it traverses up and down the default array until it's no longer a match.
+    private ArrayList<String> traverseUpAndDown(int mid,String proposedAddress) {
+        ArrayList<String> matches = new ArrayList<>();
+        int lo = mid-1;
+        String currentIndexString = defaults.get(mid);
+        //traverses up the default array until it's no longer a match
+        while(currentIndexString.startsWith(proposedAddress)){
+            matches.add(currentIndexString);
+            currentIndexString = defaults.get(lo);
+            lo--;
+        }
+        currentIndexString = defaults.get(mid+1);
+        int hi = mid + 2;
+        //traverses down the default array until it's no longer a match
+        while(currentIndexString.startsWith(proposedAddress)){
+            matches.add(currentIndexString);
+            currentIndexString = defaults.get(hi);
+            hi++;
+        }
+        return matches;
+    }
+
+    public ArrayList<String[]> getAdresses(String filepath){
+        ArrayList<String[]> addresses = new ArrayList<>();
+        return addresses;
+    }
+
+    public void parseDefaults(String filepath){
+        try {
+            BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(filepath),"UTF-8"));
+            String line = in.readLine();
+            while(line!=null){
+                defaults.add(line);
+                line = in.readLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void parseCitiesAndPostCodes(String country)throws Exception{
