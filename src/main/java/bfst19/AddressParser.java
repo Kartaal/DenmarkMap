@@ -46,8 +46,19 @@ public class AddressParser {
             "^(?<house>([0-9]{1,3} ?[a-zA-Z]?))?,? ?(?<floor>([1-9]{1,3}\\.?)|(1st\\.)|(st\\.))?,? ?(?<side>th\\.?|tv\\.?|mf\\.?|md\\.?|([0-9]{1,3}\\.?))?,?$"
     };
 
+    /* Pattern:A regular expression, specified as a string, must first be compiled into an instance of this class
+     * Arrays.stresm:Returns a sequential Stream with the specified array as its source
+     * Stream.map: Returns a stream consisting of the results of applying the given function to the elements of this stream.
+     * Patteren. compile: Compiles the given regular expression into a pattern.
+     */
     final Pattern[] patterns =
             Arrays.stream(regex).map(Pattern::compile).toArray(Pattern[]::new);
+
+    /* Matcher:An engine that performs match operations on a character sequence by interpreting a Pattern.
+     * Consumer<String>: Represents an operation that accepts a single input argument and returns no result
+     * m. group: Returns the input subsequence captured by the given named-capturing group during the previous match operation.
+     * if the match was successful but the group specified failed to match any part of the input sequence, then null is returned.
+     */
 
     private void tryExtract(Matcher m, String group, Consumer<String> c) {
         try {
@@ -56,7 +67,7 @@ public class AddressParser {
             e.printStackTrace();
         }
     }
-
+    
     //todo comments for this class
     public Address parse(String proposedAddress, String country){
         proposedAddress = proposedAddress.toLowerCase().trim();
