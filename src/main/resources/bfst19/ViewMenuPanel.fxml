@@ -61,6 +61,11 @@
                   <Insets bottom="5.0" left="20.0" right="5.0" top="5.0" />
                </VBox.margin>
             </RadioButton>
+            <RadioButton mnemonicParsing="false" text="RoadsOnly Mode">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="20.0" right="5.0" top="5.0" />
+               </VBox.margin>
+            </RadioButton>
          </children>
          <VBox.margin>
             <Insets />
