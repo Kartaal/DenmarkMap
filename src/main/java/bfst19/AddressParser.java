@@ -11,18 +11,23 @@ public class AddressParser {
 
     //todo add model as a field so it can ask directly for a text file.
     private static AddressParser addressParser = null;
+    private static Model model = null;
     private ArrayList<String> postcodes = new ArrayList<>();
     private ArrayList<String> cities = new ArrayList<>();
     //a collection of the default searching file if there is no hit for cityCheck
     private ArrayList<String> defaults = new ArrayList<>();
 
-    public static AddressParser getInstance(){
+    public static AddressParser getInstance(Model model){
         if(addressParser == null){
-            addressParser = new AddressParser();
+            return new AddressParser(model);
         }
         return addressParser;
     }
 
+    public AddressParser(Model model){
+        addressParser = this;
+        this.model = model;
+    }
 
     public class Builder {
         private long id;
@@ -60,18 +65,24 @@ public class AddressParser {
     }
 
 
-    public ArrayList<String[]> parseNonSingleSearch(String proposeAddress,String country){
+    public ArrayList<String[]> nonSingleSearch(String proposeAddress,String country){
         return getMatchesFromDefault(proposeAddress,false);
     }
 
     //todo comments for this class
-    public Address parseSingleSearch(String proposedAddress, String country){
+    public Address singleSearch(String proposedAddress, String country){
         proposedAddress = proposedAddress.toLowerCase().trim();
         try {
-            parseCitiesAndPostCodes(country);
             Builder b = new Builder();
             String[] cityMatch = CityCheck(proposedAddress);
 
+            //if a cityMatch is not found, the autocomplete system is triggered instead
+            if(cityMatch[0].equals("")){
+                return null;
+            }
+
+
+            //this if is redundant for now, but it checks if a city is found or not
             if (!(cityMatch[0].equals(""))) {
                 proposedAddress = proposedAddress.replaceAll(cityMatch[0].toLowerCase(), "");
                 b.city = cityMatch[1];
@@ -79,15 +90,18 @@ public class AddressParser {
             }
 
             String streetMatch[] = checkStreet(proposedAddress,country,cityMatch);
+            //if a city is found, we try to find a street in that cities streets.txt file that matches the proposed address
             if(!streetMatch[0].equals("")){
                 proposedAddress = proposedAddress.replaceAll(streetMatch[0],"");
                 b.streetName = streetMatch[0];
+                //this is from the previous iteration where i would look in the country's streets.txt file for the city and postcode, if the citymatch did not find one
                 if(!streetMatch[1].equals("")){
                     b.city = streetMatch[1];
                     b.postcode = streetMatch[2];
                 }
             }
 
+            //this uses regex to find houseNumber, side and floor for the address after the cityCheck and streetCheck have filtered the string.
             proposedAddress = proposedAddress.trim();
             for (Pattern pattern : patterns) {
                 Matcher match = pattern.matcher(proposedAddress);
@@ -98,8 +112,10 @@ public class AddressParser {
                 }
             }
 
+            //after all other things have been done, we find the lattitude, longettiude
+            // and Id of the node that this address belongs to in the streetname's file
             if(!b.streetName.equals("Unknown")&&!b.city.equals("")&&!b.postcode.equals("")){
-                String[] address = getAddress(country, b.city, b.postcode, b.streetName, b.houseNumber,singleSearch).get(0);
+                String[] address = getAddress(country, b.city, b.postcode, b.streetName, b.houseNumber,true).get(0);
                 if(address!=null) {
                     b.id = Long.valueOf(address[0]);
                     b.lat = Float.valueOf(address[1]);
@@ -117,8 +133,12 @@ public class AddressParser {
         return null;
     }
 
-    private ArrayList<String[]> getAddress(String country, String city, String postcode, String streetName, String houseNumber,boolean singleSearch) throws IOException {
-        BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream("data/"+country+"/"+city+ " QQQ " +postcode+"/"+streetName+".txt"),"UTF-8"));
+    //this method gets an address' remaining information from the streetname's text file,
+    // this information is called addressfields in this method, but is perhaps not the best name
+    public ArrayList<String[]> getAddress(String country, String city, String postcode, String streetName, String houseNumber,boolean singleSearch){
+        BufferedReader in = null;
+        try {
+            in = new BufferedReader(new InputStreamReader(new FileInputStream("data/"+country+"/"+city+ " QQQ " +postcode+"/"+streetName+".txt"),"UTF-8"));
         String address = in.readLine();
         ArrayList<String[]> matches = new ArrayList<>();
         String[] adressFields;
@@ -128,10 +148,9 @@ public class AddressParser {
                 matches.add(address.split(" "));
                 return matches;
             }
-            //todo currently only returns the first line's address while it should find the line matching the housenumber
             while(address!=null){
                 adressFields=address.split(" ");
-                if(adressFields[3].toLowerCase().equals(houseNumber)){
+                if(adressFields[3].toLowerCase().equalsIgnoreCase(houseNumber)){
                     matches.add(adressFields);
                     return matches;
                 }
@@ -144,15 +163,20 @@ public class AddressParser {
             }
             return matches;
         }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
-    //Checks if start of the address matches any the streets in the street names file
+    //Checks if the start of the address matches any the streets in the street names file
     // if a match is found, the builders street field is set to the match
     // which is returned to be removed from the address.
     public String[] checkStreet(String address,String country,String[] cityMatch) throws IOException {
         BufferedReader in;
         String[] match = new String[]{"","",""};
+        //this if statement wont run as it is currently, since i use getMatchesFromDefault instead,
+        // but i'm keeping this part in, just in case we want to force a single search
         if (cityMatch[0].equals("")) {
             in = new BufferedReader(new InputStreamReader(new FileInputStream("data/" + country + "/streets.txt"), "UTF-8"));
             String line = in.readLine();
@@ -161,17 +185,14 @@ public class AddressParser {
             String mostCompleteMatchPostcode = "";
             while(line!=null){
                 //splits at arbitrary dilimiter for proper splitting of streetnames and citynames
-                //todo fix $ line end delimiter with for each city in country/cities.txt and for each street in country/city/streets.txt
-                line = line.replace("$","");
                 String[] tokens = line.split(" QQQ ");
                 String streetToken = tokens[0];
                 String cityToken = tokens[1];
                 String postcodeToken = tokens[2];
-                //split is supposed to split at a delimiter and not include the delimiter in the tokens but it deosn't so i replace them instead
 
                 if(address.startsWith(streetToken.toLowerCase())){
                     if(streetToken.length() > mostCompleteMatch.length()){
-                        mostCompleteMatch = streetToken;
+                        mostCompleteMatch = streetToken.toLowerCase();
                         mostCompleteMatchCity = cityToken;
                         mostCompleteMatchPostcode = postcodeToken;
                     }
@@ -192,7 +213,7 @@ public class AddressParser {
             while(line != null){
                 if(address.startsWith(line.toLowerCase())){
                     if(line.length() > mostCompleteMatch.length()){
-                        mostCompleteMatch = line;
+                        mostCompleteMatch = line.toLowerCase();
                     }
                 }
                 line = in.readLine();
@@ -202,7 +223,7 @@ public class AddressParser {
         return match;
     }
 
-    public String[] CityCheck(String proposedAddress) throws Exception{
+    public String[] CityCheck(String proposedAddress){
         String currentCity = "", currentPostcode = "", mostCompleteMatch = "",
                 bestPostCodeMatch = "", bestCityMatch = "";
         String[] match = new String[]{"","",""};
@@ -213,32 +234,24 @@ public class AddressParser {
 
             //this was motivated by using the postcode as the most significant part of a city and postcode,
             // so that if you write a postcode, it will use that postcodes matching city
-            //TODO these need rewriting badly, two methods that basically do the same thing??
-            String checkSecondToLastToken = checkSecondToLastTokenForPostcode(proposedAddress, currentPostcode).toLowerCase();
-            String checkThirdToLastToken = checkThirdToLastTokenForPostcode(proposedAddress, currentPostcode).toLowerCase();
 
+            String postcodeCheck = checkThreeLastAdressTokensForPostcode(proposedAddress, currentPostcode).toLowerCase();
+            //if the proposed address ends with the current postcode and city return those
             if(proposedAddress.endsWith(currentPostcode.toLowerCase() +" "+ currentCity.toLowerCase())){
                 mostCompleteMatch = currentPostcode +" "+ currentCity;
                 bestPostCodeMatch = currentPostcode;
                 bestCityMatch = currentCity;
-            }else if(!(checkSecondToLastToken.equals(""))){
-                mostCompleteMatch = checkSecondToLastToken;
+            //if a postcode is found in the last three tokens of the address return that postcode and matching city
+            }else if(!(postcodeCheck.equals(""))){
+                mostCompleteMatch = postcodeCheck;
                 bestPostCodeMatch = currentPostcode;
                 bestCityMatch = currentCity;
-            }else if(!(checkThirdToLastToken.equals(""))){
-                mostCompleteMatch = checkThirdToLastToken;
-                bestPostCodeMatch = currentPostcode;
-                bestCityMatch = currentCity;
-            }else if((proposedAddress.endsWith(currentPostcode.toLowerCase()))){
-                mostCompleteMatch = currentPostcode;
-                bestCityMatch = currentCity;
-                bestPostCodeMatch = currentPostcode;
+            //if a city is found at the end of the address, return that along with that cities postcode (not 100% always accurate)
             }else if(proposedAddress.endsWith(currentCity.toLowerCase())){
                 mostCompleteMatch = currentCity;
                 bestPostCodeMatch = currentPostcode;
                 bestCityMatch = currentCity;
             }
-
         }
         match[0] = mostCompleteMatch;
         match[1] = bestCityMatch;
@@ -247,23 +260,19 @@ public class AddressParser {
         return match;
     }
 
-    //if second to last token in the proposed address is the given postcode,
+    //if third to last token in the proposed address is the given postcode,
     // it returns the part of the address to remove, if not it returns "".
-    public String checkSecondToLastTokenForPostcode(String proposedAdress,String postcode){
+    public String checkThreeLastAdressTokensForPostcode(String proposedAdress,String postcode){
         String[] addressTokens = proposedAdress.split(" ");
+        if(addressTokens.length>=1&&addressTokens[addressTokens.length-1].equals(postcode)){
+            return addressTokens[addressTokens.length-1];
+        }
         if(addressTokens.length>=2 && addressTokens[addressTokens.length-2].equals(postcode)) {
             return (addressTokens[addressTokens.length - 2] + " " + addressTokens[addressTokens.length - 1]);
         }
-        return "";
-    }
-
-    //if third to last token in the proposed address is the given postcode,
-    // it returns the part of the address to remove, if not it returns "".
-    public String checkThirdToLastTokenForPostcode(String proposedAdress,String postcode){
-        String[] adressTokens = proposedAdress.split(" ");
-        if(adressTokens.length>=3 && adressTokens[adressTokens.length-3].equals(postcode)) {
-            return (adressTokens[adressTokens.length - 3] + " " + adressTokens[adressTokens.length - 2]
-                    + " " + adressTokens[adressTokens.length-1]);
+        if(addressTokens.length>=3 && addressTokens[addressTokens.length-3].equals(postcode)) {
+            return (addressTokens[addressTokens.length - 3] + " " + addressTokens[addressTokens.length - 2]
+                    + " " + addressTokens[addressTokens.length-1]);
         }
         return "";
     }
@@ -324,15 +333,9 @@ public class AddressParser {
         return matches;
     }
 
-    public ArrayList<String[]> getAdresses(String filepath){
-        ArrayList<String[]> addresses = new ArrayList<>();
-        return addresses;
-    }
-
-
-    public void parseDefaults(String filepath){
+    public void parseDefaults(String country){
         try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(filepath),"UTF-8"));
+            BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream("data/"+country+"/streets.txt"),"UTF-8"));
             String line = in.readLine();
             while(line!=null){
                 defaults.add(line);
@@ -343,9 +346,11 @@ public class AddressParser {
         }
     }
 
-    public void parseCitiesAndPostCodes(String country)throws Exception{
+    public void parseCitiesAndPostCodes(String country){
 
-        BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream("data/"+country+"/cities.txt"),"UTF-8"));
+        BufferedReader in = null;
+        try {
+            in = new BufferedReader(new InputStreamReader(new FileInputStream("data/"+country+"/cities.txt"),"UTF-8"));
         String line = in.readLine();
 
         while(line != null){
@@ -354,6 +359,9 @@ public class AddressParser {
             String postcode = tokens[1].replace(" QQQ ","");
             postcodes.add(postcode);
             line = in.readLine();
+        }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
