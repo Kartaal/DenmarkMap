@@ -2,15 +2,19 @@ package bfst19.osmdrawing;
 
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.FillRule;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
 
 import java.util.HashMap;
 import java.util.Iterator;
+
+import static java.lang.StrictMath.abs;
 
 public class MapCanvas extends Canvas {
     GraphicsContext gc = getGraphicsContext2D();
@@ -106,21 +110,17 @@ public class MapCanvas extends Canvas {
 
     private Bounds getExtentInModel(){
         Bounds localBounds = this.getBoundsInLocal();
-        //Values for smaller BB don't seem to work?
         double minX = localBounds.getMinX();
         double maxX = localBounds.getMaxX();
-        double minY = -localBounds.getMinY();
-        double maxY = -localBounds.getMaxY();
+        double minY = localBounds.getMinY();
+        double maxY = localBounds.getMaxY();
 
-        Point2D minPoint = getModelCoords(minX, minY);
-        Point2D maxPoint = getModelCoords(maxX, maxY);
+        //Flip the boundingbox y cordinates as the rendering is flipped as well, but the model isnt.
+        Point2D minPoint = getModelCoords(minX, maxY);
+        Point2D maxPoint = getModelCoords(maxX, minY);
 
-        System.out.println("model minX: " + minPoint.getX());
-        System.out.println("model maxX: " + maxPoint.getX());
-        System.out.println("model minY: " + minPoint.getY());
-        System.out.println("model maxY: " + maxPoint.getY());
         return new BoundingBox(minPoint.getX(), minPoint.getY(),
-                maxPoint.getX()-minPoint.getX(), maxPoint.getY()+minPoint.getY());
+                maxPoint.getX(), maxPoint.getY());
     }
 
     private Color getColor(WayType type) { return wayColors.get(type); }
