@@ -40,7 +40,7 @@ public class KDTree {
 				//Start recursively creating the left and right subtrees
 				// of indexes 0 to splitIndex for left subtree and splitIndex+1 to list.size() for the right subtree
 				root.nodeL = createTree(list, root, 0, splitIndex);
-				root.nodeR = createTree(list, root, splitIndex + 1, list.size());
+				root.nodeR = createTree(list, root, splitIndex + 1, list.size()-1);
 			} else {
 				//Arbitrary values to fill root in case the list of Drawable is empty
 				root = new KDNode(null, -1, false);
@@ -57,7 +57,7 @@ public class KDTree {
 		//? is a shorthand of if-else. (expression) ? (if expression true) : (if expression false)
 		selectComp = selectComp == KDTree.xComp ? KDTree.yComp : KDTree.xComp;
 		//Might want an overloaded version that only sorts a sublist
-		sort(list, selectComp);
+		sort(list, lo, hi, selectComp);
 
 		int splitIndex = lo + (hi-lo) / 2;
 		boolean horizontal = !parentNode.horizontal;
@@ -159,6 +159,7 @@ public class KDTree {
 		// if true, report it
 		if(node.values != null) {
 			for (BoundingBoxable value : node.values) {
+				//TODO Might be really slow and need replacing with two if-statements checking the relevant BB values
 				if (queryBB.intersects(value.getBB())) {
 					returnElements.add((Drawable) value);
 				}
