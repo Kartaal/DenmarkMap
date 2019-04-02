@@ -85,8 +85,8 @@ public class Model {
 				maxlat = input.readFloat();
 				maxlon = input.readFloat();
 			}
-			AddressParser.getInstance(this).parseDefaults(getCountry());
-			AddressParser.getInstance(this).parseCitiesAndPostCodes(getCountry());
+			AddressParser.getInstance(this).setDefaults(getDefault(getCountry()));
+			AddressParser.getInstance(this).parseCitiesAndPostCodes(getCities(getCountry()));
 			time += System.nanoTime();
 			System.out.printf("Load time: %.1fs\n", time / 1e9);
 		} else {
@@ -111,7 +111,7 @@ public class Model {
 		}
 	}
 
-	public void ParseWayColors(){
+    public void ParseWayColors(){
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(CurrentTypeColorTxt));
 			int m = Integer.parseInt(br.readLine());
@@ -308,12 +308,11 @@ public class Model {
 				case END_DOCUMENT:
 					File parseCheck = new File("data/"+getCountry());
 					if(!parseCheck.isDirectory()) {
-						//todo currently the addresSorting does not ignore case, perhaps change that if it ends up causing issues
 						addresses.sort(Address::compareTo);
 						makeDatabase(addresses,getCountry());
 						//this keeps the cities and the default streets files in memory, it's about 1mb for Zealand of memory
-						AddressParser.getInstance(this).parseDefaults(getCountry());
-						AddressParser.getInstance(this).parseCitiesAndPostCodes(getCountry());
+						AddressParser.getInstance(this).setDefaults(getDefault(getCountry()));
+						AddressParser.getInstance(this).parseCitiesAndPostCodes(getCities(getCountry()));
 					}
 
 					for (OSMWay c : merge(coast)) {
@@ -435,69 +434,63 @@ public class Model {
 	public void parseSearch(String proposedAddress) {
 		/*Address address = AddressParser.getInstance().parse(proposedAddress,getCountry());
 		System.out.println(address.toString());*/
-		Address a = AddressParser.getInstance(this).singleSearch(proposedAddress,getCountry());
-		//a is null if the singlesearch did not find a city in the string, hence we start the autocomplete
-		if(a==null){
-			//this returns an arraylist of string arrays that hold a streetname city and postcode
-			ArrayList<String[]> possibleMatches = AddressParser.getInstance(this).getMatchesFromDefault(proposedAddress,false);
-			//if it only finds one street with that name it should jump to asking which housenumber they meant
-			if(possibleMatches.size()==1){
-				String[] match = possibleMatches.get(0);
-				//give these to the ui somehow either through a method or an observable array or something.
-				//each string array includes an id, lat, lon and a housenumber
-				ArrayList<String[]> possibleAddresses = AddressParser.getInstance(this).getAddress(getCountry(),match[1],match[2],match[0],"",false);
-				//insert the index of the housenumber chosen
-				String[] addressMatch = possibleAddresses.get(0);
-				a = new Address(Long.valueOf(addressMatch[0]),Float.valueOf(addressMatch[1]),Float.valueOf(addressMatch[2]),match[0],addressMatch[3],match[2],match[1]);
+        Address a = AddressParser.getInstance(this).singleSearch(proposedAddress, getCountry());
+        //a is null if the singlesearch did not find a city in the string, hence we start the autocomplete
+        if(a.getStreetName().equals("Unknown")){
+            //print out some failure message
+	    }else if(a.getCity().equals("")){
+            //this returns an arraylist of string arrays that hold a streetname city and postcode
+            ArrayList<String[]> possibleMatches = AddressParser.getInstance(this).getMatchesFromDefault(proposedAddress, false);
+            if (possibleMatches != null) {
+                //each string array in this arraylist has a streetname on index 0, city on idex 1 and postcode on index 2
+                //give possible matches to the ui somehow
 
-			}else{
-				//give possible matches to the ui somehow
-				//and receive which city it should be looking in for the housenumbers
-				//that are used for the next step of the autocomplete
-				//insert the index of the city+postcode chosen
-				String[] match = possibleMatches.get(0);
-				//getting the housenumbers with the given city, postcode and streetname
-				ArrayList<String[]> possibleAddresses = AddressParser.getInstance(this).getAddress(getCountry(),match[1],match[2],match[0],"",false);
-				//insert the index of the housenumber chosen
-				String[] addressMatch = possibleAddresses.get(0);
-				a = new Address(Long.valueOf(addressMatch[0]),Float.valueOf(addressMatch[1]),Float.valueOf(addressMatch[2]),match[0],addressMatch[3],match[2],match[1]);
-			}
-		}
-		System.out.println(a.toString()+a.getHouseNumber());
-		/*for(String[] line:a){
-			System.out.println(line[0]+" "+line[1]+" "+line[2]);
-		}*/
+                //insert the index of the city+postcode chosen
+                String[] match = possibleMatches.get(0);
+                //after a specific city + postcode is chosen insert it into the textfield and inititiat the search again
+
+            }
+            System.out.println(a.toString() + a.getHouseNumber());
+        }else if(a.getHouseNumber().equals("")){
+            //each string array in this arraylist has a id for the node on index 0, lat on index 1, lon on index 2 and housenumber on index 3
+            ArrayList<String[]> possibleAddresses = AddressParser.getInstance(this).getAddress(getCountry(),a.getCity(),a.getPostcode(),a.getStreetName(),"",false);
+            //insert the index of the housenumber chosen
+            String[] addressMatch = possibleAddresses.get(0);
+            //after a housenumber is chosen, insert it inn the textfield and reinitiate a search
+        }
 	}
 
-	//it's only denmark right now.
+	//TODO change it to be the name of the dataset
+    //it's only denmark right now.
 	public String getCountry(){
 		return "denmark";
 	}
 
-	public String[] getStreetsInCity(String country,String city){
-		return getTextFile("data/"+country+"/"+city+"/streets.txt");
+	public ArrayList<String> getAddressesOnStreet(String country,String city,String postcode,String streetName){
+	    return getTextFile("data/"+country+"/"+city+" QQQ "+postcode+"/"+streetName+".txt");
+    }
+
+	public ArrayList<String> getStreetsInCity(String country, String city,String postcode){
+		return getTextFile("data/"+country+"/"+city+" QQQ "+postcode+"/streets.txt");
 	}
 
-	public String[] getCities(String country){
-		return getTextFile("data/"+country+"cities.txt");
+	public ArrayList<String> getCities(String country){
+		return getTextFile("data/"+country+"/cities.txt");
 	}
 
+    private ArrayList<String> getDefault(String country) { return getTextFile("data/"+country+"/streets.txt");}
 	//generalized getCities and getStreets to getTextFile, might not be final.
-	public String[] getTextFile(String filepath){
+	public ArrayList<String> getTextFile(String filepath){
 		try {
 			BufferedReader reader= new BufferedReader(new InputStreamReader(
 					new FileInputStream(filepath),"UTF-8"));
-			String[] textFile = new String[Integer.valueOf(reader.readLine())];
+			ArrayList<String> textFile = new ArrayList<>();
 			String line;
-			for(int i = 0 ; (line = reader.readLine()) != null ; i++){
-				textFile[i] = line;
-				return textFile;
+			while((line = reader.readLine()) != null){
+				textFile.add(line);
 			}
+			return textFile;
 
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

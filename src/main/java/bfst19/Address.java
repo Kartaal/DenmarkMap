@@ -17,13 +17,9 @@ public class Address extends OSMNode implements Comparable{
     public Address(long id, float lat, float lon,
                    String streetName, String houseNumber, String postcode,
                    String city, String floor, String side) {
-        super(id,lat,lon);
-        this.streetName = streetName;
-        this.houseNumber = houseNumber;
-        this.postcode = postcode;
-        this.city = city;
-        this.floor = floor;
+        this(id,lat,lon,streetName,houseNumber,postcode,city);
         this.side = side;
+        this.floor = floor;
     }
 
 
@@ -64,6 +60,6 @@ public class Address extends OSMNode implements Comparable{
 
     @Override
     public int compareTo(Object o) {
-        return (toString().compareTo(o.toString()));
+        return (toString().compareToIgnoreCase(o.toString()));
     }
 }
