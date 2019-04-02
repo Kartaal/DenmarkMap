@@ -1,11 +1,13 @@
 package bfst19.osmdrawing;
 
 import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.FillRule;
 import javafx.scene.transform.Affine;
+import javafx.scene.transform.NonInvertibleTransformException;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -105,12 +107,20 @@ public class MapCanvas extends Canvas {
     private Bounds getExtentInModel(){
         Bounds localBounds = this.getBoundsInLocal();
         //Values for smaller BB don't seem to work?
-        double minX = localBounds.getMinX()+0.002;
-        double maxX = localBounds.getMaxX()-0.002;
-        double minY = localBounds.getMinY()+0.002;
-        double maxY = localBounds.getMaxY()-0.002;
-        return new BoundingBox(minX, minY, maxX-minX, maxY-minY);
+        double minX = localBounds.getMinX();
+        double maxX = localBounds.getMaxX();
+        double minY = -localBounds.getMinY();
+        double maxY = -localBounds.getMaxY();
 
+        Point2D minPoint = getModelCoords(minX, minY);
+        Point2D maxPoint = getModelCoords(maxX, maxY);
+
+        System.out.println("model minX: " + minPoint.getX());
+        System.out.println("model maxX: " + maxPoint.getX());
+        System.out.println("model minY: " + minPoint.getY());
+        System.out.println("model maxY: " + maxPoint.getY());
+        return new BoundingBox(minPoint.getX(), minPoint.getY(),
+                maxPoint.getX()-minPoint.getX(), maxPoint.getY()+minPoint.getY());
     }
 
     private Color getColor(WayType type) { return wayColors.get(type); }
@@ -143,5 +153,15 @@ public class MapCanvas extends Canvas {
 
     public void toggleNonRoads() {
         paintNonRoads = !paintNonRoads;
+    }
+
+
+    public Point2D getModelCoords(double x, double y) {
+        try{
+            return transform.inverseTransform(x,y);
+        }catch (NonInvertibleTransformException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

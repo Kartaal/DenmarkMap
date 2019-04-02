@@ -78,7 +78,7 @@ public class KDTree {
 				//Ugly typecast
 				valueList.add((BoundingBoxable) list.get(i));
 			}
-			currNode.values = valueList;
+			currNode.setValues(valueList);
 			return currNode;
 		} else {
 			//Left subtree
@@ -91,6 +91,7 @@ public class KDTree {
 		return currNode;
 	}
 
+	/*
 	//Currently never used
 	public void insert(BoundingBoxable value){
 		if(root == null) {
@@ -140,7 +141,7 @@ public class KDTree {
 		}
 
 		return x;
-	}
+	}*/
 
 	//Method for finding elements in the KDTree that intersects a BoundingBox
 	public Iterable<Drawable> rangeQuery(BoundingBox bbox) {
@@ -200,8 +201,13 @@ public class KDTree {
 			nodeL = nodeR = null;
 
 			//Create BoundingBox for the KDNode
-			//Duplicate code from MultiPolyline
-			//Arbitrary values that should exceed the coords on Denmark
+			makeNodeBB();
+		}
+
+		//Sets up some arbitrary values that should be beyond the coords of Denmark
+		// Runs through the values in the node to find the encompassing bounding box
+		// Creates and sets the bounding box based on the values
+		private void makeNodeBB() {
 			double minX = 100, maxX = 0, minY = 100, maxY = 0;
 			for(BoundingBoxable valueBB : values) {
 				BoundingBox lineBB = valueBB.getBB();
@@ -229,6 +235,13 @@ public class KDTree {
 		//Returns a BoundingBox object representing the bounding box of all the elements in the node
 		public BoundingBox getBB() {
 			return bb;
+		}
+
+		public void setValues(List<BoundingBoxable> valueList) {
+			values = valueList;
+
+			//Create BoundingBox for the KDNode
+			makeNodeBB();
 		}
 	}
 
