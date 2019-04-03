@@ -9,9 +9,6 @@ import javafx.scene.control.TextField;
 public class ControllerBarPanel {
 
     @FXML
-    private TextField searchTextField;
-
-    @FXML
     private Button menuButton;
 
     Controller controller;
@@ -29,16 +26,6 @@ public class ControllerBarPanel {
                 controller.setupMenuPanel();
             }
         });
-    }
-
-    @FXML
-    public void giveText(javafx.scene.input.KeyEvent event){
-            switch (event.getCode())  {//ev.getcode() gets the specific keycode for the pressed key
-                case ENTER:
-                       controller.parseSearchText(searchTextField.getText());
-                    break;
-
-            }
     }
 
     @FXML

@@ -7,6 +7,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 
+<?import bfst19.AutoTextField?>
 <HBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="bfst19.ControllerBarPanel" fx:id="BarPanel">
 
    <children>
@@ -24,7 +25,8 @@
          </graphic>
       </Button>
 
-      <TextField fx:id = "searchTextField" prefWidth="300.0" prefHeight="40.0" promptText="Adresse" onKeyPressed="#giveText"/>
+      <!-- Self-made FXML object AutoTextField which extends the class TextField -->
+      <AutoTextField fx:id = "autoTextField" promptText="Search here"/>
 
       <Button fx:id="searchButton" mnemonicParsing="false" style="-fx-background-color: white;  -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);">
          <HBox.margin>
