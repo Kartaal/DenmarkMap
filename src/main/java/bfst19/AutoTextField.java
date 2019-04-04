@@ -6,6 +6,7 @@ import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,18 +35,24 @@ public class AutoTextField extends TextField {
 
     private void showResults(){
 
-        addAdressesToDropDown("It works");
+        addAdressesToDropDown();
         if(!adressDropDown.isShowing()){
             adressDropDown.show(AutoTextField.this, Side.BOTTOM,0,0);
         }
-        //controller.parseSearchText(this.getText());
+
     }
 
-    private void addAdressesToDropDown(String adress) {
+    private void addAdressesToDropDown() {
+
+        controller.parseSearchText(this.getText());
+
+
+
+
 
         List<CustomMenuItem> menuItems = new LinkedList<>();
 
-        Label labelAdress = new Label(adress);
+        Label labelAdress = new Label("Mangler text");
 
         CustomMenuItem item = new CustomMenuItem(labelAdress, true);
 

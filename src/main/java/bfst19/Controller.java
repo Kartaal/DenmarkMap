@@ -5,6 +5,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import java.io.IOException;
+import java.util.List;
+
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -45,6 +47,12 @@ public class Controller {
         });
 
     }
+
+
+    public List returnFoundMatches(){
+        return model.foundMatches;
+    }
+
 
     public void parseSearchText(String searchText){
         model.parseSearch(searchText);
