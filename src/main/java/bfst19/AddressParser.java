@@ -73,6 +73,8 @@ public class AddressParser {
             proposedAddress = proposedAddress.replaceAll(cityMatch[0].toLowerCase(), "");
             b.city = cityMatch[1];
             b.postcode = cityMatch[2];
+        }else{
+            return b.build();
         }
 
         String streetMatch = checkStreet(proposedAddress,country,cityMatch);
@@ -143,10 +145,10 @@ public class AddressParser {
     // if a match is found, the builders street field is set to the match
     // which is returned to be removed from the address.
     public String checkStreet(String address,String country,String[] cityMatch) {
-        ArrayList<String> cities = model.getStreetsInCity(country,cityMatch[1],cityMatch[2]);
+        ArrayList<String> streetsInCity = model.getStreetsInCity(country,cityMatch[1],cityMatch[2]);
         String mostCompleteMatch = "";
-        for(int i = 0; i<cities.size();i++){
-            String line = cities.get(i);
+        for(int i = 0; i<streetsInCity.size();i++){
+            String line = streetsInCity.get(i);
             if(address.startsWith(line.toLowerCase())){
                 if(line.length() > mostCompleteMatch.length()){
                     mostCompleteMatch = line.toLowerCase();
