@@ -6,28 +6,35 @@ import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 public class AutoTextField extends TextField {
 
     Controller controller;
+    Model model;
 
     private ContextMenu adressDropDown;
 
 
     public AutoTextField(){
         super();
+    }
+
+    public void init(Controller controller){
         this.setStyle("-fx-min-width: 300; -fx-min-height: 40");
         adressDropDown = new ContextMenu();
         adressDropDown.setStyle("-fx-min-width: 300");
+
+        this.controller = controller;
+        this.model = controller.getModel();
+        model.addObserver(this::addAdressesToDropDown);
 
         this.setOnKeyPressed(event -> {
             switch (event.getCode())  {
                 case ENTER:
                     showResults();
-                        break;
+                    break;
 
             }
         });
@@ -44,21 +51,24 @@ public class AutoTextField extends TextField {
 
     private void addAdressesToDropDown() {
 
-        controller.parseSearchText(this.getText());
-
-
-
-
-
         List<CustomMenuItem> menuItems = new LinkedList<>();
 
-        Label labelAdress = new Label("Mangler text");
 
-        CustomMenuItem item = new CustomMenuItem(labelAdress, true);
+        controller.parseSearchText(this.getText());
 
-        menuItems.add(item);
+        while(controller.parsefoundMatchesIterator().hasNext()){
+
+
+            Label labelAdress = new Label(controller.parsefoundMatchesIterator().next());
+
+            CustomMenuItem item = new CustomMenuItem(labelAdress, true);
+
+            menuItems.add(item);
+
+        }
 
         adressDropDown.getItems().addAll(menuItems);
+
     }
 
 

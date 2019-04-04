@@ -5,11 +5,16 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
+import java.util.Iterator;
+
 
 public class ControllerBarPanel {
 
     @FXML
     private Button menuButton;
+
+    @FXML
+    private AutoTextField autoTextField;
 
     Controller controller;
 
@@ -17,8 +22,22 @@ public class ControllerBarPanel {
     public void init(Controller controller){
         this.controller = controller;
         setMenuButton();
+        autoTextField.init(controller);
+
     }
 
+    public Model getModel(){
+        return controller.getModel();
+    }
+
+
+    public Iterator<String> parsefoundMatchesIterator(){
+        return controller.parsefoundMatchesIterator();
+    }
+
+    public void parseSearchText(String searchText){
+        controller.parseSearchText(searchText);
+    }
 
     public void setMenuButton(){
         menuButton.setOnAction(new EventHandler<ActionEvent>() {

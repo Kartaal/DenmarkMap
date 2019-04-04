@@ -5,6 +5,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 import javafx.scene.layout.BorderPane;
@@ -35,6 +36,7 @@ public class Controller {
         //TODO: figure out init methods
         this.model = model;
         mapCanvas.init(model);
+
         oldDeterminant = mapCanvas.getDeterminant();
         setScalebar();
         setUpBar();
@@ -49,14 +51,20 @@ public class Controller {
     }
 
 
-    public List returnFoundMatches(){
-        return model.foundMatches;
+
+    public Model getModel(){
+        return model;
     }
 
+    public Iterator<String> parsefoundMatchesIterator(){
+        return model.foundMatchesIterator();
+    }
 
     public void parseSearchText(String searchText){
         model.parseSearch(searchText);
     }
+
+
 
     public void setUpBar(){
         if(borderPane.getLeft() != null){

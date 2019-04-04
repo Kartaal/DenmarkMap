@@ -507,4 +507,6 @@ public class Model {
 	public Iterator<String> colorIterator() {
 		return typeColors.iterator();
 	}
+
+	public Iterator<String> foundMatchesIterator() { return foundMatches.iterator();}
 }
