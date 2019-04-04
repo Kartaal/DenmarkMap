@@ -6,8 +6,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.List;
-
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -18,7 +16,6 @@ public class Controller {
     double x, y;
     private double factor, oldDeterminant, zoomLevel;
 
-
     //This only means that .fxml can use this field despite visibility
 
     @FXML
@@ -27,10 +24,8 @@ public class Controller {
     @FXML
     private Text scaleText;
 
-
     @FXML
     private BorderPane borderPane;
-
 
     public void init(Model model) {
         //TODO: figure out init methods
@@ -50,7 +45,7 @@ public class Controller {
 
     }
 
-
+    //Methods from model which are used by the class AutoTextField
 
     public Model getModel(){
         return model;
@@ -65,7 +60,7 @@ public class Controller {
     }
 
 
-
+    //Initialize BarPanel
     public void setUpBar(){
         if(borderPane.getLeft() != null){
             borderPane.setLeft(null);
@@ -86,12 +81,11 @@ public class Controller {
         controllerBarPanel.init(this);
     }
 
-
+    //Initialize MenuPanel
     public void setupMenuPanel(){
         if(borderPane.getLeft() != null){
             borderPane.setLeft(null);
         }
-
 
         VBox VBox = null;
 
@@ -108,6 +102,7 @@ public class Controller {
         controllerMenuPanel.init(this);
     }
 
+    //Initialize RutePanel
     public void setupRutePanel() {
         if(borderPane.getLeft() != null){
             borderPane.setLeft(null);
@@ -128,9 +123,6 @@ public class Controller {
         controllerRutePanel.init(this);
     }
 
-
-
-
     public void setScalebar() {
         // TODO findout and resolve getY so it can be getX, since it the te x-coor we want
         double minX = mapCanvas.getModelCoords(0, 0).getY();
@@ -138,7 +130,6 @@ public class Controller {
         double y = mapCanvas.getModelCoords(0, 0).getX();
         scaleText.setText(Scalebar.getScaleText(minX, y, maxX, y, mapCanvas.getWidth()));
     }
-
 
     @FXML
     private void onKeyPressed(KeyEvent e) {
@@ -160,8 +151,6 @@ public class Controller {
 
         factor = Math.pow(1.01, e.getDeltaY());
         mapCanvas.zoom(factor, e.getX(), e.getY());
-
-
     }
 
     @FXML
@@ -177,8 +166,6 @@ public class Controller {
         x = e.getX();
         y = e.getY();
     }
-
-
 }
 
 

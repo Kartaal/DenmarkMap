@@ -27,15 +27,10 @@ public class ControllerRutePanel {
 
     @FXML
     private void setBackBtnEffect() {
-
         DropShadow dropShadow = new DropShadow(BlurType.ONE_PASS_BOX, Color.rgb(0,0,0,0.4), 10, 0, 0, 0);
         backBtnRutePanel.setEffect(dropShadow);
     }
 
     @FXML
-    private void setBackBtnEffectNone() {
-
-        backBtnRutePanel.setEffect(null);
-
-    }
+    private void setBackBtnEffectNone() { backBtnRutePanel.setEffect(null); }
 }

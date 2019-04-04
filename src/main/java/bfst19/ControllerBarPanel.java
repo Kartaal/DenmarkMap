@@ -19,6 +19,7 @@ public class ControllerBarPanel {
 
     Controller controller;
 
+    //ControllerBarPanels initialize method, which initialize controller field and runs the AutoTextFields init.
     public void init(Controller controller){
         this.controller = controller;
         setMenuButton();
@@ -26,6 +27,7 @@ public class ControllerBarPanel {
         autoTextField.init(controller);
     }
 
+    //Sets up MenuPanel when MenuButton is pressed
     public void setMenuButton(){
         menuButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
@@ -34,11 +36,13 @@ public class ControllerBarPanel {
         });
     }
 
+    //Sets up RutePanel when RuteButt is pressed
     @FXML
     private void openRute(ActionEvent actionEvent) {
         controller.setupRutePanel();
     }
 
+    //When SearchButton is pressed it runs AutoTextField's showResults method
     public void setSearchButton(){
         searchButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
