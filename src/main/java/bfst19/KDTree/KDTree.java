@@ -1,8 +1,8 @@
-package bfst19.osmdrawing.KDTree;
+package bfst19.KDTree;
 
-import bfst19.osmdrawing.BoundingBox;
-import bfst19.osmdrawing.BoundingBoxable;
-import bfst19.osmdrawing.Drawable;
+import bfst19.BoundingBox;
+import bfst19.BoundingBoxable;
+import bfst19.Drawable;
 
 import java.util.*;
 
