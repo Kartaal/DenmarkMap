@@ -26,19 +26,6 @@ public class ControllerBarPanel {
 
     }
 
-    public Model getModel(){
-        return controller.getModel();
-    }
-
-
-    public Iterator<String> parsefoundMatchesIterator(){
-        return controller.parsefoundMatchesIterator();
-    }
-
-    public void parseSearchText(String searchText){
-        controller.parseSearchText(searchText);
-    }
-
     public void setMenuButton(){
         menuButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
