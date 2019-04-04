@@ -1,5 +1,6 @@
 package bfst19;
 
+import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -10,6 +11,7 @@ import javafx.scene.transform.NonInvertibleTransformException;
 
 import java.util.HashMap;
 import java.util.Iterator;
+
 
 public class MapCanvas extends Canvas {
     GraphicsContext gc = getGraphicsContext2D();
@@ -24,6 +26,7 @@ public class MapCanvas extends Canvas {
 
     public void init(Model model) {
         this.model = model;
+
         //conventions in screen coords and map coords are not the same,
         // so we convert to screen convention by flipping x y
         pan(-model.minlon, -model.maxlat);
@@ -46,7 +49,7 @@ public class MapCanvas extends Canvas {
         gc.setTransform(new Affine());
         //checks if the file contains coastlines or not, if not set background color to white
         // otherwise set background color to blue
-        if (model.getWaysOfType(WayType.COASTLINE).iterator().hasNext()) {
+        if (model.getWaysOfType(WayType.COASTLINE, getExtentInModel()).iterator().hasNext()) {
             gc.setFill(getColor(WayType.WATER));
         } else {
             gc.setFill(Color.WHITE);
@@ -57,56 +60,96 @@ public class MapCanvas extends Canvas {
 
         //linewidth equals 1 px wide relative to the screen no matter zoom level
         gc.setLineWidth(1/Math.sqrt(Math.abs(getDeterminant())));
-        //
+
         gc.setFillRule(FillRule.EVEN_ODD);
 
         //color for landmasses with nothing drawn on top
         gc.setFill(Color.WHITE);
-        for (Drawable way : model.getWaysOfType(WayType.COASTLINE)) way.fill(gc);
+        for (Drawable way : model.getWaysOfType(WayType.COASTLINE, getExtentInModel())) {
+            way.fill(gc);
+        }
+
         gc.setFill(getColor(WayType.WATER));
-        for (Drawable way : model.getWaysOfType(WayType.WATER)) way.fill(gc);
+        for (Drawable way : model.getWaysOfType(WayType.WATER, getExtentInModel())) {
+            way.fill(gc);
+        }
 
 
         gc.setFillRule(null);
         //checks for toggle for only roads
         if(paintNonRoads) {
             for (WayType type : WayType.values()) {
-
-                if (!(type.isRoadOrSimilar()) && type.levelOfDetail()<detailLevel) {
-                    if(type == WayType.COASTLINE) {
-                    }else{
+                if (!(type.isRoadOrSimilar()) && type.levelOfDetail() < detailLevel) {
+                    if(type != WayType.COASTLINE) {
                         gc.setFill(getColor(type));
-                        for (Drawable way : model.getWaysOfType(type)) way.fill(gc);
-
+                        for (Drawable way : model.getWaysOfType(type, getExtentInModel())) way.fill(gc);
                     }
-                } else if (type.isRoadOrSimilar() && type.levelOfDetail()<detailLevel) {
-                    if (type == WayType.COASTLINE) {
-                    //TODO Keep this or delete it
-                    }else if(type==WayType.UNKNOWN) {
-
-                    } else {
+                } else if (type.isRoadOrSimilar() && type.levelOfDetail() < detailLevel) {
+                    if (type != WayType.COASTLINE && type != WayType.UNKNOWN) {
                         gc.setStroke(getColor(type));
-                        for (Drawable way : model.getWaysOfType(type)) way.stroke(gc);
-
+                        for (Drawable way : model.getWaysOfType(type, getExtentInModel())) way.stroke(gc);
                     }
                 }
             }
 
         }else{
             for(WayType type : WayType.values()){
-                if(type.isRoadOrSimilar() && type.levelOfDetail()<detailLevel){
+                if(type.isRoadOrSimilar() && type.levelOfDetail() < detailLevel){
                     if(type == WayType.UNKNOWN){
                     // The unknown WayType is ways that have not been parsed to an implemented WayType,
                     // so it's better to exclude it.
                     }else{
                         gc.setStroke(getColor(type));
-                        for (Drawable way : model.getWaysOfType(type)) way.stroke(gc);
-
+                        for (Drawable way : model.getWaysOfType(type, getExtentInModel())) way.stroke(gc);
                     }
-
                 }
             }
         }
+    }
+
+    private Bounds getExtentInModel(){
+
+        return getBounds();
+        //return getBoundsDebug();
+    }
+
+    private Bounds getBoundsDebug() {
+        Bounds localBounds = this.getBoundsInLocal();
+        double minX = localBounds.getMinX() + 100;
+        double maxX = localBounds.getMaxX() - 100;
+        double minY = localBounds.getMinY() + 100;
+        double maxY = localBounds.getMaxY() - 100;
+
+        //Flip the boundingbox y cordinates as the rendering is flipped as well, but the model isnt.
+        Point2D minPoint = getModelCoords(minX, maxY);
+        Point2D maxPoint = getModelCoords(maxX, minY);
+
+        gc.setStroke(Color.RED);
+        gc.beginPath();
+        gc.lineTo(minPoint.getX(), minPoint.getY());
+        gc.lineTo(minPoint.getX(), maxPoint.getY());
+        gc.lineTo(maxPoint.getX(), maxPoint.getY());
+        gc.lineTo(maxPoint.getX(), minPoint.getY());
+        gc.lineTo(minPoint.getX(), minPoint.getY());
+        gc.stroke();
+
+        return new BoundingBox(minPoint.getX(), minPoint.getY(),
+                maxPoint.getX()-minPoint.getX(), maxPoint.getY()-minPoint.getY());
+    }
+
+    private Bounds getBounds() {
+        Bounds localBounds = this.getBoundsInLocal();
+        double minX = localBounds.getMinX();
+        double maxX = localBounds.getMaxX();
+        double minY = localBounds.getMinY();
+        double maxY = localBounds.getMaxY();
+
+        //Flip the boundingbox y cordinates as the rendering is flipped as well, but the model isnt.
+        Point2D minPoint = getModelCoords(minX, maxY);
+        Point2D maxPoint = getModelCoords(maxX, minY);
+
+        return new BoundingBox(minPoint.getX(), minPoint.getY(),
+                maxPoint.getX()-minPoint.getX(), maxPoint.getY()-minPoint.getY());
     }
 
     private Color getColor(WayType type) { return wayColors.get(type); }
@@ -141,7 +184,7 @@ public class MapCanvas extends Canvas {
         paintNonRoads = !paintNonRoads;
     }
 
-    /// get mouse coords
+
     public Point2D getModelCoords(double x, double y) {
         try{
             return transform.inverseTransform(x,y);
@@ -149,6 +192,5 @@ public class MapCanvas extends Canvas {
             e.printStackTrace();
             return null;
         }
-
     }
 }

@@ -34,8 +34,6 @@ public class ControllerRutePanel {
 
     @FXML
     private void setBackBtnEffectNone() {
-
         backBtnRutePanel.setEffect(null);
-
     }
 }

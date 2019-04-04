@@ -9,8 +9,6 @@ import java.io.IOException;
 
 public class View {
 	public View(Model model, Stage stage) throws IOException {
-
-
 		//Finds the .fxml file.
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("View.fxml"));
 

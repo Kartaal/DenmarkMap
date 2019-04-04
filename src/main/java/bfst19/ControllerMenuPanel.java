@@ -30,13 +30,10 @@ public class ControllerMenuPanel implements BackBtnEffect {
 
         DropShadow dropShadow = new DropShadow(BlurType.ONE_PASS_BOX, Color.rgb(0,0,0,0.4), 10, 0, 0, 0);
         backBtnMenu.setEffect(dropShadow);
-
     }
 
     @FXML
     private void setBackBtnEffectNone() {
-
         backBtnMenu.setEffect(null);
-
     }
 }

@@ -2,30 +2,12 @@
 
 
 <?import bfst19.MapCanvas?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.Scene?>
-<?import javafx.scene.control.ToolBar?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.paint.*?>
 <?import javafx.scene.layout.*?>
-<?import java.lang.*?>
-<?import java.util.*?>
 <?import javafx.scene.*?>
-<?import javafx.scene.text.Text?>
-<?import javafx.scene.control.*?>
 <?import javafx.scene.shape.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
 
 <?import javafx.geometry.Insets?>
 <Scene xmlns="http://javafx.com/javafx"
@@ -46,18 +28,37 @@
 
                     <bottom>
                         <!--Start  Scalebar -->
-                        <Pane fx:id="scalebar" BorderPane.alignment="BOTTOM_RIGHT" style="-fx-background-color: white;" prefWidth="${scene.width}" maxHeight="20" prefHeight="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" layoutX="180.0" layoutY="350.0" >
+                        <Pane fx:id="scalebar" BorderPane.alignment="BOTTOM_RIGHT" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);" prefWidth="${scene.width}" maxHeight="20" prefHeight="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" layoutX="180.0" layoutY="350.0" >
 
                             <children>
-                                <Text fx:id="scaleText" layoutY="15.0" layoutX="600.0"  text=""/>
-                                <SVGPath fx:id="scalebarLeft"  content="M40,-10 L40,0" layoutY="15.0" layoutX="600.0"  stroke="#800400"
-                                         strokeWidth="3.0" />
-                                <!--   It is this value   -->
-                                <SVGPath fx:id="scalebarMiddle"   content="M40,0 L100,0" layoutY="15.0" layoutX="600.0"  stroke="#008002"
-                                         strokeWidth="3.0" />
-                                <!-- and  this     +this one witch has to be changed in order to make the scalebar longer -->
-                                <SVGPath fx:id="scalebarRight" content="M100,-10 L100,0" layoutY="15.0" layoutX="600.0"  stroke="#001280"
-                                         strokeWidth="3.0" />
+                                <BorderPane  prefWidth="${scene.width}"  >
+                                    <right >
+                                        <HBox BorderPane.alignment="CENTER_RIGHT" >
+                                            <Text fx:id="scaleText"  text=""/>
+                                            <BorderPane >
+                                                <left>
+                                                    <SVGPath fx:id="scalebarLeft"  content="M40,-10 L40,0"  stroke="#094e10"
+                                                             strokeWidth="3.0" />
+                                                </left>
+                                                <bottom>
+                                                    <!--   It is this value   -->
+                                                    <SVGPath fx:id="scalebarMiddle"   content="M40,10 L100,10"  stroke="#094e10"
+                                                             strokeWidth="3.0" />
+                                                </bottom>
+                                                <right>
+                                                    <!-- and  this     +this one witch has to be changed in order to make the scalebar longer -->
+                                                    <SVGPath fx:id="scalebarRight" content="M100,-10 L100,0"  stroke="#094e10"
+                                                             strokeWidth="3.0" />
+                                                </right>
+
+                                            </BorderPane>
+                                        </HBox>
+                                    </right>
+                                    <padding>
+                                        <Insets  left="5.0" right="10.0" />
+                                    </padding>
+                                </BorderPane>
+
                             </children>
                         </Pane>
                         <!--End Scalebar  -->

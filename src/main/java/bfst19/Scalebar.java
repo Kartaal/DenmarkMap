@@ -42,7 +42,5 @@ public class Scalebar {
             return round(scale*1000) +" m";
         }
         return round(scale)+ " km";
-
     }
-
 }

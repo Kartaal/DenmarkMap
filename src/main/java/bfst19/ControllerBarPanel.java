@@ -37,7 +37,6 @@ public class ControllerBarPanel {
                 case ENTER:
                        controller.parseSearchText(searchTextField.getText());
                     break;
-
             }
     }
 

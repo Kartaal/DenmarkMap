@@ -17,7 +17,6 @@ public class Controller {
 
 
     //This only means that .fxml can use this field despite visibility
-
     @FXML
     private MapCanvas mapCanvas;
 
@@ -141,11 +140,8 @@ public class Controller {
     private void onScroll(ScrollEvent e) {
         //because scrollwheels/touchpads scroll by moving up and down the zoomfactor as calculated based on the distance moved by the "scroll"
         //The pow part is just about trial and error to find a good amount of zoom per "scroll"
-
         factor = Math.pow(1.01, e.getDeltaY());
         mapCanvas.zoom(factor, e.getX(), e.getY());
-
-
     }
 
     @FXML
@@ -161,8 +157,6 @@ public class Controller {
         x = e.getX();
         y = e.getY();
     }
-
-
 }
 
 

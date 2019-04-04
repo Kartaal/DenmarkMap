@@ -1,7 +1,9 @@
 package bfst19;
 
+import bfst19.KDTree.KDTree;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Bounds;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -14,14 +16,9 @@ import static javax.xml.stream.XMLStreamConstants.*;
 
 public class Model {
 	float lonfactor = 1.0f;
-	Map<WayType,List<Drawable>> ways = new EnumMap<>(WayType.class);
+	Map<WayType, List<Drawable>> ways = new EnumMap<>(WayType.class);
 	private boolean colorBlindEnabled;
 
-	{
-		for (WayType type : WayType.values()) {
-			ways.put(type, new ArrayList<>());
-		}
-	}
 	List<Runnable> observers = new ArrayList<>();
 	float minlat, minlon, maxlat, maxlon;
 
@@ -29,34 +26,11 @@ public class Model {
 	HashMap<String,ArrayList<String[]>> wayTypeCases = new HashMap<>();
 	ObservableList<Address> searchedAddresses = FXCollections.observableArrayList();
 	ObservableList<String> typeColors = FXCollections.observableArrayList();
+	Map<WayType, KDTree> kdTreeMap = new TreeMap<>();
 
-	//for building addresses during parsing
-	public static class Builder {
-		private long id;
-		private float lat, lon;
-		private String streetName = "Unknown", houseNumber="", postcode="", city="";
-		public void reset(){
-			id = 0;
-			lat =0;
-			lon = 0;
-			streetName = "Unknown";
-			houseNumber = "";
-			postcode = "";
-			city="";
-		}
-		public boolean hasFields(){
-			if(!streetName.equals("Unknown")&&!houseNumber.equals("")&&!postcode.equals("")&&!city.equals("")) return true;
-			return false;}
-		public Address build() {
-			if(streetName.contains("/")){
-				streetName = streetName.replaceAll("/","");
-			}
-			return new Address(id,lat,lon,streetName, houseNumber, postcode, city);
-		}
-	}
-
-	public Iterable<Drawable> getWaysOfType(WayType type) {
-		return ways.get(type);
+	//TODO filthy disgusting typecasting
+	public Iterable<Drawable> getWaysOfType(WayType type, Bounds bbox) {
+		return kdTreeMap.get(type).rangeQuery((BoundingBox) bbox);
 	}
 
 	public void addObserver(Runnable observer) {
@@ -71,8 +45,12 @@ public class Model {
 
 		//todo figure out how to do singleton but also include model in its constructor without needing to give model for every call of getinstance
 		parseWayTypeCases("data/Waytype_cases.txt");
-		ParseWayColors();
 
+		for (WayType type : WayType.values()) {
+			ways.put(type, new ArrayList<>());
+		}
+
+		ParseWayColors();
 
 		String filename = args.get(0);
 		InputStream osmsource;
@@ -259,7 +237,6 @@ public class Model {
 								b.lat = lat;
 								b.lon = lon;
 								addresses.add(b.build());
-								//putAddress(addresses,b);
 							}
 							way = null;
 							b.reset();
@@ -270,7 +247,6 @@ public class Model {
 								b.lat = lat;
 								b.lon = lon;
 								addresses.add(b.build());
-								//putAddress(addresses,b);
 							}
 							b.reset();
 							break;
@@ -306,7 +282,7 @@ public class Model {
 				case SPACE: break;
 				case START_DOCUMENT: break;
 				case END_DOCUMENT:
-					File parseCheck = new File("data/"+getCountry());
+					File parseCheck = new File("data/" + getCountry());
 					if(!parseCheck.isDirectory()) {
 						addresses.sort(Address::compareTo);
 						makeDatabase(addresses,getCountry());
@@ -317,6 +293,15 @@ public class Model {
 
 					for (OSMWay c : merge(coast)) {
 						ways.get(WayType.COASTLINE).add(new Polyline(c));
+					}
+
+					//Make and populate KDTrees for each WayType
+					for(Map.Entry<WayType, List<Drawable>> entry : ways.entrySet()) {
+						KDTree typeTree = new KDTree();
+						//Add entry values to KDTree
+						typeTree.insertAll(entry.getValue());
+						//Add KDTree to TreeMap
+						kdTreeMap.put(entry.getKey(), typeTree);
 					}
 					break;
 				case ENTITY_REFERENCE: break;
@@ -346,7 +331,7 @@ public class Model {
 		for(Address address:addresses){
 			//if the city changes, flush the writers and change the writer for the streets in that city,
 			// write to the file with all the cities and make the cities directory, also change the current city and postcode
-			if(!(address.getCity()+getDeilimeter()+address.getPostcode()).equals(currentCityAndPostcode)){
+			if(!(address.getCity()+ getDelimeter()+address.getPostcode()).equals(currentCityAndPostcode)){
 				currentCityAndPostcode = address.getCity()+" QQQ "+address.getPostcode();
 				File cityDir = new File("data/"+country+"/"+currentCityAndPostcode);
 				cityDir.mkdir();
@@ -363,7 +348,7 @@ public class Model {
 				adressesInStreetWriter.flush();
 				adressesInStreetWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(streetFile)));
 				streetsInCityWriter.write(currentStreet+"\n");
-				allStreetsInCountryWriter.write(currentStreet+getDeilimeter()+currentCityAndPostcode+"\n");
+				allStreetsInCountryWriter.write(currentStreet+ getDelimeter()+currentCityAndPostcode+"\n");
 			}
 			adressesInStreetWriter.write(address.getId()+" "+address.getLat()+" "+address.getLon()+" "+address.getHouseNumber()+"\n");
 		}
@@ -377,7 +362,7 @@ public class Model {
 		}
 	}
 
-	public String getDeilimeter(){
+	public String getDelimeter(){
 		return " QQQ ";
 	}
 
@@ -432,8 +417,6 @@ public class Model {
 	}
 
 	public void parseSearch(String proposedAddress) {
-		/*Address address = AddressParser.getInstance().parse(proposedAddress,getCountry());
-		System.out.println(address.toString());*/
         Address a = AddressParser.getInstance(this).singleSearch(proposedAddress, getCountry());
         //a is null if the singlesearch did not find a city in the string, hence we start the autocomplete
         if(a.getStreetName().equals("Unknown")){
@@ -478,7 +461,10 @@ public class Model {
 		return getTextFile("data/"+country+"/cities.txt");
 	}
 
-    private ArrayList<String> getDefault(String country) { return getTextFile("data/"+country+"/streets.txt");}
+    private ArrayList<String> getDefault(String country) {
+		return getTextFile("data/"+country+"/streets.txt");
+	}
+
 	//generalized getCities and getStreets to getTextFile, might not be final.
 	public ArrayList<String> getTextFile(String filepath){
 		try {
@@ -494,12 +480,38 @@ public class Model {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-
 		return null;
 	}
 
 	public Iterator<String> colorIterator() {
 		return typeColors.iterator();
+	}
+
+	//for building addresses during parsing
+	public static class Builder {
+		private long id;
+		private float lat, lon;
+		private String streetName = "Unknown", houseNumber="", postcode="", city="";
+		public void reset(){
+			id = 0;
+			lat =0;
+			lon = 0;
+			streetName = "Unknown";
+			houseNumber = "";
+			postcode = "";
+			city="";
+		}
+
+		public boolean hasFields(){
+			if(!streetName.equals("Unknown")&&!houseNumber.equals("")&&!postcode.equals("")&&!city.equals("")) return true;
+			return false;
+		}
+
+		public Address build() {
+			if(streetName.contains("/")){
+				streetName = streetName.replaceAll("/","");
+			}
+			return new Address(id,lat,lon,streetName, houseNumber, postcode, city);
+		}
 	}
 }
