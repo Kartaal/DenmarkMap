@@ -4,9 +4,10 @@ import bfst19.BoundingBox;
 import bfst19.BoundingBoxable;
 import bfst19.Drawable;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class KDTree {
+public class KDTree implements Serializable {
 	KDNode root;
 	private static xComparator xComp = new xComparator();
 	private static yComparator yComp = new yComparator();
@@ -193,7 +194,7 @@ public class KDTree {
 	}
 
 
-	public class KDNode {
+	public class KDNode implements Serializable{
 		public List<BoundingBoxable> values = new ArrayList<>();
 		public float split;
 		public boolean horizontal; //if false, splits on x
@@ -255,7 +256,7 @@ public class KDTree {
 	}
 
 	//Innerclass comparator for X dimension
-	public static class xComparator implements Comparator<BoundingBoxable> {
+	public static class xComparator implements Comparator<BoundingBoxable>, Serializable {
 		//This calculation is made to convert from float to int because Comparator interface requires it
 		// Returns a negative integer if a's centerX value is smaller than b's centerX value
 		// Returns 0 if a's centerX value is equal to b's centerX value
@@ -266,7 +267,7 @@ public class KDTree {
 	}
 
 	//Innerclass comparator for Y dimension
-	public static class yComparator implements Comparator<BoundingBoxable> {
+	public static class yComparator implements Comparator<BoundingBoxable>, Serializable {
 		//This calculation is made to convert from float to int because Comparator interface requires it
 		// Returns a negative integer if a's centerY value is smaller than b's centerY value
 		// Returns 0 if a's centerY value is equal to b's centerY value

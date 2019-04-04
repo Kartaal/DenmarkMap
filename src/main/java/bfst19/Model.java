@@ -29,8 +29,8 @@ public class Model {
 	Map<WayType, KDTree> kdTreeMap = new TreeMap<>();
 
 	//TODO filthy disgusting typecasting
-	public Iterable<Drawable> getWaysOfType(WayType type, Bounds bbox) {
-		return kdTreeMap.get(type).rangeQuery((BoundingBox) bbox);
+	public Iterable<Drawable> getWaysOfType(WayType type, BoundingBox bbox) {
+		return kdTreeMap.get(type).rangeQuery(bbox);
 	}
 
 	public void addObserver(Runnable observer) {
@@ -57,7 +57,7 @@ public class Model {
 		if (filename.endsWith(".obj")) {
 			long time = -System.nanoTime();
 			try (ObjectInputStream input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(filename)))) {
-				ways = (Map<WayType, List<Drawable>>) input.readObject();
+				kdTreeMap = (Map<WayType, KDTree>) input.readObject();
 				minlat = input.readFloat();
 				minlon = input.readFloat();
 				maxlat = input.readFloat();
@@ -80,7 +80,7 @@ public class Model {
 			time += System.nanoTime();
 			System.out.printf("parse time: %.1fs\n", time / 1e9);
 			try (ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(filename + ".obj")))) {
-				output.writeObject(ways);
+				output.writeObject(kdTreeMap);
 				output.writeFloat(minlat);
 				output.writeFloat(minlon);
 				output.writeFloat(maxlat);

@@ -107,13 +107,13 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    private Bounds getExtentInModel(){
+    private BoundingBox getExtentInModel(){
 
         return getBounds();
         //return getBoundsDebug();
     }
 
-    private Bounds getBoundsDebug() {
+    private BoundingBox getBoundsDebug() {
         Bounds localBounds = this.getBoundsInLocal();
         double minX = localBounds.getMinX() + 100;
         double maxX = localBounds.getMaxX() - 100;
@@ -137,7 +137,7 @@ public class MapCanvas extends Canvas {
                 maxPoint.getX()-minPoint.getX(), maxPoint.getY()-minPoint.getY());
     }
 
-    private Bounds getBounds() {
+    private BoundingBox getBounds() {
         Bounds localBounds = this.getBoundsInLocal();
         double minX = localBounds.getMinX();
         double maxX = localBounds.getMaxX();
