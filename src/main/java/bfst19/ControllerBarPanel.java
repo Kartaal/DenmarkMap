@@ -12,18 +12,18 @@ public class ControllerBarPanel {
 
     @FXML
     private Button menuButton;
-
     @FXML
     private AutoTextField autoTextField;
+    @FXML
+    private Button searchButton;
 
     Controller controller;
-
 
     public void init(Controller controller){
         this.controller = controller;
         setMenuButton();
+        setSearchButton();
         autoTextField.init(controller);
-
     }
 
     public void setMenuButton(){
@@ -38,4 +38,13 @@ public class ControllerBarPanel {
     private void openRute(ActionEvent actionEvent) {
         controller.setupRutePanel();
     }
+
+    public void setSearchButton(){
+        searchButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                autoTextField.showResults();
+            }
+        });
+    }
+
 }

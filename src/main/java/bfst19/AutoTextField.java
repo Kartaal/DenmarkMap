@@ -1,10 +1,7 @@
 package bfst19;
 
 import javafx.geometry.Side;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.CustomMenuItem;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -17,7 +14,6 @@ public class AutoTextField extends TextField {
 
     private ContextMenu adressDropDown;
 
-
     public AutoTextField(){
         super();
 
@@ -26,10 +22,8 @@ public class AutoTextField extends TextField {
                 case ENTER:
                     showResults();
                     break;
-
             }
         });
-
     }
 
     public void init(Controller controller){
@@ -44,13 +38,16 @@ public class AutoTextField extends TextField {
 
     }
 
-    private void showResults(){
+    public void showResults(){
         addAdressesToDropDown();
         if(!adressDropDown.isShowing()){
             adressDropDown.show(AutoTextField.this, Side.BOTTOM,0,0);
         }
     }
 
+    //TODO: Add ScrollPane and limit height
+    //TODO: NullPointerException when only writing adress & city and not postcode example: "Arsenalvej Rønne" without "3700"
+    //TODO: There comes two results for "Arsenalvej Rønne 3700" where "Arsenalvej Rønne 3700" is the answer and another street "Arnagervej Rønne 3700"
     private void addAdressesToDropDown() {
 
         List<CustomMenuItem> menuItems = new LinkedList<>();
@@ -62,6 +59,11 @@ public class AutoTextField extends TextField {
         while(iterator.hasNext()){
             Label labelAdress = new Label(iterator.next());
             CustomMenuItem item = new CustomMenuItem(labelAdress, true);
+
+            item.setOnAction((event) -> {
+                this.setText(labelAdress.getText());
+                panAdress(labelAdress.getText());
+            });
             menuItems.add(item);
         }
 
@@ -69,11 +71,12 @@ public class AutoTextField extends TextField {
             menuItems.add(new CustomMenuItem(new Label("No search result found"),true));
         }
 
-
+        adressDropDown.getItems().clear();
         adressDropDown.getItems().addAll(menuItems);
+        System.out.println(adressDropDown.getItems().size());
     }
 
-    private void panAdress(){
+    private void panAdress(String adress){
 
     }
 
