@@ -110,8 +110,8 @@ public class MapCanvas extends Canvas {
 
     private Bounds getExtentInModel(){
 
-        //return getBounds();
-        return getBoundsDebug();
+        return getBounds();
+        //return getBoundsDebug();
     }
 
     private Bounds getBoundsDebug() {

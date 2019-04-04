@@ -155,13 +155,13 @@ public class KDTree {
 
 	//Method for finding elements in the KDTree that intersects a BoundingBox
 	public Iterable<Drawable> rangeQuery(BoundingBox bbox) {
-		List<Drawable> returnElements = new ArrayList<>();
+		Set<Drawable> returnElements = new HashSet<>();
 		rangeQuery(bbox, root, returnElements);
 		return returnElements;
 	}
 
 	//Recursive checks down through the KDTree
-	private List<Drawable> rangeQuery(BoundingBox queryBB, KDNode node, List<Drawable> returnElements) {
+	private Set<Drawable> rangeQuery(BoundingBox queryBB, KDNode node, Set<Drawable> returnElements) {
 		//Return null if current node is null to stop endless recursion
 		if(node == null) return null;
 
@@ -178,7 +178,7 @@ public class KDTree {
 
 		//Make temporary list to keep elements, so null returns don't cause problems
 		//Check the left subtree for elements intersecting BoundingBox
-		List<Drawable> tempList = rangeQuery(queryBB, node.nodeL, returnElements);
+		Set<Drawable> tempList = rangeQuery(queryBB, node.nodeL, returnElements);
 		if(tempList != null) {
 			returnElements.addAll(tempList);
 		}
