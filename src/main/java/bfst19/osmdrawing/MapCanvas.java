@@ -135,7 +135,7 @@ public class MapCanvas extends Canvas {
         gc.stroke();
 
         return new BoundingBox(minPoint.getX(), minPoint.getY(),
-                maxPoint.getX(), maxPoint.getY());
+                maxPoint.getX()-minPoint.getX(), maxPoint.getY()-minPoint.getY());
     }
 
     private Bounds getBounds() {
@@ -150,7 +150,7 @@ public class MapCanvas extends Canvas {
         Point2D maxPoint = getModelCoords(maxX, minY);
 
         return new BoundingBox(minPoint.getX(), minPoint.getY(),
-                maxPoint.getX(), maxPoint.getY());
+                maxPoint.getX()-minPoint.getX(), maxPoint.getY()-minPoint.getY());
     }
 
     private Color getColor(WayType type) { return wayColors.get(type); }
