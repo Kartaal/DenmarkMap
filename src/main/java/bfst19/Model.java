@@ -1,7 +1,9 @@
 package bfst19;
 
+import bfst19.osmdrawing.KDTree.KDTree;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Bounds;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -14,14 +16,9 @@ import static javax.xml.stream.XMLStreamConstants.*;
 
 public class Model {
 	float lonfactor = 1.0f;
-	Map<WayType,List<Drawable>> ways = new EnumMap<>(WayType.class);
+	Map<WayType, List<Drawable>> ways = new EnumMap<>(WayType.class);
 	private boolean colorBlindEnabled;
 
-	{
-		for (WayType type : WayType.values()) {
-			ways.put(type, new ArrayList<>());
-		}
-	}
 	List<Runnable> observers = new ArrayList<>();
 	float minlat, minlon, maxlat, maxlon;
 
@@ -31,31 +28,12 @@ public class Model {
 	ArrayList<String[]> wayTypeCases = new ArrayList<>();
 	ObservableList<Address> searchedAddresses = FXCollections.observableArrayList();
 	ObservableList<String> typeColors = FXCollections.observableArrayList();
+	Map<WayType, KDTree> kdTreeMap = new TreeMap<>();
 
-	//for building addresses during parsing
-	public static class Builder {
-		private long id;
-		private float lat, lon;
-		private String streetName = "Unknown", houseNumber="", postcode="", city="";
-		public void reset(){
-			id = 0;
-			lat =0;
-			lon = 0;
-			streetName = "Unknown";
-			houseNumber = "";
-			postcode = "";
-			city="";
-		}
-		public boolean hasFields(){
-			if(!streetName.equals("Unknown")&&!houseNumber.equals("")&&!postcode.equals("")&&!city.equals("")) return true;
-			return false;}
-		public Address build() {
-			return new Address(id,lat,lon,streetName, houseNumber, postcode, city);
-		}
-	}
+	//TODO filthy disgusting typecasting
+	public Iterable<Drawable> getWaysOfType(WayType type, Bounds bbox) {
+		return kdTreeMap.get(type).rangeQuery((BoundingBox) bbox);
 
-	public Iterable<Drawable> getWaysOfType(WayType type) {
-		return ways.get(type);
 	}
 
 	public void addObserver(Runnable observer) {
@@ -67,6 +45,10 @@ public class Model {
 	}
 
 	public Model(List<String> args) throws IOException, XMLStreamException, ClassNotFoundException {
+
+		for (WayType type : WayType.values()) {
+			ways.put(type, new ArrayList<>());
+		}
 
 		for(WayType type: WayType.values()){
 			waytypes.put(type.name(),type);
@@ -300,7 +282,7 @@ public class Model {
 				case SPACE: break;
 				case START_DOCUMENT: break;
 				case END_DOCUMENT:
-					File parseCheck = new File("data/"+getCountry());
+					File parseCheck = new File("data/" + getCountry());
 					if(!parseCheck.isDirectory()) {
 						makeCityDirectories(addresses.keySet(),getCountry());
 						try {
@@ -312,6 +294,15 @@ public class Model {
 
 					for (OSMWay c : merge(coast)) {
 						ways.get(WayType.COASTLINE).add(new Polyline(c));
+					}
+
+					//Make and populate KDTrees for each WayType
+					for(Map.Entry<WayType, List<Drawable>> entry : ways.entrySet()) {
+						KDTree typeTree = new KDTree();
+						//Add entry values to KDTree
+						typeTree.insertAll(entry.getValue());
+						//Add KDTree to TreeMap
+						kdTreeMap.put(entry.getKey(), typeTree);
 					}
 					break;
 				case ENTITY_REFERENCE: break;
@@ -489,4 +480,5 @@ public class Model {
 	public Iterator<String> colorIterator() {
 		return typeColors.iterator();
 	}
+
 }

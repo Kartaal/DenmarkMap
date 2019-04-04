@@ -37,10 +37,10 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     // se lec 2
-    // Use JUnit 5 test framework 
+    // Use JUnit 5 test framework
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.2'
-    // Use JUnit 5’s legacy support for JUnit 4 
+    // Use JUnit 5’s legacy support for JUnit 4
     testCompileOnly 'junit:junit: 4.12'
     testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.3.1'
 }
@@ -63,5 +63,5 @@ tasks.withType(JavaCompile) {
 }
 
 run {
-    args = ['data/small.osm.obj']
+    args = ['data/bornholm.zip']
 }
