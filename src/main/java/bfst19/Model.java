@@ -1,6 +1,8 @@
 package bfst19;
 
+import javafx.beans.InvalidationListener;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
 import javax.xml.stream.XMLInputFactory;
@@ -27,7 +29,7 @@ public class Model {
 
 	String CurrentTypeColorTxt  = "data/TypeColorsNormal.txt";
 	HashMap<String,ArrayList<String[]>> wayTypeCases = new HashMap<>();
-	ObservableList<Address> searchedAddresses = FXCollections.observableArrayList();
+	ObservableList<String> foundMatches = FXCollections.observableArrayList();
 	ObservableList<String> typeColors = FXCollections.observableArrayList();
 
 	//for building addresses during parsing
@@ -442,9 +444,12 @@ public class Model {
             //this returns an arraylist of string arrays that hold a streetname city and postcode
             ArrayList<String[]> possibleMatches = AddressParser.getInstance(this).getMatchesFromDefault(proposedAddress, false);
             if (possibleMatches != null) {
+                foundMatches.clear();
                 //each string array in this arraylist has a streetname on index 0, city on idex 1 and postcode on index 2
                 //give possible matches to the ui somehow
-
+                for(String[] match : possibleMatches){
+                    foundMatches.add(match[0]+" "+match[1]+" "+match[2]);
+                }
                 //insert the index of the city+postcode chosen
                 String[] match = possibleMatches.get(0);
                 //after a specific city + postcode is chosen insert it into the textfield and inititiat the search again
