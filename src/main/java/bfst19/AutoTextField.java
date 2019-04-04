@@ -6,6 +6,7 @@ import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -57,9 +58,9 @@ public class AutoTextField extends TextField {
         System.out.println(this.getText());
         controller.parseSearchText(this.getText());
 
-        while(controller.parsefoundMatchesIterator().hasNext()){
-            System.out.println(controller.parsefoundMatchesIterator().next());
-            Label labelAdress = new Label(controller.parsefoundMatchesIterator().next());
+        Iterator<String> iterator = controller.parsefoundMatchesIterator();
+        while(iterator.hasNext()){
+            Label labelAdress = new Label(iterator.next());
             CustomMenuItem item = new CustomMenuItem(labelAdress, true);
             menuItems.add(item);
         }
