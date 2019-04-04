@@ -87,8 +87,6 @@ public class Model {
 				maxlat = input.readFloat();
 				maxlon = input.readFloat();
 			}
-			AddressParser.getInstance(this).setDefaults(getDefault(getCountry()));
-			AddressParser.getInstance(this).parseCitiesAndPostCodes(getCities(getCountry()));
 			time += System.nanoTime();
 			System.out.printf("Load time: %.1fs\n", time / 1e9);
 		} else {
@@ -111,6 +109,8 @@ public class Model {
 				output.writeFloat(maxlon);
 			}
 		}
+        AddressParser.getInstance(this).setDefaults(getDefault(getCountry()));
+        AddressParser.getInstance(this).parseCitiesAndPostCodes(getCities(getCountry()));
 	}
 
     public void ParseWayColors(){
@@ -313,8 +313,6 @@ public class Model {
 						addresses.sort(Address::compareTo);
 						makeDatabase(addresses,getCountry());
 						//this keeps the cities and the default streets files in memory, it's about 1mb for Zealand of memory
-						AddressParser.getInstance(this).setDefaults(getDefault(getCountry()));
-						AddressParser.getInstance(this).parseCitiesAndPostCodes(getCities(getCountry()));
 					}
 
 					for (OSMWay c : merge(coast)) {
