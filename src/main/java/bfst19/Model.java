@@ -439,7 +439,16 @@ public class Model {
         Address a = AddressParser.getInstance(this).singleSearch(proposedAddress, getCountry());
         //a is null if the singlesearch did not find a city in the string, hence we start the autocomplete
         if(a.getStreetName().equals("Unknown")){
-            //print out some failure message
+			ArrayList<String[]> possibleMatches = AddressParser.getInstance(this).getMatchesFromDefault(proposedAddress, false);
+			if (possibleMatches != null) {
+				foundMatches.clear();
+				//each string array in this arraylist has a streetname on index 0, city on idex 1 and postcode on index 2
+				//give possible matches to the ui somehow
+				for (String[] match : possibleMatches) {
+					foundMatches.add(match[0] + " " + match[1] + " " + match[2]);
+				}
+			}
+        	//print out some failure message
 	    }else if(a.getCity().equals("")){
             //this returns an arraylist of string arrays that hold a streetname city and postcode
             ArrayList<String[]> possibleMatches = AddressParser.getInstance(this).getMatchesFromDefault(proposedAddress, false);

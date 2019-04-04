@@ -19,16 +19,6 @@ public class AutoTextField extends TextField {
 
     public AutoTextField(){
         super();
-    }
-
-    public void init(Controller controller){
-        this.setStyle("-fx-min-width: 300; -fx-min-height: 40");
-        adressDropDown = new ContextMenu();
-        adressDropDown.setStyle("-fx-min-width: 300");
-
-        this.controller = controller;
-        this.model = controller.getModel();
-        model.addObserver(this::addAdressesToDropDown);
 
         this.setOnKeyPressed(event -> {
             switch (event.getCode())  {
@@ -38,39 +28,49 @@ public class AutoTextField extends TextField {
 
             }
         });
+
+    }
+
+    public void init(Controller controller){
+        this.setStyle("-fx-min-width: 300; -fx-min-height: 40");
+
+        adressDropDown = new ContextMenu();
+        adressDropDown.setStyle("-fx-min-width: 300");
+
+        this.controller = controller;
+        this.model = controller.getModel();
+        model.addObserver(this::addAdressesToDropDown);
+
     }
 
     private void showResults(){
-
         addAdressesToDropDown();
         if(!adressDropDown.isShowing()){
             adressDropDown.show(AutoTextField.this, Side.BOTTOM,0,0);
         }
-
     }
 
     private void addAdressesToDropDown() {
 
         List<CustomMenuItem> menuItems = new LinkedList<>();
 
-
+        System.out.println(this.getText());
         controller.parseSearchText(this.getText());
 
         while(controller.parsefoundMatchesIterator().hasNext()){
-
-
+            System.out.println(controller.parsefoundMatchesIterator().next());
             Label labelAdress = new Label(controller.parsefoundMatchesIterator().next());
-
             CustomMenuItem item = new CustomMenuItem(labelAdress, true);
-
             menuItems.add(item);
-
         }
 
+        if(menuItems.size() == 0){
+            menuItems.add(new CustomMenuItem(new Label("No search result found"),true));
+        }
+
+
         adressDropDown.getItems().addAll(menuItems);
-
     }
-
 
     private void panAdress(){
 
