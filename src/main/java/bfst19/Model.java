@@ -1,6 +1,6 @@
 package bfst19;
 
-import bfst19.osmdrawing.KDTree.KDTree;
+import bfst19.KDTree.KDTree;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
@@ -479,6 +479,31 @@ public class Model {
 
 	public Iterator<String> colorIterator() {
 		return typeColors.iterator();
+	}
+
+	//for building addresses during parsing
+	public static class Builder {
+		private long id;
+		private float lat, lon;
+		private String streetName = "Unknown", houseNumber="", postcode="", city="";
+		public void reset(){
+			id = 0;
+			lat =0;
+			lon = 0;
+			streetName = "Unknown";
+			houseNumber = "";
+			postcode = "";
+			city="";
+		}
+		public boolean hasFields(){
+			if(!streetName.equals("Unknown")&&!houseNumber.equals("")&&!postcode.equals("")&&!city.equals("")) return true;
+			return false;}
+		public Address build() {
+			if(streetName.contains("/")){
+				streetName = streetName.replaceAll("/","");
+			}
+			return new Address(id,lat,lon,streetName, houseNumber, postcode, city);
+		}
 	}
 
 }
