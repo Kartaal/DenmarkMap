@@ -17,6 +17,9 @@ public class AutoTextField extends TextField {
     public AutoTextField(){
         super();
 
+        adressDropDown = new ContextMenu();
+        adressDropDown.setStyle("-fx-min-width: 300; -fx-max-height: 400");
+
         this.setOnKeyPressed(event -> {
             switch (event.getCode())  {
                 case ENTER:
@@ -28,9 +31,6 @@ public class AutoTextField extends TextField {
 
     public void init(Controller controller){
         this.setStyle("-fx-min-width: 300; -fx-min-height: 40");
-
-        adressDropDown = new ContextMenu();
-        adressDropDown.setStyle("-fx-min-width: 300");
 
         this.controller = controller;
         this.model = controller.getModel();
