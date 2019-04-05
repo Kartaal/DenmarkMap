@@ -3,7 +3,6 @@ package bfst19;
 import bfst19.KDTree.KDTree;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Bounds;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -402,6 +401,7 @@ public class Model {
 					res.add(before.get(i));
 				}
 			}
+			//TODO figure out why this works and why it can't be refactored easily into OSMWay without inheritance
 			res.addAll(way);
 			OSMWay after = pieces.remove(way.getLast());
 			if (after != null) {

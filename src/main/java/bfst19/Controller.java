@@ -37,7 +37,8 @@ public class Controller {
         setUpBar();
 
         // update scalebar when the mxxproperty has changed. The lambda expression
-        // sets the method changed from the interface (ChangeListener). mxxProperty() Defines the X coordinate scaling element of the 3x4 matrix.
+        // sets the method changed from the interface (ChangeListener).
+        // mxxProperty() Defines the X coordinate scaling element of the 3x4 matrix.
         mapCanvas.transform.mxxProperty().addListener((observable, oldVal, newVal) -> {
             // sets the after mx is changed scale
             setScalebar();
@@ -91,14 +92,14 @@ public class Controller {
         controllerMenuPanel.init(this);
     }
 
-    public void setupRutePanel() {
+    public void setupRoutePanel() {
         if(borderPane.getLeft() != null){
             borderPane.setLeft(null);
         }
 
         VBox VBox = null;
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ViewRutePanel.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ViewRoutePanel.fxml"));
         try {
             VBox = fxmlLoader.load();
         } catch (IOException event) {
@@ -107,8 +108,8 @@ public class Controller {
 
         borderPane.setLeft(VBox);
 
-        ControllerRutePanel controllerRutePanel = fxmlLoader.getController();
-        controllerRutePanel.init(this);
+        ControllerRoutePanel controllerRoutePanel = fxmlLoader.getController();
+        controllerRoutePanel.init(this);
     }
 
 
@@ -138,7 +139,8 @@ public class Controller {
 
     @FXML
     private void onScroll(ScrollEvent e) {
-        //because scrollwheels/touchpads scroll by moving up and down the zoomfactor as calculated based on the distance moved by the "scroll"
+        //because scrollwheels/touchpads scroll by moving up and down
+        // the zoomfactor as calculated based on the distance moved by the "scroll"
         //The pow part is just about trial and error to find a good amount of zoom per "scroll"
         factor = Math.pow(1.01, e.getDeltaY());
         mapCanvas.zoom(factor, e.getX(), e.getY());

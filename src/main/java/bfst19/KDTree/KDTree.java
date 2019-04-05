@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.*;
 
 public class KDTree implements Serializable {
-	KDNode root;
+	private KDNode root;
 	private static xComparator xComp = new xComparator();
 	private static yComparator yComp = new yComparator();
 	private Comparator<BoundingBoxable> selectComp;
@@ -195,12 +195,12 @@ public class KDTree implements Serializable {
 
 
 	public class KDNode implements Serializable{
-		public List<BoundingBoxable> values = new ArrayList<>();
-		public float split;
-		public boolean horizontal; //if false, splits on x
-		public KDNode nodeL; //child
-		public KDNode nodeR; //child
-		public BoundingBox bb;
+		List<BoundingBoxable> values = new ArrayList<>();
+		float split;
+		boolean horizontal; //if false, splits on x
+		KDNode nodeL; //child
+		KDNode nodeR; //child
+		BoundingBox bb;
 
 		public KDNode(List<BoundingBoxable> value, float split, boolean horizontal) {
 			if(value != null) {
@@ -294,6 +294,8 @@ public class KDTree implements Serializable {
 		return (BoundingBoxable) a.get(k);
 	}
 	*/
+
+	//Everything below this line is a modified version of code from Algs4
 
 	//From Algs4 book, modified
 	public void sort(List<Drawable> a, Comparator<BoundingBoxable> comp) {

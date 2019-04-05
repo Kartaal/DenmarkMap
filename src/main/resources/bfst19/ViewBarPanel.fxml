@@ -39,7 +39,7 @@
          </graphic>
       </Button>
 
-      <Button fx:id="ruteButton" mnemonicParsing="false" onAction="#openRute" style="-fx-background-color: white;  -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);">
+      <Button fx:id="ruteButton" mnemonicParsing="false" onAction="#openRoute" style="-fx-background-color: white;  -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);">
          <HBox.margin>
             <Insets left="5.0" />
          </HBox.margin>

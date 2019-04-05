@@ -2,11 +2,11 @@ package bfst19;
 
 
 public class Address extends OSMNode implements Comparable{
-    private String city,streetName,postcode, houseNumber,floor,side;
+    private String city, streetName, postcode, houseNumber, floor, side;
 
     public Address(long id,float lat,float lon,
-                   String streetName,String houseNumber,String postcode,String city){
-        //todo call the other constructor from this one to aviod code dup
+                   String streetName, String houseNumber, String postcode, String city) {
+        //todo call the other constructor from this one to avoid code dup
         super(id,lat,lon);
         this.streetName = streetName;
         this.houseNumber = houseNumber;
@@ -17,7 +17,7 @@ public class Address extends OSMNode implements Comparable{
     public Address(long id, float lat, float lon,
                    String streetName, String houseNumber, String postcode,
                    String city, String floor, String side) {
-        this(id,lat,lon,streetName,houseNumber,postcode,city);
+        this(id, lat, lon, streetName, houseNumber, postcode, city);
         this.side = side;
         this.floor = floor;
     }
@@ -31,11 +31,17 @@ public class Address extends OSMNode implements Comparable{
         return streetName;
     }
 
-    public long getId(){ return id; }
+    public long getId(){
+        return id;
+    }
 
-    public float getLat(){return lat;}
+    public float getLat(){
+        return lat;
+    }
 
-    public float getLon(){return lon;}
+    public float getLon(){
+        return lon;
+    }
 
     public String getPostcode(){
         return postcode;

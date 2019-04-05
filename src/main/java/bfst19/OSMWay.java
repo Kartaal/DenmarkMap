@@ -2,12 +2,13 @@ package bfst19;
 
 import java.util.ArrayList;
 import java.util.function.LongSupplier;
-//TODO:Refactor to contain an arraylist instead, right now it's very tightly connected to arraylist
 public class OSMWay extends ArrayList<OSMNode> implements LongSupplier {
+	ArrayList<OSMNode> ways;
 	long id;
 
 	public OSMWay(long id) {
 		this.id = id;
+		ways = new ArrayList<>();
 	}
 
 	@Override
@@ -22,4 +23,23 @@ public class OSMWay extends ArrayList<OSMNode> implements LongSupplier {
 	public OSMNode getLast() {
 		return get(size()-1);
 	}
+
+
+	//TODO All of this refatoring headache, right now it's very tightly connected to arraylist
+	//Refactoring the Arraylist out of inheritance
+	// following methods needed for the rest of the code to work
+	/*
+	public void add(OSMNode osmNode) {
+		ways.add(osmNode);
+	}
+
+	public int size() {
+		return ways.size();
+	}
+
+	public OSMNode get(int i) {
+		return ways.get(i);
+	}
+
+	*/
 }

@@ -5,13 +5,14 @@ import javafx.scene.canvas.GraphicsContext;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-//TODO: Refactor to contain arraylist, same rational
-public class MultiPolyline extends ArrayList<Polyline> implements Drawable, Serializable, BoundingBoxable {
+public class MultiPolyline implements Drawable, Serializable, BoundingBoxable {
+	public ArrayList<Polyline> lines;
 	private float centerX;
 	private float centerY;
 	private BoundingBox bb;
 
 	public MultiPolyline(OSMRelation rel) {
+		lines = new ArrayList<>();
 		for (OSMWay way : rel){
 			Polyline addingLine = new Polyline(way);
 			add(addingLine);
@@ -21,7 +22,7 @@ public class MultiPolyline extends ArrayList<Polyline> implements Drawable, Seri
 		//Code copy pasted to KDTree
 		//Arbitrary values that should exceed the coords on Denmark
 		double minX = 100, maxX = 0, minY = 100, maxY = 0;
-		for(Polyline polyline : this) {
+		for(Polyline polyline : lines) {
 			BoundingBox lineBB = polyline.getBB();
 			if (lineBB.getMinX() < minX) {
 				minX = lineBB.getMinX();
@@ -40,6 +41,10 @@ public class MultiPolyline extends ArrayList<Polyline> implements Drawable, Seri
 		this.centerX = (float) (minX + maxX) / 2;
 		this.centerY = (float) (minY + maxY) / 2;
 		bb = new BoundingBox(minX, minY, maxX-minX, maxY-minY);
+	}
+
+	private void add(Polyline addingLine) {
+		lines.add(addingLine);
 	}
 
 	@Override
@@ -66,7 +71,7 @@ public class MultiPolyline extends ArrayList<Polyline> implements Drawable, Seri
 	}
 
 	public void trace(GraphicsContext gc) {
-		for (Polyline p : this) p.trace(gc);
+		for (Polyline p : lines) p.trace(gc);
 	}
 
 	@Override

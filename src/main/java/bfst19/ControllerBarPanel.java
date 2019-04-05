@@ -1,6 +1,5 @@
 package bfst19;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -24,11 +23,7 @@ public class ControllerBarPanel {
 
 
     public void setMenuButton(){
-        menuButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
-                controller.setupMenuPanel();
-            }
-        });
+        menuButton.setOnAction(e -> controller.setupMenuPanel());
     }
 
     @FXML
@@ -41,7 +36,7 @@ public class ControllerBarPanel {
     }
 
     @FXML
-    private void openRute(ActionEvent actionEvent) {
-        controller.setupRutePanel();
+    private void openRoute(ActionEvent actionEvent) {
+        controller.setupRoutePanel();
     }
 }

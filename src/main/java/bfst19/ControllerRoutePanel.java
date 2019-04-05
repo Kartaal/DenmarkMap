@@ -9,10 +9,10 @@ import javafx.scene.paint.Color;
 
 
 
-public class ControllerRutePanel {
+public class ControllerRoutePanel {
 
     @FXML
-    private ImageView backBtnRutePanel;
+    private ImageView backBtnRoutePanel;
 
     private Controller controller;
 
@@ -29,11 +29,11 @@ public class ControllerRutePanel {
     private void setBackBtnEffect() {
 
         DropShadow dropShadow = new DropShadow(BlurType.ONE_PASS_BOX, Color.rgb(0,0,0,0.4), 10, 0, 0, 0);
-        backBtnRutePanel.setEffect(dropShadow);
+        backBtnRoutePanel.setEffect(dropShadow);
     }
 
     @FXML
     private void setBackBtnEffectNone() {
-        backBtnRutePanel.setEffect(null);
+        backBtnRoutePanel.setEffect(null);
     }
 }

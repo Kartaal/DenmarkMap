@@ -93,7 +93,8 @@ public class AddressParser {
             b.streetName = streetMatch;
         }
 
-        //this uses regex to find houseNumber, side and floor for the address after the cityCheck and streetCheck have filtered the string.
+        //this uses regex to find houseNumber, side and floor for the address after the cityCheck
+        // and streetCheck have filtered the string.
         proposedAddress = proposedAddress.trim();
         for (Pattern pattern : patterns) {
             Matcher match = pattern.matcher(proposedAddress);
@@ -120,30 +121,32 @@ public class AddressParser {
 
     //this method gets an address' remaining information from the streetname's text file,
     // this information is called addressfields in this method, but is perhaps not the best name
-    public ArrayList<String[]> getAddress(String country, String city, String postcode, String streetName, String houseNumber,boolean singleSearch){
-        ArrayList<String> adressesOnStreet = model.getAddressesOnStreet(country,city,postcode,streetName);
-        String address = adressesOnStreet.get(0);
+    public ArrayList<String[]> getAddress(String country, String city,
+                                          String postcode, String streetName,
+                                          String houseNumber, boolean singleSearch){
+        ArrayList<String> addressesOnStreet = model.getAddressesOnStreet(country,city,postcode,streetName);
+        String address = addressesOnStreet.get(0);
         ArrayList<String[]> matches = new ArrayList<>();
-        String[] adressFields;
+        String[] addressFields;
 
         if(singleSearch){
             if(houseNumber.equals("")){
                 matches.add(address.split(" "));
                 return matches;
             }
-            for(int i = 1 ; i < adressesOnStreet.size()-1 ; i++){
-                address = adressesOnStreet.get(i);
-                adressFields=address.split(" ");
-                if(adressFields[3].toLowerCase().equalsIgnoreCase(houseNumber)){
-                    matches.add(adressFields);
+            for(int i = 1 ; i < addressesOnStreet.size()-1 ; i++){
+                address = addressesOnStreet.get(i);
+                addressFields=address.split(" ");
+                if(addressFields[3].toLowerCase().equalsIgnoreCase(houseNumber)){
+                    matches.add(addressFields);
                     return matches;
                 }
             }
         }else{
-            for(int i = 1 ; i < adressesOnStreet.size()-1 ; i++){
-                address = adressesOnStreet.get(i);
-                adressFields = address.split(" ");
-                matches.add(adressFields);
+            for(int i = 1 ; i < addressesOnStreet.size()-1 ; i++){
+                address = addressesOnStreet.get(i);
+                addressFields = address.split(" ");
+                matches.add(addressFields);
             }
             return matches;
         }
@@ -153,10 +156,10 @@ public class AddressParser {
     //Checks if the start of the address matches any the streets in the street names file
     // if a match is found, the builders street field is set to the match
     // which is returned to be removed from the address.
-    public String checkStreet(String address,String country,String[] cityMatch) {
-        ArrayList<String> cities = model.getStreetsInCity(country,cityMatch[1],cityMatch[2]);
+    public String checkStreet(String address, String country, String[] cityMatch) {
+        ArrayList<String> cities = model.getStreetsInCity(country, cityMatch[1], cityMatch[2]);
         String mostCompleteMatch = "";
-        for(int i = 0; i<cities.size();i++){
+        for(int i = 0; i < cities.size() ; i++){
             String line = cities.get(i);
             if(address.startsWith(line.toLowerCase())){
                 if(line.length() > mostCompleteMatch.length()){
@@ -178,7 +181,7 @@ public class AddressParser {
 
             //this was motivated by using the postcode as the most significant part of a city and postcode,
             // so that if you write a postcode, it will use that postcodes matching city
-            String postcodeCheck = checkThreeLastAdressTokensForPostcode(proposedAddress, currentPostcode).toLowerCase();
+            String postcodeCheck = checkThreeLastAddressTokensForPostcode(proposedAddress, currentPostcode).toLowerCase();
 
             //if the proposed address ends with the current postcode and city return those
             if(proposedAddress.endsWith(currentPostcode.toLowerCase() +" "+ currentCity.toLowerCase())){
@@ -192,7 +195,8 @@ public class AddressParser {
                 bestPostCodeMatch = currentPostcode;
                 bestCityMatch = currentCity;
 
-                //if a city is found at the end of the address, return that along with that cities postcode (not 100% always accurate)
+                //if a city is found at the end of the address, return that along with that cities postcode
+                // (not 100% always accurate)
             }else if(proposedAddress.endsWith(currentCity.toLowerCase())){
                 mostCompleteMatch = currentCity;
                 bestPostCodeMatch = currentPostcode;
@@ -208,8 +212,8 @@ public class AddressParser {
 
     //if third to last token in the proposed address is the given postcode,
     // it returns the part of the address to remove, if not it returns "".
-    public String checkThreeLastAdressTokensForPostcode(String proposedAdress,String postcode){
-        String[] addressTokens = proposedAdress.split(" ");
+    public String checkThreeLastAddressTokensForPostcode(String proposedAddress, String postcode){
+        String[] addressTokens = proposedAddress.split(" ");
         if(addressTokens.length>=1&&addressTokens[addressTokens.length-1].equals(postcode)){
             return addressTokens[addressTokens.length-1];
         }
@@ -227,7 +231,7 @@ public class AddressParser {
     public ArrayList<String[]> getMatchesFromDefault(String proposedAddress,boolean singleSearch){
         int lo = 0;
         int hi = defaults.size()-1;
-        int mid = 0;
+        int mid;
         while(lo<=hi){
             mid = lo+(hi-lo)/2;
             String currentDefault = defaults.get(mid).toLowerCase();
@@ -284,7 +288,7 @@ public class AddressParser {
     }
 
     public void parseCitiesAndPostCodes(ArrayList<String> citiesTextFile){
-        for(int i = 0;i<citiesTextFile.size()-1;i++){
+        for(int i = 0 ; i<citiesTextFile.size()-1 ; i++){
             String line = citiesTextFile.get(i);
             String[] tokens = line.split(" QQQ ");
             cities.add(tokens[0]);
