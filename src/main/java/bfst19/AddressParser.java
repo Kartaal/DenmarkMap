@@ -78,7 +78,7 @@ public class AddressParser {
         String streetMatch = checkStreet(proposedAddress,country,cityMatch);
         //if a city is found, we try to find a street in that cities streets.txt file that matches the proposed address
         if(!streetMatch.equals("")){
-            proposedAddress = proposedAddress.replaceAll(streetMatch,"");
+            proposedAddress = proposedAddress.replaceAll(streetMatch.toLowerCase(),"");
             b.streetName = streetMatch;
         }
 
@@ -152,7 +152,7 @@ public class AddressParser {
                 String line = streetsInCity.get(i);
                 if (address.startsWith(line.toLowerCase())) {
                     if (line.length() > mostCompleteMatch.length()) {
-                        mostCompleteMatch = line.toLowerCase();
+                        mostCompleteMatch = line;
                     }
                 }
             }
