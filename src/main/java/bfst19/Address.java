@@ -1,7 +1,7 @@
 package bfst19;
 
 
-public class Address extends OSMNode{
+public class Address extends OSMNode implements Comparable{
     private String city,streetName,postcode, houseNumber,floor,side;
 
     public Address(long id,float lat,float lon,
@@ -17,13 +17,9 @@ public class Address extends OSMNode{
     public Address(long id, float lat, float lon,
                    String streetName, String houseNumber, String postcode,
                    String city, String floor, String side) {
-        super(id,lat,lon);
-        this.streetName = streetName;
-        this.houseNumber = houseNumber;
-        this.postcode = postcode;
-        this.city = city;
-        this.floor = floor;
+        this(id,lat,lon,streetName,houseNumber,postcode,city);
         this.side = side;
+        this.floor = floor;
     }
 
 
@@ -59,6 +55,11 @@ public class Address extends OSMNode{
 
     @Override
     public String toString(){
-        return id+" "+lat+" "+lon+" "+streetName+" "+ houseNumber +" "+postcode+" "+city;
+        return streetName+" "+postcode+" "+city;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return (toString().compareToIgnoreCase(o.toString()));
     }
 }
