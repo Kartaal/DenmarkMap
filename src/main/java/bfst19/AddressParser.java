@@ -130,7 +130,7 @@ public class AddressParser {
         String[] addressFields;
 
         if(singleSearch){
-            if(houseNumber.equals("")){
+            if(houseNumber==null||houseNumber.equals("")){
                 matches.add(address.split(" "));
                 return matches;
             }
@@ -186,9 +186,8 @@ public class AddressParser {
             //this was motivated by using the postcode as the most significant part of a city and postcode,
             // so that if you write a postcode, it will use that postcodes matching city
             String postcodeCheck = checkThreeLastAddressTokensForPostcode(proposedAddress, currentPostcode).toLowerCase();
-
             //if the proposed address ends with the current postcode and city return those
-            if(proposedAddress.endsWith(currentPostcode.toLowerCase() +" "+ currentCity.toLowerCase())){
+            if(proposedAddress.endsWith(currentPostcode.toLowerCase() +" "+ currentCity.toLowerCase())||proposedAddress.endsWith(currentCity.toLowerCase() +" "+ currentPostcode.toLowerCase())){
                 mostCompleteMatch = currentPostcode +" "+ currentCity;
                 bestPostCodeMatch = currentPostcode;
                 bestCityMatch = currentCity;

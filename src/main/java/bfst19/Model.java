@@ -481,8 +481,6 @@ public class Model {
 	}
 
 	public void parseSearch(String proposedAddress) {
-		/*Address address = AddressParser.getInstance().parse(proposedAddress,getDatasetName());
-		System.out.println(address.toString());*/
         Address a = AddressParser.getInstance(this).singleSearch(proposedAddress, getDatasetName());
         //a is null if the singlesearch did not find a city in the string, hence we start the autocomplete
         if(a.getStreetName().equals("Unknown")){

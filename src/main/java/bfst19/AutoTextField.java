@@ -46,8 +46,6 @@ public class AutoTextField extends TextField {
     }
 
     //TODO: Add ScrollPane and limit height
-    //TODO: NullPointerException when only writing adress & city and not postcode example: "Arsenalvej Rønne" without "3700"
-    //TODO: There comes two results for "Arsenalvej Rønne 3700" where "Arsenalvej Rønne 3700" is the answer and another street "Arnagervej Rønne 3700"
     private void addAdressesToDropDown() {
 
         List<CustomMenuItem> menuItems = new LinkedList<>();
