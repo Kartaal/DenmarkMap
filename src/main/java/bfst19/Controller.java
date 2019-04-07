@@ -5,6 +5,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import java.io.IOException;
+import java.util.Iterator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -15,7 +16,6 @@ public class Controller {
     double x, y;
     private double factor, oldDeterminant, zoomLevel;
 
-
     //This only means that .fxml can use this field despite visibility
     @FXML
     private MapCanvas mapCanvas;
@@ -23,15 +23,14 @@ public class Controller {
     @FXML
     private Text scaleText;
 
-
     @FXML
     private BorderPane borderPane;
-
 
     public void init(Model model) {
         //TODO: figure out init methods
         this.model = model;
         mapCanvas.init(model);
+
         oldDeterminant = mapCanvas.getDeterminant();
         setScalebar();
         setUpBar();
@@ -46,10 +45,22 @@ public class Controller {
 
     }
 
+    //Methods from model which are used by the class AutoTextField
+
+    public Model getModel(){
+        return model;
+    }
+
+    public Iterator<String> parsefoundMatchesIterator(){
+        return model.foundMatchesIterator();
+    }
+
     public void parseSearchText(String searchText){
         model.parseSearch(searchText);
     }
 
+
+    //Initialize BarPanel
     public void setUpBar(){
         if(borderPane.getLeft() != null){
             borderPane.setLeft(null);
@@ -70,12 +81,11 @@ public class Controller {
         controllerBarPanel.init(this);
     }
 
-
+    //Initialize MenuPanel
     public void setupMenuPanel(){
         if(borderPane.getLeft() != null){
             borderPane.setLeft(null);
         }
-
 
         VBox VBox = null;
 
@@ -92,6 +102,8 @@ public class Controller {
         controllerMenuPanel.init(this);
     }
 
+
+    //Initialize RoutePanel
     public void setupRoutePanel() {
         if(borderPane.getLeft() != null){
             borderPane.setLeft(null);
@@ -112,9 +124,6 @@ public class Controller {
         controllerRoutePanel.init(this);
     }
 
-
-
-
     public void setScalebar() {
         // TODO findout and resolve getY so it can be getX, since it the te x-coor we want
         double minX = mapCanvas.getModelCoords(0, 0).getY();
@@ -122,7 +131,6 @@ public class Controller {
         double y = mapCanvas.getModelCoords(0, 0).getX();
         scaleText.setText(Scalebar.getScaleText(minX, y, maxX, y, mapCanvas.getWidth()));
     }
-
 
     @FXML
     private void onKeyPressed(KeyEvent e) {

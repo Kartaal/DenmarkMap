@@ -89,7 +89,7 @@ public class AddressParser {
         String streetMatch = checkStreet(proposedAddress,country,cityMatch);
         //if a city is found, we try to find a street in that cities streets.txt file that matches the proposed address
         if(!streetMatch.equals("")){
-            proposedAddress = proposedAddress.replaceAll(streetMatch,"");
+            proposedAddress = proposedAddress.replaceAll(streetMatch.toLowerCase(),"");
             b.streetName = streetMatch;
         }
 
@@ -156,18 +156,22 @@ public class AddressParser {
     //Checks if the start of the address matches any the streets in the street names file
     // if a match is found, the builders street field is set to the match
     // which is returned to be removed from the address.
-    public String checkStreet(String address, String country, String[] cityMatch) {
-        ArrayList<String> cities = model.getStreetsInCity(country, cityMatch[1], cityMatch[2]);
-        String mostCompleteMatch = "";
-        for(int i = 0; i < cities.size() ; i++){
-            String line = cities.get(i);
-            if(address.startsWith(line.toLowerCase())){
-                if(line.length() > mostCompleteMatch.length()){
-                    mostCompleteMatch = line.toLowerCase();
+    public String checkStreet(String address,String country,String[] cityMatch) {
+        if (cityMatch[0].equals("")) {
+            return "";
+        } else {
+            ArrayList<String> streetsInCity = model.getStreetsInCity(country, cityMatch[1], cityMatch[2]);
+            String mostCompleteMatch = "";
+            for (int i = 0; i < streetsInCity.size(); i++) {
+                String line = streetsInCity.get(i);
+                if (address.startsWith(line.toLowerCase())) {
+                    if (line.length() > mostCompleteMatch.length()) {
+                        mostCompleteMatch = line;
+                    }
                 }
             }
+            return mostCompleteMatch;
         }
-        return mostCompleteMatch;
     }
 
     public String[] CityCheck(String proposedAddress){
