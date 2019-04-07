@@ -3,10 +3,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
-
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
 <?import bfst19.AutoTextField?>
 <HBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="bfst19.ControllerBarPanel" fx:id="BarPanel">
 
@@ -19,12 +18,11 @@
          <graphic>
             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="/menu.png"/>
+                  <Image url="/menu.png" />
                </image>
             </ImageView>
          </graphic>
       </Button>
-
       <!-- Self-made FXML object AutoTextField which extends the class TextField -->
       <AutoTextField fx:id = "autoTextField" promptText="Search here"/>
 
@@ -35,7 +33,7 @@
          <graphic>
             <ImageView fx:id="Btn" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="/search.png"/>
+                  <Image url="/search.png" />
                </image>
             </ImageView>
          </graphic>
@@ -48,7 +46,7 @@
          <graphic>
             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="/directions.png"/>
+                  <Image url="/directions.png" />
                </image>
             </ImageView>
          </graphic>

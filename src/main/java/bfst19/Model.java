@@ -1,7 +1,9 @@
 package bfst19;
 
+import bfst19.KDTree.KDTree;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Bounds;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -14,14 +16,16 @@ import static javax.xml.stream.XMLStreamConstants.*;
 
 public class Model {
 	float lonfactor = 1.0f;
-	Map<WayType,List<Drawable>> ways = new EnumMap<>(WayType.class);
+	Map<WayType, List<Drawable>> ways = new EnumMap<>(WayType.class);
 	private boolean colorBlindEnabled;
 	private String datasetName;
-	{
+  
+  {
 		for (WayType type : WayType.values()) {
 			ways.put(type, new ArrayList<>());
 		}
 	}
+  
 	List<Runnable> observers = new ArrayList<>();
 	float minlat, minlon, maxlat, maxlon;
 
@@ -29,6 +33,7 @@ public class Model {
 	HashMap<String,ArrayList<String[]>> wayTypeCases = new HashMap<>();
 	ObservableList<String> foundMatches = FXCollections.observableArrayList();
 	ObservableList<String> typeColors = FXCollections.observableArrayList();
+	Map<WayType, KDTree> kdTreeMap = new TreeMap<>();
 
 	//for building addresses during parsing
 	public static class Builder {
@@ -58,8 +63,9 @@ public class Model {
 		}
 	}
 
-	public Iterable<Drawable> getWaysOfType(WayType type) {
-		return ways.get(type);
+	//TODO filthy disgusting typecasting
+	public Iterable<Drawable> getWaysOfType(WayType type, Bounds bbox) {
+		return kdTreeMap.get(type).rangeQuery((BoundingBox) bbox);
 	}
 
 	public void addObserver(Runnable observer) {
@@ -77,6 +83,13 @@ public class Model {
 	}
 
 	public Model(List<String> args) throws IOException, XMLStreamException, ClassNotFoundException {
+		for (WayType type : WayType.values()) {
+			ways.put(type, new ArrayList<>());
+		}
+
+		for(WayType type: WayType.values()){
+			waytypes.put(type.name(),type);
+		}
 
 		//todo figure out how to do singleton but also include model in its constructor without needing to give model for every call of getinstance
 		parseWayTypeCases("data/Waytype_cases.txt");
@@ -331,6 +344,15 @@ public class Model {
 
 					for (OSMWay c : merge(coast)) {
 						ways.get(WayType.COASTLINE).add(new Polyline(c));
+					}
+
+					//Make and populate KDTrees for each WayType
+					for(Map.Entry<WayType, List<Drawable>> entry : ways.entrySet()) {
+						KDTree typeTree = new KDTree();
+						//Add entry values to KDTree
+						typeTree.insertAll(entry.getValue());
+						//Add KDTree to TreeMap
+						kdTreeMap.put(entry.getKey(), typeTree);
 					}
 					break;
 				case ENTITY_REFERENCE: break;
