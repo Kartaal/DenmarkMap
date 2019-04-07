@@ -1,0 +1,8 @@
+.toggle-button {
+    -fx-background-color: #0c74ff;
+    -fx-background-radius: 400;
+}
+
+.toggle-button:selected {
+    -fx-background-color: #084995;
+}
