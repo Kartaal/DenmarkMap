@@ -45,7 +45,7 @@ public class KDTree implements Serializable {
 				//TODO figure out something about all these typecasts
 				//Find the comparator correct value of the middle element (Root so X value)
 				float splitValue = ((BoundingBoxable) list.get(splitIndex)).getCenterX();
-				root = new KDNode(null, splitValue, false);
+				root = new KDNode(null, splitValue, true);
 
 				//Start recursively creating the left and right subtrees
 				// of indexes 0 to splitIndex for left subtree and splitIndex+1 to list.size() for the right subtree
@@ -53,7 +53,7 @@ public class KDTree implements Serializable {
 				root.nodeR = createTree(list, root, splitIndex + 1, list.size()-1);
 			} else {
 				//Arbitrary values to fill root in case the list of Drawable is empty
-				root = new KDNode(null, -1, false);
+				root = new KDNode(null, -1, true);
 			}
 		}
 	}
@@ -69,19 +69,24 @@ public class KDTree implements Serializable {
 		//Might want an overloaded version that only sorts a sublist
 		sort(list, lo, hi, selectComp);
 
+		//Get the index to split at
 		int splitIndex = lo + (hi-lo) / 2;
-		boolean horizontal = !parentNode.horizontal;
+		//Flip the dimension to handle 2D data
+		boolean vertical = !parentNode.vertical;
 
+		//Figure out the splitting value based on dimension
 		float splitVal;
-		if(!horizontal) {
+		if(!vertical) {
 			splitVal = ((BoundingBoxable) list.get(splitIndex)).getCenterX();
 		} else {
 			splitVal = ((BoundingBoxable) list.get(splitIndex)).getCenterY();
 		}
 
-		KDNode currNode = new KDNode(null, splitVal, horizontal);
+		//Create a new node to be returned
+		KDNode currNode = new KDNode(null, splitVal, vertical);
 
 		//If we have reached a leaf node (list has fewer than listSize elements)
+		// fill the node with data to be retrieved later
 		if(listSize >= hi-lo) {
 			List<BoundingBoxable> valueList = new ArrayList<>();
 			for(int i = lo ; i < hi ; i++) {
@@ -91,6 +96,7 @@ public class KDTree implements Serializable {
 			currNode.setValues(valueList);
 			return currNode;
 		} else {
+			//Do recursion because node isn't a leaf
 			//Left subtree
 			parentNode.nodeL = createTree(list, currNode, lo, splitIndex);
 
@@ -107,20 +113,20 @@ public class KDTree implements Serializable {
 		if(root == null) {
 			List<BoundingBoxable> list = new ArrayList<>();
 			list.add(value);
-			root = new KDNode(list, value.getCenterX(), false);
+			root = new KDNode(list, value.getCenterX(), true);
 		} else {
 			//recursive insert, third parameter is for splitting dimension
 			// 0 means split is on x-axis, 1 means split is on y-axis
-			root = insert(root, value, false);
+			root = insert(root, value, true);
 		}
 	}
 
-	private KDNode insert(KDNode x, BoundingBoxable value, boolean horizontal) {
+	private KDNode insert(KDNode x, BoundingBoxable value, boolean vertical) {
 		//If an empty leaf has been reached, create a new KDNode and return
 		if(x == null) {
 			//Ensure the new node has the correct axis split value
 			float splitValue;
-			if(horizontal) {
+			if(vertical) {
 				splitValue = value.getCenterY();
 			} else {
 				splitValue = value.getCenterX();
@@ -128,25 +134,25 @@ public class KDTree implements Serializable {
 			List<BoundingBoxable> list = new ArrayList<>();
 			list.add(value);
 
-			return new KDNode(list, splitValue, horizontal);
+			return new KDNode(list, splitValue, vertical);
 		}
 
 		//maybe to-do improve on this, KDNode.getSplit gets the correct dimensional split value
 		//Split on x
-		if(!horizontal) {
+		if(!vertical) {
 			//if current BoundingBoxable has a centerX less than current KDNode
 			// recursive insert the BoundingBoxable to left child
 			//Otherwise, insert BoundingBoxable to right child
 			if(value.getCenterX() <= x.getSplit()) {
-				x.nodeL = insert(x.nodeL, value, false);
-			} else {
-				x.nodeR = insert(x.nodeR, value, false);
-			}
-		} else {
-			if(value.getCenterY() <= x.getSplit()) {
 				x.nodeL = insert(x.nodeL, value, true);
 			} else {
 				x.nodeR = insert(x.nodeR, value, true);
+			}
+		} else {
+			if(value.getCenterY() <= x.getSplit()) {
+				x.nodeL = insert(x.nodeL, value, false);
+			} else {
+				x.nodeR = insert(x.nodeR, value, false);
 			}
 		}
 
@@ -197,17 +203,17 @@ public class KDTree implements Serializable {
 	public class KDNode implements Serializable{
 		List<BoundingBoxable> values = new ArrayList<>();
 		float split;
-		boolean horizontal; //if false, splits on x
+		boolean vertical; //if true, splits on x
 		KDNode nodeL; //child
 		KDNode nodeR; //child
 		BoundingBox bb;
 
-		public KDNode(List<BoundingBoxable> value, float split, boolean horizontal) {
+		public KDNode(List<BoundingBoxable> value, float split, boolean vertical) {
 			if(value != null) {
 				values.addAll(value);
 			}
 			this.split = split;
-			this.horizontal = horizontal;
+			this.vertical = vertical;
 			nodeL = nodeR = null;
 
 			//Create BoundingBox for the KDNode
@@ -238,6 +244,8 @@ public class KDTree implements Serializable {
 			bb = new BoundingBox(minX, minY, maxX-minX, maxY-minY);
 		}
 
+		//Returns the value where the node split the data
+		// Needs vertical to figure out what exactly was split on
 		public float getSplit() {
 			return split;
 		}
