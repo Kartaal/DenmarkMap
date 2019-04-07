@@ -47,7 +47,6 @@
              <Insets bottom="5.0" top="5.0" right="5.0" left="5.0"/>
          </VBox.margin></TextField>
 
-
        <Pane style="-fx-background-color: #0c74ff">
            <HBox alignment="CENTER">
                <ToggleButton styleClass="toggle-button"  contentDisplay="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0">
@@ -81,6 +80,8 @@
                <Insets bottom="5.0"  />
            </padding>
        </Pane>
+
+
       <ScrollPane prefHeight="200.0" prefWidth="290.0" VBox.vgrow="ALWAYS">
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
