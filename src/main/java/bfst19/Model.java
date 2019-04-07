@@ -15,7 +15,6 @@ import static javax.xml.stream.XMLStreamConstants.*;
 
 public class Model {
 	float lonfactor = 1.0f;
-	Map<WayType, List<Drawable>> ways = new EnumMap<>(WayType.class);
 	private boolean colorBlindEnabled;
 
 	List<Runnable> observers = new ArrayList<>();
@@ -44,10 +43,6 @@ public class Model {
 
 		//todo figure out how to do singleton but also include model in its constructor without needing to give model for every call of getinstance
 		parseWayTypeCases("data/Waytype_cases.txt");
-
-		for (WayType type : WayType.values()) {
-			ways.put(type, new ArrayList<>());
-		}
 
 		ParseWayColors();
 
@@ -121,20 +116,27 @@ public class Model {
 	}
 
 	private void parseOSM(InputStream osmsource) throws XMLStreamException {
+		//Changed from field to local variable so it can be garbage collected
+		Map<WayType, List<Drawable>> ways = new EnumMap<>(WayType.class);
+		for (WayType type : WayType.values()) {
+			ways.put(type, new ArrayList<>());
+		}
+
 		XMLStreamReader reader = XMLInputFactory
 				.newInstance()
 				.createXMLStreamReader(osmsource);
+
 		LongIndex<OSMNode> idToNode = new LongIndex<OSMNode>();
 		LongIndex<OSMWay> idToWay = new LongIndex<OSMWay>();
-		//TreeMap<String,TreeMap<String,ArrayList<Address>>> addresses = new TreeMap<>();
 		ArrayList<Address> addresses = new ArrayList<>();
 		List<OSMWay> coast = new ArrayList<>();
 
+		//variables to make OSMWay/OSMRelation
 		OSMWay way = null;
 		OSMRelation rel = null;
 		WayType type = null;
 
-		//variables for addressParsing
+		//variables for addressParsing and OSMNode creation
 		Builder b = new Builder();
 		long id = 0;
 		float lat = 0;
