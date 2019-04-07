@@ -18,22 +18,54 @@ public class Model {
 	float lonfactor = 1.0f;
 	Map<WayType, List<Drawable>> ways = new EnumMap<>(WayType.class);
 	private boolean colorBlindEnabled;
-
+	private String datasetName;
+  
+  {
+		for (WayType type : WayType.values()) {
+			ways.put(type, new ArrayList<>());
+		}
+	}
+  
 	List<Runnable> observers = new ArrayList<>();
 	float minlat, minlon, maxlat, maxlon;
 
 	String CurrentTypeColorTxt  = "data/TypeColorsNormal.txt";
-	//TODO: change from having map waytype to it's string name, simply use waytype.valueOf()
-	Map<String, WayType> waytypes = new HashMap<>();
-	ArrayList<String[]> wayTypeCases = new ArrayList<>();
-	ObservableList<Address> searchedAddresses = FXCollections.observableArrayList();
+	HashMap<String,ArrayList<String[]>> wayTypeCases = new HashMap<>();
+	ObservableList<String> foundMatches = FXCollections.observableArrayList();
 	ObservableList<String> typeColors = FXCollections.observableArrayList();
 	Map<WayType, KDTree> kdTreeMap = new TreeMap<>();
+
+	//for building addresses during parsing
+	public static class Builder {
+		private long id;
+		private float lat, lon;
+		private String streetName = "Unknown", houseNumber="", postcode="", city="",municipality="";
+		public void reset(){
+			id = 0;
+			lat =0;
+			lon = 0;
+			streetName = "Unknown";
+			houseNumber = "";
+			postcode = "";
+			city="";
+		}
+		public boolean hasFields(){
+			if(!streetName.equals("Unknown")&&!houseNumber.equals("")&&!postcode.equals("")&&(!city.equals("")||!municipality.equals(""))) return true;
+			return false;}
+		public Address build() {
+			if(streetName.contains("/")){
+				streetName = streetName.replaceAll("/","");
+			}
+			if(city.equals("")){
+				city = municipality;
+			}
+			return new Address(id,lat,lon,streetName, houseNumber, postcode, city);
+		}
+	}
 
 	//TODO filthy disgusting typecasting
 	public Iterable<Drawable> getWaysOfType(WayType type, Bounds bbox) {
 		return kdTreeMap.get(type).rangeQuery((BoundingBox) bbox);
-
 	}
 
 	public void addObserver(Runnable observer) {
@@ -44,8 +76,13 @@ public class Model {
 		for (Runnable observer : observers) observer.run();
 	}
 
-	public Model(List<String> args) throws IOException, XMLStreamException, ClassNotFoundException {
+	public Model(String dataset){
+		datasetName = dataset;
+		AddressParser.getInstance(this).setDefaults(getDefault(getDatasetName()));
+		AddressParser.getInstance(this).parseCitiesAndPostCodes(getCities(getDatasetName()));
+	}
 
+	public Model(List<String> args) throws IOException, XMLStreamException, ClassNotFoundException {
 		for (WayType type : WayType.values()) {
 			ways.put(type, new ArrayList<>());
 		}
@@ -54,11 +91,15 @@ public class Model {
 			waytypes.put(type.name(),type);
 		}
 
-		parseCases("data/Waytype_cases.txt");
+		//todo figure out how to do singleton but also include model in its constructor without needing to give model for every call of getinstance
+		parseWayTypeCases("data/Waytype_cases.txt");
 		ParseWayColors();
 
 
 		String filename = args.get(0);
+		//this might not be optimal
+		String[] arr = filename.split("\\.");
+		datasetName = arr[0] + " Database";
 		InputStream osmsource;
 		if (filename.endsWith(".obj")) {
 			long time = -System.nanoTime();
@@ -91,9 +132,11 @@ public class Model {
 				output.writeFloat(maxlon);
 			}
 		}
+        AddressParser.getInstance(this).setDefaults(getDefault(getDatasetName()));
+        AddressParser.getInstance(this).parseCitiesAndPostCodes(getCities(getDatasetName()));
 	}
 
-	public void ParseWayColors(){
+    public void ParseWayColors(){
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(CurrentTypeColorTxt));
 			int m = Integer.parseInt(br.readLine());
@@ -131,7 +174,8 @@ public class Model {
 				.createXMLStreamReader(osmsource);
 		LongIndex<OSMNode> idToNode = new LongIndex<OSMNode>();
 		LongIndex<OSMWay> idToWay = new LongIndex<OSMWay>();
-		TreeMap<String,TreeMap<String,ArrayList<Address>>> addresses = new TreeMap<>();
+		//TreeMap<String,TreeMap<String,ArrayList<Address>>> addresses = new TreeMap<>();
+		ArrayList<Address> addresses = new ArrayList<>();
 		List<OSMWay> coast = new ArrayList<>();
 
 		OSMWay way = null;
@@ -194,11 +238,18 @@ public class Model {
 								b.city = v.trim();
 							}
 
+							if(k.equals("addr:municipality")){
+								b.municipality = v.trim();
+							}
+
 							//string[0]=waytype's name, strings[1] = k for the case, strings = v for the case.
-							for(String[] strings : wayTypeCases){
-								if(k.equals(strings[1]) && v.equals(strings[2])){
-									type = waytypes.get(strings[0]);
-									break;
+
+							for(Map.Entry<String,ArrayList<String[]>> wayType : wayTypeCases.entrySet()){
+								String wayTypeString = wayType.getKey();
+								for(String[] waycase:wayType.getValue()){
+									if(k.equals(waycase[0])&&v.equals(waycase[1])){
+										type = WayType.valueOf(wayTypeString);
+									}
 								}
 							}
 							switch (k){
@@ -236,19 +287,21 @@ public class Model {
 								b.id = id;
 								b.lat = lat;
 								b.lon = lon;
-								putAddress(addresses,b);
+								addresses.add(b.build());
+								//putAddress(addresses,b);
 							}
 							way = null;
+							b.reset();
 							break;
 						case "node":
 							if(b.hasFields()){
 								b.id = id;
 								b.lat = lat;
 								b.lon = lon;
-								putAddress(addresses,b);
+								addresses.add(b.build());
+								//putAddress(addresses,b);
 							}
-                            //todo: reset builder everytime it could be an adress.
-							//b.reset();
+							b.reset();
 							break;
 						case "relation":
 							if (type == WayType.WATER) {
@@ -282,14 +335,11 @@ public class Model {
 				case SPACE: break;
 				case START_DOCUMENT: break;
 				case END_DOCUMENT:
-					File parseCheck = new File("data/" + getCountry());
+					File parseCheck = new File("data/"+ getDatasetName());
 					if(!parseCheck.isDirectory()) {
-						makeCityDirectories(addresses.keySet(),getCountry());
-						try {
-							makeStreetFiles(addresses);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						addresses.sort(Address::compareTo);
+						makeDatabase(addresses, getDatasetName());
+						//this keeps the cities and the default streets files in memory, it's about 1mb for Zealand of memory
 					}
 
 					for (OSMWay c : merge(coast)) {
@@ -316,40 +366,79 @@ public class Model {
 		}
 	}
 
-	private void makeStreetFiles(TreeMap<String,TreeMap<String, ArrayList<Address>>> addresses)throws IOException{
-		BufferedWriter allStreetsInCountryWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("data/"+getCountry()+"/streets.txt")),"UTF-8"));
-		//an entry of a string(cityString) and the map relating to that string.
-		for(Map.Entry<String,TreeMap<String,ArrayList<Address>>> city : addresses.entrySet()){
-			String cityAndPostcodeString = city.getKey();
-			String cityDirPath = cityAndPostcodeString.replaceAll(" QQQ "," ");
-			BufferedWriter streetInCityWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("data/"+getCountry()+"/"+cityDirPath+"/streets.txt")),"UTF-8"));
-			//an entry of a string(streetString) and the arraylist of the adresses relating to that string
-			for(Map.Entry<String,ArrayList<Address>> street : city.getValue().entrySet()){
-				String streetString = street.getKey();
-				if(streetString.contains("/")){
-					streetString = streetString.replaceAll("/","");
+	private void makeDatabase(ArrayList<Address> addresses,String country){
+		File contryDir = new File("data/"+country);
+		contryDir.mkdir();
+		String currentCityAndPostcode = "";
+		String currentStreet = "";
+		try {
+			//this first step looks ugly and is perhaps unnecessary
+			BufferedWriter allStreetsInCountryWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("data/"+country+"/streets.txt")),"UTF-8"));
+			BufferedWriter streetsInCityWriter =  new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("data/"+country+"/"+currentCityAndPostcode+"/streets.txt")),"UTF-8"));
+			BufferedWriter citiesInCountryWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("data/"+country+"/cities.txt")),"UTF-8"));
+			File streetFile = new File("data/"+country+"/"+currentCityAndPostcode+"/"+currentStreet+".txt");
+			BufferedWriter adressesInStreetWriter =  new BufferedWriter(new OutputStreamWriter(new FileOutputStream(streetFile)));
+
+		for(Address address:addresses) {
+			//if the streetName remains the same, and the city changes we need to change the writers for streets and adresses,
+			//along with writing to the appropriate files, we also change the current city and postcode, and make the directory for it
+			//todo fix code dupes here
+			if (address.getStreetName().equals(currentStreet) && !(address.getCity() + getDeilimeter() + address.getPostcode()).equals(currentCityAndPostcode)) {
+				currentCityAndPostcode = address.getCity() + " QQQ " + address.getPostcode();
+				File cityDir = new File("data/" + country + "/" + currentCityAndPostcode);
+				cityDir.mkdir();
+				File streetsIncityFile = new File("data/" + country + "/" + currentCityAndPostcode + "/streets.txt");
+				streetFile = new File("data/" + country + "/" + currentCityAndPostcode + "/" + currentStreet + ".txt");
+				streetsInCityWriter.flush();
+				adressesInStreetWriter.flush();
+				//because the addresses are sorted by their streetnames first, we need to accomadate changing cities many times.
+				streetsInCityWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(streetsIncityFile, true), "UTF-8"));
+				adressesInStreetWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(streetFile)));
+				citiesInCountryWriter.write(currentCityAndPostcode + "\n");
+				streetsInCityWriter.write(currentStreet + "\n");
+				allStreetsInCountryWriter.write(currentStreet + getDeilimeter() + currentCityAndPostcode + "\n");
+			} else {
+				//if the city changes, flush the writers and change the writer for the streets in that city,
+				// write to the file with all the cities and make the cities directory, also change the current city and postcode
+				if (!(address.getCity() + getDeilimeter() + address.getPostcode()).equals(currentCityAndPostcode)) {
+					currentCityAndPostcode = address.getCity() + " QQQ " + address.getPostcode();
+					File cityDir = new File("data/" + country + "/" + currentCityAndPostcode);
+					cityDir.mkdir();
+					File streetsIncityFile = new File("data/" + country + "/" + currentCityAndPostcode + "/streets.txt");
+					streetsInCityWriter.flush();
+					//because the addresses are sorted by their streetnames first, we need to accomadate changing cities many times.
+					streetsInCityWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(streetsIncityFile, true), "UTF-8"));
+					citiesInCountryWriter.write(currentCityAndPostcode + "\n");
 				}
-				streetInCityWriter.write(streetString+"\n");
-				streetInCityWriter.flush();
-				allStreetsInCountryWriter.write(streetString+" ZZZ "+cityAndPostcodeString+"\n");
-				allStreetsInCountryWriter.flush();
-				BufferedWriter addressInStreetWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("data/"+getCountry()+"/"+cityDirPath+"/"+streetString+".txt")),"UTF-8"));
-				for(Address address:street.getValue()){
-					System.out.println(address.getId()+" "+address.getLat()+" "+address.getLon()+" "+address.getHouseNumber());
-					addressInStreetWriter.write(address.getId()+" "+address.getLat()+" "+address.getLon()+" "+address.getHouseNumber()+ "\n");
-					addressInStreetWriter.flush();
+				//if the addresses street is different, make a new street file, write to that city's streets.txt file and change the current street.
+				if (!address.getStreetName().equals(currentStreet)) {
+					currentStreet = address.getStreetName();
+					streetFile = new File("data/" + country + "/" + currentCityAndPostcode + "/" + currentStreet + ".txt");
+					adressesInStreetWriter.flush();
+					adressesInStreetWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(streetFile)));
+					streetsInCityWriter.write(currentStreet + "\n");
+					allStreetsInCountryWriter.write(currentStreet + getDeilimeter() + currentCityAndPostcode + "\n");
 				}
-				addressInStreetWriter.close();
 			}
-			streetInCityWriter.close();
+				adressesInStreetWriter.write(address.getId() + " " + address.getLat() + " " + address.getLon() + " " + address.getHouseNumber() + "\n");
+			}
+
+		//closes all writers
+			allStreetsInCountryWriter.close();
+			citiesInCountryWriter.close();
+			streetsInCityWriter.close();
+			adressesInStreetWriter.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		allStreetsInCountryWriter.close();
 	}
 
+	public String getDeilimeter(){
+		return " QQQ ";
+	}
 
-	public void parseCases(String pathToCasesFile){
+	public void parseWayTypeCases(String pathToCasesFile){
 		try {
-
 			BufferedReader in = new BufferedReader(new InputStreamReader(
 					new FileInputStream(pathToCasesFile),"UTF-8"));
 			int n = Integer.parseInt(in.readLine().trim());
@@ -359,7 +448,10 @@ public class Model {
 
 				while((wayCase != null) && !(wayCase.startsWith("$"))){
 					String[] tokens = wayCase.split(" ");
-					wayTypeCases.add(new String[]{wayType,tokens[0],tokens[1]});
+					if(wayTypeCases.get(wayType)==null){
+						wayTypeCases.put(wayType,new ArrayList<>());
+					}
+					wayTypeCases.get(wayType).add(new String[]{tokens[0],tokens[1]});
 					wayCase = in.readLine();
 				}
 			}
@@ -395,80 +487,78 @@ public class Model {
 		return pieces.values();
 	}
 
-	public void makeCityDirectories(Set<String> citiesAndPostcodes,String country){
-		try {
-			File countryDir = new File("data/"+country);
-			countryDir.mkdir();
-			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("data/"+getCountry()+"/cities.txt")),"UTF-8"));
-			for(String cityAndPostcode :citiesAndPostcodes){
-				writer.write(cityAndPostcode+"\n");
-				//splits the city and postcode at the given delimiter, currently " QQQ " tokens is just the result of this splitting.
-				String[] tokens = cityAndPostcode.split(" QQQ ");
-				File cityDir = new File("data/" + country + "/" + tokens[0] + " " + tokens[1]);
-				cityDir.mkdir();
-				//the city is currently also making the streets.txt file in it's directory,
-                // this is just to be more sure that you can find the streets.txt file even if there are no streets.
-				String streetsFile = "data/" + getCountry() + "/" + tokens[0] + " " + tokens[1] + "/" + "streets" + ".txt";
-				File streetsInCityFile = new File(streetsFile);
-				streetsInCityFile.createNewFile();
-			}
-			writer.close();
-		} catch (IOException e) {
-		    //TODO: handle better
-			e.printStackTrace();
-		}
-
-
-	}
-	//Method checks if the index is null, if it is, it makes fills that index with a new collection, and puts the address in it's proper place.
-    //it also resets the builder for future use.
-	//This maps a string(city+postcode) to a map, that maps a string(streetname) to the addresses(houseNumbers) on that street
-	public void putAddress(TreeMap<String, TreeMap<String, ArrayList<Address>>> addresses, Builder b){
-		// QQQ is an arbitrary delimiter between city and postcode, so that we can know with more reliabillity where to split the string later.
-		String cityAndPostcode = b.city+" QQQ "+b.postcode;
-		if(addresses.get(cityAndPostcode)==null){
-			addresses.put(cityAndPostcode,new TreeMap<>());
-		}
-		if(addresses.get(cityAndPostcode).get(b.streetName)==null){
-			addresses.get(cityAndPostcode).put(b.streetName,new ArrayList<>());
-		}
-		addresses.get(cityAndPostcode).get(b.streetName).add(b.build());
-		b.reset();
-	}
-
 	public void parseSearch(String proposedAddress) {
-		Address address = AddressParser.getInstance().parse(proposedAddress,getCountry());
+		/*Address address = AddressParser.getInstance().parse(proposedAddress,getDatasetName());
+		System.out.println(address.toString());*/
+        Address a = AddressParser.getInstance(this).singleSearch(proposedAddress, getDatasetName());
+        //a is null if the singlesearch did not find a city in the string, hence we start the autocomplete
+        if(a.getStreetName().equals("Unknown")){
+			ArrayList<String[]> possibleMatches = AddressParser.getInstance(this).getMatchesFromDefault(proposedAddress, false);
+			if (possibleMatches != null) {
+				foundMatches.clear();
+				//each string array in this arraylist has a streetname on index 0, city on idex 1 and postcode on index 2
+				//give possible matches to the ui somehow
+				for (String[] match : possibleMatches) {
+					foundMatches.add(match[0] + " " + match[1] + " " + match[2]);
+				}
+			}
+        	//print out some failure message
+	    }else if(a.getCity().equals("")){
+            //this returns an arraylist of string arrays that hold a streetname city and postcode
+            ArrayList<String[]> possibleMatches = AddressParser.getInstance(this).getMatchesFromDefault(proposedAddress, false);
+            if (possibleMatches != null) {
+                foundMatches.clear();
+                //each string array in this arraylist has a streetname on index 0, city on idex 1 and postcode on index 2
+                //give possible matches to the ui somehow
+                for(String[] match : possibleMatches){
+                    foundMatches.add(match[0]+" "+match[1]+" "+match[2]);
+                }
+                //insert the index of the city+postcode chosen
+                String[] match = possibleMatches.get(0);
+                //after a specific city + postcode is chosen insert it into the textfield and inititiat the search again
+
+            }
+            System.out.println(a.toString() + a.getHouseNumber());
+        }else if(a.getHouseNumber().equals("")){
+            //each string array in this arraylist has a id for the node on index 0, lat on index 1, lon on index 2 and housenumber on index 3
+            ArrayList<String[]> possibleAddresses = AddressParser.getInstance(this).getAddress(getDatasetName(),a.getCity(),a.getPostcode(),a.getStreetName(),"",false);
+            //insert the index of the housenumber chosen
+            String[] addressMatch = possibleAddresses.get(0);
+            //after a housenumber is chosen, insert it inn the textfield and reinitiate a search
+        }
 	}
 
-	//it's only denmark right now.
-	public String getCountry(){
+	//TODO change it to be the name of the dataset
+    //it's only denmark right now.
+	public String getDatasetName(){
 		return "denmark";
 	}
 
-	public String[] getStreetsInCity(String country,String city){
-		return getTextFile("data/"+country+"/"+city+"/streets.txt");
+	public ArrayList<String> getAddressesOnStreet(String country,String city,String postcode,String streetName){
+	    return getTextFile("data/"+country+"/"+city+" QQQ "+postcode+"/"+streetName+".txt");
+    }
+
+	public ArrayList<String> getStreetsInCity(String country, String city,String postcode){
+		return getTextFile("data/"+country+"/"+city+" QQQ "+postcode+"/streets.txt");
 	}
 
-	public String[] getCities(String country){
-		return getTextFile("data/"+country+"cities.txt");
+	public ArrayList<String> getCities(String country){
+		return getTextFile("data/"+country+"/cities.txt");
 	}
 
+    private ArrayList<String> getDefault(String country) { return getTextFile("data/"+country+"/streets.txt");}
 	//generalized getCities and getStreets to getTextFile, might not be final.
-	public String[] getTextFile(String filepath){
+	public ArrayList<String> getTextFile(String filepath){
 		try {
 			BufferedReader reader= new BufferedReader(new InputStreamReader(
 					new FileInputStream(filepath),"UTF-8"));
-			String[] textFile = new String[Integer.valueOf(reader.readLine())];
+			ArrayList<String> textFile = new ArrayList<>();
 			String line;
-			for(int i = 0 ; (line = reader.readLine()) != null ; i++){
-				textFile[i] = line;
-				return textFile;
+			while((line = reader.readLine()) != null){
+				textFile.add(line);
 			}
+			return textFile;
 
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -481,29 +571,5 @@ public class Model {
 		return typeColors.iterator();
 	}
 
-	//for building addresses during parsing
-	public static class Builder {
-		private long id;
-		private float lat, lon;
-		private String streetName = "Unknown", houseNumber="", postcode="", city="";
-		public void reset(){
-			id = 0;
-			lat =0;
-			lon = 0;
-			streetName = "Unknown";
-			houseNumber = "";
-			postcode = "";
-			city="";
-		}
-		public boolean hasFields(){
-			if(!streetName.equals("Unknown")&&!houseNumber.equals("")&&!postcode.equals("")&&!city.equals("")) return true;
-			return false;}
-		public Address build() {
-			if(streetName.contains("/")){
-				streetName = streetName.replaceAll("/","");
-			}
-			return new Address(id,lat,lon,streetName, houseNumber, postcode, city);
-		}
-	}
-
+	public Iterator<String> foundMatchesIterator() { return foundMatches.iterator();}
 }

@@ -7,9 +7,6 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<?import javafx.geometry.Insets?>
-
-<?import javafx.geometry.Insets?>
 <Scene xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="bfst19.Controller"
@@ -23,6 +20,7 @@
                            onMousePressed="#onMousePressed"
                            onMouseDragged="#onMouseDragged"
                 />
+
                 <BorderPane fx:id="borderPane" pickOnBounds="false" VBox.vgrow="ALWAYS">
 
 
