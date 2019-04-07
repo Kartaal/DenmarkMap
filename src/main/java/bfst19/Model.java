@@ -87,10 +87,6 @@ public class Model {
 			ways.put(type, new ArrayList<>());
 		}
 
-		for(WayType type: WayType.values()){
-			waytypes.put(type.name(),type);
-		}
-
 		//todo figure out how to do singleton but also include model in its constructor without needing to give model for every call of getinstance
 		parseWayTypeCases("data/Waytype_cases.txt");
 		ParseWayColors();
