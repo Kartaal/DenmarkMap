@@ -6,7 +6,6 @@ public class Address extends OSMNode implements Comparable{
 
     public Address(long id,float lat,float lon,
                    String streetName, String houseNumber, String postcode, String city) {
-        //todo call the other constructor from this one to avoid code dup
         super(id,lat,lon);
         this.streetName = streetName;
         this.houseNumber = houseNumber;

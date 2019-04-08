@@ -142,6 +142,9 @@ public class Controller {
             case C: //Toggle colorblind colorfile
                 model.switchColorScheme();
                 break;
+            case P:
+                mapCanvas.panToPoint(14.8429560,55.0967440);
+                break;
         }
     }
 

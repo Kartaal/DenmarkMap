@@ -72,8 +72,7 @@ public class AddressParser {
             e.printStackTrace();
         }
     }
-    
-    //todo comments for this class
+
     public Address singleSearch(String proposedAddress, String country){
         proposedAddress = proposedAddress.toLowerCase().trim();
         Builder b = new Builder();
