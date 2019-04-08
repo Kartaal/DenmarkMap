@@ -42,7 +42,7 @@ public class ControllerMenuPanel implements BackBtnEffect {
 
     @FXML
     private void setToggleTheme(){
-    /*
+
         RadioButton selectedRadioButton = (RadioButton) toggleTheme.getSelectedToggle();
         String toogleGroupValue = selectedRadioButton.getText();
         if(toogleGroupValue.equals("ColorBlind Mode")){
@@ -52,6 +52,6 @@ public class ControllerMenuPanel implements BackBtnEffect {
         else if(!toogleGroupValue.equals("ColorBlind Mode")){
             controller.parseTheme(false);
         }
-        */
+
     }
 }
