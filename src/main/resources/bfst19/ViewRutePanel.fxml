@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import java.net.URL?>
 <?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
 <?scenebuilder-stylesheet style.css?>
 
 <?import javafx.scene.layout.Pane?>
@@ -17,18 +18,22 @@
 <VBox alignment="CENTER" prefWidth="300.0" fx:id="outerPane" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 0);" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bfst19.ControllerRutePanel">
    <children>
 
-      <Button fx:id="tilbageButton" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#returnToBarPanel" onMouseEntered="#setBackBtnEffect" onMouseExited="#setBackBtnEffectNone" style="-fx-background-color: white;">
-         <VBox.margin>
-            <Insets bottom="5.0" />
-         </VBox.margin>
-         <graphic>
-            <ImageView fx:id="backBtnRutePanel" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="/back.png" />
-               </image>
-            </ImageView>
-         </graphic>
-      </Button>
+       <Pane >
+           <Button fx:id="tilbageButton" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#returnToBarPanel" onMouseEntered="#setBackBtnEffect" onMouseExited="#setBackBtnEffectNone" style="-fx-background-color: white;">
+               <VBox.margin>
+                   <Insets bottom="5.0" />
+               </VBox.margin>
+               <graphic>
+                   <ImageView fx:id="backBtnRutePanel" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                       <image>
+                           <Image url="/back.png" />
+                       </image>
+                   </ImageView>
+               </graphic>
+           </Button>
+       </Pane>
+
+
       <TextField fx:id="textFieldFra" promptText="From ">
          <VBox.margin>
             <Insets bottom="5.0" />
@@ -49,22 +54,24 @@
 
        <Pane style="-fx-background-color: #0c74ff">
            <HBox alignment="CENTER">
-               <ToggleButton styleClass="toggle-button"  contentDisplay="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0">
+               <ToggleButton fx:id="car" onAction="#setRuteType" styleClass="toggle-button"  contentDisplay="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0">
                    <graphic>
-                       <ImageView fx:id="car" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                       <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                                <Image url="/car.png" />
                            </image>
                        </ImageView>
                    </graphic>
-
+                   <toggleGroup >
+                       <ToggleGroup fx:id="toggleRuteType" />
+                   </toggleGroup>
                </ToggleButton>
                <padding>
                    <Insets bottom="5.0" top="5.0" right="5.0" left="0.5"/>
                </padding>
-               <ToggleButton styleClass="toggle-button" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" >
+               <ToggleButton fx:id="bike" onAction="#setRuteType" toggleGroup="$toggleRuteType" styleClass="toggle-button" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" >
                    <graphic>
-                       <ImageView fx:id="bike" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                       <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                                <Image url="/bike.png" />
                            </image>

@@ -9,13 +9,15 @@ import javafx.scene.control.ToggleGroup;
 
 public class ControllerMenuPanel implements BackBtnEffect {
 
-    Controller controller;
+
 
     @FXML
     ImageView backBtnMenu;
 
     @FXML
     ToggleGroup toggleTheme;
+
+    private Controller controller;
 
     public void init(Controller controller){
         this.controller = controller;
@@ -40,16 +42,16 @@ public class ControllerMenuPanel implements BackBtnEffect {
 
     @FXML
     private void setToggleTheme(){
-        boolean colorBlindEnabled=false;
+    /*
         RadioButton selectedRadioButton = (RadioButton) toggleTheme.getSelectedToggle();
         String toogleGroupValue = selectedRadioButton.getText();
         if(toogleGroupValue.equals("ColorBlind Mode")){
-            colorBlindEnabled=true;
-            controller.parseTheme(colorBlindEnabled);
+            controller.parseTheme(true);
+
         }
-        if(!toogleGroupValue.equals("ColorBlind Mode")){
-            colorBlindEnabled=false;
-            controller.parseTheme(colorBlindEnabled);
+        else if(!toogleGroupValue.equals("ColorBlind Mode")){
+            controller.parseTheme(false);
         }
+        */
     }
 }
