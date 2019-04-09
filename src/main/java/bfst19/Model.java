@@ -73,6 +73,7 @@ public class Model {
 
 	public Model(String dataset){
 		datasetName = dataset;
+		//this keeps the cities and the default streets files in memory, it's about 1mb for Zealand of memory
 		AddressParser.getInstance(this).setDefaults(getDefault(getDatasetName()));
 		AddressParser.getInstance(this).parseCitiesAndPostCodes(getCities(getDatasetName()));
 	}
@@ -91,7 +92,7 @@ public class Model {
 		String filename = args.get(0);
 		//this might not be optimal
 		String[] arr = filename.split("\\.");
-		datasetName = arr[0] + " Database";
+		datasetName = arr[0].replace("data/","") + " Database";
 		InputStream osmsource;
 		if (filename.endsWith(".obj")) {
 			long time = -System.nanoTime();
@@ -333,11 +334,8 @@ public class Model {
 				case START_DOCUMENT: break;
 				case END_DOCUMENT:
 					File parseCheck = new File("data/"+ getDatasetName());
-					if(!parseCheck.isDirectory()) {
-						addresses.sort(Address::compareTo);
-						makeDatabase(addresses, getDatasetName());
-						//this keeps the cities and the default streets files in memory, it's about 1mb for Zealand of memory
-					}
+					addresses.sort(Address::compareTo);
+					makeDatabase(addresses, getDatasetName());
 
 					for (OSMWay c : merge(coast)) {
 						ways.get(WayType.COASTLINE).add(new Polyline(c));
@@ -517,7 +515,7 @@ public class Model {
 	//TODO change it to be the name of the dataset
     //it's only denmark right now.
 	public String getDatasetName(){
-		return "denmark";
+		return datasetName;
 	}
 
 	public ArrayList<String> getAddressesOnStreet(String country,String city,String postcode,String streetName){
