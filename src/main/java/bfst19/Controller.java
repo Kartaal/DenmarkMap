@@ -59,6 +59,7 @@ public class Controller {
         model.parseSearch(searchText);
     }
 
+    public void parseTheme(boolean colorBlindEnabled){ model.switchColorScheme(colorBlindEnabled);}
 
     //Initialize BarPanel
     public void setUpBar(){
@@ -139,9 +140,7 @@ public class Controller {
                 mapCanvas.toggleNonRoads();
                 mapCanvas.repaint();
                 break;
-            case C: //Toggle colorblind colorfile
-                model.switchColorScheme();
-                break;
+
         }
     }
 
