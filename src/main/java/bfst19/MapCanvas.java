@@ -158,16 +158,11 @@ public class MapCanvas extends Canvas {
     }
 
     public void panToPoint(double x,double y){
-        Bounds localBounds = this.getBoundsInLocal();
-        System.out.println(localBounds);
-
-        double centerX = localBounds.getCenterX();
-        double centerY = localBounds.getCenterY();
-
+        double centerX = getWidth()/2;
+        double centerY = getHeight()/2;
+        x = x*model.lonfactor;
         Point2D point = transform.transform(x,y);
-        System.out.println(point);
         pan(centerX-point.getX(),centerY-point.getY());
-
     }
 
     public void pan(double dx, double dy) {
