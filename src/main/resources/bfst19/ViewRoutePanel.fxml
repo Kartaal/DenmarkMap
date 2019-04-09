@@ -17,20 +17,19 @@
 <VBox alignment="CENTER" prefWidth="300.0" fx:id="outerPane" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 0);" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bfst19.ControllerRoutePanel">
    <children>
 
-       <Pane >
-           <Button fx:id="tilbageButton" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#returnToBarPanel" onMouseEntered="#setBackBtnEffect" onMouseExited="#setBackBtnEffectNone" style="-fx-background-color: white;">
-               <VBox.margin>
-                   <Insets bottom="5.0" />
-               </VBox.margin>
-               <graphic>
-                   <ImageView fx:id="backBtnRutePanel" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                       <image>
-                           <Image url="/back.png" />
-                       </image>
-                   </ImageView>
-               </graphic>
-           </Button>
-       </Pane>
+       <Button fx:id="tilbageButton" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#returnToBarPanel" onMouseEntered="#setBackBtnEffect" onMouseExited="#setBackBtnEffectNone" style="-fx-background-color: white;">
+           <VBox.margin>
+               <Insets bottom="5.0" />
+           </VBox.margin>
+           <graphic>
+               <ImageView fx:id="backBtnRoutePanel" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                   <image>
+                       <Image url="/back.png" />
+                   </image>
+               </ImageView>
+           </graphic>
+       </Button>
+
 
 
       <TextField fx:id="textFieldFra" promptText="From ">

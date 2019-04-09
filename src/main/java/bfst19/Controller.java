@@ -61,6 +61,11 @@ public class Controller {
 
     public void parseTheme(boolean colorBlindEnabled){ model.switchColorScheme(colorBlindEnabled);}
 
+    public void parseOnlyRodesMode(boolean enabled){
+        mapCanvas.toggleNonRoads(enabled);
+        mapCanvas.repaint();
+    }
+
     //Initialize BarPanel
     public void setUpBar(){
         if(borderPane.getLeft() != null){
@@ -136,10 +141,7 @@ public class Controller {
     @FXML
     private void onKeyPressed(KeyEvent e) {
         switch (e.getCode()) {//e.getcode() gets the specific keycode for the pressed key
-            case T: //toggle so that the canvas only draws roads or similar draws everything by default
-                mapCanvas.toggleNonRoads();
-                mapCanvas.repaint();
-                break;
+
 
         }
     }
