@@ -108,7 +108,7 @@ public class AddressParser {
         // and Id of the node that this address belongs to in the streetname's file
         if(!b.streetName.equals("Unknown")&&!b.city.equals("")&&!b.postcode.equals("")){
             String[] address = getAddress(country, b.city, b.postcode, b.streetName, b.houseNumber,true).get(0);
-            if(address!=null) {
+            if(!address[0].equals("")) {
                 b.id = Long.valueOf(address[0]);
                 b.lat = Float.valueOf(address[1]);
                 b.lon = Float.valueOf(address[2]);
@@ -130,7 +130,7 @@ public class AddressParser {
 
         if(singleSearch){
             if(houseNumber==null||houseNumber.equals("")){
-                matches.add(address.split(" "));
+                matches.add(new String[]{""});
                 return matches;
             }
             for(int i = 1 ; i < addressesOnStreet.size()-1 ; i++){
@@ -186,17 +186,19 @@ public class AddressParser {
             // so that if you write a postcode, it will use that postcodes matching city
             String postcodeCheck = checkThreeLastAddressTokensForPostcode(proposedAddress, currentPostcode).toLowerCase();
             //if the proposed address ends with the current postcode and city return those
-            if(proposedAddress.endsWith(currentPostcode.toLowerCase() +" "+ currentCity.toLowerCase())||proposedAddress.endsWith(currentCity.toLowerCase() +" "+ currentPostcode.toLowerCase())){
-                mostCompleteMatch = currentPostcode +" "+ currentCity;
+            if(proposedAddress.endsWith(currentPostcode.toLowerCase() +" "+ currentCity.toLowerCase())) {
+                mostCompleteMatch = currentPostcode + " " + currentCity;
                 bestPostCodeMatch = currentPostcode;
                 bestCityMatch = currentCity;
-
+            }else if(proposedAddress.endsWith(currentCity.toLowerCase() +" "+ currentPostcode.toLowerCase())){
+                mostCompleteMatch =  currentCity +  " " +currentPostcode;
+                bestPostCodeMatch = currentPostcode;
+                bestCityMatch = currentCity;
                 //if a postcode is found in the last three tokens of the address return that postcode and matching city
             }else if(!(postcodeCheck.equals(""))){
                 mostCompleteMatch = postcodeCheck;
                 bestPostCodeMatch = currentPostcode;
                 bestCityMatch = currentCity;
-
                 //if a city is found at the end of the address, return that along with that cities postcode
                 // (not 100% always accurate)
             }else if(proposedAddress.endsWith(currentCity.toLowerCase())){

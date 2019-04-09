@@ -24,7 +24,7 @@ public class Model {
 
 	String CurrentTypeColorTxt  = "data/TypeColorsNormal.txt";
 	HashMap<String,ArrayList<String[]>> wayTypeCases = new HashMap<>();
-	ObservableList<String> foundMatches = FXCollections.observableArrayList();
+	ObservableList<String[]> foundMatches = FXCollections.observableArrayList();
 	ObservableList<String> typeColors = FXCollections.observableArrayList();
 	Map<WayType, KDTree> kdTreeMap = new TreeMap<>();
 
@@ -201,8 +201,8 @@ public class Model {
 						case "node":
 							id = Long.parseLong(reader.getAttributeValue(null, "id"));
 							lat = Float.parseFloat(reader.getAttributeValue(null, "lat"));
-							lon = lonfactor * Float.parseFloat(reader.getAttributeValue(null, "lon"));
-							idToNode.add(new OSMNode(id, lon, lat));
+							lon = Float.parseFloat(reader.getAttributeValue(null, "lon"));
+							idToNode.add(new OSMNode(id, lonfactor *lon, lat));
 							break;
 						case "way":
 							id = Long.parseLong(reader.getAttributeValue(null, "id"));
@@ -485,40 +485,31 @@ public class Model {
 	public void parseSearch(String proposedAddress) {
         Address a = AddressParser.getInstance(this).singleSearch(proposedAddress, getDatasetName());
         //a is null if the singlesearch did not find a city in the string, hence we start the autocomplete
-        if(a.getStreetName().equals("Unknown")){
+        if(a.getStreetName().equals("Unknown")||(a.getCity().equals(""))){
 			ArrayList<String[]> possibleMatches = AddressParser.getInstance(this).getMatchesFromDefault(proposedAddress, false);
 			if (possibleMatches != null) {
 				foundMatches.clear();
-				//each string array in this arraylist has a streetname on index 0, city on idex 1 and postcode on index 2
-				//give possible matches to the ui somehow
 				for (String[] match : possibleMatches) {
-					foundMatches.add(match[0] + " " + match[1] + " " + match[2]);
+					foundMatches.add(new String[]{match[0],match[1],match[2]});
 				}
 			}
-        	//print out some failure message
-	    }else if(a.getCity().equals("")){
-            //this returns an arraylist of string arrays that hold a streetname city and postcode
-            ArrayList<String[]> possibleMatches = AddressParser.getInstance(this).getMatchesFromDefault(proposedAddress, false);
-            if (possibleMatches != null) {
-                foundMatches.clear();
-                //each string array in this arraylist has a streetname on index 0, city on idex 1 and postcode on index 2
-                //give possible matches to the ui somehow
-                for(String[] match : possibleMatches){
-                    foundMatches.add(match[0]+" "+match[1]+" "+match[2]);
-                }
-                //insert the index of the city+postcode chosen
-                String[] match = possibleMatches.get(0);
-                //after a specific city + postcode is chosen insert it into the textfield and inititiat the search again
-
-            }
-            System.out.println(a.toString() + a.getHouseNumber());
-        }else if(a.getHouseNumber().equals("")){
+        }else if(a.getHouseNumber()==null){
             //each string array in this arraylist has a id for the node on index 0, lat on index 1, lon on index 2 and housenumber on index 3
             ArrayList<String[]> possibleAddresses = AddressParser.getInstance(this).getAddress(getDatasetName(),a.getCity(),a.getPostcode(),a.getStreetName(),"",false);
-            //insert the index of the housenumber chosen
-            String[] addressMatch = possibleAddresses.get(0);
-            //after a housenumber is chosen, insert it inn the textfield and reinitiate a search
-        }
+			if (possibleAddresses != null) {
+				foundMatches.clear();
+				String street = a.getStreetName();
+				String city = a.getCity();
+				String postcode = a.getPostcode();
+				for (String[] match : possibleAddresses) {
+					foundMatches.add(new String[]{street,match[3],city,postcode});
+				}
+			}
+        }else{
+			foundMatches.clear();
+			foundMatches.add(new String[]{String.valueOf(a.getLon()),String.valueOf(a.getLat()),a.getStreetName(),a.getHouseNumber(),a.getFloor(),a.getSide(),a.getCity(),a.getPostcode()});
+		}
+
 	}
 
 	//TODO change it to be the name of the dataset
@@ -565,5 +556,5 @@ public class Model {
 		return typeColors.iterator();
 	}
 
-	public Iterator<String> foundMatchesIterator() { return foundMatches.iterator();}
+	public Iterator<String[]> foundMatchesIterator() { return foundMatches.iterator();}
 }

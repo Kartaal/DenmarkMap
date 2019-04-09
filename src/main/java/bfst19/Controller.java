@@ -51,7 +51,7 @@ public class Controller {
         return model;
     }
 
-    public Iterator<String> parsefoundMatchesIterator(){
+    public Iterator<String[]> getFoundMatchesIterator(){
         return model.foundMatchesIterator();
     }
 
@@ -138,15 +138,16 @@ public class Controller {
         scaleText.setText(Scalebar.getScaleText(minX, y, maxX, y, mapCanvas.getWidth()));
     }
 
+    public void panToPoint(double x, double y){
+        mapCanvas.panToPoint(x,y);
+    }
+
     @FXML
     private void onKeyPressed(KeyEvent e) {
         switch (e.getCode()) {//e.getcode() gets the specific keycode for the pressed key
             case T: //toggle so that the canvas only draws roads or similar draws everything by default
                 mapCanvas.toggleNonRoads();
                 mapCanvas.repaint();
-                break;
-            case C: //Toggle colorblind colorfile
-                model.switchColorScheme();
                 break;
             case P:
                 mapCanvas.panToPoint(14.8429560,55.0967440);

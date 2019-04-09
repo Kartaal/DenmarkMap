@@ -158,8 +158,8 @@ public class MapCanvas extends Canvas {
     }
 
     public void panToPoint(double x,double y){
-        double centerX = getWidth()/2;
-        double centerY = getHeight()/2;
+        double centerX = getWidth()/2.0;
+        double centerY = getHeight()/2.0;
         x = x*model.lonfactor;
         Point2D point = transform.transform(x,y);
         pan(centerX-point.getX(),centerY-point.getY());
@@ -195,5 +195,9 @@ public class MapCanvas extends Canvas {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public void toggleNonRoads() {
+        paintNonRoads = !paintNonRoads;
     }
 }
