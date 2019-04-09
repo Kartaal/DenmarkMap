@@ -36,7 +36,7 @@ public class KDTree implements Serializable {
 			selectComp = KDTree.xComp;
 			//Use a modified QuickSort to ensure the lower values are in the left half
 			// and the higher values are in the right half
-			sort(list, selectComp);
+			//sort(list, selectComp);
 			//Find the middle index to find the root element
 			int splitIndex = list.size() / 2;
 

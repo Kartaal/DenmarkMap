@@ -169,14 +169,11 @@ public class MapCanvas extends Canvas {
 
     public void zoom(double factor, double x, double y) {
         transform.prependScale(factor, factor, x, y);
-        //TODO Set level of detail dependent on determinant
-        //this translates to "if zooming out decrement"
-        if(factor < 1){
-            detailLevel -= 1;
-        //this translates to "if zooming in increment"
-        }else if(factor > 1){
-            detailLevel += 1;
-        }
+
+        //Detail level dependant on determinant. Divide by 5 million to achieve a "nice" integer for our detail levels.
+        //TODO maybe this value is only good for bornholm
+        detailLevel = (int) Math.abs(transform.determinant()/5000000);
+        System.out.println(detailLevel);
         repaint();
     }
 
