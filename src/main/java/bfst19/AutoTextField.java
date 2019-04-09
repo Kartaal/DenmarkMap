@@ -24,7 +24,7 @@ public class AutoTextField extends TextField {
         this.setOnKeyPressed(event -> {
             switch (event.getCode())  {
                 case ENTER:
-                    showResults();
+                    parseSearch();
                     break;
             }
         });
@@ -35,57 +35,59 @@ public class AutoTextField extends TextField {
 
         this.controller = controller;
         this.model = controller.getModel();
-        model.addObserver(this::addAdressesToDropDown);
+        model.addFoundMatchesObserver(this::showResults);
 
     }
 
+    public void parseSearch(){
+        controller.parseSearchText(getText());
+    }
+
     public void showResults(){
-        addAdressesToDropDown();
+        addAddressesToDropDown();
         if(!adressDropDown.isShowing()){
             adressDropDown.show(AutoTextField.this, Side.BOTTOM,0,0);
         }
     }
 
     //TODO: Add ScrollPane and limit height
-    private void addAdressesToDropDown() {
+    private void addAddressesToDropDown() {
 
         List<CustomMenuItem> menuItems = new LinkedList<>();
-
-        System.out.println(getText());
-        controller.parseSearchText(getText());
         ArrayList<Label> addressLabels = new ArrayList<>();
         Iterator<String[]> iterator = controller.getFoundMatchesIterator();
-
-        String[] firstMatch = iterator.next();
-        //this means that the match is a complete address
-        if(firstMatch.length==8){
-            System.out.println("address");
-            panAdress(Double.valueOf(firstMatch[0]),Double.valueOf(firstMatch[1]));
-            return;
-            //and the rest of the address is passed of to some other part of the UI.
-        }else if(firstMatch.length==4){
-            System.out.println("address no housenumber");
-            while(iterator.hasNext()){
-                String[] match = iterator.next();
-                Label labelAddress = new Label(match[0] + " " + match[1] + " " + match[2] + " " + match[3]);
-                addressLabels.add(labelAddress);
+        if(iterator.hasNext()) {
+            String[] firstMatch = iterator.next();
+            //this means that the match is a complete address
+            if (firstMatch.length == 8) {
+                System.out.println("address");
+                panAdress(Double.valueOf(firstMatch[0]), Double.valueOf(firstMatch[1]));
+                return;
+                //and the rest of the address is passed of to some other part of the UI.
+            } else if (firstMatch.length == 4) {
+                System.out.println("address no housenumber");
+                while (iterator.hasNext()) {
+                    String[] match = iterator.next();
+                    Label labelAddress = new Label(match[0] + " " + match[1] + " " + match[2] + " " + match[3]);
+                    addressLabels.add(labelAddress);
+                }
+            } else {
+                System.out.println("address no city");
+                while (iterator.hasNext()) {
+                    String[] match = iterator.next();
+                    Label labelAddress = new Label(match[0] + " " + match[1] + " " + match[2]);
+                    addressLabels.add(labelAddress);
+                }
             }
-        }else{
-            System.out.println("address no city");
-            while(iterator.hasNext()){
-                String[] match = iterator.next();
-                Label labelAddress = new Label(match[0] + " " + match[1] + " " + match[2]);
-                addressLabels.add(labelAddress);
-            }
-        }
-        System.out.println("amount of matches "+addressLabels.size());
-        for(Label addressLabel : addressLabels){
-            CustomMenuItem item = new CustomMenuItem(addressLabel, true);
+            System.out.println("amount of matches " + addressLabels.size());
+            for (Label addressLabel : addressLabels) {
+                CustomMenuItem item = new CustomMenuItem(addressLabel, true);
 
-            item.setOnAction((event) -> {
-                setText(addressLabel.getText());
-            });
-            menuItems.add(item);
+                item.setOnAction((event) -> {
+                    setText(addressLabel.getText());
+                });
+                menuItems.add(item);
+            }
         }
 
         if(menuItems.size() == 0){

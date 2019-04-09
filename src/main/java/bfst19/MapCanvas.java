@@ -35,7 +35,7 @@ public class MapCanvas extends Canvas {
         zoom(800/(model.maxlon-model.minlon), 0,0);
         transform.prependScale(1,-1, 0, 0);
         //model.addObserver(this::repaint);
-        model.addObserver(this::setTypeColors);
+        model.addColorObserver(this::setTypeColors);
         repaint();
     }
 

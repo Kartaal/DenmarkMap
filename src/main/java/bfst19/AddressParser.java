@@ -74,10 +74,9 @@ public class AddressParser {
     }
 
     public Address singleSearch(String proposedAddress, String country){
-        proposedAddress = proposedAddress.toLowerCase().trim();
         Builder b = new Builder();
+        proposedAddress = proposedAddress.toLowerCase().trim();
         String[] cityMatch = CityCheck(proposedAddress);
-
         //it checks if a city is found in the cities.txt file or not and replaces it if found
         if (!(cityMatch[0].equals(""))) {
             proposedAddress = proposedAddress.replaceAll(cityMatch[0].toLowerCase(), "");

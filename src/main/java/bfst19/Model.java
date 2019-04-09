@@ -19,7 +19,8 @@ public class Model {
 
 
 
-	List<Runnable> observers = new ArrayList<>();
+	List<Runnable> colorObservers = new ArrayList<>();
+	List<Runnable> foundMatchesObservers = new ArrayList<>();
 	float minlat, minlon, maxlat, maxlon;
 
 	String CurrentTypeColorTxt  = "data/TypeColorsNormal.txt";
@@ -61,13 +62,14 @@ public class Model {
 		return kdTreeMap.get(type).rangeQuery(bbox);
 	}
 
-	public void addObserver(Runnable observer) {
-		observers.add(observer);
+	public void addFoundMatchesObserver(Runnable observer) {
+		foundMatchesObservers.add(observer);
 	}
-
-	public void notifyObservers() {
-		for (Runnable observer : observers) observer.run();
+	public void addColorObserver(Runnable observer) { colorObservers.add(observer); }
+	public void notifyFoundMatchesObservers() {
+		for (Runnable observer : foundMatchesObservers) observer.run();
 	}
+	public void notifyColorObservers() {for (Runnable observer : colorObservers) observer.run();}
 
 	public Model(String dataset){
 		datasetName = dataset;
@@ -142,7 +144,7 @@ public class Model {
 			//TODO: fix this, uncle bob wont like this one hehe;)
 			System.out.println("something went wrong");
 		}
-		notifyObservers();
+		notifyColorObservers();
 	}
 
 	public void switchColorScheme(boolean colorBlindEnabled){
@@ -509,7 +511,7 @@ public class Model {
 			foundMatches.clear();
 			foundMatches.add(new String[]{String.valueOf(a.getLon()),String.valueOf(a.getLat()),a.getStreetName(),a.getHouseNumber(),a.getFloor(),a.getSide(),a.getCity(),a.getPostcode()});
 		}
-
+        notifyFoundMatchesObservers();
 	}
 
 	//TODO change it to be the name of the dataset
