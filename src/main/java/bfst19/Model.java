@@ -16,7 +16,9 @@ public class Model {
 	float lonfactor = 1.0f;
 	private boolean colorBlindEnabled;
 	private String datasetName;
-  
+
+
+
 	List<Runnable> observers = new ArrayList<>();
 	float minlat, minlon, maxlat, maxlon;
 

@@ -141,8 +141,16 @@ public class Controller {
     @FXML
     private void onKeyPressed(KeyEvent e) {
         switch (e.getCode()) {//e.getcode() gets the specific keycode for the pressed key
-
-
+            case T: //toggle so that the canvas only draws roads or similar draws everything by default
+                mapCanvas.toggleNonRoads();
+                mapCanvas.repaint();
+                break;
+            case C: //Toggle colorblind colorfile
+                model.switchColorScheme();
+                break;
+            case P:
+                mapCanvas.panToPoint(14.8429560,55.0967440);
+                break;
         }
     }
 
