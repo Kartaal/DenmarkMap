@@ -26,7 +26,6 @@ public class MapCanvas extends Canvas {
 
     public void init(Model model) {
         this.model = model;
-
         //conventions in screen coords and map coords are not the same,
         // so we convert to screen convention by flipping x y
         pan(-model.minlon, -model.maxlat);
@@ -107,11 +106,7 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    private BoundingBox getExtentInModel(){
-
-        return getBounds();
-        //return getBoundsDebug();
-    }
+    private BoundingBox getExtentInModel(){ return getBounds(); }
 
     private BoundingBox getBoundsDebug() {
         Bounds localBounds = this.getBoundsInLocal();
@@ -168,7 +163,6 @@ public class MapCanvas extends Canvas {
 
         double centerX = localBounds.getCenterX();
         double centerY = localBounds.getCenterY();
-
 
         Point2D point = transform.transform(x,y);
         System.out.println(point);
