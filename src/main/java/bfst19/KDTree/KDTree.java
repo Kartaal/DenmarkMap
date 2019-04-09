@@ -36,7 +36,7 @@ public class KDTree implements Serializable {
 			selectComp = KDTree.xComp;
 			//Use a modified QuickSort to ensure the lower values are in the left half
 			// and the higher values are in the right half
-			//sort(list, selectComp);
+			sort(list, selectComp);
 			//Find the middle index to find the root element
 			int splitIndex = list.size() / 2;
 
@@ -49,6 +49,7 @@ public class KDTree implements Serializable {
 
 				//Start recursively creating the left and right subtrees
 				// of indexes 0 to splitIndex for left subtree and splitIndex+1 to list.size() for the right subtree
+				//TODO should not take root but something else.
 				root.nodeL = createTree(list, root, 0, splitIndex);
 				root.nodeR = createTree(list, root, splitIndex + 1, list.size()-1);
 			} else {
@@ -76,7 +77,7 @@ public class KDTree implements Serializable {
 
 		//Figure out the splitting value based on dimension
 		float splitVal;
-		if(!vertical) {
+		if(vertical) {
 			splitVal = ((BoundingBoxable) list.get(splitIndex)).getCenterX();
 		} else {
 			splitVal = ((BoundingBoxable) list.get(splitIndex)).getCenterY();
@@ -89,20 +90,20 @@ public class KDTree implements Serializable {
 		// fill the node with data to be retrieved later
 		if(listSize >= hi-lo) {
 			List<BoundingBoxable> valueList = new ArrayList<>();
-			for(int i = lo ; i < hi ; i++) {
+			for(int i = lo ; i <= hi ; i++) {
 				//Ugly typecast
 				valueList.add((BoundingBoxable) list.get(i));
 			}
 			currNode.setValues(valueList);
 			return currNode;
-		} else {
+		}
 			//Do recursion because node isn't a leaf
 			//Left subtree
 			parentNode.nodeL = createTree(list, currNode, lo, splitIndex);
 
 			//Right subtree
 			parentNode.nodeR = createTree(list, currNode, splitIndex+1, hi);
-		}
+
 
 		return currNode;
 	}
@@ -256,7 +257,7 @@ public class KDTree implements Serializable {
 		}
 
 		public void setValues(List<BoundingBoxable> valueList) {
-			values = valueList;
+			this.values = valueList;
 
 			//Create BoundingBox for the KDNode
 			makeNodeBB();
@@ -307,7 +308,7 @@ public class KDTree implements Serializable {
 
 	//From Algs4 book, modified
 	public void sort(List<Drawable> a, Comparator<BoundingBoxable> comp) {
-		shuffle(a);
+		//shuffle(a);
 		sort(a, 0, a.size() - 1, comp);
 	}
 
