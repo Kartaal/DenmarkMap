@@ -180,8 +180,8 @@ public class MapCanvas extends Canvas {
         repaint();
     }
 
-    public void toggleNonRoads() {
-        paintNonRoads = !paintNonRoads;
+    public void toggleNonRoads(boolean enabled) {
+        paintNonRoads = !enabled;
     }
 
 
