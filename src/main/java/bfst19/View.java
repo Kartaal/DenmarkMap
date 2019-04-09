@@ -16,11 +16,11 @@ public class View {
 		Scene scene = loader.load();
         //The loader loads the controller found in the .fxml file
         Controller controller = loader.getController();
+		controller.init(model);
         stage.setMinWidth(800);
         stage.setMinHeight(600);
         stage.setScene(scene);
 		stage.show();
-		controller.init(model);
 	}
 
 }
