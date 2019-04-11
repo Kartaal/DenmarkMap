@@ -17,7 +17,7 @@ plugins {
 }
 
 javafx {
-    modules = [ 'javafx.controls', 'javafx.fxml' ]
+    modules = [ 'javafx.controls', 'javafx.fxml', 'edu.princeton' ]
 }
 jacoco { toolVersion = "0.8.3"
 }
