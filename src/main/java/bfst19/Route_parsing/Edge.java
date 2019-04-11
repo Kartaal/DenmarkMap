@@ -1,9 +1,10 @@
 package bfst19.Route_parsing;
 
 import bfst19.OSMNode;
+
 import java.util.HashMap;
 
-public class Edge {
+public class Edge{
     //allways set length and speedlimit as the same unit of measurement, currently km
     private double length;
     private double speedlLimit;
