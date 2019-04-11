@@ -13,8 +13,7 @@ public class KDTree implements Serializable {
 	private static xComparator xComp = new xComparator();
 	private static yComparator yComp = new yComparator();
 	private Comparator<BoundingBoxable> selectComp;
-	//TODO static?
-	private final int listSize = 500;
+	private static final int leafSize = 500;
 
 	//From StdRandom
 	private Random random;    // pseudo-random number generator
@@ -57,6 +56,7 @@ public class KDTree implements Serializable {
 				//Arbitrary values to fill root in case the list of Drawable is empty
 				root = new KDNode(null, -1, true);
 			}
+
 		}
 	}
 
@@ -87,9 +87,9 @@ public class KDTree implements Serializable {
 		//Create a new node to be returned
 		KDNode currNode = new KDNode(null, splitVal, vertical);
 
-		//If we have reached a leaf node (list has fewer than listSize elements)
+		//If we have reached a leaf node (list has fewer than leafSize elements)
 		// fill the node with data to be retrieved later
-		if(listSize >= hi-lo) {
+		if(leafSize >= hi-lo) {
 			List<BoundingBoxable> valueList = new ArrayList<>();
 			for(int i = lo ; i <= hi ; i++) {
 				//Ugly typecast
@@ -100,11 +100,10 @@ public class KDTree implements Serializable {
 		}
 			//Do recursion because node isn't a leaf
 			//Left subtree
-			parentNode.nodeL = createTree(list, currNode, lo, splitIndex);
+			currNode.nodeL = createTree(list, currNode, lo, splitIndex);
 
 			//Right subtree
-			parentNode.nodeR = createTree(list, currNode, splitIndex+1, hi);
-
+			currNode.nodeR = createTree(list, currNode, splitIndex+1, hi);
 
 		return currNode;
 	}
@@ -206,6 +205,7 @@ public class KDTree implements Serializable {
 		List<BoundingBoxable> values = new ArrayList<>();
 		float split;
 		boolean vertical; //if true, splits on x
+
 		KDNode nodeL; //child
 		KDNode nodeR; //child
 		BoundingBox bb;
