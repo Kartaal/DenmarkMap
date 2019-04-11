@@ -173,7 +173,6 @@ public class MapCanvas extends Canvas {
         //Detail level dependant on determinant. Divide by 5 million to achieve a "nice" integer for our detail levels.
         //TODO maybe this value is only good for bornholm
         detailLevel = (int) Math.abs(transform.determinant()/5000000);
-        System.out.println(detailLevel);
         repaint();
     }
 

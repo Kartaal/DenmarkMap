@@ -106,6 +106,8 @@ public class KDTreeTest {
 
 	@Test
 	public void ServiceKDTreeExists(){
+		KDTree.KDNode l = kdTreeMap.get(WayType.SERVICE).getRoot().getNodeL();
+		KDTree.KDNode r = kdTreeMap.get(WayType.SERVICE).getRoot().getNodeR();
 
 		//Tests that root's left and right child aren't null
 		assertTrue(kdTreeMap.get(WayType.SERVICE).getRoot().getNodeL() != null && kdTreeMap.get(WayType.SERVICE).getRoot().getNodeR() != null);
@@ -134,31 +136,27 @@ public class KDTreeTest {
 		BoundingBox bb = new BoundingBox(minPoint.getX(), minPoint.getY(),
 				maxPoint.getX()-minPoint.getX(), maxPoint.getY()-minPoint.getY());
 
-		assertEquals(servicePolylines, ((Set<Drawable>) kdTreeMap.get(WayType.SERVICE).rangeQuery(bb)).size());
+		Set<Drawable> set = ((Set<Drawable>) kdTreeMap.get(WayType.SERVICE).rangeQuery(bb));
+		assertEquals(servicePolylines, set.size());
 	}
 
 
 	@Test
 	public void GetMiddleHalfServiceLines(){
-		//Tests rangeQuery gets the correct middle elements of the KDTree for SERVICE WayType
-
-
-		/*Center  X			Y
-		14.800080			55.267468
-		14.800179			55.267275
-		14.849615			55.243413
-		14.781979			55.182817
+		//Tests rangeQuery gets the correct x-middle elements of the KDTree for SERVICE WayType
 
 		//Actual min and max coords for 2 middle elements
-		//min X 14.7997896		min Y 55.2433121
-		//max X 14.8493998		max Y 55.2673134
-		*/
-		Point2D minPoint = getModelCoords(14.800050f, -55.243313f);
-		Point2D maxPoint = getModelCoords(14.810179f, -55.267375f);
-		//BoundingBox with a BB bigger than the coords to catch everything
+		//min X 14.799789428710938		min Y 55.267234802246094
+		//max X 14.800257682800293		max Y 55.2675666809082
+
+		Point2D minPoint = getModelCoords(14.799689428710938f, -55.267134802246094f);
+		Point2D maxPoint = getModelCoords(14.810257682800293f, -55.2676666809082f);
+		//FIX THIS STUPID BOUNDINGBOX!
 		BoundingBox bb = new BoundingBox(minPoint.getX(), minPoint.getY(),
 				maxPoint.getX()-minPoint.getX(), maxPoint.getY()-minPoint.getY());
 
+
+		Set<Drawable> set = ((Set<Drawable>) kdTreeMap.get(WayType.SERVICE).rangeQuery(bb));
 		int i = ((Set<Drawable>) kdTreeMap.get(WayType.SERVICE).rangeQuery(bb)).size();
 
 		//TODO Ensure the found elements are the right ones instead of just matching a certain number

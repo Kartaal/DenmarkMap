@@ -62,7 +62,7 @@ public class KDTree implements Serializable {
 	private KDNode createTree(List<Drawable> list, KDNode parentNode, int lo, int hi) {
 		//Added to prevent errors when lo == hi (there was a WayType with 2 elements that caused this problem)
 		//TODO ensure correctness (still?)
-		if (hi <= lo) return null;
+		if (hi < lo) return null;
 
 		//Change comparator
 		//? is a shorthand of if-else. (expression) ? (if expression true) : (if expression false)
