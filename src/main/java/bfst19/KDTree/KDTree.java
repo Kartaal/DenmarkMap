@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.*;
 
 public class KDTree implements Serializable {
+
 	private KDNode root;
 	private static xComparator xComp = new xComparator();
 	private static yComparator yComp = new yComparator();
@@ -256,6 +257,16 @@ public class KDTree implements Serializable {
 			return bb;
 		}
 
+		//For testing
+		public KDNode getNodeL() {
+			return nodeL;
+		}
+
+		//For testing
+		public KDNode getNodeR() {
+			return nodeR;
+		}
+
 		public void setValues(List<BoundingBoxable> valueList) {
 			this.values = valueList;
 
@@ -284,6 +295,11 @@ public class KDTree implements Serializable {
 		public int compare(BoundingBoxable a, BoundingBoxable b) {
 			return (int) (a.getCenterY() - b.getCenterY())*1000000;
 		}
+	}
+
+	//For testing
+	public KDNode getRoot() {
+		return root;
 	}
 
 
