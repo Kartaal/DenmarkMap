@@ -49,7 +49,6 @@ public class KDTree implements Serializable {
 
 				//Start recursively creating the left and right subtrees
 				// of indexes 0 to splitIndex for left subtree and splitIndex+1 to list.size() for the right subtree
-				//TODO should not take root but something else.
 				root.nodeL = createTree(list, root, 0, splitIndex);
 				root.nodeR = createTree(list, root, splitIndex + 1, list.size()-1);
 			} else {
