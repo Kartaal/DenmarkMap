@@ -105,7 +105,7 @@ public class KDTreeTest {
 
 
 	@Test
-	public void ServiceKDTreeExists(){
+	public void testServiceKDTreeExists(){
 		KDTree.KDNode l = kdTreeMap.get(WayType.SERVICE).getRoot().getNodeL();
 		KDTree.KDNode r = kdTreeMap.get(WayType.SERVICE).getRoot().getNodeR();
 
@@ -115,7 +115,7 @@ public class KDTreeTest {
 
 
 	@Test
-	public void DitchKDTreeNotExists(){
+	public void testDitchKDTreeNotExists(){
 
 		//Tests that root's left and right child are null
 		assertTrue(kdTreeMap.get(WayType.DITCH).getRoot().getNodeL() == null && kdTreeMap.get(WayType.DITCH).getRoot().getNodeR() == null);
@@ -124,7 +124,7 @@ public class KDTreeTest {
 
 	//TODO This fails, root.NodeL has 3 elements, root.NodeR is null and it is supposed to have 4 elements total
 	@Test
-	public void GetAllServiceLines(){
+	public void testGetAllServiceLines(){
 		//Tests that KDTree for SERVICE WayType has as many elements
 
 		//Actual min and max coords
@@ -142,7 +142,7 @@ public class KDTreeTest {
 
 
 	@Test
-	public void GetMiddleHalfServiceLines(){
+	public void testGetMiddleHalfServiceLines(){
 		//Tests rangeQuery gets the correct x-middle elements of the KDTree for SERVICE WayType
 
 		//Actual min and max coords for 2 middle elements
@@ -166,7 +166,7 @@ public class KDTreeTest {
 
 	//TODO This fails, root.NodeL has 3 elements, root.NodeR is null and it is supposed to have 4 elements total
 	@Test
-	public void CheckEmptyQueryBox(){
+	public void testCheckEmptyQueryBox(){
 		//Tests that KDTree for SERVICE WayType has as many elements
 
 		//Actual min and max coords
