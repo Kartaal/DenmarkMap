@@ -1,8 +1,4 @@
-data/zealand.zip
-data/zealand.zip.obj
-data/denmark
-data/small.osm
-data/small.osm.obj
+data/
 
 # Created by https://www.gitignore.io/api/vim,java,linux,macos,gradle,windows,notepadpp,sublimetext,intellij+all,visualstudio,visualstudiocode
 # Edit at https://www.gitignore.io/?templates=vim,java,linux,macos,gradle,windows,notepadpp,sublimetext,intellij+all,visualstudio,visualstudiocode

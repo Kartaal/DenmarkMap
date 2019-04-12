@@ -60,26 +60,22 @@ public class AutoTextField extends TextField {
             String[] firstMatch = iterator.next();
             //this means that the match is a complete address
             if (firstMatch.length == 8) {
-                System.out.println("address");
                 panAdress(Double.valueOf(firstMatch[0]), Double.valueOf(firstMatch[1]));
                 return;
                 //and the rest of the address is passed of to some other part of the UI.
             } else if (firstMatch.length == 4) {
-                System.out.println("address no housenumber");
                 while (iterator.hasNext()) {
                     String[] match = iterator.next();
                     Label labelAddress = new Label(match[0] + " " + match[1] + " " + match[2] + " " + match[3]);
                     addressLabels.add(labelAddress);
                 }
             } else {
-                System.out.println("address no city");
                 while (iterator.hasNext()) {
                     String[] match = iterator.next();
                     Label labelAddress = new Label(match[0] + " " + match[1] + " " + match[2]);
                     addressLabels.add(labelAddress);
                 }
             }
-            System.out.println("amount of matches " + addressLabels.size());
             for (Label addressLabel : addressLabels) {
                 CustomMenuItem item = new CustomMenuItem(addressLabel, true);
 
@@ -99,7 +95,6 @@ public class AutoTextField extends TextField {
         System.out.println(adressDropDown.getItems().size());
     }
 
-    //TODO: Need Adress node
     private void panAdress(double x, double y){
         controller.panToPoint(x,y);
     }
