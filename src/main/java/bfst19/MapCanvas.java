@@ -106,14 +106,14 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    private BoundingBox getExtentInModel(){ return getBounds(); }
+    private BoundingBox getExtentInModel(){ return getBoundsDebug(); }
 
     private BoundingBox getBoundsDebug() {
         Bounds localBounds = this.getBoundsInLocal();
-        double minX = localBounds.getMinX() + 100;
-        double maxX = localBounds.getMaxX() - 100;
-        double minY = localBounds.getMinY() + 100;
-        double maxY = localBounds.getMaxY() - 100;
+        double minX = localBounds.getMinX() + 200;
+        double maxX = localBounds.getMaxX() - 200;
+        double minY = localBounds.getMinY() + 200;
+        double maxY = localBounds.getMaxY() - 500;
 
         //Flip the boundingbox y cordinates as the rendering is flipped as well, but the model isnt.
         Point2D minPoint = getModelCoords(minX, maxY);

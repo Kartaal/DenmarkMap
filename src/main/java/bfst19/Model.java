@@ -126,7 +126,7 @@ public class Model {
 				output.writeFloat(maxlon);
 			}
 		}
-		pointsOfInterest = getPointsOfInterest(getDatasetName());
+		//pointsOfInterest = getPointsOfInterest(getDatasetName());
         AddressParser.getInstance(this).setDefaults(getDefault(getDatasetName()));
         AddressParser.getInstance(this).parseCitiesAndPostCodes(getCities(getDatasetName()));
 	}
