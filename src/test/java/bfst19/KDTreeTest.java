@@ -166,7 +166,6 @@ public class KDTreeTest {
 	}
 
 
-	//TODO This fails, root.NodeL has 3 elements, root.NodeR is null and it is supposed to have 4 elements total
 	@Test
 	public void testCheckEmptyQueryBox(){
 		//Tests that KDTree for SERVICE WayType has as many elements
