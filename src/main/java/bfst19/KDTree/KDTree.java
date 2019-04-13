@@ -54,16 +54,16 @@ public class KDTree implements Serializable {
 		//TODO ensure correctness (still?)
 		if (hi < lo) return null;
 
-		//Change comparator
-		//? is a shorthand of if-else. (expression) ? (if expression true) : (if expression false)
-		selectComp = selectComp == KDTree.xComp ? KDTree.yComp : KDTree.xComp;
-		//Might want an overloaded version that only sorts a sublist
-		sort(list, lo, hi, selectComp);
-
 		//Get the index to split at
 		int splitIndex = lo + (hi-lo) / 2;
 		//Flip the dimension to handle 2D data
 		boolean vertical = !parentNode.vertical;
+
+		//Change comparator based on vertical
+		//? is a shorthand of if-else. (expression) ? (if expression true) : (if expression false)
+		selectComp = vertical ? KDTree.xComp : KDTree.yComp;
+		//Might want an overloaded version that only sorts a sublist
+		sort(list, lo, hi, selectComp);
 
 		//Figure out the splitting value based on dimension
 		float splitVal;
