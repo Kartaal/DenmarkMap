@@ -12,22 +12,21 @@ import static org.junit.Assert.*;
 
 public class KDTreeTest {
 	Map<WayType, KDTree> kdTreeMap = new TreeMap<>();
-	OSMWay way;
-	WayType type;
-	LongIndex<OSMNode> idToNode = new LongIndex<>();
-	//LongIndex<OSMWay> idToWay = new LongIndex<OSMWay>();			for relations
-	Map<WayType, List<Drawable>> ways = new EnumMap<>(WayType.class);
 	Set<Drawable> midSet = new HashSet<>();
+	Set<Drawable> fullSet = new HashSet<>();
 
 	Affine transform = new Affine();
 
-	int servicePolylines;
-
 	@Before
 	public void initialize() {
+		Map<WayType, List<Drawable>> ways = new EnumMap<>(WayType.class);
+		LongIndex<OSMNode> idToNode = new LongIndex<>();
+		//LongIndex<OSMWay> idToWay = new LongIndex<OSMWay>();			for relations
+		OSMWay way;
+		WayType type;
 		//Fill map with empty arraylists as setup
-		for (WayType type : WayType.values()) {
-			ways.put(type, new ArrayList<>());
+		for (WayType wtype : WayType.values()) {
+			ways.put(wtype, new ArrayList<>());
 		}
 
 		//Setup transform
@@ -67,7 +66,7 @@ public class KDTreeTest {
 		ways.get(type).add(line);
 
 		midSet.add(line);
-		servicePolylines++;
+		fullSet.add(line);
 
 
 		way = new OSMWay(619269637);
@@ -78,7 +77,7 @@ public class KDTreeTest {
 		ways.get(type).add(line);
 
 		midSet.add(line);
-		servicePolylines++;
+		fullSet.add(line);
 
 		way = new OSMWay(619270946);
 		type = WayType.SERVICE;
@@ -88,7 +87,7 @@ public class KDTreeTest {
 		line = new Polyline(way);
 		ways.get(type).add(line);
 
-		servicePolylines++;
+		fullSet.add(line);
 
 		way = new OSMWay(619274513);
 		type = WayType.SERVICE;
@@ -97,7 +96,7 @@ public class KDTreeTest {
 		line = new Polyline(way);
 		ways.get(type).add(line);
 
-		servicePolylines++;
+		fullSet.add(line);
 
 		//Stolen from Model
 		//Make and populate KDTrees for each WayType
@@ -129,7 +128,6 @@ public class KDTreeTest {
 	}
 
 
-	//TODO This fails, root.NodeL has 3 elements, root.NodeR is null and it is supposed to have 4 elements total
 	@Test
 	public void testGetAllServiceLines(){
 		//Tests that KDTree for SERVICE WayType has as many elements
@@ -144,7 +142,7 @@ public class KDTreeTest {
 				maxPoint.getX()-minPoint.getX(), maxPoint.getY()-minPoint.getY());
 
 		Set<Drawable> set = ((Set<Drawable>) kdTreeMap.get(WayType.SERVICE).rangeQuery(bb));
-		assertEquals(servicePolylines, set.size());
+		assertEquals(fullSet, set);
 	}
 
 
@@ -182,7 +180,9 @@ public class KDTreeTest {
 		BoundingBox bb = new BoundingBox(minPoint.getX(), minPoint.getY(),
 				maxPoint.getX()-minPoint.getX(), maxPoint.getY()-minPoint.getY());
 
-		assertEquals(0, ((Set<Drawable>) kdTreeMap.get(WayType.SERVICE).rangeQuery(bb)).size());
+		Set<Drawable> emptySet = new HashSet<>();
+
+		assertEquals(emptySet, kdTreeMap.get(WayType.SERVICE).rangeQuery(bb));
 	}
 
 
