@@ -17,6 +17,7 @@ public class KDTreeTest {
 	LongIndex<OSMNode> idToNode = new LongIndex<>();
 	//LongIndex<OSMWay> idToWay = new LongIndex<OSMWay>();			for relations
 	Map<WayType, List<Drawable>> ways = new EnumMap<>(WayType.class);
+	Set<Drawable> midSet = new HashSet<>();
 
 	Affine transform = new Affine();
 
@@ -62,8 +63,10 @@ public class KDTreeTest {
 		way.add(idToNode.get(5852189411L));
 		way.add(idToNode.get(5852189413L));
 		way.add(idToNode.get(5852189414L));
-		ways.get(type).add(new Polyline(way));
+		Polyline line = new Polyline(way);
+		ways.get(type).add(line);
 
+		midSet.add(line);
 		servicePolylines++;
 
 
@@ -71,8 +74,10 @@ public class KDTreeTest {
 		type = WayType.SERVICE;
 		way.add(idToNode.get(5852189410L));
 		way.add(idToNode.get(5852189412L));
-		ways.get(type).add(new Polyline(way));
+		line = new Polyline(way);
+		ways.get(type).add(line);
 
+		midSet.add(line);
 		servicePolylines++;
 
 		way = new OSMWay(619270946);
@@ -80,7 +85,8 @@ public class KDTreeTest {
 		way.add(idToNode.get(5852195004L));
 		way.add(idToNode.get(5852195005L));
 		way.add(idToNode.get(5852195007L));
-		ways.get(type).add(new Polyline(way));
+		line = new Polyline(way);
+		ways.get(type).add(line);
 
 		servicePolylines++;
 
@@ -88,7 +94,8 @@ public class KDTreeTest {
 		type = WayType.SERVICE;
 		way.add(idToNode.get(5852227208L));
 		way.add(idToNode.get(5852227209L));
-		ways.get(type).add(new Polyline(way));
+		line = new Polyline(way);
+		ways.get(type).add(line);
 
 		servicePolylines++;
 
@@ -150,17 +157,14 @@ public class KDTreeTest {
 		//max X 14.800257682800293		max Y 55.2675666809082
 
 		Point2D minPoint = getModelCoords(14.799689428710938f, -55.267134802246094f);
-		Point2D maxPoint = getModelCoords(14.810257682800293f, -55.2676666809082f);
-		//FIX THIS STUPID BOUNDINGBOX!
+		Point2D maxPoint = getModelCoords(14.80047117f, -55.2676666809f);
 		BoundingBox bb = new BoundingBox(minPoint.getX(), minPoint.getY(),
 				maxPoint.getX()-minPoint.getX(), maxPoint.getY()-minPoint.getY());
 
 
 		Set<Drawable> set = ((Set<Drawable>) kdTreeMap.get(WayType.SERVICE).rangeQuery(bb));
-		int i = ((Set<Drawable>) kdTreeMap.get(WayType.SERVICE).rangeQuery(bb)).size();
 
-		//TODO Ensure the found elements are the right ones instead of just matching a certain number
-		assertEquals(servicePolylines/2, i);
+		assertEquals(midSet, set);
 	}
 
 
