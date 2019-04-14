@@ -206,8 +206,8 @@ public class Model {
 						case "node":
 							id = Long.parseLong(reader.getAttributeValue(null, "id"));
 							lat = Float.parseFloat(reader.getAttributeValue(null, "lat"));
-							lon = Float.parseFloat(reader.getAttributeValue(null, "lon"));
-							idToNode.add(new OSMNode(id, lonfactor *lon, lat));
+							lon = lonfactor*Float.parseFloat(reader.getAttributeValue(null, "lon"));
+							idToNode.add(new OSMNode(id, lon, lat));
 							break;
 						case "way":
 							id = Long.parseLong(reader.getAttributeValue(null, "id"));
@@ -491,6 +491,7 @@ public class Model {
 			ArrayList<String[]> possibleMatches = AddressParser.getInstance(this).getMatchesFromDefault(proposedAddress, false);
 			if (possibleMatches != null) {
 				foundMatches.clear();
+				System.out.println(possibleMatches.size());
 				for (String[] match : possibleMatches) {
 					foundMatches.add(new String[]{match[0],match[1],match[2]});
 				}

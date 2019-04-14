@@ -64,12 +64,14 @@ public class AutoTextField extends TextField {
                 return;
                 //and the rest of the address is passed of to some other part of the UI.
             } else if (firstMatch.length == 4) {
+                addressLabels.add(new Label(firstMatch[0] + " " + firstMatch[1] + " " + firstMatch[2] + " " + firstMatch[3]));
                 while (iterator.hasNext()) {
                     String[] match = iterator.next();
                     Label labelAddress = new Label(match[0] + " " + match[1] + " " + match[2] + " " + match[3]);
                     addressLabels.add(labelAddress);
                 }
             } else {
+                addressLabels.add(new Label(firstMatch[0] + " " + firstMatch[1] + " " + firstMatch[2]));
                 while (iterator.hasNext()) {
                     String[] match = iterator.next();
                     Label labelAddress = new Label(match[0] + " " + match[1] + " " + match[2]);
@@ -92,7 +94,10 @@ public class AutoTextField extends TextField {
 
         adressDropDown.getItems().clear();
         adressDropDown.getItems().addAll(menuItems);
-        System.out.println(adressDropDown.getItems().size());
+    }
+
+    public void clear(){
+        adressDropDown.getItems().clear();
     }
 
     private void panAdress(double x, double y){

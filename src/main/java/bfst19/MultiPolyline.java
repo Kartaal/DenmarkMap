@@ -64,20 +64,20 @@ public class MultiPolyline implements Drawable, Serializable, BoundingBoxable {
 	}
 
 	@Override
-	public void stroke(GraphicsContext gc) {
+	public void stroke(GraphicsContext gc,double singlePixelLength) {
 		gc.beginPath();
-		trace(gc);
+		trace(gc,singlePixelLength);
 		gc.stroke();
 	}
 
-	public void trace(GraphicsContext gc) {
-		for (Polyline p : lines) p.trace(gc);
+	public void trace(GraphicsContext gc,double singlePixelLength) {
+		for (Polyline p : lines) p.trace(gc,singlePixelLength);
 	}
 
 	@Override
-	public void fill(GraphicsContext gc) {
+	public void fill(GraphicsContext gc, double singlePixelLength) {
 		gc.beginPath();
-		trace(gc);
+		trace(gc,singlePixelLength);
 		gc.fill();
 	}
 
