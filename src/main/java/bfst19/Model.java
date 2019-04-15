@@ -1,6 +1,7 @@
 package bfst19;
 
 import bfst19.KDTree.KDTree;
+import bfst19.Route_parsing.EdgeWeightedGraph;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javax.xml.stream.XMLInputFactory;
@@ -25,6 +26,7 @@ public class Model {
 
 	String CurrentTypeColorTxt  = "data/TypeColorsNormal.txt";
 	HashMap<String,ArrayList<String[]>> wayTypeCases = new HashMap<>();
+	HashMap<String,ArrayList<String[]>> drivableCases = new HashMap<>();
 	ObservableList<String[]> foundMatches = FXCollections.observableArrayList();
 	ObservableList<String> typeColors = FXCollections.observableArrayList();
 	Map<WayType, KDTree> kdTreeMap = new TreeMap<>();
@@ -88,7 +90,6 @@ public class Model {
 		}
 		//todo figure out how to do singleton but also include model in its constructor without needing to give model for every call of getinstance
 		parseWayTypeCases("data/Waytype_cases.txt");
-
 		ParseWayColors();
 
 		String filename = args.get(0);
@@ -134,6 +135,37 @@ public class Model {
         AddressParser.getInstance(this).parseCitiesAndPostCodes(getCities(getDatasetName()));
 	}
 
+    private HashMap<String,HashMap<String,ArrayList<String[]>>> parseDrivableCases(String filepath) {
+	    ArrayList<String> cases = getTextFile(filepath);
+        HashMap<String,HashMap<String,ArrayList<String[]>>> drivableCases = new HashMap<>();
+
+	    String wayType = "";
+	    String[] tokens;
+	    String vehicleType = "";
+	    String vehicleDrivable = "";
+	    ArrayList <String[]> vehicleCases = new ArrayList<>();
+
+	    for(int i = 0 ; i<cases.size() ; i++){
+	        String line = cases.get(i);
+	        if(line.startsWith("%")){
+				tokens = cases.get(i+1).split(" ");
+				i++;
+				vehicleType = tokens[0];
+				vehicleDrivable = tokens[1];
+				drivableCases.get(wayType).put(vehicleType+" "+vehicleDrivable,vehicleCases);
+	            vehicleCases = new ArrayList<>();
+	        }else if(line.startsWith("$")){
+				wayType = cases.get(i+1);
+	            drivableCases.put(wayType,new HashMap<>());
+	            drivableCases.get(wayType).put(vehicleType+" "+vehicleDrivable,vehicleCases);
+	            i++;
+	        }else{
+                vehicleCases.add(line.split(" "));
+            }
+	    }
+	    return drivableCases;
+    }
+
     public void ParseWayColors(){
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(CurrentTypeColorTxt));
@@ -172,15 +204,31 @@ public class Model {
 		for (WayType type : WayType.values()) {
 			ways.put(type, new ArrayList<>());
 		}
+		EdgeWeightedGraph nodeGraph = new EdgeWeightedGraph();
+		HashMap<String,HashMap<String,ArrayList<String[]>>>drivableCases = parseDrivableCases("data/Drivable_cases.txt");
+		for(String wayType : drivableCases.keySet()){
+			System.out.println("waytype = " + wayType);
+			for(String vehicleType : drivableCases.get(wayType).keySet()){
+				System.out.println("vehicletype = " + vehicleType);
+				for(String[] vehiclecase : drivableCases.get(wayType).get(vehicleType)){
+					for(String thing : vehiclecase){
+						System.out.print(thing+" ");
+					}
+					System.out.println();
+				}
+				System.out.println();
+			}
+		}
 
 		XMLStreamReader reader = XMLInputFactory
 				.newInstance()
 				.createXMLStreamReader(osmsource);
 
-		LongIndex<OSMNode> idToNode = new LongIndex<OSMNode>();
-		LongIndex<OSMWay> idToWay = new LongIndex<OSMWay>();
+		LongIndex<OSMNode> idToNode = new LongIndex<>();
+		LongIndex<OSMWay> idToWay = new LongIndex<>();
 		ArrayList<Address> addresses = new ArrayList<>();
 		List<OSMWay> coast = new ArrayList<>();
+		HashMap<String,HashMap<String, Integer>> drivabillty = new HashMap<>();
 
 		//variables to make OSMWay/OSMRelation
 		OSMWay way = null;
@@ -213,6 +261,12 @@ public class Model {
 							idToNode.add(new OSMNode(id, lonfactor *lon, lat));
 							break;
 						case "way":
+							/*for(String wayType : wayTypeCases.keySet()){
+								HashMap<String, Integer> drivable = drivabillty.get(wayType);
+								for(String vehicleType : drivable.keySet()){
+									drivableCases.get(wayType).get(vehicleType);
+								}
+							}*/
 							id = Long.parseLong(reader.getAttributeValue(null, "id"));
 							type = WayType.UNKNOWN;
 							way = new OSMWay(id);
@@ -248,7 +302,6 @@ public class Model {
 							}
 
 							//string[0]=waytype's name, strings[1] = k for the case, strings = v for the case.
-
 							for(Map.Entry<String,ArrayList<String[]>> wayType : wayTypeCases.entrySet()){
 								String wayTypeString = wayType.getKey();
 								for(String[] waycase:wayType.getValue()){
@@ -257,6 +310,11 @@ public class Model {
 									}
 								}
 							}
+
+							//drivableCases.get(type);
+							//if(k.equals())
+
+
 							switch (k){
 								case "relation":
 									type = WayType.UNKNOWN;
@@ -288,6 +346,7 @@ public class Model {
 							} else {
 								ways.get(type).add(new Polyline(way));
 							}
+
 							if(b.hasFields()) {
 								b.id = id;
 								b.lat = lat;

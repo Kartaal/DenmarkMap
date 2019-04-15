@@ -17,7 +17,7 @@ plugins {
 }
 
 javafx {
-    modules = [ 'javafx.controls', 'javafx.fxml', 'edu.princeton.cs.algs4.MinPQ' ]
+    modules = [ 'javafx.controls', 'javafx.fxml']
 }
 jacoco { toolVersion = "0.8.3"
 }
