@@ -1,7 +1,6 @@
 package bfst19.Route_parsing;
 
 import bfst19.LongIndex;
-import edu.princeton.cs.algs4.IndexMinPQ;
 import edu.princeton.cs.algs4.Stack;
 
 import java.util.HashMap;
@@ -9,7 +8,6 @@ import java.util.HashMap;
 public class DijkstraSP {
     private HashMap<Long,Double> distTo;          // distTo[v] = distance  of shortest s->v path
     private HashMap<Long,Edge> edgeTo;    // edgeTo[v] = last edge on shortest s->v path
-    //Todo: make a IndexMinPQ implementation that supports longs as index's
     private IndexMinPQ<Double> pq;    // priority queue of vertices
 
     public DijkstraSP(EdgeWeightedGraph G, long s, Vehicle type, boolean fastestPath) {
@@ -32,7 +30,7 @@ public class DijkstraSP {
         pq = new IndexMinPQ<>((int)G.V());
         pq.insert(s,distTo.get(s));
         while (!pq.isEmpty()) {
-            int v = pq.delMin();
+            long v = pq.delMin();
             for (Edge e : G.adj(v))
                 relax(e,type,fastestPath);
         }

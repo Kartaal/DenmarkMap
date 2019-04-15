@@ -71,6 +71,8 @@ public class Model {
 	}
 	public void notifyColorObservers() {for (Runnable observer : colorObservers) observer.run();}
 
+
+	//contructor just for testing of addressparsing
 	public Model(String dataset){
 		datasetName = dataset;
 		//this keeps the cities and the default streets files in memory, it's about 1mb for Zealand of memory
@@ -125,6 +127,9 @@ public class Model {
 				output.writeFloat(maxlon);
 			}
 		}
+
+
+
         AddressParser.getInstance(this).setDefaults(getDefault(getDatasetName()));
         AddressParser.getInstance(this).parseCitiesAndPostCodes(getCities(getDatasetName()));
 	}
