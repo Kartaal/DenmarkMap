@@ -150,9 +150,6 @@ public class KDTree implements Serializable {
 			this.split = split;
 			this.vertical = vertical;
 			nodeL = nodeR = null;
-
-			//Create BoundingBox for the KDNode
-			makeNodeBB();
 		}
 
 		//Sets up some arbitrary values that should be beyond the coords of Denmark
