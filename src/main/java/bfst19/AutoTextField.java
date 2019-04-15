@@ -2,6 +2,8 @@ package bfst19;
 
 import javafx.geometry.Side;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -102,5 +104,6 @@ public class AutoTextField extends TextField {
     //TODO: Need Adress node
     private void panAdress(double x, double y){
         controller.panToPoint(x,y);
+        controller.setUpPointOfInterestPanel(x, y);
     }
 }

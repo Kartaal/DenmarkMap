@@ -4,11 +4,13 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.FillRule;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -163,6 +165,7 @@ public class MapCanvas extends Canvas {
         x = x*model.lonfactor;
         Point2D point = transform.transform(x,y);
         pan(centerX-point.getX(),centerY-point.getY());
+
     }
 
     public void pan(double dx, double dy) {

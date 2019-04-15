@@ -24,7 +24,6 @@
 
                 <BorderPane fx:id="borderPane" pickOnBounds="false" VBox.vgrow="ALWAYS">
 
-
                     <bottom>
                         <!--Start  Scalebar -->
                         <Pane fx:id="scalebar" BorderPane.alignment="BOTTOM_RIGHT" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);" prefWidth="${scene.width}" maxHeight="20" prefHeight="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" layoutX="180.0" layoutY="350.0" >
@@ -45,7 +44,7 @@
                                                              strokeWidth="3.0" />
                                                 </bottom>
                                                 <right>
-                                                    <!-- and  this     +this one witch has to be changed in order to make the scalebar longer -->
+                                                    <!-- and this one witch has to be changed in order to make the scalebar longer -->
                                                     <SVGPath fx:id="scalebarRight" content="M100,-10 L100,0"  stroke="#094e10"
                                                              strokeWidth="3.0" />
                                                 </right>

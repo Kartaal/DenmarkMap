@@ -19,7 +19,7 @@
 
        <Button fx:id="tilbageButton" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#returnToBarPanel" onMouseEntered="#setBackBtnEffect" onMouseExited="#setBackBtnEffectNone" style="-fx-background-color: white;">
            <VBox.margin>
-               <Insets bottom="5.0" />
+               <Insets bottom="5.0" right="250.0" />
            </VBox.margin>
            <graphic>
                <ImageView fx:id="backBtnRoutePanel" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
