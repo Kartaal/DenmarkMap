@@ -39,9 +39,6 @@ public class AddressParser {
         }
     }
 
-
-
-    //Todo: maybe add support for different order
     final String houseRegex = "(?<house>([0-9]{1,3} ?[a-zA-Z]?))?";
     final String floorRegex = "(?<floor>([1-9]{1,3}\\.?)|(1st\\.)|(st\\.))?";
     final String sideRegex = "(?<side>th\\.?|tv\\.?|mf\\.?|md\\.?|([0-9]{1,3}\\.?))?";
