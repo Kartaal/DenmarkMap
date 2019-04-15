@@ -120,16 +120,15 @@ public class AddressParser {
                                           String postcode, String streetName,
                                           String houseNumber, boolean singleSearch){
         ArrayList<String> addressesOnStreet = model.getAddressesOnStreet(country,city,postcode,streetName);
-        String address = addressesOnStreet.get(0);
         ArrayList<String[]> matches = new ArrayList<>();
         String[] addressFields;
-
+        String address;
         if(singleSearch){
             if(houseNumber==null||houseNumber.equals("")){
                 matches.add(new String[]{""});
                 return matches;
             }
-            for(int i = 1 ; i < addressesOnStreet.size()-1 ; i++){
+            for(int i = 0 ; i <= addressesOnStreet.size()-1 ; i++){
                 address = addressesOnStreet.get(i);
                 addressFields=address.split(" ");
                 if(addressFields[3].toLowerCase().equalsIgnoreCase(houseNumber)){
@@ -138,7 +137,7 @@ public class AddressParser {
                 }
             }
         }else{
-            for(int i = 1 ; i < addressesOnStreet.size()-1 ; i++){
+            for(int i = 0 ; i <= addressesOnStreet.size()-1 ; i++){
                 address = addressesOnStreet.get(i);
                 addressFields = address.split(" ");
                 matches.add(addressFields);
