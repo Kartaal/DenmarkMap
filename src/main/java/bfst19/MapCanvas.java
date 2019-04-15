@@ -203,7 +203,7 @@ public class MapCanvas extends Canvas {
         paintNonRoads = !enabled;
     }
 
-
+    //TODO Burde crashe?
     public Point2D getModelCoords(double x, double y) {
         try{
             return transform.inverseTransform(x,y);

@@ -1,5 +1,7 @@
 package bfst19;
 
+import bfst19.Exceptions.RegexGroupNonexistentException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.Consumer;
@@ -66,7 +68,7 @@ public class AddressParser {
         try {
             c.accept(m.group(group));
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            throw new RegexGroupNonexistentException(group);
         }
     }
 
@@ -94,9 +96,14 @@ public class AddressParser {
         for (Pattern pattern : patterns) {
             Matcher match = pattern.matcher(proposedAddress);
             if (match.matches()) {
-                tryExtract(match, "house", b::houseNumber);
-                tryExtract(match, "floor", b::floor);
-                tryExtract(match, "side", b::side);
+                try {
+                    tryExtract(match, "house", b::houseNumber);
+                    tryExtract(match, "floor", b::floor);
+                    tryExtract(match, "side", b::side);
+                } catch (RegexGroupNonexistentException e) {
+                    //TODO Test for this exception being thrown
+                    System.out.println(e.getMessage());
+                }
             }
         }
 
