@@ -1,6 +1,7 @@
 package bfst19;
 
 import bfst19.KDTree.KDTree;
+import bfst19.Route_parsing.Edge;
 import bfst19.Route_parsing.EdgeWeightedGraph;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -139,13 +140,14 @@ public class Model {
 	    ArrayList<String> cases = getTextFile(filepath);
         HashMap<String,HashMap<String,ArrayList<String[]>>> drivableCases = new HashMap<>();
 
-	    String wayType = "";
+	    String wayType = cases.get(0);
+		drivableCases.put(wayType,new HashMap<>());
 	    String[] tokens;
 	    String vehicleType = "";
 	    String vehicleDrivable = "";
 	    ArrayList <String[]> vehicleCases = new ArrayList<>();
 
-	    for(int i = 0 ; i<cases.size() ; i++){
+	    for(int i = 1 ; i<cases.size() ; i++){
 	        String line = cases.get(i);
 	        if(line.startsWith("%")){
 				tokens = cases.get(i+1).split(" ");
@@ -155,12 +157,13 @@ public class Model {
 				drivableCases.get(wayType).put(vehicleType+" "+vehicleDrivable,vehicleCases);
 	            vehicleCases = new ArrayList<>();
 	        }else if(line.startsWith("$")){
+				drivableCases.get(wayType).put(vehicleType+" "+vehicleDrivable,vehicleCases);
 				wayType = cases.get(i+1);
 	            drivableCases.put(wayType,new HashMap<>());
-	            drivableCases.get(wayType).put(vehicleType+" "+vehicleDrivable,vehicleCases);
 	            i++;
 	        }else{
-                vehicleCases.add(line.split(" "));
+	        	String[] lineTokens = line.split(" ");
+	        	vehicleCases.add(lineTokens);
             }
 	    }
 	    return drivableCases;
@@ -206,17 +209,15 @@ public class Model {
 		}
 		EdgeWeightedGraph nodeGraph = new EdgeWeightedGraph();
 		HashMap<String,HashMap<String,ArrayList<String[]>>>drivableCases = parseDrivableCases("data/Drivable_cases.txt");
+		HashMap<String,HashMap<String, Integer>> drivabillty = new HashMap<>();
+
 		for(String wayType : drivableCases.keySet()){
-			System.out.println("waytype = " + wayType);
 			for(String vehicleType : drivableCases.get(wayType).keySet()){
-				System.out.println("vehicletype = " + vehicleType);
-				for(String[] vehiclecase : drivableCases.get(wayType).get(vehicleType)){
-					for(String thing : vehiclecase){
-						System.out.print(thing+" ");
-					}
-					System.out.println();
-				}
-				System.out.println();
+				String[] tokens = vehicleType.split(" ");
+				vehicleType = tokens[0];
+				int defaultDrivable = Integer.valueOf(tokens[1]);
+				drivabillty.put(wayType,new HashMap<>());
+				drivabillty.get(wayType).put(vehicleType,defaultDrivable);
 			}
 		}
 
@@ -228,7 +229,6 @@ public class Model {
 		LongIndex<OSMWay> idToWay = new LongIndex<>();
 		ArrayList<Address> addresses = new ArrayList<>();
 		List<OSMWay> coast = new ArrayList<>();
-		HashMap<String,HashMap<String, Integer>> drivabillty = new HashMap<>();
 
 		//variables to make OSMWay/OSMRelation
 		OSMWay way = null;
@@ -261,12 +261,6 @@ public class Model {
 							idToNode.add(new OSMNode(id, lonfactor *lon, lat));
 							break;
 						case "way":
-							/*for(String wayType : wayTypeCases.keySet()){
-								HashMap<String, Integer> drivable = drivabillty.get(wayType);
-								for(String vehicleType : drivable.keySet()){
-									drivableCases.get(wayType).get(vehicleType);
-								}
-							}*/
 							id = Long.parseLong(reader.getAttributeValue(null, "id"));
 							type = WayType.UNKNOWN;
 							way = new OSMWay(id);
@@ -279,7 +273,6 @@ public class Model {
 						case "tag":
 							String k = reader.getAttributeValue(null, "k");
 							String v = reader.getAttributeValue(null, "v");
-
 							if(k.equals("addr:housenumber")){
 								b.houseNumber = v.trim();
 							}
@@ -310,10 +303,17 @@ public class Model {
 									}
 								}
 							}
-
-							//drivableCases.get(type);
-							//if(k.equals())
-
+							for(String waytype : drivableCases.keySet()){
+								for(String vehicletype : drivableCases.get(waytype).keySet()){
+									ArrayList<String[]> vehicleCases = drivableCases.get(waytype).get(vehicletype);
+									for(int i = 0 ; i<vehicleCases.size() ; i++){
+										String[] caseTokens = vehicleCases.get(i);
+										if(k.equals(caseTokens[0])&&v.equals(caseTokens[1])){
+											drivabillty.get(waytype).put(vehicletype,Integer.valueOf(caseTokens[2]));
+										}
+									}
+								}
+							}
 
 							switch (k){
 								case "relation":
@@ -345,6 +345,45 @@ public class Model {
 								coast.add(way);
 							} else {
 								ways.get(type).add(new Polyline(way));
+							}
+
+							boolean isNodegraphWay = false;
+							for(String wayType : drivabillty.keySet()){
+								if(type.toString().equals(wayType)){
+									isNodegraphWay = true;
+								}
+							}
+
+							if(isNodegraphWay){
+								HashMap<String,Integer> drivabilltyForWay = drivabillty.get(type.toString());
+								OSMNode previousnode = way.get(0);
+								for(int i = 1 ; i<way.size() ; i++){
+
+									OSMNode currentNode = way.get(i);
+
+									double previousNodeX = previousnode.getLat();
+									double previousNodeY = previousnode.getLon();
+									double currentNodeX = currentNode.getLat();
+									double currentNodeY = currentNode.getLon();
+
+									double length = Math.sqrt(Math.pow(Math.abs(previousNodeX-currentNodeX),2)+Math.pow(Math.abs(previousNodeY-currentNodeY),2));
+									double speedlimit = 0;
+
+									nodeGraph.addVertex(currentNode);
+									Edge edge = new Edge(length,speedlimit,previousnode,currentNode,drivabilltyForWay);
+									nodeGraph.addEdge(edge);
+									previousnode = currentNode;
+
+									HashMap<String,ArrayList<String[]>> drivabilltyForway = drivableCases.get(type.toString());
+									HashMap<String,Integer> resetDefaults = new HashMap<>();
+									for(String vehicleType : drivabilltyForway.keySet()){
+										String[] tokens = vehicleType.split(" ");
+										vehicleType = tokens[0];
+										int drivable = Integer.valueOf(tokens[1]);
+										resetDefaults.put(vehicleType,drivable);
+									}
+									drivabillty.put(type.toString(),resetDefaults);
+								}
 							}
 
 							if(b.hasFields()) {
@@ -400,6 +439,14 @@ public class Model {
 					File parseCheck = new File("data/"+ getDatasetName());
 					addresses.sort(Address::compareTo);
 					makeDatabase(addresses, getDatasetName());
+					System.out.println(nodeGraph.V());
+					System.out.println(nodeGraph.E());
+
+					Iterable<Edge> adj = nodeGraph.adj(1513152078 );
+
+					for(Object o : adj){
+						System.out.println(o.toString());
+					}
 
 					for (OSMWay c : merge(coast)) {
 						ways.get(WayType.COASTLINE).add(new Polyline(c));

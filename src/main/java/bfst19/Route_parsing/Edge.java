@@ -16,12 +16,12 @@ public class Edge{
     private OSMNode v;
     private OSMNode w;
 
-    public Edge(double length, double speedlLimit, OSMNode v, OSMNode w) {
+    public Edge(double length, double speedlLimit, OSMNode v, OSMNode w,HashMap<String, Integer> vehicleTypeToDrivable) {
         this.length = length;
         this.speedlLimit = speedlLimit;
         this.v = v;
         this.w = w;
-        vehicleTypeToDrivable = new HashMap<>();
+        this.vehicleTypeToDrivable = vehicleTypeToDrivable;
     }
 
     public double getWeight(Vehicle type, boolean fastestPath){
@@ -87,6 +87,6 @@ public class Edge{
 
     @Override
     public String toString(){
-        return length+" "+speedlLimit+" Node v:" + v.toString() + " Node W:" + w.toString();
+        return length+" "+" bike: "+getDrivableFromVehicleType("BIKE")+" Car: "+getDrivableFromVehicleType("CAR")+" walking: "+getDrivableFromVehicleType("WALKING")+" "+speedlLimit+" Node v:" + v.toString() + " Node W:" + w.toString();
     }
 }

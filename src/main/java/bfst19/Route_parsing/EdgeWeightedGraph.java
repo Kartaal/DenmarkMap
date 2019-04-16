@@ -53,6 +53,7 @@ public class EdgeWeightedGraph implements Serializable {
 
     public void addVertex(OSMNode node){
         nodes.add(node);
+        V++;
     }
 
     public void addEdge(Edge e) {
