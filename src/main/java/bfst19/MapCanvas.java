@@ -52,8 +52,9 @@ public class MapCanvas extends Canvas {
         //to clearly communicate that the fillRect should fill the entire screen
         gc.setTransform(new Affine());
         //checks if the file contains coastlines or not, if not set background color to white
+        // This assumes that the dataset contains either a fully closed coastline, or a dataset without any coastlines at all.
         // otherwise set background color to blue
-        if (model.getWaysOfType(WayType.COASTLINE, getExtentInModel()).iterator().hasNext()) {
+        if (model.getWaysOfType(WayType.COASTLINE, new BoundingBox(model.minlon, model.minlat, model.maxlon, model.maxlat)).iterator().hasNext()) {
             gc.setFill(getColor(WayType.WATER));
         } else {
             gc.setFill(Color.WHITE);
