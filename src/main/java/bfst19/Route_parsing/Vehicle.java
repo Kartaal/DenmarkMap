@@ -1,13 +1,13 @@
 package bfst19.Route_parsing;
 
 public enum Vehicle{
-    CAR(130.0),
-    WALKING(10.0),
-    BIKE(20.0);
+    CAR(130),
+    WALKING(10),
+    BIKE(20);
 
-    double maxSpeed;
+    int maxSpeed;
 
-    Vehicle(double maxSpeed){
+    Vehicle(int maxSpeed){
         this.maxSpeed = maxSpeed;
     }
 

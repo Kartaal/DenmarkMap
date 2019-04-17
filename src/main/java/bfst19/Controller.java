@@ -134,7 +134,7 @@ public class Controller {
         // TODO findout and resolve getY so it can be getX, since it the te x-coor we want
         double minX = mapCanvas.getModelCoords(0, 0).getY();
         double maxX = mapCanvas.getModelCoords(0, mapCanvas.getHeight()).getY();
-        double y = mapCanvas.getModelCoords(0, 0).getX();
+        double y = mapCanvas.getModelCoords(0, 0).getX()/model.lonfactor;
         scaleText.setText(Scalebar.getScaleText(minX, y, maxX, y, mapCanvas.getWidth()));
     }
 

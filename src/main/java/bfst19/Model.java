@@ -136,6 +136,17 @@ public class Model {
         AddressParser.getInstance(this).parseCitiesAndPostCodes(getCities(getDatasetName()));
 	}
 
+	private HashMap<String,Integer> parseSpeedDefaults(String filepath){
+		ArrayList<String> cases = getTextFile(filepath);
+		HashMap<String,Integer> speedDefaults = new HashMap<>();
+		for(int i = 0 ; i<cases.size() ; i++){
+			String line = cases.get(i);
+			String[] tokens = line.split(" ");
+			speedDefaults.put(tokens[0],Integer.valueOf(tokens[1]));
+		}
+		return speedDefaults;
+	}
+
     private HashMap<String,HashMap<String,ArrayList<String[]>>> parseDrivableCases(String filepath) {
 	    ArrayList<String> cases = getTextFile(filepath);
         HashMap<String,HashMap<String,ArrayList<String[]>>> drivableCases = new HashMap<>();
@@ -152,6 +163,9 @@ public class Model {
 	        if(line.startsWith("%")){
 				tokens = cases.get(i+1).split(" ");
 				i++;
+				if(tokens.length==1){
+					System.out.print("boop");
+				}
 				vehicleType = tokens[0];
 				vehicleDrivable = tokens[1];
 				drivableCases.get(wayType).put(vehicleType+" "+vehicleDrivable,vehicleCases);
@@ -207,8 +221,9 @@ public class Model {
 		for (WayType type : WayType.values()) {
 			ways.put(type, new ArrayList<>());
 		}
+		HashMap<String,Integer> speedDefaults = parseSpeedDefaults("data/Speed_cases.txt");
 		EdgeWeightedGraph nodeGraph = new EdgeWeightedGraph();
-		HashMap<String,HashMap<String,ArrayList<String[]>>>drivableCases = parseDrivableCases("data/Drivable_cases.txt");
+		HashMap<String,HashMap<String,ArrayList<String[]>>> drivableCases = parseDrivableCases("data/Drivable_cases.txt");
 		HashMap<String,HashMap<String, Integer>> drivabillty = new HashMap<>();
 
 		for(String wayType : drivableCases.keySet()){
@@ -234,6 +249,8 @@ public class Model {
 		OSMWay way = null;
 		OSMRelation rel = null;
 		WayType type = null;
+
+		int speedlimit = 0;
 
 		//variables for addressParsing and OSMNode creation
 		Builder b = new Builder();
@@ -285,13 +302,26 @@ public class Model {
 								b.postcode = v.trim();
 							}
 
-
 							if(k.equals("addr:city")){
 								b.city = v.trim();
 							}
 
 							if(k.equals("addr:municipality")){
 								b.municipality = v.trim();
+							}
+
+							if(k.equals("source:maxspeed")){
+								if(v.equals("DK:urban")){
+									speedlimit = 50;
+								}else if(v.equals("DK:rural")){
+									speedlimit = 80;
+								}else if(v.equals("DK:motorway")){
+									speedlimit = 130;
+								}
+							}
+
+							if(k.equals("maxspeed")){
+								speedlimit = Integer.valueOf(v);
 							}
 
 							//string[0]=waytype's name, strings[1] = k for the case, strings = v for the case.
@@ -309,6 +339,9 @@ public class Model {
 									for(int i = 0 ; i<vehicleCases.size() ; i++){
 										String[] caseTokens = vehicleCases.get(i);
 										if(k.equals(caseTokens[0])&&v.equals(caseTokens[1])){
+											if(caseTokens.length==2){
+												System.out.print("boop");
+											}
 											drivabillty.get(waytype).put(vehicletype,Integer.valueOf(caseTokens[2]));
 										}
 									}
@@ -361,14 +394,17 @@ public class Model {
 
 									OSMNode currentNode = way.get(i);
 
+									//todo fix getting length
 									double previousNodeX = previousnode.getLat();
 									double previousNodeY = previousnode.getLon();
 									double currentNodeX = currentNode.getLat();
-									double currentNodeY = currentNode.getLon();
+									double currentNodeY = currentNode.getLon()/lonfactor;
 
+									//currentNode.lon = (float) currentNodeY;
 									double length = Math.sqrt(Math.pow(Math.abs(previousNodeX-currentNodeX),2)+Math.pow(Math.abs(previousNodeY-currentNodeY),2));
-									double speedlimit = 0;
-
+									if(speedlimit==0){
+										speedlimit = speedDefaults.get(type.toString());
+									}
 									nodeGraph.addVertex(currentNode);
 									Edge edge = new Edge(length,speedlimit,previousnode,currentNode,drivabilltyForWay);
 									nodeGraph.addEdge(edge);
@@ -394,6 +430,7 @@ public class Model {
 							}
 							way = null;
 							b.reset();
+							speedlimit = 0;
 							break;
 						case "node":
 							if(b.hasFields()){
@@ -442,7 +479,7 @@ public class Model {
 					System.out.println(nodeGraph.V());
 					System.out.println(nodeGraph.E());
 
-					Iterable<Edge> adj = nodeGraph.adj(1513152078 );
+					Iterable<Edge> adj = nodeGraph.adj(32840041);
 
 					for(Object o : adj){
 						System.out.println(o.toString());

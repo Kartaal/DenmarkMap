@@ -5,7 +5,7 @@ public class Scalebar {
     // The haversine formula is a  way of computing distances between two points on the surface of a sphere, in this case Erath, using the latitude and longitude
     public static double distance (double startLat, double startLon, double endLat, double endLon){
         final int EARTH_RADIUS = 6371; // CA. Earth radius in KM
-
+        System.out.println(endLon+" "+startLon);
         double deltaLat  = Math.toRadians((endLat - startLat));
         double deltaLon = Math.toRadians((endLon - startLon));
 
