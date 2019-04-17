@@ -135,6 +135,7 @@ public class Model {
     public void ParseWayColors(){
 
 		try {
+			typeColors.removeAll();
 			BufferedReader br = new BufferedReader(new FileReader(CurrentTypeColorTxt));
 			int m = Integer.parseInt(br.readLine());
 
