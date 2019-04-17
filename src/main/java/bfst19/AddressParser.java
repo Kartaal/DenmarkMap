@@ -154,7 +154,7 @@ public class AddressParser {
         if (cityMatch[0].equals("")) {
             return "";
         } else {
-            ArrayList<String> streetsInCity = model.getStreetsInCity(country, cityMatch[1], cityMatch[2]);
+            ArrayList<String> streetsInCity = model.textHandler.getStreetsInCity(country, cityMatch[1], cityMatch[2], model);
             String mostCompleteMatch = "";
             for (int i = 0; i < streetsInCity.size(); i++) {
                 String line = streetsInCity.get(i);
