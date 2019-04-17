@@ -26,4 +26,8 @@ public class OSMNode implements LongSupplier {
 	public long getAsLong() {
 		return id;
 	}
+
+	public String toString(){
+		return id+" "+lat+" "+lon;
+	}
 }

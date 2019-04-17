@@ -1,24 +1,36 @@
 package bfst19.Route_parsing;
 
+import bfst19.LongIndex;
+import bfst19.OSMNode;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
 public class EdgeWeightedGraph implements Serializable {
+    //don't know what this is
     private static final String NEWLINE = System.getProperty("line.separator");
 
-    private final long V;
+    private long V;
     private int E;
+    private LongIndex<OSMNode> nodes;
     private HashMap<Long,ArrayList<Edge>> adj;
 
-    public EdgeWeightedGraph(long V) {
-        if (V < 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
-        this.V = V;
+    public EdgeWeightedGraph(){
+        this.V = 0;
         this.E = 0;
         adj = new HashMap<>();
-        for (int v = 0; v < V; v++) {
-            adj.put(Long.valueOf(v), new ArrayList<>());
+        nodes = new LongIndex<>();
+    }
+
+    public EdgeWeightedGraph(ArrayList<Long> V) {
+        if (V.size() == 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
+        this.V = V.size();
+        this.E = 0;
+        adj = new HashMap<>();
+        for(long id : V){
+            adj.put(id,new ArrayList<>());
         }
     }
 
@@ -32,8 +44,16 @@ public class EdgeWeightedGraph implements Serializable {
 
     // throw an IllegalArgumentException unless {@code 0 <= v < V}
     private void validateVertex(long v) {
-        if (v < 0 || v >= V)
-            throw new IllegalArgumentException("vertex " + v + " is not between 0 and " + (V-1));
+        //check if node is valid
+        if(adj.get(v)==null){
+            adj.put(v,new ArrayList<>());
+            //throw new IllegalArgumentException("vertex " + v + " is not a valid vertex");
+        }
+    }
+
+    public void addVertex(OSMNode node){
+        nodes.add(node);
+        V++;
     }
 
     public void addEdge(Edge e) {

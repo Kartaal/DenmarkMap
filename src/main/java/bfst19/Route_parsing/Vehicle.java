@@ -1,8 +1,9 @@
 package bfst19.Route_parsing;
 
 public enum Vehicle{
-    CAR(110.0),
-    BIKE(30.0);
+    CAR(130.0),
+    WALKING(10.0),
+    BIKE(20.0);
 
     double maxSpeed;
 
