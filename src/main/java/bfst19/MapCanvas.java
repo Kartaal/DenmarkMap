@@ -1,16 +1,16 @@
 package bfst19;
 
+import bfst19.KDTree.BoundingBox;
+import bfst19.KDTree.Drawable;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.FillRule;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
 
-import java.awt.*;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -18,7 +18,7 @@ import java.util.Iterator;
 public class MapCanvas extends Canvas {
     GraphicsContext gc = getGraphicsContext2D();
     //linear transformation object used to transform our data while preserving proportions between nodes
-    Affine transform = new Affine();
+    public Affine transform = new Affine();
     Model model;
     HashMap<WayType,Color> wayColors = new HashMap<>();
     boolean paintNonRoads = true;
@@ -52,8 +52,9 @@ public class MapCanvas extends Canvas {
         //to clearly communicate that the fillRect should fill the entire screen
         gc.setTransform(new Affine());
         //checks if the file contains coastlines or not, if not set background color to white
+        // This assumes that the dataset contains either a fully closed coastline, or a dataset without any coastlines at all.
         // otherwise set background color to blue
-        if (model.getWaysOfType(WayType.COASTLINE, getExtentInModel()).iterator().hasNext()) {
+        if (model.getWaysOfType(WayType.COASTLINE, new BoundingBox(model.minlon, model.minlat, model.maxlon, model.maxlat)).iterator().hasNext()) {
             gc.setFill(getColor(WayType.WATER));
         } else {
             gc.setFill(Color.WHITE);
@@ -120,7 +121,7 @@ public class MapCanvas extends Canvas {
         double minY = localBounds.getMinY() + 200;
         double maxY = localBounds.getMaxY() - 500;
 
-        //Flip the boundingbox y cordinates as the rendering is flipped as well, but the model isnt.
+        //Flip the boundingbox' y-coords, as the rendering is flipped, but the model isn't.
         Point2D minPoint = getModelCoords(minX, maxY);
         Point2D maxPoint = getModelCoords(maxX, minY);
 
@@ -144,7 +145,7 @@ public class MapCanvas extends Canvas {
         double minY = localBounds.getMinY();
         double maxY = localBounds.getMaxY();
 
-        //Flip the boundingbox y cordinates as the rendering is flipped as well, but the model isnt.
+        //Flip the boundingbox' y-coords, as the rendering is flipped, but the model isn't.
         Point2D minPoint = getModelCoords(minX, maxY);
         Point2D maxPoint = getModelCoords(maxX, minY);
 
@@ -177,25 +178,19 @@ public class MapCanvas extends Canvas {
 
     public void zoom(double factor, double x, double y) {
         transform.prependScale(factor, factor, x, y);
-
+        //Detail level dependant on determinant. Divide by 5 million to achieve a "nice" integer for our detail levels.
+        //TODO maybe this value is only good for bornholm
+        detailLevel = (int) Math.abs(transform.determinant()/5000000);
 
         Point2D minXAndY = getModelCoords(0,0);
         Point2D minXPlus1px = getModelCoords(1,0);
-        Point2D minYPlyx1px = getModelCoords(0,-1);
+        Point2D minYPlus1px = getModelCoords(0,-1);
 
         double singleXPixelLength = minXPlus1px.getX()-minXAndY.getX();
-        double singleYPixelLength = minYPlyx1px.getY()-minXAndY.getY();
+        double singleYPixelLength = minYPlus1px.getY()-minXAndY.getY();
 
         singlePixelLength = Math.sqrt(Math.pow(singleXPixelLength,2)+Math.pow(singleYPixelLength,2));
-
-        //TODO Set level of detail dependent on determinant
-        //this translates to "if zooming out decrement"
-        if(factor < 1){
-            detailLevel -= 1;
-        //this translates to "if zooming in increment"
-        }else if(factor > 1){
-            detailLevel += 1;
-        }
+      
         repaint();
     }
 

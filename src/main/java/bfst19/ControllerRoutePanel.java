@@ -22,7 +22,7 @@ public class ControllerRoutePanel {
     @FXML
     private ToggleButton bike;
     @FXML
-    ToggleGroup toggleRuteType;
+    ToggleGroup toggleRouteType;
 
     private Controller controller;
 
@@ -46,21 +46,21 @@ public class ControllerRoutePanel {
 
 
     @FXML
-    private void setRuteType(){
-        String toogleGroupValue;
+    private void setRouteType(){
+        String toggleGroupValue;
         //TODO: Find out what to do if none is selected what to do
 
-        ToggleButton selectedToggleButton = (ToggleButton) toggleRuteType.getSelectedToggle();
-        toogleGroupValue = selectedToggleButton.getId();
+        ToggleButton selectedToggleButton = (ToggleButton) toggleRouteType.getSelectedToggle();
+        toggleGroupValue = selectedToggleButton.getId();
 
-        if(selectedToggleButton ==null && toogleGroupValue==null) {
-            toggleRuteType.selectToggle(car);
-            toogleGroupValue="";
+        if(selectedToggleButton ==null && toggleGroupValue==null) {
+            toggleRouteType.selectToggle(car);
+            toggleGroupValue="";
         }
-        else if(toogleGroupValue.equals("car")){
+        else if(toggleGroupValue.equals("car")){
             System.out.println("bike is false");
         }
-        else if (toogleGroupValue.equals("bike")){
+        else if (toggleGroupValue.equals("bike")){
             System.out.println("car is false");
         }
 

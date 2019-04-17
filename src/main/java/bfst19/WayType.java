@@ -57,6 +57,7 @@ public enum WayType {
 	AIRPORT_TAXIWAY(true,10),
 	BREAKWATER(false,12 );
 
+
     private boolean isRoadOrSimilar;
 	//Originally it was shouldFill, because that is functionally the case,
 	// however the true commonality is that they are meant to be strokes, lines or similar
