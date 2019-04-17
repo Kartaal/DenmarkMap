@@ -41,17 +41,17 @@ public class IndexMinPQ<Key extends Comparable<Key>> {
     }
 
     public void insert(long i, Key key) {
-        int indexOfI = idToIndex.get(i);
-        if (indexOfI < 0 || indexOfI >= maxN) throw new IllegalArgumentException();
-        if (contains(indexOfI)) throw new IllegalArgumentException("index is already in the priority queue");
+        if(idToIndex.get(i)!= null)throw new IllegalArgumentException("index is already in the priority queue");
         idToIndex.put(i,n);
         indexToId.put(n,i);
+        int indexOfI = n;
         n++;
         //why n?
         //qp[currentIndex] = n;
+        qp[indexOfI] = n;
         pq[n] = indexOfI;
         keys[indexOfI] = key;
-        swim(n);
+        swim(indexOfI);
     }
 
     public long minIndex() {

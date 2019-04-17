@@ -8,6 +8,8 @@ public class DijkstraSP {
     private HashMap<Long,Double> distTo;          // distTo[v] = distance  of shortest s->v path
     private HashMap<Long,Edge> edgeTo;    // edgeTo[v] = last edge on shortest s->v path
     private IndexMinPQ<Double> pq;    // priority queue of vertices
+    private HashMap<Long,Integer> idToIndex;
+    private HashMap<Integer,Long> indexToId;
 
     public DijkstraSP(EdgeWeightedGraph G, long s, Vehicle type, boolean fastestPath) {
         /*for (Edge e : G.edges()) {
@@ -17,16 +19,15 @@ public class DijkstraSP {
 
         distTo = new HashMap<>();
         edgeTo = new HashMap<>();
-
-        validateVertex(s);
-
+        pq = new IndexMinPQ<>(G.V());
         for(Long id:G.getIDs()){
             distTo.put(id,Double.POSITIVE_INFINITY);
         }
         distTo.put(s, 0.0);
-
+        validateVertex(s);
         // relax vertices in order of distance from s
-        pq = new IndexMinPQ<>((int)G.V());
+        pq.insert(0,0.0);
+        pq.insert(1,Double.POSITIVE_INFINITY);
         pq.insert(s,distTo.get(s));
         while (!pq.isEmpty()) {
             long v = pq.delMin();
@@ -54,12 +55,12 @@ public class DijkstraSP {
         return distTo.get(v);
     }
 
-    public boolean hasPathTo(int v) {
+    public boolean hasPathTo(long v) {
         validateVertex(v);
         return distTo.get(v) < Double.POSITIVE_INFINITY;
     }
 
-    public Iterable<Edge> pathTo(int v) {
+    public Iterable<Edge> pathTo(long v) {
         validateVertex(v);
         if (!hasPathTo(v)) return null;
         Stack<Edge> path = new Stack<>();

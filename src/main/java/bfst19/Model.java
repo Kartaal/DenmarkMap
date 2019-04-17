@@ -1,8 +1,10 @@
 package bfst19;
 
 import bfst19.KDTree.KDTree;
+import bfst19.Route_parsing.DijkstraSP;
 import bfst19.Route_parsing.Edge;
 import bfst19.Route_parsing.EdgeWeightedGraph;
+import bfst19.Route_parsing.Vehicle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javax.xml.stream.XMLInputFactory;
@@ -481,6 +483,11 @@ public class Model {
 
 					Iterable<Edge> adj = nodeGraph.adj(32840041);
 
+					DijkstraSP shortpath = new DijkstraSP(nodeGraph,32840041, Vehicle.BIKE,false);
+					Iterable<Edge> path = shortpath.pathTo(4048894613L);
+					for(Edge edge : path){
+						System.out.println(edge.toString());
+					}
 					for(Object o : adj){
 						System.out.println(o.toString());
 					}

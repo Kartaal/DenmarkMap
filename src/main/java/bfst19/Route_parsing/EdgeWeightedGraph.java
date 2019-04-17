@@ -12,7 +12,7 @@ public class EdgeWeightedGraph implements Serializable {
     //don't know what this is
     private static final String NEWLINE = System.getProperty("line.separator");
 
-    private long V;
+    private int V;
     private int E;
     private LongIndex<OSMNode> nodes;
     private HashMap<Long,ArrayList<Edge>> adj;
@@ -34,7 +34,7 @@ public class EdgeWeightedGraph implements Serializable {
         }
     }
 
-    public long V() {
+    public int V() {
         return V;
     }
 
