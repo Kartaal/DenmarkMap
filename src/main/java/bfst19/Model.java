@@ -17,6 +17,7 @@ public class Model {
 	float lonfactor = 1.0f;
 	private boolean colorBlindEnabled;
 	private String datasetName;
+	int count = 0;
 
 
 
@@ -132,6 +133,7 @@ public class Model {
 	}
 
     public void ParseWayColors(){
+
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(CurrentTypeColorTxt));
 			int m = Integer.parseInt(br.readLine());
