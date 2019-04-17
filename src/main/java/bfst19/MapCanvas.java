@@ -26,7 +26,6 @@ public class MapCanvas extends Canvas {
 
     public void init(Model model) {
         this.model = model;
-
         //conventions in screen coords and map coords are not the same,
         // so we convert to screen convention by flipping x y
         pan(-model.minlon, -model.maxlat);
@@ -107,11 +106,7 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    private BoundingBox getExtentInModel(){
-
-        return getBounds();
-        //return getBoundsDebug();
-    }
+    private BoundingBox getExtentInModel(){ return getBounds(); }
 
     private BoundingBox getBoundsDebug() {
         Bounds localBounds = this.getBoundsInLocal();
@@ -137,7 +132,7 @@ public class MapCanvas extends Canvas {
                 maxPoint.getX()-minPoint.getX(), maxPoint.getY()-minPoint.getY());
     }
 
-    private BoundingBox getBounds() {
+    public BoundingBox getBounds() {
         Bounds localBounds = this.getBoundsInLocal();
         double minX = localBounds.getMinX();
         double maxX = localBounds.getMaxX();
@@ -162,6 +157,14 @@ public class MapCanvas extends Canvas {
         repaint();
     }
 
+    public void panToPoint(double x,double y){
+        double centerX = getWidth()/2;
+        double centerY = getHeight()/2;
+        x = x*model.lonfactor;
+        Point2D point = transform.transform(x,y);
+        pan(centerX-point.getX(),centerY-point.getY());
+    }
+
     public void pan(double dx, double dy) {
         transform.prependTranslation(dx, dy);
         repaint();
@@ -176,8 +179,8 @@ public class MapCanvas extends Canvas {
         repaint();
     }
 
-    public void toggleNonRoads() {
-        paintNonRoads = !paintNonRoads;
+    public void toggleNonRoads(boolean enabled) {
+        paintNonRoads = !enabled;
     }
 
 

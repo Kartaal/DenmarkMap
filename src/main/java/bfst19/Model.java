@@ -16,7 +16,9 @@ public class Model {
 	float lonfactor = 1.0f;
 	private boolean colorBlindEnabled;
 	private String datasetName;
-  
+
+
+
 	List<Runnable> observers = new ArrayList<>();
 	float minlat, minlon, maxlat, maxlon;
 
@@ -143,14 +145,14 @@ public class Model {
 		notifyObservers();
 	}
 
-	public void switchColorScheme(){
-		colorBlindEnabled = !colorBlindEnabled;
+	public void switchColorScheme(boolean colorBlindEnabled){
+
 		System.out.println("Colorblind mode enabled: " + colorBlindEnabled);
 
 		if (colorBlindEnabled){
 			CurrentTypeColorTxt = ("data/TypeColorsColorblind.txt");
 		}
-		else{
+		else if(!colorBlindEnabled){
 			CurrentTypeColorTxt = ("data/TypeColorsNormal.txt");
 		}
 		ParseWayColors();

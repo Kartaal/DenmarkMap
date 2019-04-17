@@ -59,6 +59,12 @@ public class Controller {
         model.parseSearch(searchText);
     }
 
+    public void parseTheme(boolean colorBlindEnabled){ model.switchColorScheme(colorBlindEnabled);}
+
+    public void parseOnlyRodesMode(boolean enabled){
+        mapCanvas.toggleNonRoads(enabled);
+        mapCanvas.repaint();
+    }
 
     //Initialize BarPanel
     public void setUpBar(){
@@ -141,6 +147,9 @@ public class Controller {
                 break;
             case C: //Toggle colorblind colorfile
                 model.switchColorScheme();
+                break;
+            case P:
+                mapCanvas.panToPoint(14.8429560,55.0967440);
                 break;
         }
     }
