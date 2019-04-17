@@ -154,11 +154,11 @@ public class Controller {
     }
 
     public void setScalebar() {
-        // TODO findout and resolve getY so it can be getX, since it the te x-coor we want
+        // TODO find out and resolve getY so it can be getX, since it the te x-coord we want
         double minX = mapCanvas.getModelCoords(0, 0).getY();
         double maxX = mapCanvas.getModelCoords(0, mapCanvas.getHeight()).getY();
         double y = mapCanvas.getModelCoords(0, 0).getX();
-        scaleText.setText(Scalebar.getScaleText(minX, y, maxX, y, mapCanvas.getWidth()));
+        scaleText.setText(ScaleBar.getScaleText(minX, y, maxX, y, mapCanvas.getWidth()));
     }
 
     public void panToPoint(double x, double y){

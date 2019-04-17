@@ -17,7 +17,7 @@
          <children>
             <HBox prefHeight="60.0" prefWidth="300.0" style="-fx-background-color: lightgrey;">
                <children>
-                  <Button fx:id="tilbageButton" mnemonicParsing="false" onAction="#returnToBarPanel" onMouseEntered="#setBackBtnEffect" onMouseExited="#setBackBtnEffectNone" style="-fx-background-color: lightgrey;">
+                  <Button fx:id="backButton" mnemonicParsing="false" onAction="#returnToBarPanel" onMouseEntered="#setBackBtnEffect" onMouseExited="#setBackBtnEffectNone" style="-fx-background-color: lightgrey;">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>

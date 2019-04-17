@@ -17,7 +17,7 @@
 <VBox alignment="CENTER" prefWidth="300.0" fx:id="outerPane" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 0);" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bfst19.ControllerRoutePanel">
    <children>
 
-       <Button fx:id="tilbageButton" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#returnToBarPanel" onMouseEntered="#setBackBtnEffect" onMouseExited="#setBackBtnEffectNone" style="-fx-background-color: white;">
+       <Button fx:id="backButton" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#returnToBarPanel" onMouseEntered="#setBackBtnEffect" onMouseExited="#setBackBtnEffectNone" style="-fx-background-color: white;">
            <VBox.margin>
                <Insets bottom="5.0" right="250.0" />
            </VBox.margin>

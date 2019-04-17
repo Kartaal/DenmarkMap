@@ -121,7 +121,7 @@ public class MapCanvas extends Canvas {
         double minY = localBounds.getMinY() + 200;
         double maxY = localBounds.getMaxY() - 500;
 
-        //Flip the boundingbox y cordinates as the rendering is flipped as well, but the model isnt.
+        //Flip the boundingbox' y-coords, as the rendering is flipped, but the model isn't.
         Point2D minPoint = getModelCoords(minX, maxY);
         Point2D maxPoint = getModelCoords(maxX, minY);
 
@@ -145,7 +145,7 @@ public class MapCanvas extends Canvas {
         double minY = localBounds.getMinY();
         double maxY = localBounds.getMaxY();
 
-        //Flip the boundingbox y cordinates as the rendering is flipped as well, but the model isnt.
+        //Flip the boundingbox' y-coords, as the rendering is flipped, but the model isn't.
         Point2D minPoint = getModelCoords(minX, maxY);
         Point2D maxPoint = getModelCoords(maxX, minY);
 
@@ -184,10 +184,10 @@ public class MapCanvas extends Canvas {
 
         Point2D minXAndY = getModelCoords(0,0);
         Point2D minXPlus1px = getModelCoords(1,0);
-        Point2D minYPlyx1px = getModelCoords(0,-1);
+        Point2D minYPlus1px = getModelCoords(0,-1);
 
         double singleXPixelLength = minXPlus1px.getX()-minXAndY.getX();
-        double singleYPixelLength = minYPlyx1px.getY()-minXAndY.getY();
+        double singleYPixelLength = minYPlus1px.getY()-minXAndY.getY();
 
         singlePixelLength = Math.sqrt(Math.pow(singleXPixelLength,2)+Math.pow(singleYPixelLength,2));
       
