@@ -377,9 +377,9 @@ public class Model {
 			BufferedWriter streetsInCityWriter =  new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("data/"+datasetname+"/"+currentCityAndPostcode+"/streets.txt")),"UTF-8"));
 			BufferedWriter citiesInCountryWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("data/"+datasetname+"/cities.txt")),"UTF-8"));
 			File streetFile = new File("data/"+datasetname+"/"+currentCityAndPostcode+"/"+currentStreet+".txt");
-			BufferedWriter adressesInStreetWriter =  new BufferedWriter(new OutputStreamWriter(new FileOutputStream(streetFile)));
+			BufferedWriter addressesInStreetWriter =  new BufferedWriter(new OutputStreamWriter(new FileOutputStream(streetFile)));
 		for(Address address:addresses) {
-			//if the streetName remains the same, and the city changes we need to change the writers for streets and adresses,
+			//if the streetName remains the same, and the city changes we need to change the writers for streets and addresses,
 			//along with writing to the appropriate files, we also change the current city and postcode, and make the directory for it
 			//todo fix code dupes here
 			if (address.getStreetName().equals(currentStreet) && !(address.getCity() + getDelimeter() + address.getPostcode()).equals(currentCityAndPostcode)) {
@@ -389,10 +389,10 @@ public class Model {
 				File streetsIncityFile = new File("data/" + datasetname + "/" + currentCityAndPostcode + "/streets.txt");
 				streetFile = new File("data/" + datasetname + "/" + currentCityAndPostcode + "/" + currentStreet + ".txt");
 				streetsInCityWriter.flush();
-				adressesInStreetWriter.flush();
+				addressesInStreetWriter.flush();
 				//because the addresses are sorted by their streetnames first, we need to accomadate changing cities many times.
 				streetsInCityWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(streetsIncityFile, true), "UTF-8"));
-				adressesInStreetWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(streetFile)));
+				addressesInStreetWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(streetFile)));
 				citiesInCountryWriter.write(currentCityAndPostcode + "\n");
 				streetsInCityWriter.write(currentStreet + "\n");
 				allStreetsInCountryWriter.write(currentStreet + getDelimeter() + currentCityAndPostcode + "\n");
@@ -413,20 +413,20 @@ public class Model {
 				if (!address.getStreetName().equals(currentStreet)) {
 					currentStreet = address.getStreetName();
 					streetFile = new File("data/" + datasetname + "/" + currentCityAndPostcode + "/" + currentStreet + ".txt");
-					adressesInStreetWriter.flush();
-					adressesInStreetWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(streetFile)));
+					addressesInStreetWriter.flush();
+					addressesInStreetWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(streetFile)));
 					streetsInCityWriter.write(currentStreet + "\n");
 					allStreetsInCountryWriter.write(currentStreet + getDelimeter() + currentCityAndPostcode + "\n");
 				}
 			}
-				adressesInStreetWriter.write(address.getId() + " " + address.getLat() + " " + address.getLon() + " " + address.getHouseNumber() + "\n");
+				addressesInStreetWriter.write(address.getId() + " " + address.getLat() + " " + address.getLon() + " " + address.getHouseNumber() + "\n");
 			}
 
 		//closes all writers
 			allStreetsInCountryWriter.close();
 			citiesInCountryWriter.close();
 			streetsInCityWriter.close();
-			adressesInStreetWriter.close();
+			addressesInStreetWriter.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -500,7 +500,7 @@ public class Model {
 				}
 			}
         }else if(a.getHouseNumber()==null){
-            //if the housenumber is null, bet all the adresses housenumbers from the streets file and display them
+            //if the housenumber is null, bet all the addresses housenumbers from the streets file and display them
             ArrayList<String[]> possibleAddresses = AddressParser.getInstance(this).getAddress(getDatasetName(),a.getCity(),a.getPostcode(),a.getStreetName(),"",false);
 			if (possibleAddresses != null) {
 				foundMatches.clear();
@@ -542,9 +542,9 @@ public class Model {
 		HashMap<Long,String> pointsOfInterest = new HashMap<>();
 		ArrayList<String> pointOfInterestFile = getTextFile("data/"+datasetName+"/pointsOfInterest.txt");
 		for(String address : pointOfInterestFile){
-			String[] adressFields = address.split(getDelimeter());
-			long id = Long.valueOf(adressFields[0]);
-			String addressString = adressFields[1]+getDelimeter()+adressFields[2]+getDelimeter()+adressFields[3]+getDelimeter()+adressFields[4]+getDelimeter()+getDelimeter()+adressFields[5];
+			String[] addressFields = address.split(getDelimeter());
+			long id = Long.valueOf(addressFields[0]);
+			String addressString = addressFields[1]+getDelimeter()+addressFields[2]+getDelimeter()+addressFields[3]+getDelimeter()+addressFields[4]+getDelimeter()+getDelimeter()+addressFields[5];
 			pointsOfInterest.put(id,addressString);
 		}
 		return pointsOfInterest;

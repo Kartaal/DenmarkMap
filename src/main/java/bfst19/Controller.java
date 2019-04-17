@@ -65,7 +65,7 @@ public class Controller {
 
     public void parseTheme(boolean colorBlindEnabled){ model.switchColorScheme(colorBlindEnabled);}
 
-    public void parseOnlyRodesMode(boolean enabled){
+    public void parseOnlyRoadsMode(boolean enabled){
         mapCanvas.toggleNonRoads(enabled);
         mapCanvas.repaint();
     }

@@ -43,7 +43,7 @@ public class AddressParser {
     final String floorRegex = "(?<floor>([1-9]{1,3}\\.?)|(1st\\.)|(st\\.))?";
     final String sideRegex = "(?<side>th\\.?|tv\\.?|mf\\.?|md\\.?|([0-9]{1,3}\\.?))?";
 
-    //This only checks the remainder of the string at the end for housenumber, floor and side for the adress.
+    //This only checks the remainder of the string at the end for housenumber, floor and side for the address.
     final String[] regex = {
             "^"+houseRegex+",? ?"+floorRegex+",? ?"+sideRegex+",?$"
     };

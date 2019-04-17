@@ -15,13 +15,13 @@ public class AutoTextField extends TextField {
     Controller controller;
     Model model;
 
-    private ContextMenu adressDropDown;
+    private ContextMenu addressDropDown;
 
     public AutoTextField(){
         super();
 
-        adressDropDown = new ContextMenu();
-        adressDropDown.setStyle("-fx-min-width: 300; -fx-max-height: 400");
+        addressDropDown = new ContextMenu();
+        addressDropDown.setStyle("-fx-min-width: 300; -fx-max-height: 400");
 
         this.setOnKeyPressed(event -> {
             switch (event.getCode())  {
@@ -47,8 +47,8 @@ public class AutoTextField extends TextField {
 
     public void showResults(){
         addAddressesToDropDown();
-        if(!adressDropDown.isShowing()){
-            adressDropDown.show(AutoTextField.this, Side.BOTTOM,0,0);
+        if(!addressDropDown.isShowing()){
+            addressDropDown.show(AutoTextField.this, Side.BOTTOM,0,0);
         }
     }
 
@@ -62,7 +62,7 @@ public class AutoTextField extends TextField {
             String[] firstMatch = iterator.next();
             //this means that the match is a complete address
             if (firstMatch.length == 8) {
-                panAdress(Double.valueOf(firstMatch[0]), Double.valueOf(firstMatch[1]));
+                panAddress(Double.valueOf(firstMatch[0]), Double.valueOf(firstMatch[1]));
                 return;
                 //and the rest of the address is passed of to some other part of the UI.
             } else if (firstMatch.length == 4) {
@@ -94,15 +94,15 @@ public class AutoTextField extends TextField {
             menuItems.add(new CustomMenuItem(new Label("No search result found"),true));
         }
 
-        adressDropDown.getItems().clear();
-        adressDropDown.getItems().addAll(menuItems);
+        addressDropDown.getItems().clear();
+        addressDropDown.getItems().addAll(menuItems);
     }
 
     public void clear(){
-        adressDropDown.getItems().clear();
+        addressDropDown.getItems().clear();
     }
 
-    private void panAdress(double x, double y){
+    private void panAddress(double x, double y){
         controller.panToPoint(x,y);
         controller.setUpPointOfInterestPanel(x, y);
     }
