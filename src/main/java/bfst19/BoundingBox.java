@@ -38,7 +38,7 @@ public class BoundingBox implements Serializable {
 	public boolean intersects(BoundingBox b) {
 		if ((b == null) || b.isEmpty()) return false;
 		return intersects(b.getMinX(), b.getMinY(),
-				b.getMaxX(), b.getMaxY());
+				b.getMaxX()-b.getMinX(), b.getMaxY()-b.getMinY());
 	}
 
 	public boolean intersects(double x, double y,
