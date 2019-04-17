@@ -4,11 +4,13 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.FillRule;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -22,6 +24,8 @@ public class MapCanvas extends Canvas {
     boolean paintNonRoads = true;
     int detailLevel =1;
     private boolean colorBlindEnabled = false;
+    private double singlePixelLength;
+
 
 
     public void init(Model model) {
@@ -32,10 +36,11 @@ public class MapCanvas extends Canvas {
         //TODO #soup type colors method
         setTypeColors();
         //sets an initial zoom level, 800 for now because it works
-        zoom(800/(model.maxlon-model.minlon), 0,0);
         transform.prependScale(1,-1, 0, 0);
+        zoom(800/(model.maxlon-model.minlon), 0,0);
+
         //model.addObserver(this::repaint);
-        model.addObserver(this::setTypeColors);
+        model.addColorObserver(this::setTypeColors);
         repaint();
     }
 
@@ -65,12 +70,12 @@ public class MapCanvas extends Canvas {
         //color for landmasses with nothing drawn on top
         gc.setFill(Color.WHITE);
         for (Drawable way : model.getWaysOfType(WayType.COASTLINE, getExtentInModel())) {
-            way.fill(gc);
+            way.fill(gc,singlePixelLength);
         }
 
         gc.setFill(getColor(WayType.WATER));
         for (Drawable way : model.getWaysOfType(WayType.WATER, getExtentInModel())) {
-            way.fill(gc);
+            way.fill(gc,singlePixelLength);
         }
 
 
@@ -81,12 +86,12 @@ public class MapCanvas extends Canvas {
                 if (!(type.isRoadOrSimilar()) && type.levelOfDetail() < detailLevel) {
                     if(type != WayType.COASTLINE) {
                         gc.setFill(getColor(type));
-                        for (Drawable way : model.getWaysOfType(type, getExtentInModel())) way.fill(gc);
+                        for (Drawable way : model.getWaysOfType(type, getExtentInModel())) way.fill(gc,singlePixelLength);
                     }
                 } else if (type.isRoadOrSimilar() && type.levelOfDetail() < detailLevel) {
                     if (type != WayType.COASTLINE && type != WayType.UNKNOWN) {
                         gc.setStroke(getColor(type));
-                        for (Drawable way : model.getWaysOfType(type, getExtentInModel())) way.stroke(gc);
+                        for (Drawable way : model.getWaysOfType(type, getExtentInModel())) way.stroke(gc,singlePixelLength);
                     }
                 }
             }
@@ -99,7 +104,7 @@ public class MapCanvas extends Canvas {
                     // so it's better to exclude it.
                     }else{
                         gc.setStroke(getColor(type));
-                        for (Drawable way : model.getWaysOfType(type, getExtentInModel())) way.stroke(gc);
+                        for (Drawable way : model.getWaysOfType(type, getExtentInModel())) way.stroke(gc,singlePixelLength);
                     }
                 }
             }
@@ -110,10 +115,10 @@ public class MapCanvas extends Canvas {
 
     private BoundingBox getBoundsDebug() {
         Bounds localBounds = this.getBoundsInLocal();
-        double minX = localBounds.getMinX() + 100;
-        double maxX = localBounds.getMaxX() - 100;
-        double minY = localBounds.getMinY() + 100;
-        double maxY = localBounds.getMaxY() - 100;
+        double minX = localBounds.getMinX() + 200;
+        double maxX = localBounds.getMaxX() - 200;
+        double minY = localBounds.getMinY() + 200;
+        double maxY = localBounds.getMaxY() - 500;
 
         //Flip the boundingbox y cordinates as the rendering is flipped as well, but the model isnt.
         Point2D minPoint = getModelCoords(minX, maxY);
@@ -158,11 +163,11 @@ public class MapCanvas extends Canvas {
     }
 
     public void panToPoint(double x,double y){
-        double centerX = getWidth()/2;
-        double centerY = getHeight()/2;
-        x = x*model.lonfactor;
+        double centerX = getWidth()/2.0;
+        double centerY = getHeight()/2.0;
         Point2D point = transform.transform(x,y);
         pan(centerX-point.getX(),centerY-point.getY());
+
     }
 
     public void pan(double dx, double dy) {
@@ -172,10 +177,19 @@ public class MapCanvas extends Canvas {
 
     public void zoom(double factor, double x, double y) {
         transform.prependScale(factor, factor, x, y);
-
         //Detail level dependant on determinant. Divide by 5 million to achieve a "nice" integer for our detail levels.
         //TODO maybe this value is only good for bornholm
         detailLevel = (int) Math.abs(transform.determinant()/5000000);
+
+        Point2D minXAndY = getModelCoords(0,0);
+        Point2D minXPlus1px = getModelCoords(1,0);
+        Point2D minYPlyx1px = getModelCoords(0,-1);
+
+        double singleXPixelLength = minXPlus1px.getX()-minXAndY.getX();
+        double singleYPixelLength = minYPlyx1px.getY()-minXAndY.getY();
+
+        singlePixelLength = Math.sqrt(Math.pow(singleXPixelLength,2)+Math.pow(singleYPixelLength,2));
+      
         repaint();
     }
 
@@ -191,5 +205,9 @@ public class MapCanvas extends Canvas {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public void toggleNonRoads() {
+        paintNonRoads = !paintNonRoads;
     }
 }

@@ -32,7 +32,7 @@ public class ControllerBarPanel {
         menuButton.setOnAction(e -> controller.setupMenuPanel());
     }
 
-    //Sets up RutePanel when RuteButt is pressed
+    //Sets up RoutePanel when RouteBtn is pressed
     @FXML
     private void openRoute(ActionEvent actionEvent) {
         controller.setupRoutePanel();

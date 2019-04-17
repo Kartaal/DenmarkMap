@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
@@ -25,6 +26,9 @@ public class Controller {
 
     @FXML
     private BorderPane borderPane;
+
+    @FXML
+    private StackPane stackPane;
 
     public void init(Model model) {
         //TODO: figure out init methods
@@ -51,7 +55,7 @@ public class Controller {
         return model;
     }
 
-    public Iterator<String> parsefoundMatchesIterator(){
+    public Iterator<String[]> getFoundMatchesIterator(){
         return model.foundMatchesIterator();
     }
 
@@ -64,6 +68,25 @@ public class Controller {
     public void parseOnlyRodesMode(boolean enabled){
         mapCanvas.toggleNonRoads(enabled);
         mapCanvas.repaint();
+    }
+
+    //Initialize PointOfInterestPanel
+    public void setUpPointOfInterestPanel(double x, double y){
+            VBox vBox = null;
+
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("PointOfInterestPanel.fxml"));
+            try {
+                vBox = fxmlLoader.load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            vBox.setLayoutX(x);
+            vBox.setLayoutX(y);
+            stackPane.getChildren().add(vBox);
+
+            ControllerPointOfInterestPanel controllerPointOfInterestPanel = fxmlLoader.getController();
+            controllerPointOfInterestPanel.init(this);
     }
 
     //Initialize BarPanel
@@ -138,15 +161,16 @@ public class Controller {
         scaleText.setText(Scalebar.getScaleText(minX, y, maxX, y, mapCanvas.getWidth()));
     }
 
+    public void panToPoint(double x, double y){
+        mapCanvas.panToPoint(x,y);
+    }
+
     @FXML
     private void onKeyPressed(KeyEvent e) {
         switch (e.getCode()) {//e.getcode() gets the specific keycode for the pressed key
             case T: //toggle so that the canvas only draws roads or similar draws everything by default
                 mapCanvas.toggleNonRoads();
                 mapCanvas.repaint();
-                break;
-            case C: //Toggle colorblind colorfile
-                model.switchColorScheme();
                 break;
             case P:
                 mapCanvas.panToPoint(14.8429560,55.0967440);

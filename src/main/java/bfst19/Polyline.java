@@ -55,23 +55,29 @@ public class Polyline implements Drawable, Serializable, BoundingBoxable {
 		bb = new BoundingBox((double) xMin, (double) yMin, (xMax-xMin), (double) (yMax-yMin));
 	}
 
-	public void stroke(GraphicsContext gc) {
+	public void stroke(GraphicsContext gc,double singlePixelLength) {
 		gc.beginPath();
-		trace(gc);
+		trace(gc,singlePixelLength);
 		gc.stroke();
 	}
 
-	public void trace(GraphicsContext gc) {
+	public void trace(GraphicsContext gc, double singlePixelLength) {
 		//See constructor for explanation
 	    gc.moveTo(coord[0], coord[1]);
-		for (int i = 2 ; i < coord.length ; i+=2) {
-			gc.lineTo(coord[i], coord[i+1]);
+		float previousX = coord[0];
+		float previousY = coord[1];
+	    for (int i = 2 ; i < coord.length ; i+=2) {
+	    	if(Math.sqrt(Math.pow(Math.abs(coord[i]-previousX),2)+Math.pow(Math.abs(coord[i+1]-previousY),2))>singlePixelLength) {
+	    		previousX = coord[i];
+	    		previousY = coord[i+1];
+				gc.lineTo(coord[i], coord[i + 1]);
+			}
 		}
 	}
 
-	public void fill(GraphicsContext gc) {
+	public void fill(GraphicsContext gc,double singlePixelLength) {
 		gc.beginPath();
-		trace(gc);
+		trace(gc,singlePixelLength);
 		gc.fill();
 	}
 

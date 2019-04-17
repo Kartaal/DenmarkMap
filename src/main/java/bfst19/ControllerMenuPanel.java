@@ -9,8 +9,6 @@ import javafx.scene.control.ToggleGroup;
 
 public class ControllerMenuPanel implements BackBtnEffect {
 
-
-
     @FXML
     ImageView backBtnMenu;
 
