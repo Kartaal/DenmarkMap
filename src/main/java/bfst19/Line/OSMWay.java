@@ -1,4 +1,4 @@
-package bfst19;
+package bfst19.Line;
 
 import java.util.ArrayList;
 import java.util.function.LongSupplier;

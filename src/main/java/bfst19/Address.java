@@ -1,6 +1,8 @@
 package bfst19;
 
 
+import bfst19.Line.OSMNode;
+
 public class Address extends OSMNode implements Comparable{
     private String city, streetName, postcode, houseNumber, floor, side;
 

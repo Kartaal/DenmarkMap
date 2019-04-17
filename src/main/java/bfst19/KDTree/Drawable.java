@@ -1,4 +1,4 @@
-package bfst19;
+package bfst19.KDTree;
 
 import javafx.scene.canvas.GraphicsContext;
 

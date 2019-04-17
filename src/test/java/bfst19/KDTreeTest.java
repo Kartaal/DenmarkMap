@@ -1,6 +1,12 @@
 package bfst19;
 
+import bfst19.KDTree.BoundingBox;
+import bfst19.KDTree.Drawable;
+import bfst19.KDTree.KDNode;
 import bfst19.KDTree.KDTree;
+import bfst19.Line.OSMNode;
+import bfst19.Line.OSMWay;
+import bfst19.Line.Polyline;
 import javafx.geometry.Point2D;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
@@ -112,8 +118,8 @@ public class KDTreeTest {
 
 	@Test
 	public void testServiceKDTreeExists(){
-		KDTree.KDNode l = kdTreeMap.get(WayType.SERVICE).getRoot().getNodeL();
-		KDTree.KDNode r = kdTreeMap.get(WayType.SERVICE).getRoot().getNodeR();
+		KDNode l = kdTreeMap.get(WayType.SERVICE).getRoot().getNodeL();
+		KDNode r = kdTreeMap.get(WayType.SERVICE).getRoot().getNodeR();
 
 		//Tests that root's left and right child aren't null
 		assertTrue(kdTreeMap.get(WayType.SERVICE).getRoot().getNodeL() != null && kdTreeMap.get(WayType.SERVICE).getRoot().getNodeR() != null);

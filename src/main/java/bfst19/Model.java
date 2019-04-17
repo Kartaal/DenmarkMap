@@ -1,6 +1,9 @@
 package bfst19;
 
+import bfst19.KDTree.BoundingBox;
+import bfst19.KDTree.Drawable;
 import bfst19.KDTree.KDTree;
+import bfst19.Line.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javax.xml.stream.XMLInputFactory;
@@ -17,9 +20,6 @@ public class Model {
 	float lonfactor = 1.0f;
 	private boolean colorBlindEnabled;
 	private String datasetName;
-	int count = 0;
-
-
 
 	List<Runnable> colorObservers = new ArrayList<>();
 	List<Runnable> foundMatchesObservers = new ArrayList<>();

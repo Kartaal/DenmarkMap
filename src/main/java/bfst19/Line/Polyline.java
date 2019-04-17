@@ -1,6 +1,9 @@
-package bfst19;
+package bfst19.Line;
 
 
+import bfst19.KDTree.BoundingBox;
+import bfst19.KDTree.BoundingBoxable;
+import bfst19.KDTree.Drawable;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.io.Serializable;

@@ -1,16 +1,16 @@
 package bfst19;
 
+import bfst19.KDTree.BoundingBox;
+import bfst19.KDTree.Drawable;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.FillRule;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
 
-import java.awt.*;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -18,7 +18,7 @@ import java.util.Iterator;
 public class MapCanvas extends Canvas {
     GraphicsContext gc = getGraphicsContext2D();
     //linear transformation object used to transform our data while preserving proportions between nodes
-    Affine transform = new Affine();
+    public Affine transform = new Affine();
     Model model;
     HashMap<WayType,Color> wayColors = new HashMap<>();
     boolean paintNonRoads = true;

@@ -1,4 +1,4 @@
-package bfst19;
+package bfst19.KDTree;
 
 import java.io.Serializable;
 
