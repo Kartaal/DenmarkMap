@@ -57,7 +57,6 @@ public class DijkstraSP {
 
     public boolean hasPathTo(int v) {
         validateVertex(v);
-        System.out.print(distTo[v]);
         return distTo[v] < Double.POSITIVE_INFINITY;
     }
 

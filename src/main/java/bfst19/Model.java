@@ -20,7 +20,6 @@ public class Model {
 	float lonfactor = 1.0f;
 	private boolean colorBlindEnabled;
 	private String datasetName;
-    private Distance dis = new Distance();
 
 
 	List<Runnable> colorObservers = new ArrayList<>();
@@ -86,6 +85,7 @@ public class Model {
 	}
 
 	public Model(List<String> args) throws IOException, XMLStreamException, ClassNotFoundException {
+
 		//Changed from field to local variable so it can be garbage collected
 		Map<WayType, List<Drawable>> ways = new EnumMap<>(WayType.class);
 		for (WayType type : WayType.values()) {
@@ -398,16 +398,12 @@ public class Model {
 									OSMNode currentNode = way.get(i);
 
 									//todo fix getting length
-									double previousNodeX = previousnode.getLat();
-									double previousNodeY = previousnode.getLon()/lonfactor;
-									double currentNodeX = currentNode.getLat();
-									double currentNodeY = currentNode.getLon()/lonfactor;
+									double previousNodeLat = previousnode.getLat();
+									double previousNodeLon = previousnode.getLon()/lonfactor;
+									double currentNodeLat = currentNode.getLat();
+									double currentNodeLon = currentNode.getLon()/lonfactor;
 
-									//currentNode.lon = (float) currentNodeY;
-									//double length = Math.sqrt(Math.pow(Math.abs(previousNodeX-currentNodeX),2)+Math.pow(Math.abs(previousNodeY-currentNodeY),2));
-                                    //double length = dis.distance(currentNodeX,currentNodeY,previousNodeX, previousNodeY);
-                                    double deltaX=previousNodeX-currentNodeX;
-                                    double length=6378.137*Math.acos((Math.sin(currentNodeY)*Math.sin(previousNodeY)+(Math.cos(currentNodeY)*Math.cos(previousNodeY)*Math.cos(deltaX))));
+									double length = calculateDistanceInMeters(previousNodeLat,previousNodeLon,currentNodeLat,currentNodeLon);
                                     if(speedlimit==0){
 										speedlimit = speedDefaults.get(type.toString());
 									}
@@ -518,6 +514,21 @@ public class Model {
 				case ENTITY_DECLARATION: break;
 			}
 		}
+	}
+
+	public double calculateDistanceInMeters(double startLat, double startLon, double endLat, double endLon){
+		//Found the formula on https://www.movable-type.co.uk/scripts/latlong.html
+		//Basically the same code as is shown on the site mentioned above
+		final int R = 6371000; // CA. Earth radius in meters
+		double φ1  = Math.toRadians(startLat);
+		double φ2  = Math.toRadians(endLat);
+		double Δφ  = Math.toRadians(endLat - startLat);
+		double Δλ  = Math.toRadians(endLon - startLon);
+
+		double a  = Math.sin(Δφ/2)* Math.sin(Δφ/2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
+		double c  = 2*Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+		double d = R * c;
+		return d;
 	}
 
 	private void makeDatabase(ArrayList<Address> addresses,String country){
