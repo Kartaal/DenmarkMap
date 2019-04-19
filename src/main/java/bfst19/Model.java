@@ -229,11 +229,11 @@ public class Model {
 		HashMap<String,HashMap<String, Integer>> drivabillty = new HashMap<>();
 
 		for(String wayType : drivableCases.keySet()){
+			drivabillty.put(wayType,new HashMap<>());
 			for(String vehicleType : drivableCases.get(wayType).keySet()){
 				String[] tokens = vehicleType.split(" ");
 				vehicleType = tokens[0];
 				int defaultDrivable = Integer.valueOf(tokens[1]);
-				drivabillty.put(wayType,new HashMap<>());
 				drivabillty.get(wayType).put(vehicleType,defaultDrivable);
 			}
 		}
@@ -283,6 +283,7 @@ public class Model {
 							id = Long.parseLong(reader.getAttributeValue(null, "id"));
 							type = WayType.UNKNOWN;
 							way = new OSMWay(id);
+
 							idToWay.add(way);
 							break;
 						case "nd":
@@ -392,23 +393,28 @@ public class Model {
 							if(isNodegraphWay){
 								HashMap<String,Integer> drivabilltyForWay = drivabillty.get(type.toString());
 								OSMNode previousnode = way.get(0);
-								nodeGraph.addVertex(previousnode.getAsLong());
+
+								long previousnodeID = previousnode.getAsLong();
+								nodeGraph.addVertex(previousnodeID);
 								for(int i = 1 ; i<way.size() ; i++){
 
 									OSMNode currentNode = way.get(i);
 
-									//todo fix getting length
 									double previousNodeLat = previousnode.getLat();
 									double previousNodeLon = previousnode.getLon()/lonfactor;
 									double currentNodeLat = currentNode.getLat();
 									double currentNodeLon = currentNode.getLon()/lonfactor;
 
 									double length = calculateDistanceInMeters(previousNodeLat,previousNodeLon,currentNodeLat,currentNodeLon);
+
                                     if(speedlimit==0){
 										speedlimit = speedDefaults.get(type.toString());
 									}
+
 									Edge edge = new Edge(length,speedlimit,previousnode,currentNode,drivabilltyForWay);
-									nodeGraph.addVertex(currentNode.getAsLong());
+
+                                    long currentnodeID = currentNode.getAsLong();
+                                    nodeGraph.addVertex(currentnodeID);
 									nodeGraph.addEdge(edge);
 									previousnode = currentNode;
 
@@ -480,17 +486,14 @@ public class Model {
 					makeDatabase(addresses, getDatasetName());
 					System.out.println(nodeGraph.V());
 					System.out.println(nodeGraph.E());
-					int indexOfThing = nodeGraph.getIndexFromId(1566906020L);
-					Iterable<Edge> adj = nodeGraph.adj(indexOfThing,Vehicle.BIKE);
 
-					DijkstraSP shortpath = new DijkstraSP(nodeGraph,1566906020L, Vehicle.CAR,false);
-					Iterable<Edge> path = shortpath.pathTo(nodeGraph.getIndexFromId(1566906020L));
+					DijkstraSP shortpath = new DijkstraSP(nodeGraph,3955434296L, Vehicle.CAR,false);
+
+					Iterable<Edge> path = shortpath.pathTo(nodeGraph.getIndexFromId(4048894613L));
 					for(Edge edge : path){
 						System.out.println(edge.toString());
 					}
-					for(Object o : adj){
-						System.out.println(o.toString());
-					}
+
 
 					for (OSMWay c : merge(coast)) {
 						ways.get(WayType.COASTLINE).add(new Polyline(c));

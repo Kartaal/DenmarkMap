@@ -43,7 +43,7 @@ public class DijkstraSP {
         double distToV = distTo[v];
         double weight = e.getWeight(type,fastestPath);
         if (distToW > distToV + weight) {
-            distToW = distToV + weight;
+            distTo[w] = distToV + weight;
             edgeTo[w] = e;
             if (pq.contains(w)) pq.decreaseKey(w, distToW);
             else                pq.insert(w, distToW);

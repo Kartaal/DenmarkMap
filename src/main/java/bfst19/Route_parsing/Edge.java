@@ -94,6 +94,6 @@ public class Edge{
 
     @Override
     public String toString(){
-        return "Length: "+length+" "+" bike: "+getDrivableFromVehicleType("BIKE")+" Car: "+getDrivableFromVehicleType("CAR")+" walking: "+getDrivableFromVehicleType("WALKING")+" "+speedlLimit+" Node v:" + v.toString() + " Node W:" + w.toString();
+        return "Length: "+length+"m "+" bike: "+getDrivableFromVehicleType("BIKE")+" Car: "+getDrivableFromVehicleType("CAR")+" walking: "+getDrivableFromVehicleType("WALKING")+" "+speedlLimit+" Node v:" + v.toString() + " Node W:" + w.toString();
     }
 }

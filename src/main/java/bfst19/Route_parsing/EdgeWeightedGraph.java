@@ -49,11 +49,21 @@ public class EdgeWeightedGraph implements Serializable {
             throw new IllegalArgumentException("vertex " + v + " is not between 0 and " + (V-1));
     }
 
+    private boolean isVertex(long id){
+        if(idToIndex.get(id)==null){
+            return false;
+        }
+            return true;
+    }
+
+
     public void addVertex(long id){
-        idToIndex.put(id,V);
-        indexToId.put(V,id);
-        adj.add(V,new ArrayList<>());
-        V++;
+        if(!isVertex(id)) {
+            idToIndex.put(id, V);
+            indexToId.put(V, id);
+            adj.add(V, new ArrayList<>());
+            V++;
+        }
     }
 
     public void addEdge(Edge e) {
