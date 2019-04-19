@@ -20,7 +20,7 @@ public class Model {
 	float lonfactor = 1.0f;
 	private boolean colorBlindEnabled;
 	private String datasetName;
-
+    private Distance dis = new Distance();
 
 
 	List<Runnable> colorObservers = new ArrayList<>();
@@ -399,13 +399,16 @@ public class Model {
 
 									//todo fix getting length
 									double previousNodeX = previousnode.getLat();
-									double previousNodeY = previousnode.getLon();
+									double previousNodeY = previousnode.getLon()/lonfactor;
 									double currentNodeX = currentNode.getLat();
 									double currentNodeY = currentNode.getLon()/lonfactor;
 
 									//currentNode.lon = (float) currentNodeY;
-									double length = Math.sqrt(Math.pow(Math.abs(previousNodeX-currentNodeX),2)+Math.pow(Math.abs(previousNodeY-currentNodeY),2));
-									if(speedlimit==0){
+									//double length = Math.sqrt(Math.pow(Math.abs(previousNodeX-currentNodeX),2)+Math.pow(Math.abs(previousNodeY-currentNodeY),2));
+                                    //double length = dis.distance(currentNodeX,currentNodeY,previousNodeX, previousNodeY);
+                                    double deltaX=previousNodeX-currentNodeX;
+                                    double length=6378.137*Math.acos((Math.sin(currentNodeY)*Math.sin(previousNodeY)+(Math.cos(currentNodeY)*Math.cos(previousNodeY)*Math.cos(deltaX))));
+                                    if(speedlimit==0){
 										speedlimit = speedDefaults.get(type.toString());
 									}
 									Edge edge = new Edge(length,speedlimit,previousnode,currentNode,drivabilltyForWay);
@@ -481,11 +484,11 @@ public class Model {
 					makeDatabase(addresses, getDatasetName());
 					System.out.println(nodeGraph.V());
 					System.out.println(nodeGraph.E());
-					int indexOfThing = nodeGraph.getIndexFromId(3955434295L);
+					int indexOfThing = nodeGraph.getIndexFromId(1566906020L);
 					Iterable<Edge> adj = nodeGraph.adj(indexOfThing,Vehicle.BIKE);
 
-					DijkstraSP shortpath = new DijkstraSP(nodeGraph,3955434296L, Vehicle.CAR,false);
-					Iterable<Edge> path = shortpath.pathTo(nodeGraph.getIndexFromId(3955434295L));
+					DijkstraSP shortpath = new DijkstraSP(nodeGraph,1566906020L, Vehicle.CAR,false);
+					Iterable<Edge> path = shortpath.pathTo(nodeGraph.getIndexFromId(1566906020L));
 					for(Edge edge : path){
 						System.out.println(edge.toString());
 					}

@@ -3,7 +3,7 @@ package bfst19.Route_parsing;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class IndexMinPQ<Key extends Comparable<Key>> {
+ class IndexMinPQ<Key extends Comparable<Key>> {
     private int maxN;        // maximum number of elements on PQ
     private int n;           // number of elements on PQ
     private int[] pq;        // binary heap using 1-based indexing
