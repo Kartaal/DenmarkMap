@@ -1,12 +1,8 @@
 package bfst19.Route_parsing;
 
-import bfst19.LongIndex;
-import bfst19.OSMNode;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
 
 public class EdgeWeightedGraph implements Serializable {
     //don't know what this is
@@ -14,51 +10,55 @@ public class EdgeWeightedGraph implements Serializable {
 
     private int V;
     private int E;
-    private LongIndex<OSMNode> nodes;
-    private HashMap<Long,ArrayList<Edge>> adj;
+    private HashMap<Long,Integer> idToIndex;
+    private HashMap<Integer,Long> indexToId;
+    private ArrayList<ArrayList<Edge>> adj;
 
     public EdgeWeightedGraph(){
         this.V = 0;
         this.E = 0;
-        adj = new HashMap<>();
-        nodes = new LongIndex<>();
+        idToIndex = new HashMap<>();
+        indexToId = new HashMap<>();
+        adj = new ArrayList<>();
     }
 
     public EdgeWeightedGraph(ArrayList<Long> V) {
         if (V.size() == 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
         this.V = V.size();
         this.E = 0;
-        adj = new HashMap<>();
-        for(long id : V){
-            adj.put(id,new ArrayList<>());
-        }
+        adj = new ArrayList<>();
     }
 
     public int V() {
         return V;
     }
 
-    public int E() {
-        return E;
+    public int E() { return E; }
+
+    public long getIdFromIndex(int index){
+        return indexToId.get(index);
+    }
+
+    public int getIndexFromId(long id){
+        return idToIndex.get(id);
     }
 
     // throw an IllegalArgumentException unless {@code 0 <= v < V}
-    private void validateVertex(long v) {
-        //check if node is valid
-        if(adj.get(v)==null){
-            adj.put(v,new ArrayList<>());
-            //throw new IllegalArgumentException("vertex " + v + " is not a valid vertex");
-        }
+    private void validateVertex(int v) {
+        if (v < 0 || v >= V)
+            throw new IllegalArgumentException("vertex " + v + " is not between 0 and " + (V-1));
     }
 
-    public void addVertex(OSMNode node){
-        nodes.add(node);
+    public void addVertex(long id){
+        idToIndex.put(id,V);
+        indexToId.put(V,id);
+        adj.add(V,new ArrayList<>());
         V++;
     }
 
     public void addEdge(Edge e) {
-        long v = e.either();
-        long w = e.other();
+        int v = getIndexFromId(e.either());
+        int w = getIndexFromId(e.other());
         validateVertex(v);
         validateVertex(w);
         adj.get(v).add(e);
@@ -66,25 +66,30 @@ public class EdgeWeightedGraph implements Serializable {
         E++;
     }
 
-    public Iterable<Edge> adj(long v) {
+    public Iterable<Edge> adj(int v,Vehicle type) {
         validateVertex(v);
-        return adj.get(v);
+        ArrayList<Edge> adjacent = adj.get(v);
+        ArrayList<Edge> temp = new ArrayList<>();
+        long idOfV = indexToId.get(v);
+        for(Edge edge : adjacent){
+            if(edge.isForwardAllowed(type,idOfV)){
+                temp.add(edge);
+            }
+        }
+        adjacent = temp;
+        return adjacent;
     }
 
-    public int degree(long v) {
+    public int degree(int v) {
         validateVertex(v);
         return adj.get(v).size();
-    }
-
-    public Set<Long> getIDs(){
-        return adj.keySet();
     }
 
     public Iterable<Edge> edges() {
         ArrayList list = new ArrayList();
         for (int v = 0; v < V; v++) {
             int selfLoops = 0;
-            for (Edge e : adj.get(v)) {
+            for (Edge e : adj(v,Vehicle.BIKE)) {
                 if (e.other() > v) {
                     list.add(e);
                 }

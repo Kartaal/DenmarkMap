@@ -1,15 +1,13 @@
 package bfst19.Route_parsing;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class DijkstraSP {
-    private HashMap<Long,Double> distTo;          // distTo[v] = distance  of shortest s->v path
-    private HashMap<Long,Edge> edgeTo;    // edgeTo[v] = last edge on shortest s->v path
-    private IndexMinPQ<Double> pq;    // priority queue of vertices
-    private HashMap<Long,Integer> idToIndex;
-    private HashMap<Integer,Long> indexToId;
+    private double[] distTo;          // distTo[v] = distance  of shortest s->v path
+    private Edge[] edgeTo;    // edgeTo[v] = last edge on shortest s->v path
+    private IndexMinPQ<Double> pq;    // priority queue of vertices    // priority queue of vertices
+    private EdgeWeightedGraph G;
 
     public DijkstraSP(EdgeWeightedGraph G, long s, Vehicle type, boolean fastestPath) {
         /*for (Edge e : G.edges()) {
@@ -17,54 +15,60 @@ public class DijkstraSP {
                 throw new IllegalArgumentException("edge " + e + " has negative weight");
         }*/
 
-        distTo = new HashMap<>();
-        edgeTo = new HashMap<>();
-        pq = new IndexMinPQ<>(G.V());
-        for(Long id:G.getIDs()){
-            distTo.put(id,Double.POSITIVE_INFINITY);
-        }
-        distTo.put(s, 0.0);
-        validateVertex(s);
+        distTo = new double[G.V()];
+        edgeTo = new Edge[G.V()];
+        for (int v = 0; v < G.V(); v++)
+            distTo[v] = Double.POSITIVE_INFINITY;
+        int indexOfS = G.getIndexFromId(s);
+        distTo[indexOfS] = 0.0;
+        this.G = G;
+        validateVertex(indexOfS);
         // relax vertices in order of distance from s
-        pq.insert(0,0.0);
-        pq.insert(1,Double.POSITIVE_INFINITY);
-        pq.insert(s,distTo.get(s));
+        pq = new IndexMinPQ<>(G.V());
+        pq.insert(indexOfS,distTo[indexOfS]);
         while (!pq.isEmpty()) {
-            long v = pq.delMin();
-            for (Edge e : G.adj(v))
-                relax(e,type,fastestPath);
+            int v = pq.delMin();
+            for (Edge e : G.adj(v,type))
+                relax(e,v,type,fastestPath);
         }
 
         // check optimality conditions
-        assert check(G,s,type,fastestPath);
+        assert check(G,indexOfS,type,fastestPath);
     }
 
     // relax edge e and update pq if changed
-    private void relax(Edge e, Vehicle type, boolean fastestPath) {
-        long v = e.either(), w = e.other();
-        if (distTo.get(w) > distTo.get(v) + e.getWeight(type,fastestPath)) {
-            distTo.put(w,distTo.get(v) + e.getWeight(type,fastestPath));
-            edgeTo.put(w, e);
-            if (pq.contains(w)) pq.decreaseKey(w, distTo.get(w));
-            else                pq.insert(w, distTo.get(w));
+    private void relax(Edge e,int vertexV ,Vehicle type, boolean fastestPath) {
+        int v = vertexV, w = G.getIndexFromId(e.getOtherEnd(G.getIdFromIndex(v)));
+        double distToW = distTo[w];
+        double distToV = distTo[v];
+        double weight = e.getWeight(type,fastestPath);
+        if (distToW > distToV + weight) {
+            distToW = distToV + weight;
+            edgeTo[w] = e;
+            if (pq.contains(w)) pq.decreaseKey(w, distToW);
+            else                pq.insert(w, distToW);
         }
     }
 
-    public double distTo(long v) {
+    public double distTo(int v) {
         validateVertex(v);
-        return distTo.get(v);
+        return distTo[v];
     }
 
-    public boolean hasPathTo(long v) {
+    public boolean hasPathTo(int v) {
         validateVertex(v);
-        return distTo.get(v) < Double.POSITIVE_INFINITY;
+        System.out.print(distTo[v]);
+        return distTo[v] < Double.POSITIVE_INFINITY;
     }
 
-    public Iterable<Edge> pathTo(long v) {
+    //maybe doing this is not optimal
+    public Iterable<Edge> pathTo(int v) {
         validateVertex(v);
         if (!hasPathTo(v)) return null;
+        int indexOfV = v;
         Stack<Edge> path = new Stack<>();
-        for (Edge e = edgeTo.get(v); e != null; e = edgeTo.get(e.either())) {
+        for (Edge e = edgeTo[v]; e != null; e = edgeTo[indexOfV]) {
+            indexOfV = G.getIndexFromId(e.getOtherEnd(G.getIdFromIndex(indexOfV)));
             path.push(e);
         }
         return path;
@@ -74,7 +78,7 @@ public class DijkstraSP {
     // check optimality conditions:
     // (i) for all edges e:            distTo[e.to()] <= distTo[e.from()] + e.weight()
     // (ii) for all edge e on the SPT: distTo[e.to()] == distTo[e.from()] + e.weight()
-    private boolean check(EdgeWeightedGraph G, long s, Vehicle type, boolean fastestPath) {
+    private boolean check(EdgeWeightedGraph G, int s, Vehicle type, boolean fastestPath) {
 
         // check that edge weights are nonnegative
         for (Edge e : G.edges()) {
@@ -85,13 +89,13 @@ public class DijkstraSP {
         }
 
         // check that distTo[v] and edgeTo[v] are consistent
-        if (distTo.get(s) != 0.0 || edgeTo.get(s) != null) {
+        if (distTo[s] != 0.0 || edgeTo[s] != null) {
             System.err.println("distTo[s] and edgeTo[s] inconsistent");
             return false;
         }
         for (int v = 0; v < G.V(); v++) {
             if (v == s) continue;
-            if (edgeTo.get(v) == null && distTo.get(v) != Double.POSITIVE_INFINITY) {
+            if (edgeTo[v] == null && distTo[v] != Double.POSITIVE_INFINITY) {
                 System.err.println("distTo[] and edgeTo[] inconsistent");
                 return false;
             }
@@ -99,9 +103,9 @@ public class DijkstraSP {
 
         // check that all edges e = v->w satisfy distTo[w] <= distTo[v] + e.weight()
         for (int v = 0; v < G.V(); v++) {
-            for (Edge e : G.adj(v)) {
-                long w = e.other();
-                if (distTo.get(v) + e.getWeight(type,fastestPath) < distTo.get(w)) {
+            for (Edge e : G.adj(v,type)) {
+                int w = G.getIndexFromId(e.getOtherEnd(G.getIdFromIndex(v)));
+                if (distTo[v] + e.getWeight(type,fastestPath) < distTo[w]) {
                     System.err.println("edge " + e + " not relaxed");
                     return false;
                 }
@@ -110,11 +114,11 @@ public class DijkstraSP {
 
         // check that all edges e = v->w on SPT satisfy distTo[w] == distTo[v] + e.weight()
         for (int w = 0; w < G.V(); w++) {
-            if (edgeTo.get(w) == null) continue;
-            Edge e = edgeTo.get(w);
-            long v = e.either();
+            if (edgeTo[w] == null) continue;
+            Edge e = edgeTo[w];
+            int v = G.getIndexFromId(e.getOtherEnd(G.getIdFromIndex(w)));
             if (w != e.other()) return false;
-            if (distTo.get(v) + e.getWeight(type,fastestPath) != distTo.get(w)) {
+            if (distTo[v] + e.getWeight(type,fastestPath) != distTo[w]) {
                 System.err.println("edge " + e + " on shortest path not tight");
                 return false;
             }
@@ -123,10 +127,11 @@ public class DijkstraSP {
     }
 
     // throw an IllegalArgumentException unless {@code 0 <= v < V}
-    private void validateVertex(long v) {
-
-        if (distTo.get(v)==null)
-            throw new IllegalArgumentException("vertex " + v + " is not one of the recognized ID's");
+    private void validateVertex(int v) {
+        int V = distTo.length;
+        if (v < 0 || v >= V) {
+            throw new IllegalArgumentException("vertex " + v + " is not between 0 and " + (V - 1));
+        }
     }
 
     /*public static void main(String[] args) {

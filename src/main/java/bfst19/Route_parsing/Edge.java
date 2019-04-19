@@ -40,6 +40,7 @@ public class Edge{
         }
     }
 
+    //todo make these dependt on a call with a specific node
     public long either(){
         return v.getAsLong();
     }
@@ -48,17 +49,23 @@ public class Edge{
         return w.getAsLong();
     }
 
-    public boolean isForwardAllowed(Vehicle type) {
+    public long getOtherEnd(long id){
+        if(id==w.getAsLong()){
+            return v.getAsLong();
+        }
+        return w.getAsLong();
+    }
 
+    public boolean isForwardAllowed(Vehicle type, long id) {
         int drivable = getDrivableFromVehicleType(type.name());
-
-        if (drivable == 0) {
+        if(drivable==2){
             return true;
-        } else if (drivable == 2) {
+        }else if(drivable==0&&v.getAsLong()==id) {
+            return true;
+        }else if(drivable==1&&w.getAsLong()==id){
             return true;
         }
         return false;
-
     }
 
     public boolean isBackWardsAllowed(Vehicle type){

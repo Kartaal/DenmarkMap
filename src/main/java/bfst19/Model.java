@@ -392,6 +392,7 @@ public class Model {
 							if(isNodegraphWay){
 								HashMap<String,Integer> drivabilltyForWay = drivabillty.get(type.toString());
 								OSMNode previousnode = way.get(0);
+								nodeGraph.addVertex(previousnode.getAsLong());
 								for(int i = 1 ; i<way.size() ; i++){
 
 									OSMNode currentNode = way.get(i);
@@ -407,8 +408,8 @@ public class Model {
 									if(speedlimit==0){
 										speedlimit = speedDefaults.get(type.toString());
 									}
-									nodeGraph.addVertex(currentNode);
 									Edge edge = new Edge(length,speedlimit,previousnode,currentNode,drivabilltyForWay);
+									nodeGraph.addVertex(currentNode.getAsLong());
 									nodeGraph.addEdge(edge);
 									previousnode = currentNode;
 
@@ -480,11 +481,11 @@ public class Model {
 					makeDatabase(addresses, getDatasetName());
 					System.out.println(nodeGraph.V());
 					System.out.println(nodeGraph.E());
+					int indexOfThing = nodeGraph.getIndexFromId(3955434295L);
+					Iterable<Edge> adj = nodeGraph.adj(indexOfThing,Vehicle.BIKE);
 
-					Iterable<Edge> adj = nodeGraph.adj(32840041);
-
-					DijkstraSP shortpath = new DijkstraSP(nodeGraph,32840041, Vehicle.BIKE,false);
-					Iterable<Edge> path = shortpath.pathTo(4048894613L);
+					DijkstraSP shortpath = new DijkstraSP(nodeGraph,3955434296L, Vehicle.CAR,false);
+					Iterable<Edge> path = shortpath.pathTo(nodeGraph.getIndexFromId(3955434295L));
 					for(Edge edge : path){
 						System.out.println(edge.toString());
 					}
