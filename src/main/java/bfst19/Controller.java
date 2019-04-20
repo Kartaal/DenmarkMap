@@ -161,7 +161,7 @@ public class Controller {
                 break;
             case C:
                 Iterable<Edge> path = model.routeHandler.findPath(3955434296L,846322672L, Vehicle.CAR,false);
-                Iterable<Edge> adj =  model.routeHandler.getAdj(32414258L,Vehicle.CAR);
+                Iterable<Edge> adj =  model.routeHandler.getAdj(2091635039L,Vehicle.CAR);
                 for(Edge edge : adj){
                     System.out.println(edge.toString());
                 }

@@ -90,6 +90,8 @@ public class RouteHandler {
         for(String waytype : drivableCases.keySet()){
             for(String vehicletype : drivableCases.get(waytype).keySet()){
                 ArrayList<String[]> vehicleCases = drivableCases.get(waytype).get(vehicletype);
+                
+                vehicletype = vehicletype.split(" ")[0];
                 for(int i = 0 ; i<vehicleCases.size() ; i++){
                     String[] caseTokens = vehicleCases.get(i);
                     if(k.equals(caseTokens[0])&&v.equals(caseTokens[1])){
@@ -139,15 +141,20 @@ public class RouteHandler {
             previousnode = currentNode;
 
             //resets the drivabillity for the waytype by gettting the values from the default
-            HashMap<String,ArrayList<String[]>> drivabilltyForway = drivableCases.get(type.toString());
+            resetDrivabillty();
+        }
+    }
+
+    private void resetDrivabillty(){
+        for(String waytype : drivableCases.keySet()){
             HashMap<String,Integer> resetDefaults = new HashMap<>();
-            for(String vehicleType : drivabilltyForway.keySet()){
+            for(String vehicleType : drivableCases.get(waytype).keySet()){
                 String[] tokens = vehicleType.split(" ");
                 vehicleType = tokens[0];
                 int drivable = Integer.valueOf(tokens[1]);
                 resetDefaults.put(vehicleType,drivable);
             }
-            drivabillty.put(type.toString(),resetDefaults);
+            drivabillty.put(waytype,resetDefaults);
         }
     }
 

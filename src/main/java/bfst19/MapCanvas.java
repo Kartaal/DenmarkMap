@@ -123,7 +123,6 @@ public class MapCanvas extends Canvas {
                 gc.setStroke(Color.RED);
                 gc.beginPath();
                 gc.moveTo(first.getLon(),first.getLat());
-                System.out.println(first.getLat()+" "+first.getLon());
                 gc.lineTo(second.getLon(),second.getLat());
                 gc.stroke();
             }
