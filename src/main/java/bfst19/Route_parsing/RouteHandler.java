@@ -26,7 +26,6 @@ public class RouteHandler {
         drivableCases = parseDrivableCases("data/Drivable_cases.txt");
         drivabillty = new HashMap<>();
 
-
         for(String wayType : drivableCases.keySet()){
             drivabillty.put(wayType,new HashMap<>());
             for(String vehicleType : drivableCases.get(wayType).keySet()){
@@ -55,7 +54,6 @@ public class RouteHandler {
         String[] tokens;
         String vehicleType = "";
         String vehicleDrivable = "";
-        ArrayList <String[]> vehicleCases = new ArrayList<>();
 
         for(int i = 1 ; i<cases.size() ; i++){
             String line = cases.get(i);
@@ -64,16 +62,14 @@ public class RouteHandler {
                 i++;
                 vehicleType = tokens[0];
                 vehicleDrivable = tokens[1];
-                drivableCases.get(wayType).put(vehicleType+" "+vehicleDrivable,vehicleCases);
-                vehicleCases = new ArrayList<>();
+                drivableCases.get(wayType).put(vehicleType+" "+vehicleDrivable,new ArrayList<>());
             }else if(line.startsWith("$")){
-                drivableCases.get(wayType).put(vehicleType+" "+vehicleDrivable,vehicleCases);
                 wayType = cases.get(i+1);
                 drivableCases.put(wayType,new HashMap<>());
                 i++;
             }else{
                 String[] lineTokens = line.split(" ");
-                vehicleCases.add(lineTokens);
+                drivableCases.get(wayType).get(vehicleType+" "+vehicleDrivable).add(lineTokens);
             }
         }
         return drivableCases;
@@ -114,7 +110,7 @@ public class RouteHandler {
         return isNodegraphWay;
     }
 
-    public void addWayToNodeGraph(OSMWay way, WayType type, double lonfactor,int speedlimit) {
+    public void addWayToNodeGraph(OSMWay way, WayType type,String name,int speedlimit) {
         HashMap<String,Integer> drivabilltyForWay = drivabillty.get(type.toString());
         OSMNode previousnode = way.get(0);
 
@@ -125,9 +121,9 @@ public class RouteHandler {
             OSMNode currentNode = way.get(i);
 
             double previousNodeLat = previousnode.getLat();
-            double previousNodeLon = previousnode.getLon()/lonfactor;
+            double previousNodeLon = previousnode.getLon()/model.getLonfactor();
             double currentNodeLat = currentNode.getLat();
-            double currentNodeLon = currentNode.getLon()/lonfactor;
+            double currentNodeLon = currentNode.getLon()/model.getLonfactor();
 
             double length = model.calculateDistanceInMeters(previousNodeLat,previousNodeLon,currentNodeLat,currentNodeLon);
 
@@ -135,7 +131,7 @@ public class RouteHandler {
                 speedlimit = speedDefaults.get(type.toString());
             }
 
-            Edge edge = new Edge(length,speedlimit,previousnode,currentNode,drivabilltyForWay);
+            Edge edge = new Edge(length,speedlimit,previousnode,currentNode,name,drivabilltyForWay);
 
             long currentnodeID = currentNode.getAsLong();
             G.addVertex(currentnodeID);
@@ -153,5 +149,10 @@ public class RouteHandler {
             }
             drivabillty.put(type.toString(),resetDefaults);
         }
+    }
+
+    public Iterable<Edge> getAdj(long id, Vehicle type) {
+        int index = G.getIndexFromId(id);
+        return G.adj(index,type);
     }
 }

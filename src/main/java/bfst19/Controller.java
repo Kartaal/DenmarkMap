@@ -1,4 +1,6 @@
 package bfst19;
+import bfst19.Route_parsing.Edge;
+import bfst19.Route_parsing.Vehicle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.input.KeyEvent;
@@ -139,7 +141,7 @@ public class Controller {
         //todo fix using model to calculate distance
         double minX = mapCanvas.getModelCoords(0, 0).getY();
         double maxX = mapCanvas.getModelCoords(0, mapCanvas.getHeight()).getY();
-        double y = mapCanvas.getModelCoords(0, 0).getX()/model.lonfactor;
+        double y = mapCanvas.getModelCoords(0, 0).getX()/model.getLonfactor();
         scaleText.setText(Scalebar.getScaleText(minX, y, maxX, y, mapCanvas.getWidth()));
     }
 
@@ -156,6 +158,16 @@ public class Controller {
                 break;
             case P:
                 mapCanvas.panToPoint(14.8429560,55.0967440);
+                break;
+            case C:
+                Iterable<Edge> path = model.routeHandler.findPath(3955434296L,846322672L, Vehicle.CAR,false);
+                Iterable<Edge> adj =  model.routeHandler.getAdj(32414258L,Vehicle.CAR);
+                for(Edge edge : adj){
+                    System.out.println(edge.toString());
+                }
+                model.foundPath.add(path);
+                model.notifyPathObservers();
+                mapCanvas.repaint();
                 break;
         }
     }

@@ -15,7 +15,7 @@ import static javax.xml.stream.XMLStreamConstants.*;
 
 public class Model {
 	RouteHandler routeHandler;
-	float lonfactor = 1.0f;
+	private float lonfactor = 1.0f;
 	private boolean colorBlindEnabled;
 	private String datasetName;
 
@@ -29,7 +29,7 @@ public class Model {
 	HashMap<String,ArrayList<String[]>> wayTypeCases = new HashMap<>();
 	ObservableList<String[]> foundMatches = FXCollections.observableArrayList();
 	ObservableList<String> typeColors = FXCollections.observableArrayList();
-	ObservableList<Edge> foundPath = FXCollections.observableArrayList();
+	ObservableList<Iterable<Edge>> foundPath = FXCollections.observableArrayList();
 	Map<WayType, KDTree> kdTreeMap = new TreeMap<>();
 
 	//for building addresses during parsing
@@ -134,6 +134,7 @@ public class Model {
         AddressParser.getInstance(this).parseCitiesAndPostCodes(getCities(getDatasetName()));
 	}
 
+
     public void ParseWayColors(){
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(CurrentTypeColorTxt));
@@ -151,6 +152,10 @@ public class Model {
 			System.out.println("something went wrong");
 		}
 		notifyColorObservers();
+	}
+
+	public double getLonfactor(){
+		return lonfactor;
 	}
 
 	public void switchColorScheme(boolean colorBlindEnabled){
@@ -190,6 +195,7 @@ public class Model {
 		WayType type = null;
 
 		int speedlimit = 0;
+		String name = "";
 
 		//variables for addressParsing and OSMNode creation
 		Builder b = new Builder();
@@ -260,6 +266,10 @@ public class Model {
 								}
 							}
 
+							if(k.equals("name")){
+								name = v;
+							}
+
 							if(k.equals("maxspeed")){
 								speedlimit = Integer.valueOf(v);
 							}
@@ -311,7 +321,7 @@ public class Model {
 							//checks if the current waytype is one
 							// of the one's that should be in the nodegraph
 							if(routeHandler.isNodeGraphWay(type)) {
-								routeHandler.addWayToNodeGraph(way, type,lonfactor,speedlimit);
+								routeHandler.addWayToNodeGraph(way, type,name,speedlimit);
 							}
 
 							if(b.hasFields()) {
@@ -325,6 +335,7 @@ public class Model {
 							way = null;
 							b.reset();
 							speedlimit = 0;
+							name = "";
 							break;
 						case "node":
 							if(b.hasFields()){
@@ -370,15 +381,6 @@ public class Model {
 					File parseCheck = new File("data/"+ getDatasetName());
 					addresses.sort(Address::compareTo);
 					makeDatabase(addresses, getDatasetName());
-
-
-
-
-					Iterable<Edge> path = routeHandler.findPath(3955434296L,4048894613L,Vehicle.CAR,false);
-					for(Edge edge : path){
-						System.out.println(edge.toString());
-					}
-
 
 					for (OSMWay c : merge(coast)) {
 						ways.get(WayType.COASTLINE).add(new Polyline(c));
@@ -610,7 +612,7 @@ public class Model {
 		return null;
 	}
 
-	public Iterator<Edge> pathIterator(){ return foundPath.iterator();}
+	public Iterator<Iterable<Edge>> pathIterator(){ return foundPath.iterator();}
 	public Iterator<String> colorIterator() {
 		return typeColors.iterator();
 	}

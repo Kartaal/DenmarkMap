@@ -1,6 +1,7 @@
 package bfst19.Route_parsing;
 
 import bfst19.OSMNode;
+import bfst19.OSMWay;
 
 import java.util.HashMap;
 
@@ -15,12 +16,14 @@ public class Edge{
     private HashMap<String, Integer> vehicleTypeToDrivable;
     private OSMNode v;
     private OSMNode w;
+    String name;
 
-    public Edge(double length, double speedlLimit, OSMNode v, OSMNode w,HashMap<String, Integer> vehicleTypeToDrivable) {
+    public Edge(double length, double speedlLimit, OSMNode v, OSMNode w,String name,HashMap<String, Integer> vehicleTypeToDrivable) {
         this.length = length;
         this.speedlLimit = speedlLimit;
         this.v = v;
         this.w = w;
+        this.name = name;
         this.vehicleTypeToDrivable = vehicleTypeToDrivable;
     }
 
@@ -38,6 +41,14 @@ public class Edge{
         }else{
             return length;
         }
+    }
+
+    public OSMNode getV(){
+        return v;
+    }
+
+    public OSMNode getW(){
+        return w;
     }
 
     //todo make these dependt on a call with a specific node
@@ -94,6 +105,6 @@ public class Edge{
 
     @Override
     public String toString(){
-        return "Length: "+length+"m "+" bike: "+getDrivableFromVehicleType("BIKE")+" Car: "+getDrivableFromVehicleType("CAR")+" walking: "+getDrivableFromVehicleType("WALKING")+" "+speedlLimit+" Node v:" + v.toString() + " Node W:" + w.toString();
+        return "name: "+name +" Length: "+length+"m "+" bike: "+getDrivableFromVehicleType("BIKE")+" Car: "+getDrivableFromVehicleType("CAR")+" walking: "+getDrivableFromVehicleType("WALKING")+" "+speedlLimit+" Node v:" + v.toString() + " Node W:" + w.toString();
     }
 }
