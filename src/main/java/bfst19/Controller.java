@@ -1,4 +1,6 @@
 package bfst19;
+import bfst19.Route_parsing.Edge;
+import bfst19.Route_parsing.Vehicle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.input.KeyEvent;
@@ -53,6 +55,10 @@ public class Controller {
 
     public Model getModel(){
         return model;
+    }
+
+    public Double getDistanceFromModel(double startLat, double startLon, double endLat, double endLon){
+        return model.calculateDistanceInMeters(startLat,startLon,endLat,endLon);
     }
 
     public Iterator<String[]> getFoundMatchesIterator(){
@@ -154,10 +160,11 @@ public class Controller {
     }
 
     public void setScalebar() {
-        // TODO find out and resolve getY so it can be getX, since it the te x-coord we want
+        // TODO findout and resolve getY so it can be getX, since it the te x-coor we want
+        //todo fix using model to calculate distance
         double minX = mapCanvas.getModelCoords(0, 0).getY();
         double maxX = mapCanvas.getModelCoords(0, mapCanvas.getHeight()).getY();
-        double y = mapCanvas.getModelCoords(0, 0).getX();
+        double y = mapCanvas.getModelCoords(0, 0).getX()/model.getLonfactor();
         scaleText.setText(ScaleBar.getScaleText(minX, y, maxX, y, mapCanvas.getWidth()));
     }
 
@@ -174,6 +181,16 @@ public class Controller {
                 break;
             case P:
                 mapCanvas.panToPoint(14.8429560,55.0967440);
+                break;
+            case C:
+                Iterable<Edge> path = model.routeHandler.findPath(3955434296L,846322672L, Vehicle.CAR,false);
+                Iterable<Edge> adj =  model.routeHandler.getAdj(2091635039L,Vehicle.CAR);
+                for(Edge edge : adj){
+                    System.out.println(edge.toString());
+                }
+                model.foundPath.add(path);
+                model.notifyPathObservers();
+                mapCanvas.repaint();
                 break;
         }
     }

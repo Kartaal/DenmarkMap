@@ -24,7 +24,6 @@ public class OSMWay extends ArrayList<OSMNode> implements LongSupplier {
 		return get(size()-1);
 	}
 
-
 	//TODO All of this refactoring headache, right now it's very tightly connected to ArrayList
 	//Refactoring the ArrayList out of inheritance
 	// following methods needed for the rest of the code to work

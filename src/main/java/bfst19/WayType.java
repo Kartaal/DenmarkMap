@@ -28,6 +28,7 @@ public enum WayType {
 	SCRUB(false,10),
 	BARRIER(true,14),
 	UNDERBRIDGE(false, 12 ),
+
 	FOOTWAY(true,14),
 	MOTORWAY(true,Integer.MIN_VALUE ),
 	PRIMARY(true,Integer.MIN_VALUE),
@@ -36,10 +37,15 @@ public enum WayType {
 	SERVICE(true,10),
 	ROAD_RESIDENTIAL(true,9),
 	CYCLEWAY(true,14),
+
 	SUBWAY(true,Integer.MIN_VALUE),
+
 	BRIDGE(false,6),
+
 	RAILCONSTRUCTION(true,9),
+
 	DISUSED(true,14),
+
 	COASTLINE(true,12),
 	BOAT(true,Integer.MIN_VALUE),
 	COMMERCIAL(false,14 ),

@@ -130,7 +130,6 @@ man_made bridge
 $
 FOOTWAY
 highway steps
-highway unclassified
 highway footway
 $
 MOTORWAY
@@ -155,6 +154,7 @@ highway service
 $
 ROAD_RESIDENTIAL
 highway residential
+highway unclassified
 $
 CYCLEWAY
 highway cycleway

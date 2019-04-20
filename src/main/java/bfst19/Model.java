@@ -3,6 +3,7 @@ package bfst19;
 import bfst19.KDTree.BoundingBox;
 import bfst19.KDTree.Drawable;
 import bfst19.KDTree.KDTree;
+import bfst19.Route_parsing.*;
 import bfst19.Line.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,23 +17,31 @@ import java.util.zip.ZipInputStream;
 import static javax.xml.stream.XMLStreamConstants.*;
 
 public class Model {
-	HashMap<Long,String> pointsOfInterest = new HashMap<>();
-	float lonfactor = 1.0f;
+	RouteHandler routeHandler;
+	private float lonfactor = 1.0f;
 	private boolean colorBlindEnabled;
 	private String datasetName;
+	HashMap<Long,String> pointsOfInterest = new HashMap<>();
 	TextHandler textHandler = new TextHandler();
+
 
 	List<Runnable> colorObservers = new ArrayList<>();
 	List<Runnable> foundMatchesObservers = new ArrayList<>();
+	List<Runnable> pathObservers = new ArrayList<>();
 	float minlat, minlon, maxlat, maxlon;
 
 	String CurrentTypeColorTxt  = "data/TypeColorsNormal.txt";
 	HashMap<String,ArrayList<String[]>> wayTypeCases = new HashMap<>();
 	ObservableList<String[]> foundMatches = FXCollections.observableArrayList();
 	ObservableList<String> typeColors = FXCollections.observableArrayList();
+	ObservableList<Iterable<Edge>> foundPath = FXCollections.observableArrayList();
 	Map<WayType, KDTree> kdTreeMap = new TreeMap<>();
 
-	//for building addresses during parsing
+    public ArrayList<String> getTextFile(String filepath) {
+        return textHandler.getTextFile(filepath);
+    }
+
+    //for building addresses during parsing
 	public static class Builder {
 		private long id;
 		private float lat, lon;
@@ -64,16 +73,17 @@ public class Model {
 	public Iterable<Drawable> getWaysOfType(WayType type, BoundingBox bbox) {
 		return kdTreeMap.get(type).rangeQuery(bbox);
 	}
-
+	public void addPathObserver(Runnable observer){pathObservers.add(observer);}
 	public void addFoundMatchesObserver(Runnable observer) {
 		foundMatchesObservers.add(observer);
 	}
 	public void addColorObserver(Runnable observer) { colorObservers.add(observer); }
-	public void notifyFoundMatchesObservers() {
-		for (Runnable observer : foundMatchesObservers) observer.run();
-	}
-	public void notifyColorObservers() {for (Runnable observer : colorObservers) observer.run();}
 
+	public void notifyFoundMatchesObservers() { for (Runnable observer : foundMatchesObservers) observer.run(); }
+	public void notifyColorObservers() {for (Runnable observer : colorObservers) observer.run();}
+	public void notifyPathObservers(){for(Runnable observer : pathObservers) observer.run();}
+
+	//contructor just for testing of addressparsing
 	public Model(String dataset){
 		datasetName = dataset;
 		//this keeps the cities and the default streets files in memory, it's about 1mb for Zealand of memory
@@ -82,15 +92,15 @@ public class Model {
 	}
 
 	public Model(List<String> args) throws IOException, XMLStreamException, ClassNotFoundException {
+
 		//Changed from field to local variable so it can be garbage collected
 		Map<WayType, List<Drawable>> ways = new EnumMap<>(WayType.class);
 		for (WayType type : WayType.values()) {
 			ways.put(type, new ArrayList<>());
 		}
+
 		//todo figure out how to do singleton but also include model in its constructor without needing to give model for every call of getInstance
-
 		textHandler.parseWayTypeCases("data/WayTypeCases.txt", this);
-
 		textHandler.ParseWayColors(this);
 
 		String filename = args.get(0);
@@ -129,9 +139,33 @@ public class Model {
 				output.writeFloat(maxlon);
 			}
 		}
-		//pointsOfInterest = getPointsOfInterest(getDatasetName());
+
         AddressParser.getInstance(this).setDefaults(textHandler.getDefault(getDatasetName()));
         AddressParser.getInstance(this).parseCitiesAndPostCodes(textHandler.getCities(this, getDatasetName()));
+	}
+
+
+    public void ParseWayColors(){
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(CurrentTypeColorTxt));
+			int m = Integer.parseInt(br.readLine());
+
+			for (int i = 0; i < m; i++) {
+				String[] strArr = br.readLine().split(" ");
+				typeColors.add(strArr[0]);
+				typeColors.add(strArr[1]);
+			}
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			//TODO: fix this, uncle bob wont like this one hehe;)
+			System.out.println("something went wrong");
+		}
+		notifyColorObservers();
+	}
+
+	public double getLonfactor(){
+		return lonfactor;
 	}
 
 	public void switchColorScheme(boolean colorBlindEnabled){
@@ -153,13 +187,15 @@ public class Model {
 		for (WayType type : WayType.values()) {
 			ways.put(type, new ArrayList<>());
 		}
-
+		EdgeWeightedGraph nodeGraph = new EdgeWeightedGraph();
+		//todo change to other hashmaps or do something else
+		routeHandler = new RouteHandler(this,nodeGraph,new HashMap<>(),new HashMap<>());
 		XMLStreamReader reader = XMLInputFactory
 				.newInstance()
 				.createXMLStreamReader(osmsource);
 
-		LongIndex<OSMNode> idToNode = new LongIndex<OSMNode>();
-		LongIndex<OSMWay> idToWay = new LongIndex<OSMWay>();
+		LongIndex<OSMNode> idToNode = new LongIndex<>();
+		LongIndex<OSMWay> idToWay = new LongIndex<>();
 		ArrayList<Address> addresses = new ArrayList<>();
 		List<OSMWay> coast = new ArrayList<>();
 
@@ -167,6 +203,9 @@ public class Model {
 		OSMWay way = null;
 		OSMRelation rel = null;
 		WayType type = null;
+
+		int speedlimit = 0;
+		String name = "";
 
 		//variables for addressParsing and OSMNode creation
 		Builder b = new Builder();
@@ -197,6 +236,7 @@ public class Model {
 							id = Long.parseLong(reader.getAttributeValue(null, "id"));
 							type = WayType.UNKNOWN;
 							way = new OSMWay(id);
+
 							idToWay.add(way);
 							break;
 						case "nd":
@@ -206,7 +246,6 @@ public class Model {
 						case "tag":
 							String k = reader.getAttributeValue(null, "k");
 							String v = reader.getAttributeValue(null, "v");
-
 							if(k.equals("addr:housenumber")){
 								b.houseNumber = v.trim();
 							}
@@ -219,7 +258,6 @@ public class Model {
 								b.postcode = v.trim();
 							}
 
-
 							if(k.equals("addr:city")){
 								b.city = v.trim();
 							}
@@ -228,8 +266,25 @@ public class Model {
 								b.municipality = v.trim();
 							}
 
-							//string[0]=waytypes name, strings[1] = k for the case, strings = v for the case.
+							if(k.equals("source:maxspeed")){
+								if(v.equals("DK:urban")){
+									speedlimit = 50;
+								}else if(v.equals("DK:rural")){
+									speedlimit = 80;
+								}else if(v.equals("DK:motorway")){
+									speedlimit = 130;
+								}
+							}
 
+							if(k.equals("name")){
+								name = v;
+							}
+
+							if(k.equals("maxspeed")){
+								speedlimit = Integer.valueOf(v);
+							}
+
+							//string[0]=waytype's name, strings[1] = k for the case, strings = v for the case.
 							for(Map.Entry<String,ArrayList<String[]>> wayType : wayTypeCases.entrySet()){
 								String wayTypeString = wayType.getKey();
 								for(String[] waycase:wayType.getValue()){
@@ -238,6 +293,9 @@ public class Model {
 									}
 								}
 							}
+
+							routeHandler.checkDrivabillty(k,v);
+
 							switch (k){
 								case "relation":
 									type = WayType.UNKNOWN;
@@ -269,14 +327,25 @@ public class Model {
 							} else {
 								ways.get(type).add(new Polyline(way));
 							}
+
+							//checks if the current waytype is one
+							// of the one's that should be in the nodegraph
+							if(routeHandler.isNodeGraphWay(type)) {
+								routeHandler.addWayToNodeGraph(way, type,name,speedlimit);
+							}
+
 							if(b.hasFields()) {
 								b.id = id;
 								b.lat = lat;
 								b.lon = lon;
 								addresses.add(b.build());
 							}
+
+							//resetting variables
 							way = null;
 							b.reset();
+							speedlimit = 0;
+							name = "";
 							break;
 						case "node":
 							if(b.hasFields()){
@@ -345,6 +414,21 @@ public class Model {
 				case ENTITY_DECLARATION: break;
 			}
 		}
+	}
+
+	public double calculateDistanceInMeters(double startLat, double startLon, double endLat, double endLon){
+		//Found the formula on https://www.movable-type.co.uk/scripts/latlong.html
+		//Basically the same code as is shown on the site mentioned above
+		final int R = 6371000; // CA. Earth radius in meters
+		double φ1  = Math.toRadians(startLat);
+		double φ2  = Math.toRadians(endLat);
+		double Δφ  = Math.toRadians(endLat - startLat);
+		double Δλ  = Math.toRadians(endLon - startLon);
+
+		double a  = Math.sin(Δφ/2)* Math.sin(Δφ/2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
+		double c  = 2*Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+		double d = R * c;
+		return d;
 	}
 
 	public String getDelimeter(){
@@ -448,6 +532,7 @@ public class Model {
 		pointsOfInterest.remove(id);
 	}
 
+	public Iterator<Iterable<Edge>> pathIterator(){ return foundPath.iterator();}
 	public Iterator<String> colorIterator() {
 		return typeColors.iterator();
 	}

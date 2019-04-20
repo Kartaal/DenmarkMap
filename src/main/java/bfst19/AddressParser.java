@@ -75,7 +75,7 @@ public class AddressParser {
         proposedAddress = proposedAddress.toLowerCase().trim();
         String[] cityMatch = CityCheck(proposedAddress);
         //it checks if a city is found in the cities.txt file or not and replaces it if found
-        if (!(cityMatch[0].equals(""))) {
+        if(!(cityMatch[0].equals(""))) {
             proposedAddress = proposedAddress.replaceAll(cityMatch[0].toLowerCase(), "");
             b.city = cityMatch[1];
             b.postcode = cityMatch[2];

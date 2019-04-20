@@ -1,5 +1,7 @@
 package bfst19;
 
+import bfst19.Line.OSMNode;
+import bfst19.Route_parsing.Edge;
 import bfst19.KDTree.BoundingBox;
 import bfst19.KDTree.Drawable;
 import javafx.geometry.Bounds;
@@ -22,7 +24,9 @@ public class MapCanvas extends Canvas {
     Model model;
     HashMap<WayType,Color> wayColors = new HashMap<>();
     boolean paintNonRoads = true;
+    boolean hasPath = false;
     int detailLevel =1;
+
     private boolean colorBlindEnabled = false;
     private double singlePixelLength;
 
@@ -40,8 +44,13 @@ public class MapCanvas extends Canvas {
         zoom(800/(model.maxlon-model.minlon), 0,0);
 
         //model.addObserver(this::repaint);
+        model.addPathObserver(this::setHasPath);
         model.addColorObserver(this::setTypeColors);
         repaint();
+    }
+
+    private void setHasPath() {
+        hasPath = !hasPath;
     }
 
     public double getDeterminant(){
@@ -110,6 +119,22 @@ public class MapCanvas extends Canvas {
                 }
             }
         }
+        if(hasPath){
+            Iterator<Edge> iterator = model.pathIterator().next().iterator();
+            while(iterator.hasNext()){
+                Edge edge = iterator.next();
+                OSMNode first = edge.getV();
+                OSMNode second = edge.getW();
+
+                //gc.setLineWidth(2);
+                gc.setStroke(Color.RED);
+                gc.beginPath();
+                gc.moveTo(first.getLon(),first.getLat());
+                gc.lineTo(second.getLon(),second.getLat());
+                gc.stroke();
+            }
+
+        }
     }
 
     private BoundingBox getExtentInModel(){ return getBounds(); }
@@ -166,6 +191,7 @@ public class MapCanvas extends Canvas {
     public void panToPoint(double x,double y){
         double centerX = getWidth()/2.0;
         double centerY = getHeight()/2.0;
+        x = x*model.getLonfactor();
         Point2D point = transform.transform(x,y);
         pan(centerX-point.getX(),centerY-point.getY());
 
