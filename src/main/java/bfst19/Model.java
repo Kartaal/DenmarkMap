@@ -68,6 +68,12 @@ public class Model {
 	public void addFoundMatchesObserver(Runnable observer) {
 		foundMatchesObservers.add(observer);
 	}
+
+	//TODO Might not be ideal solution if we need more then two autoTextFields...
+	public void clearAddFoundMatchesObservers(){
+		foundMatchesObservers = new ArrayList<>();
+	}
+
 	public void addColorObserver(Runnable observer) { colorObservers.add(observer); }
 	public void notifyFoundMatchesObservers() {
 		for (Runnable observer : foundMatchesObservers) observer.run();

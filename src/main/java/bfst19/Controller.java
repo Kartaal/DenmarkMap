@@ -74,6 +74,10 @@ public class Controller {
     public void setUpPointOfInterestPanel(){
             VBox vBox = null;
 
+            if(borderPane.getLeft() != null){
+                borderPane.setRight(null);
+            }
+
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("PointOfInterestPanel.fxml"));
             try {
                 vBox = fxmlLoader.load();
@@ -83,7 +87,8 @@ public class Controller {
 
             vBox.setLayoutX(-200);
             vBox.setLayoutY(200);
-            stackPane.getChildren().add(vBox);
+
+            borderPane.setRight(vBox);
 
             ControllerPointOfInterestPanel controllerPointOfInterestPanel = fxmlLoader.getController();
             controllerPointOfInterestPanel.init(this);
@@ -95,6 +100,8 @@ public class Controller {
             borderPane.setLeft(null);
         }
 
+        //TODO Should maybe add the clear observer method here, so that it doesnt clear on each init() but instead when the bar is created
+
         HBox hBox = null;
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ViewBarPanel.fxml"));
@@ -104,7 +111,7 @@ public class Controller {
             e.printStackTrace();
         }
 
-        borderPane.setTop(hBox);
+        borderPane.setLeft(hBox);
 
         ControllerBarPanel controllerBarPanel = fxmlLoader.getController();
         controllerBarPanel.init(this);

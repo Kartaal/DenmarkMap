@@ -36,11 +36,11 @@ public class AutoTextField extends TextField {
 
     public void init(Controller controller){
         this.setStyle("-fx-min-width: 300; -fx-min-height: 40");
-
         this.controller = controller;
         this.model = controller.getModel();
+        //Making sure to clear the old observer which should no longer be a living object.
+        model.clearAddFoundMatchesObservers();
         model.addFoundMatchesObserver(this::showResults);
-
     }
 
     public void parseSearch(){
