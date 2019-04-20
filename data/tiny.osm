@@ -1,0 +1,1081 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="Overpass API 0.7.55.6 486819c8">
+<note>The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.</note>
+<meta osm_base="2019-04-09T15:49:02Z"/>
+
+  <bounds minlat="56.0165300" minlon="9.6396100" maxlat="56.0185900" maxlon="9.6459700"/>
+
+  <node id="251721157" lat="56.0189253" lon="9.6413509" version="5" timestamp="2011-01-21T18:32:01Z" changeset="7043104" uid="69425" user="jrjosephsen"/>
+  <node id="251721187" lat="56.0209164" lon="9.6421578" version="4" timestamp="2010-03-16T10:20:51Z" changeset="4142060" uid="69425" user="jrjosephsen"/>
+  <node id="490369474" lat="55.9978502" lon="9.6185132" version="2" timestamp="2013-07-23T10:14:00Z" changeset="17059969" uid="207581" user="Hjart"/>
+  <node id="490369483" lat="56.0176800" lon="9.6397780" version="4" timestamp="2014-08-19T15:10:07Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="490369486" lat="56.0159385" lon="9.6376567" version="2" timestamp="2014-08-20T14:45:13Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="490369564" lat="56.0164210" lon="9.6381160" version="1" timestamp="2009-09-09T00:48:33Z" changeset="2420454" uid="43824" user="JND"/>
+  <node id="490369572" lat="55.9966435" lon="9.6160266" version="3" timestamp="2013-07-23T10:14:00Z" changeset="17059969" uid="207581" user="Hjart"/>
+  <node id="490369577" lat="55.9997872" lon="9.6215406" version="2" timestamp="2014-08-20T14:33:07Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="490369584" lat="55.9990700" lon="9.6200880" version="1" timestamp="2009-09-09T00:48:33Z" changeset="2420454" uid="43824" user="JND"/>
+  <node id="490369596" lat="55.9993805" lon="9.6206086" version="2" timestamp="2014-08-20T14:33:07Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="490369806" lat="56.0018392" lon="9.6235606" version="2" timestamp="2014-08-20T14:33:07Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="490369809" lat="56.0001644" lon="9.6221597" version="2" timestamp="2014-08-20T14:33:07Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="490369821" lat="56.0060376" lon="9.6258603" version="2" timestamp="2014-08-20T14:34:46Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="490369824" lat="56.0068206" lon="9.6265564" version="2" timestamp="2014-08-20T14:43:32Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="490369952" lat="56.0079012" lon="9.6293673" version="2" timestamp="2014-08-20T14:43:32Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="490369955" lat="56.0123289" lon="9.6353521" version="2" timestamp="2014-08-20T14:45:13Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="490369957" lat="56.0111125" lon="9.6341028" version="2" timestamp="2014-08-20T14:45:13Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="490369961" lat="56.0094174" lon="9.6319929" version="2" timestamp="2014-08-20T14:43:32Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="490369965" lat="56.0089400" lon="9.6313270" version="1" timestamp="2009-09-09T00:48:39Z" changeset="2420454" uid="43824" user="JND"/>
+  <node id="490369976" lat="56.0115791" lon="9.6346784" version="2" timestamp="2014-08-20T14:45:13Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="490370007" lat="56.0012533" lon="9.6231513" version="2" timestamp="2014-08-20T14:33:07Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="490370023" lat="56.0071919" lon="9.6271110" version="2" timestamp="2014-08-20T14:43:32Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="490370034" lat="56.0045709" lon="9.6248521" version="2" timestamp="2014-08-20T14:34:46Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="490370038" lat="56.0052038" lon="9.6252010" version="2" timestamp="2014-08-20T14:34:46Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="490370041" lat="56.0084878" lon="9.6305228" version="2" timestamp="2014-08-20T14:43:33Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="667280726" lat="56.0199303" lon="9.6420483" version="3" timestamp="2014-08-19T15:10:07Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="693647636" lat="55.9956942" lon="9.6142746" version="3" timestamp="2014-08-20T15:04:57Z" changeset="24887070" uid="445576" user="Krægpøth"/>
+  <node id="693647638" lat="55.9947399" lon="9.6123528" version="3" timestamp="2014-08-20T15:04:57Z" changeset="24887070" uid="445576" user="Krægpøth"/>
+  <node id="693647639" lat="55.9945341" lon="9.6120840" version="2" timestamp="2013-07-23T10:14:02Z" changeset="17059969" uid="207581" user="Hjart"/>
+  <node id="693647640" lat="55.9942707" lon="9.6119207" version="3" timestamp="2014-08-20T15:04:57Z" changeset="24887070" uid="445576" user="Krægpøth"/>
+  <node id="693647641" lat="55.9915099" lon="9.6106900" version="2" timestamp="2013-07-23T10:14:02Z" changeset="17059969" uid="207581" user="Hjart"/>
+  <node id="693647642" lat="55.9892297" lon="9.6101269" version="2" timestamp="2013-07-23T10:14:02Z" changeset="17059969" uid="207581" user="Hjart"/>
+  <node id="693647643" lat="55.9887308" lon="9.6098853" version="2" timestamp="2013-07-23T10:14:02Z" changeset="17059969" uid="207581" user="Hjart"/>
+  <node id="693647644" lat="55.9877717" lon="9.6090395" version="2" timestamp="2013-07-23T10:14:02Z" changeset="17059969" uid="207581" user="Hjart"/>
+  <node id="693647646" lat="55.9866693" lon="9.6085015" version="2" timestamp="2013-07-23T10:14:02Z" changeset="17059969" uid="207581" user="Hjart"/>
+  <node id="693647647" lat="55.9856984" lon="9.6074428" version="2" timestamp="2013-07-23T10:14:02Z" changeset="17059969" uid="207581" user="Hjart"/>
+  <node id="693647648" lat="55.9850839" lon="9.6072475" version="2" timestamp="2013-07-23T10:14:02Z" changeset="17059969" uid="207581" user="Hjart"/>
+  <node id="693647650" lat="55.9849314" lon="9.6072861" version="2" timestamp="2013-07-23T10:14:02Z" changeset="17059969" uid="207581" user="Hjart"/>
+  <node id="693647651" lat="55.9847152" lon="9.6075913" version="3" timestamp="2013-07-23T10:14:02Z" changeset="17059969" uid="207581" user="Hjart"/>
+  <node id="693647652" lat="55.9846373" lon="9.6083112" version="3" timestamp="2013-07-23T10:14:02Z" changeset="17059969" uid="207581" user="Hjart"/>
+  <node id="693647653" lat="55.9845625" lon="9.6085385" version="3" timestamp="2013-07-23T10:14:02Z" changeset="17059969" uid="207581" user="Hjart"/>
+  <node id="693647655" lat="55.9844997" lon="9.6086061" version="3" timestamp="2013-07-23T10:14:02Z" changeset="17059969" uid="207581" user="Hjart"/>
+  <node id="693647656" lat="55.9843428" lon="9.6086691" version="5" timestamp="2017-06-10T09:13:16Z" changeset="49415941" uid="207581" user="Hjart"/>
+  <node id="970448624" lat="56.0185230" lon="9.6410420" version="2" timestamp="2018-06-05T20:44:21Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="17"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Smedegade"/>
+    <tag k="osak:identifier" v="0a3f508e-b583-32b8-e044-0003ba298018"/>
+    <tag k="source" v="OSAK (2010)"/>
+  </node>
+  <node id="970448669" lat="56.0183620" lon="9.6409690" version="2" timestamp="2018-06-05T20:44:21Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="19A"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Smedegade"/>
+    <tag k="osak:identifier" v="0a3f508e-b585-32b8-e044-0003ba298018"/>
+    <tag k="source" v="OSAK (2010)"/>
+  </node>
+  <node id="970448702" lat="56.0182900" lon="9.6408770" version="2" timestamp="2018-06-05T20:44:21Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="19B"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Smedegade"/>
+    <tag k="osak:identifier" v="0a3f508e-b586-32b8-e044-0003ba298018"/>
+    <tag k="source" v="OSAK (2010)"/>
+  </node>
+  <node id="970448719" lat="56.0183020" lon="9.6414830" version="2" timestamp="2018-06-05T20:44:22Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="19C"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Smedegade"/>
+    <tag k="osak:identifier" v="0a3f508e-b587-32b8-e044-0003ba298018"/>
+    <tag k="source" v="OSAK (2010)"/>
+  </node>
+  <node id="970448750" lat="56.0182210" lon="9.6414220" version="2" timestamp="2018-06-05T20:44:22Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="19D"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Smedegade"/>
+    <tag k="osak:identifier" v="0a3f508e-b588-32b8-e044-0003ba298018"/>
+    <tag k="source" v="OSAK (2010)"/>
+  </node>
+  <node id="970448804" lat="56.0181220" lon="9.6413470" version="2" timestamp="2018-06-05T20:44:22Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="19E"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Smedegade"/>
+    <tag k="osak:identifier" v="0a3f508e-b589-32b8-e044-0003ba298018"/>
+    <tag k="source" v="OSAK (2010)"/>
+  </node>
+  <node id="970448877" lat="56.0180290" lon="9.6403650" version="2" timestamp="2018-06-05T20:44:23Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="21"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Smedegade"/>
+    <tag k="osak:identifier" v="0a3f508e-b58b-32b8-e044-0003ba298018"/>
+    <tag k="source" v="OSAK (2010)"/>
+  </node>
+  <node id="970449146" lat="56.0184940" lon="9.6404600" version="2" timestamp="2018-06-05T20:44:24Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="30"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Smedegade"/>
+    <tag k="osak:identifier" v="0a3f508e-b592-32b8-e044-0003ba298018"/>
+    <tag k="source" v="OSAK (2010)"/>
+  </node>
+  <node id="970449163" lat="56.0177570" lon="9.6401330" version="2" timestamp="2018-06-05T20:44:25Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="31"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Smedegade"/>
+    <tag k="osak:identifier" v="0a3f508e-b593-32b8-e044-0003ba298018"/>
+    <tag k="source" v="OSAK (2010)"/>
+  </node>
+  <node id="970449198" lat="56.0182230" lon="9.6402130" version="2" timestamp="2018-06-05T20:44:25Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="32"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Smedegade"/>
+    <tag k="osak:identifier" v="0a3f508e-b594-32b8-e044-0003ba298018"/>
+    <tag k="source" v="OSAK (2010)"/>
+  </node>
+  <node id="970449284" lat="56.0179340" lon="9.6396670" version="4" timestamp="2018-06-05T20:44:26Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="36"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Smedegade"/>
+    <tag k="osak:identifier" v="0a3f508e-b598-32b8-e044-0003ba298018"/>
+    <tag k="source" v="AWS Web API"/>
+  </node>
+  <node id="973790827" lat="56.0174830" lon="9.6397720" version="2" timestamp="2018-06-05T20:45:06Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="40"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Brokhøjvej"/>
+    <tag k="osak:identifier" v="0a3f508e-a9c9-32b8-e044-0003ba298018"/>
+    <tag k="source" v="OSAK (2010)"/>
+  </node>
+  <node id="973790828" lat="56.0175930" lon="9.6399910" version="3" timestamp="2018-06-05T20:45:06Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="42"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Brokhøjvej"/>
+    <tag k="osak:identifier" v="0a3f508e-a9ca-32b8-e044-0003ba298018"/>
+    <tag k="source" v="AWS Web API"/>
+  </node>
+  <node id="974136012" lat="56.0173160" lon="9.6408110" version="3" timestamp="2018-06-05T20:48:57Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="5"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Granvangen"/>
+    <tag k="osak:identifier" v="0a3f508e-ac26-32b8-e044-0003ba298018"/>
+    <tag k="source" v="AWS Web API"/>
+  </node>
+  <node id="974136025" lat="56.0174350" lon="9.6412550" version="4" timestamp="2018-06-05T20:48:57Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="7"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Granvangen"/>
+    <tag k="osak:identifier" v="0c65634c-c9ff-30a3-e044-0003ba298018"/>
+    <tag k="source" v="AWS Web API"/>
+  </node>
+  <node id="974136028" lat="56.0176050" lon="9.6413760" version="2" timestamp="2018-06-05T20:48:57Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="9"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Granvangen"/>
+    <tag k="osak:identifier" v="0c65634c-ca00-30a3-e044-0003ba298018"/>
+    <tag k="source" v="OSAK (2010)"/>
+  </node>
+  <node id="974136038" lat="56.0174860" lon="9.6420960" version="4" timestamp="2018-06-05T20:48:58Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="10"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Granvangen"/>
+    <tag k="osak:identifier" v="0c65634c-ca01-30a3-e044-0003ba298018"/>
+    <tag k="source" v="AWS Web API"/>
+  </node>
+  <node id="974136053" lat="56.0178450" lon="9.6417280" version="2" timestamp="2018-06-05T20:48:58Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="11"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Granvangen"/>
+    <tag k="osak:identifier" v="0a3f508e-ac27-32b8-e044-0003ba298018"/>
+    <tag k="source" v="OSAK (2010)"/>
+  </node>
+  <node id="974136057" lat="56.0177970" lon="9.6420570" version="3" timestamp="2018-06-05T20:48:58Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="12"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Granvangen"/>
+    <tag k="osak:identifier" v="0a3f508e-ac28-32b8-e044-0003ba298018"/>
+    <tag k="source" v="AWS Web API"/>
+  </node>
+  <node id="974136067" lat="56.0181250" lon="9.6418210" version="2" timestamp="2018-06-05T20:48:58Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="13"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Granvangen"/>
+    <tag k="osak:identifier" v="1b231335-7a57-461c-e044-0003ba298018"/>
+    <tag k="source" v="OSAK (2010)"/>
+  </node>
+  <node id="974136077" lat="56.0178530" lon="9.6425580" version="2" timestamp="2018-06-05T20:48:59Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="14"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Granvangen"/>
+    <tag k="osak:identifier" v="0a3f508e-ac2b-32b8-e044-0003ba298018"/>
+    <tag k="source" v="OSAK (2010)"/>
+  </node>
+  <node id="974136082" lat="56.0180470" lon="9.6425710" version="2" timestamp="2018-06-05T20:48:59Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="15"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Granvangen"/>
+    <tag k="osak:identifier" v="0a3f508e-ac2c-32b8-e044-0003ba298018"/>
+    <tag k="source" v="OSAK (2010)"/>
+  </node>
+  <node id="974136096" lat="56.0178560" lon="9.6429630" version="2" timestamp="2018-06-05T20:48:59Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="16"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Granvangen"/>
+    <tag k="osak:identifier" v="0a3f508e-ac2d-32b8-e044-0003ba298018"/>
+    <tag k="source" v="OSAK (2010)"/>
+  </node>
+  <node id="974136097" lat="56.0180720" lon="9.6429840" version="3" timestamp="2018-06-05T20:48:59Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="17"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Granvangen"/>
+    <tag k="osak:identifier" v="0a3f508e-ac2e-32b8-e044-0003ba298018"/>
+    <tag k="source" v="AWS Web API"/>
+  </node>
+  <node id="974136106" lat="56.0174190" lon="9.6430760" version="2" timestamp="2018-06-05T20:49:00Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="18"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Granvangen"/>
+    <tag k="osak:identifier" v="0c65634c-ca02-30a3-e044-0003ba298018"/>
+    <tag k="source" v="OSAK (2010)"/>
+  </node>
+  <node id="974136114" lat="56.0181360" lon="9.6436560" version="2" timestamp="2018-06-05T20:49:00Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="19"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Granvangen"/>
+    <tag k="osak:identifier" v="0a3f508e-ac2f-32b8-e044-0003ba298018"/>
+    <tag k="source" v="OSAK (2010)"/>
+  </node>
+  <node id="974136120" lat="56.0174070" lon="9.6425900" version="4" timestamp="2018-06-05T20:49:00Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="20"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Granvangen"/>
+    <tag k="osak:identifier" v="0c65634c-ca03-30a3-e044-0003ba298018"/>
+    <tag k="source" v="AWS Web API"/>
+  </node>
+  <node id="974136127" lat="56.0179260" lon="9.6436460" version="2" timestamp="2018-06-05T20:49:01Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="21"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Granvangen"/>
+    <tag k="osak:identifier" v="0a3f508e-ac30-32b8-e044-0003ba298018"/>
+    <tag k="source" v="OSAK (2010)"/>
+  </node>
+  <node id="974136135" lat="56.0176700" lon="9.6437040" version="2" timestamp="2018-06-05T20:49:01Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="23"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Granvangen"/>
+    <tag k="osak:identifier" v="0a3f508e-ac31-32b8-e044-0003ba298018"/>
+    <tag k="source" v="OSAK (2010)"/>
+  </node>
+  <node id="974136139" lat="56.0174490" lon="9.6434560" version="2" timestamp="2018-06-05T20:49:01Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="25"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Granvangen"/>
+    <tag k="osak:identifier" v="0a3f508e-ac32-32b8-e044-0003ba298018"/>
+    <tag k="source" v="OSAK (2010)"/>
+  </node>
+  <node id="974136147" lat="56.0171260" lon="9.6436330" version="2" timestamp="2018-06-05T20:49:01Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="27"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Granvangen"/>
+    <tag k="osak:identifier" v="0a3f508e-ac33-32b8-e044-0003ba298018"/>
+    <tag k="source" v="OSAK (2010)"/>
+  </node>
+  <node id="974136156" lat="56.0170870" lon="9.6431770" version="2" timestamp="2018-06-05T20:49:02Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="29"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Granvangen"/>
+    <tag k="osak:identifier" v="0a3f508e-ac34-32b8-e044-0003ba298018"/>
+    <tag k="source" v="OSAK (2010)"/>
+  </node>
+  <node id="974136160" lat="56.0171530" lon="9.6426040" version="2" timestamp="2018-06-05T20:49:02Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="31"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Granvangen"/>
+    <tag k="osak:identifier" v="0c65634c-ca04-30a3-e044-0003ba298018"/>
+    <tag k="source" v="OSAK (2010)"/>
+  </node>
+  <node id="974136169" lat="56.0172060" lon="9.6421820" version="2" timestamp="2018-06-05T20:49:02Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="33"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Granvangen"/>
+    <tag k="osak:identifier" v="0c65634c-ca05-30a3-e044-0003ba298018"/>
+    <tag k="source" v="OSAK (2010)"/>
+  </node>
+  <node id="974136177" lat="56.0172600" lon="9.6417730" version="4" timestamp="2018-06-05T20:49:02Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="35"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Granvangen"/>
+    <tag k="osak:identifier" v="0c65634c-ca06-30a3-e044-0003ba298018"/>
+    <tag k="source" v="AWS Web API"/>
+  </node>
+  <node id="974138039" lat="56.0184110" lon="9.6437660" version="2" timestamp="2018-06-05T20:49:07Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="5"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Rødkildevej"/>
+    <tag k="osak:identifier" v="0a3f508e-b3a1-32b8-e044-0003ba298018"/>
+    <tag k="source" v="OSAK (2010)"/>
+  </node>
+  <node id="974138040" lat="56.0184240" lon="9.6419670" version="2" timestamp="2018-06-05T20:49:07Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="6"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Rødkildevej"/>
+    <tag k="osak:identifier" v="0a3f508e-b3a2-32b8-e044-0003ba298018"/>
+    <tag k="source" v="OSAK (2010)"/>
+  </node>
+  <node id="974138041" lat="56.0183760" lon="9.6424870" version="2" timestamp="2018-06-05T20:49:07Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="8"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Rødkildevej"/>
+    <tag k="osak:identifier" v="0a3f508e-b3a3-32b8-e044-0003ba298018"/>
+    <tag k="source" v="OSAK (2010)"/>
+  </node>
+  <node id="974138049" lat="56.0183870" lon="9.6430220" version="2" timestamp="2018-06-05T20:49:08Z" changeset="59581457" uid="8209541" user="autoAWS">
+    <tag k="addr:city" v="Brædstrup"/>
+    <tag k="addr:country" v="DK"/>
+    <tag k="addr:housenumber" v="10"/>
+    <tag k="addr:municipality" v="Horsens"/>
+    <tag k="addr:place" v="Sdr Vissing"/>
+    <tag k="addr:postcode" v="8740"/>
+    <tag k="addr:street" v="Rødkildevej"/>
+    <tag k="osak:identifier" v="0a3f508e-b3a4-32b8-e044-0003ba298018"/>
+    <tag k="source" v="OSAK (2010)"/>
+  </node>
+  <node id="1113520624" lat="56.0192453" lon="9.6417059" version="2" timestamp="2014-08-19T15:10:07Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="1113520626" lat="56.0171841" lon="9.6432307" version="2" timestamp="2017-12-25T20:31:13Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="1113520638" lat="56.0190027" lon="9.6432601" version="1" timestamp="2011-01-21T18:31:59Z" changeset="7043104" uid="69425" user="jrjosephsen"/>
+  <node id="1113520641" lat="56.0179549" lon="9.6432755" version="1" timestamp="2011-01-21T18:31:59Z" changeset="7043104" uid="69425" user="jrjosephsen"/>
+  <node id="1113520644" lat="56.0179584" lon="9.6420693" version="3" timestamp="2017-12-25T20:31:13Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="1113520650" lat="56.0173955" lon="9.6415545" version="2" timestamp="2014-03-23T18:45:59Z" changeset="21270711" uid="19775" user="Spectrokid"/>
+  <node id="1113520674" lat="56.0184887" lon="9.6432677" version="1" timestamp="2011-01-21T18:32:00Z" changeset="7043104" uid="69425" user="jrjosephsen"/>
+  <node id="1113520679" lat="56.0195024" lon="9.6418901" version="2" timestamp="2014-08-19T15:10:07Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="1113520683" lat="56.0184869" lon="9.6421121" version="1" timestamp="2011-01-21T18:32:00Z" changeset="7043104" uid="69425" user="jrjosephsen"/>
+  <node id="1113530290" lat="56.0203583" lon="9.6421061" version="2" timestamp="2014-08-19T15:10:07Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="1113542906" lat="56.0097496" lon="9.6324003" version="1" timestamp="2011-01-21T18:45:38Z" changeset="7043104" uid="69425" user="jrjosephsen"/>
+  <node id="1201523703" lat="56.0106113" lon="9.6105754" version="2" timestamp="2014-08-19T14:39:11Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="1201523707" lat="56.0154086" lon="9.6271488" version="2" timestamp="2014-08-19T14:53:36Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="1201523709" lat="56.0084521" lon="9.6081633" version="2" timestamp="2014-08-19T14:34:46Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="1201523711" lat="56.0111531" lon="9.6125549" version="3" timestamp="2014-08-19T14:39:11Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="1201523714" lat="56.0114605" lon="9.6182980" version="3" timestamp="2014-08-19T14:39:11Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="1201523716" lat="56.0091836" lon="9.6099102" version="2" timestamp="2014-08-19T14:34:47Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="1201523721" lat="56.0174766" lon="9.6344272" version="2" timestamp="2014-08-19T14:53:37Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="1201523725" lat="56.0072597" lon="9.6049246" version="1" timestamp="2011-03-14T13:16:47Z" changeset="7556249" uid="69425" user="jrjosephsen"/>
+  <node id="1201523727" lat="56.0142817" lon="9.6243585" version="2" timestamp="2014-08-19T14:49:04Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="1201523729" lat="56.0096122" lon="9.6103549" version="2" timestamp="2014-08-19T14:39:11Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="1201523733" lat="56.0080364" lon="9.6070897" version="2" timestamp="2014-08-19T14:34:46Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="1201523751" lat="56.0132954" lon="9.6232969" version="2" timestamp="2014-08-19T14:49:04Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="1201523755" lat="56.0176812" lon="9.6357878" version="2" timestamp="2014-08-19T15:10:07Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="1201523763" lat="56.0087056" lon="9.6090177" version="2" timestamp="2014-08-19T14:34:46Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="1201523764" lat="56.0078955" lon="9.6065858" version="2" timestamp="2014-08-19T14:34:46Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="1201523765" lat="56.0072957" lon="9.6053446" version="1" timestamp="2011-03-14T13:16:49Z" changeset="7556249" uid="69425" user="jrjosephsen"/>
+  <node id="1201523768" lat="56.0072417" lon="9.6051837" version="1" timestamp="2011-03-14T13:16:50Z" changeset="7556249" uid="69425" user="jrjosephsen"/>
+  <node id="1201523772" lat="56.0162633" lon="9.6311606" version="2" timestamp="2014-08-19T14:53:37Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="1201523774" lat="56.0125499" lon="9.6221776" version="1" timestamp="2011-03-14T13:16:50Z" changeset="7556249" uid="69425" user="jrjosephsen"/>
+  <node id="1201523785" lat="56.0108229" lon="9.6109812" version="2" timestamp="2014-08-19T14:39:11Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="1201523786" lat="56.0107013" lon="9.6106773" version="2" timestamp="2014-08-19T14:39:11Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="1201523790" lat="56.0112739" lon="9.6170377" version="3" timestamp="2014-08-19T14:39:11Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="1201523792" lat="56.0149728" lon="9.6258791" version="1" timestamp="2011-03-14T13:16:51Z" changeset="7556249" uid="69425" user="jrjosephsen"/>
+  <node id="1201523794" lat="56.0141971" lon="9.6242071" version="2" timestamp="2014-08-19T14:49:04Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="1201523808" lat="56.0115878" lon="9.6198271" version="2" timestamp="2014-08-19T14:39:11Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="1201523822" lat="56.0172841" lon="9.6336456" version="2" timestamp="2014-08-19T14:53:36Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="1201523835" lat="56.0157658" lon="9.6283751" version="2" timestamp="2014-08-19T14:53:36Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="1492367371" lat="56.0129614" lon="9.6228744" version="2" timestamp="2014-08-19T14:39:11Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="1596241457" lat="56.0228177" lon="9.6442527" version="5" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="1596241502" lat="56.0112012" lon="9.6137074" version="2" timestamp="2014-08-19T14:39:11Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="1596241505" lat="56.0115194" lon="9.6192955" version="2" timestamp="2014-08-19T14:39:11Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="1865677661" lat="56.0181855" lon="9.6348596" version="2" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="1865677758" lat="56.0187717" lon="9.6385744" version="2" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="1865677795" lat="56.0176263" lon="9.6349347" version="2" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="2091614658" lat="55.9998972" lon="9.6217667" version="2" timestamp="2014-08-20T14:33:07Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="2091614662" lat="56.0081275" lon="9.6298641" version="2" timestamp="2014-08-20T14:43:33Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="2091614668" lat="56.0032129" lon="9.6242255" version="2" timestamp="2014-08-20T14:33:07Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="2390334531" lat="55.9848006" lon="9.6074428" version="2" timestamp="2013-07-23T10:13:57Z" changeset="17059969" uid="207581" user="Hjart"/>
+  <node id="2390334552" lat="55.9846775" lon="9.6078077" version="2" timestamp="2013-07-23T10:13:57Z" changeset="17059969" uid="207581" user="Hjart"/>
+  <node id="2393740217" lat="55.9846116" lon="9.6084334" version="1" timestamp="2013-07-23T10:13:19Z" changeset="17059969" uid="207581" user="Hjart"/>
+  <node id="2393740223" lat="55.9856064" lon="9.6073746" version="2" timestamp="2014-08-20T15:10:58Z" changeset="24887070" uid="445576" user="Krægpøth"/>
+  <node id="2393740231" lat="55.9868786" lon="9.6086741" version="1" timestamp="2013-07-23T10:13:19Z" changeset="17059969" uid="207581" user="Hjart"/>
+  <node id="2393740232" lat="55.9870443" lon="9.6087777" version="1" timestamp="2013-07-23T10:13:19Z" changeset="17059969" uid="207581" user="Hjart"/>
+  <node id="2393740233" lat="55.9880549" lon="9.6092351" version="1" timestamp="2013-07-23T10:13:19Z" changeset="17059969" uid="207581" user="Hjart"/>
+  <node id="2393740234" lat="55.9889980" lon="9.6100435" version="1" timestamp="2013-07-23T10:13:19Z" changeset="17059969" uid="207581" user="Hjart"/>
+  <node id="2393740241" lat="55.9919183" lon="9.6108385" version="1" timestamp="2013-07-23T10:13:19Z" changeset="17059969" uid="207581" user="Hjart"/>
+  <node id="2393740254" lat="55.9980349" lon="9.6188257" version="2" timestamp="2014-08-20T14:33:07Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="2737468030" lat="56.0154476" lon="9.6373350" version="2" timestamp="2014-08-20T14:45:13Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="2737468034" lat="56.0155003" lon="9.6274529" version="2" timestamp="2014-08-19T14:53:36Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="2737468053" lat="56.0157005" lon="9.6375061" version="2" timestamp="2014-08-20T14:45:13Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="2737468066" lat="56.0158814" lon="9.6289683" version="1" timestamp="2014-03-23T18:45:39Z" changeset="21270711" uid="19775" user="Spectrokid"/>
+  <node id="2737468082" lat="56.0160894" lon="9.6301837" version="2" timestamp="2014-08-19T14:53:36Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="2737468086" lat="56.0161379" lon="9.6378219" version="1" timestamp="2014-03-23T18:45:39Z" changeset="21270711" uid="19775" user="Spectrokid"/>
+  <node id="2737468101" lat="56.0167658" lon="9.6439093" version="2" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="2737468103" lat="56.0167292" lon="9.6385426" version="2" timestamp="2014-08-20T14:49:38Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="2737468109" lat="56.0171091" lon="9.6413153" version="1" timestamp="2014-03-23T18:45:39Z" changeset="21270711" uid="19775" user="Spectrokid"/>
+  <node id="2737468113" lat="56.0173850" lon="9.6393067" version="2" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="2737468114" lat="56.0173941" lon="9.6394096" version="2" timestamp="2014-08-19T15:10:07Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="2737468116" lat="56.0175604" lon="9.6350071" version="2" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="2737468118" lat="56.0176698" lon="9.6395239" version="2" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="2737468120" lat="56.0183255" lon="9.6365939" version="1" timestamp="2014-03-23T18:45:39Z" changeset="21270711" uid="19775" user="Spectrokid"/>
+  <node id="2737468122" lat="56.0186963" lon="9.6410684" version="2" timestamp="2014-08-19T15:10:07Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="2737468126" lat="56.0190415" lon="9.6463931" version="2" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="2737468128" lat="56.0188661" lon="9.6363643" version="2" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="2737468130" lat="56.0189591" lon="9.6439522" version="2" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="2737468154" lat="56.0191291" lon="9.6383113" version="2" timestamp="2014-08-19T15:10:07Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="2737468161" lat="56.0191540" lon="9.6401677" version="2" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="2737468182" lat="56.0195512" lon="9.6467820" version="2" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="2737468185" lat="56.0196667" lon="9.6398431" version="2" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="2737468186" lat="56.0196772" lon="9.6410555" version="2" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="2737468195" lat="56.0200414" lon="9.6474552" version="2" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="2737468203" lat="56.0201689" lon="9.6396044" version="2" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="2737468209" lat="56.0199425" lon="9.6482196" version="2" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="2737468223" lat="56.0203787" lon="9.6402106" version="2" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="2737468225" lat="56.0203548" lon="9.6389848" version="2" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="2737468238" lat="56.0206156" lon="9.6401274" version="2" timestamp="2017-12-25T19:54:05Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="2737468298" lat="56.0208450" lon="9.6485227" version="2" timestamp="2017-12-25T19:54:05Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="2737468316" lat="56.0208463" lon="9.6421469" version="1" timestamp="2014-03-23T18:45:41Z" changeset="21270711" uid="19775" user="Spectrokid"/>
+  <node id="2737468340" lat="56.0208494" lon="9.6467364" version="2" timestamp="2017-12-25T19:54:05Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="2737468706" lat="56.0221011" lon="9.6466130" version="2" timestamp="2017-12-25T19:54:05Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="2737468708" lat="56.0225603" lon="9.6358287" version="1" timestamp="2014-03-23T18:45:44Z" changeset="21270711" uid="19775" user="Spectrokid"/>
+  <node id="2737468766" lat="56.0226967" lon="9.6401607" version="2" timestamp="2014-11-29T15:34:57Z" changeset="27111419" uid="445576" user="Krægpøth"/>
+  <node id="2737468858" lat="56.0235954" lon="9.6362917" version="1" timestamp="2014-03-23T18:45:46Z" changeset="21270711" uid="19775" user="Spectrokid"/>
+  <node id="2737468868" lat="56.0231253" lon="9.6412874" version="2" timestamp="2014-11-29T15:34:57Z" changeset="27111419" uid="445576" user="Krægpøth"/>
+  <node id="2737468872" lat="56.0238839" lon="9.6364104" version="2" timestamp="2014-11-29T15:34:57Z" changeset="27111419" uid="445576" user="Krægpøth"/>
+  <node id="2737468879" lat="56.0239803" lon="9.6427187" version="2" timestamp="2014-11-29T15:34:58Z" changeset="27111419" uid="445576" user="Krægpøth"/>
+  <node id="2737468885" lat="56.0241068" lon="9.6415651" version="3" timestamp="2017-12-25T19:54:05Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="3027573815" lat="56.0081218" lon="9.6073739" version="1" timestamp="2014-08-19T14:34:45Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027573821" lat="56.0083808" lon="9.6079588" version="1" timestamp="2014-08-19T14:34:45Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027573825" lat="56.0077020" lon="9.6060930" version="1" timestamp="2014-08-19T14:34:46Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027573829" lat="56.0086139" lon="9.6087701" version="1" timestamp="2014-08-19T14:34:46Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027576834" lat="56.0088176" lon="9.6092505" version="1" timestamp="2014-08-19T14:34:46Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027576840" lat="56.0078116" lon="9.6063449" version="1" timestamp="2014-08-19T14:34:46Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027576841" lat="56.0085132" lon="9.6083949" version="1" timestamp="2014-08-19T14:34:46Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027584016" lat="56.0114917" lon="9.6187404" version="1" timestamp="2014-08-19T14:39:09Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027584022" lat="56.0103017" lon="9.6104861" version="1" timestamp="2014-08-19T14:39:09Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027584026" lat="56.0124622" lon="9.6220271" version="1" timestamp="2014-08-19T14:39:09Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027584027" lat="56.0111730" lon="9.6129159" version="1" timestamp="2014-08-19T14:39:09Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027584029" lat="56.0112437" lon="9.6166962" version="1" timestamp="2014-08-19T14:39:09Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027584032" lat="56.0116827" lon="9.6200879" version="1" timestamp="2014-08-19T14:39:09Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027584134" lat="56.0111098" lon="9.6122706" version="1" timestamp="2014-08-19T14:39:09Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027584137" lat="56.0112284" lon="9.6152377" version="1" timestamp="2014-08-19T14:39:09Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027584138" lat="56.0100175" lon="9.6104569" version="1" timestamp="2014-08-19T14:39:09Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027584139" lat="56.0109453" lon="9.6115571" version="1" timestamp="2014-08-19T14:39:10Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027584140" lat="56.0097725" lon="9.6104110" version="1" timestamp="2014-08-19T14:39:10Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027584141" lat="56.0128053" lon="9.6226255" version="1" timestamp="2014-08-19T14:39:10Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027584143" lat="56.0094443" lon="9.6102435" version="1" timestamp="2014-08-19T14:39:10Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027584148" lat="56.0114140" lon="9.6179511" version="1" timestamp="2014-08-19T14:39:10Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027584150" lat="56.0112306" lon="9.6163223" version="1" timestamp="2014-08-19T14:39:10Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027584153" lat="56.0107748" lon="9.6108299" version="1" timestamp="2014-08-19T14:39:10Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027584155" lat="56.0093113" lon="9.6101045" version="1" timestamp="2014-08-19T14:39:10Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027584156" lat="56.0115479" lon="9.6195976" version="1" timestamp="2014-08-19T14:39:10Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027584157" lat="56.0104846" lon="9.6105263" version="1" timestamp="2014-08-19T14:39:10Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027609830" lat="56.0140808" lon="9.6240560" version="1" timestamp="2014-08-19T14:49:02Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027613253" lat="56.0139518" lon="9.6239158" version="1" timestamp="2014-08-19T14:49:02Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027613254" lat="56.0135750" lon="9.6235694" version="1" timestamp="2014-08-19T14:49:02Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027613259" lat="56.0130782" lon="9.6230492" version="1" timestamp="2014-08-19T14:49:02Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027613266" lat="56.0148102" lon="9.6255108" version="1" timestamp="2014-08-19T14:49:03Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027626239" lat="56.0171907" lon="9.6333610" version="1" timestamp="2014-08-19T14:53:35Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027626248" lat="56.0174157" lon="9.6341491" version="1" timestamp="2014-08-19T14:53:35Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027626253" lat="56.0162312" lon="9.6309846" version="1" timestamp="2014-08-19T14:53:35Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027626254" lat="56.0163544" lon="9.6314572" version="1" timestamp="2014-08-19T14:53:35Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027626258" lat="56.0157136" lon="9.6281396" version="1" timestamp="2014-08-19T14:53:35Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027641959" lat="56.0180038" lon="9.6401830" version="1" timestamp="2014-08-19T15:10:02Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027641965" lat="56.0182319" lon="9.6371918" version="1" timestamp="2014-08-19T15:10:02Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027641968" lat="56.0184935" lon="9.6407958" version="1" timestamp="2014-08-19T15:10:02Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027641995" lat="56.0190617" lon="9.6415339" version="1" timestamp="2014-08-19T15:10:02Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027642007" lat="56.0177188" lon="9.6365235" version="1" timestamp="2014-08-19T15:10:03Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027642017" lat="56.0200985" lon="9.6420710" version="1" timestamp="2014-08-19T15:10:03Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027653635" lat="56.0181749" lon="9.6389513" version="1" timestamp="2014-08-19T15:10:03Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027653640" lat="56.0196292" lon="9.6419514" version="1" timestamp="2014-08-19T15:10:03Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027653644" lat="56.0177155" lon="9.6368806" version="1" timestamp="2014-08-19T15:10:03Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027653660" lat="56.0181479" lon="9.6393912" version="1" timestamp="2014-08-19T15:10:04Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027653663" lat="56.0177206" lon="9.6377353" version="1" timestamp="2014-08-19T15:10:04Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027653664" lat="56.0181374" lon="9.6394851" version="1" timestamp="2014-08-19T15:10:04Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027653665" lat="56.0181629" lon="9.6392651" version="1" timestamp="2014-08-19T15:10:04Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027653679" lat="56.0180580" lon="9.6399437" version="1" timestamp="2014-08-19T15:10:04Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027653681" lat="56.0176229" lon="9.6353037" version="1" timestamp="2014-08-19T15:10:04Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3027653684" lat="56.0186142" lon="9.6403916" version="1" timestamp="2014-08-19T15:10:04Z" changeset="24860931" uid="445576" user="Krægpøth"/>
+  <node id="3029728495" lat="56.0073697" lon="9.6054809" version="1" timestamp="2014-08-20T14:13:03Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="3029738062" lat="56.0079716" lon="9.6068581" version="1" timestamp="2014-08-20T14:22:31Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="3029753478" lat="55.9970653" lon="9.6168596" version="1" timestamp="2014-08-20T14:33:06Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="3029753480" lat="55.9992722" lon="9.6204023" version="1" timestamp="2014-08-20T14:33:06Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="3029753483" lat="55.9979570" lon="9.6187042" version="1" timestamp="2014-08-20T14:33:07Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="3029753484" lat="55.9976348" lon="9.6180599" version="1" timestamp="2014-08-20T14:33:07Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="3029753488" lat="56.0000218" lon="9.6219803" version="1" timestamp="2014-08-20T14:33:07Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="3029753490" lat="56.0014522" lon="9.6233165" version="1" timestamp="2014-08-20T14:33:07Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="3029753492" lat="56.0016613" lon="9.6234686" version="1" timestamp="2014-08-20T14:33:07Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="3029753494" lat="55.9981618" lon="9.6189864" version="1" timestamp="2014-08-20T14:33:07Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="3029753497" lat="56.0003245" lon="9.6223499" version="1" timestamp="2014-08-20T14:33:07Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="3029753498" lat="55.9991700" lon="9.6202304" version="1" timestamp="2014-08-20T14:33:07Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="3029757301" lat="56.0049702" lon="9.6250541" version="1" timestamp="2014-08-20T14:34:46Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="3029757304" lat="56.0062767" lon="9.6260577" version="1" timestamp="2014-08-20T14:34:46Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="3029763269" lat="56.0080154" lon="9.6296551" version="1" timestamp="2014-08-20T14:43:28Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="3029763289" lat="56.0091941" lon="9.6317067" version="1" timestamp="2014-08-20T14:43:29Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="3029763301" lat="56.0065305" lon="9.6262855" version="1" timestamp="2014-08-20T14:43:29Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="3029763305" lat="56.0071170" lon="9.6269437" version="1" timestamp="2014-08-20T14:43:29Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="3029764345" lat="56.0069974" lon="9.6267570" version="1" timestamp="2014-08-20T14:43:30Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="3029766840" lat="56.0118207" lon="9.6349477" version="1" timestamp="2014-08-20T14:45:13Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="3029766846" lat="56.0121012" lon="9.6352026" version="1" timestamp="2014-08-20T14:45:13Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="3029773406" lat="56.0167041" lon="9.6385079" version="1" timestamp="2014-08-20T14:49:36Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="3029773416" lat="56.0161178" lon="9.6303439" version="1" timestamp="2014-08-20T14:49:36Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="3029773456" lat="56.0163822" lon="9.6380756" version="1" timestamp="2014-08-20T14:49:37Z" changeset="24886083" uid="445576" user="Krægpøth"/>
+  <node id="3029784468" lat="55.9916176" lon="9.6107292" version="1" timestamp="2014-08-20T14:57:23Z" changeset="24887070" uid="445576" user="Krægpøth"/>
+  <node id="3029796000" lat="55.9946201" lon="9.6121834" version="2" timestamp="2014-08-20T15:09:49Z" changeset="24887070" uid="445576" user="Krægpøth"/>
+  <node id="3029796013" lat="55.9955830" lon="9.6140692" version="1" timestamp="2014-08-20T15:04:55Z" changeset="24887070" uid="445576" user="Krægpøth"/>
+  <node id="3029796031" lat="55.9944311" lon="9.6120084" version="1" timestamp="2014-08-20T15:04:56Z" changeset="24887070" uid="445576" user="Krægpøth"/>
+  <node id="3029802411" lat="55.9959662" lon="9.6147766" version="1" timestamp="2014-08-20T15:09:47Z" changeset="24887070" uid="445576" user="Krægpøth"/>
+  <node id="3029802429" lat="55.9957876" lon="9.6144469" version="1" timestamp="2014-08-20T15:09:47Z" changeset="24887070" uid="445576" user="Krægpøth"/>
+  <node id="3029802978" lat="55.9948851" lon="9.6126484" version="1" timestamp="2014-08-20T15:09:48Z" changeset="24887070" uid="445576" user="Krægpøth"/>
+  <node id="3029803458" lat="55.9854921" lon="9.6073192" version="1" timestamp="2014-08-20T15:10:58Z" changeset="24887070" uid="445576" user="Krægpøth"/>
+  <node id="3029821951" lat="56.0189456" lon="9.6444816" version="1" timestamp="2014-08-20T15:22:08Z" changeset="24887633" uid="445576" user="Krægpøth"/>
+  <node id="3029821953" lat="56.0181991" lon="9.6405227" version="1" timestamp="2014-08-20T15:22:08Z" changeset="24887633" uid="445576" user="Krægpøth"/>
+  <node id="3029821954" lat="56.0179352" lon="9.6408606" version="1" timestamp="2014-08-20T15:22:08Z" changeset="24887633" uid="445576" user="Krægpøth"/>
+  <node id="3029821955" lat="56.0174465" lon="9.6409894" version="1" timestamp="2014-08-20T15:22:08Z" changeset="24887633" uid="445576" user="Krægpøth"/>
+  <node id="3029821961" lat="56.0182567" lon="9.6404995" version="1" timestamp="2014-08-20T15:22:08Z" changeset="24887633" uid="445576" user="Krægpøth"/>
+  <node id="3029821962" lat="56.0181481" lon="9.6410162" version="1" timestamp="2014-08-20T15:22:08Z" changeset="24887633" uid="445576" user="Krægpøth"/>
+  <node id="3029821963" lat="56.0183580" lon="9.6412951" version="1" timestamp="2014-08-20T15:22:08Z" changeset="24887633" uid="445576" user="Krægpøth"/>
+  <node id="3029821968" lat="56.0189576" lon="9.6439881" version="1" timestamp="2014-08-20T15:22:08Z" changeset="24887633" uid="445576" user="Krægpøth"/>
+  <node id="3029821972" lat="56.0180941" lon="9.6409143" version="1" timestamp="2014-08-20T15:22:08Z" changeset="24887633" uid="445576" user="Krægpøth"/>
+  <node id="3029821975" lat="56.0167898" lon="9.6438969" version="1" timestamp="2014-08-20T15:22:08Z" changeset="24887633" uid="445576" user="Krægpøth"/>
+  <node id="3029821976" lat="56.0195498" lon="9.6419130" version="1" timestamp="2014-08-20T15:22:08Z" changeset="24887633" uid="445576" user="Krægpøth"/>
+  <node id="3029821977" lat="56.0183820" lon="9.6413649" version="1" timestamp="2014-08-20T15:22:08Z" changeset="24887633" uid="445576" user="Krægpøth"/>
+  <node id="3029821981" lat="56.0164270" lon="9.6402491" version="1" timestamp="2014-08-20T15:22:08Z" changeset="24887633" uid="445576" user="Krægpøth"/>
+  <node id="3029821987" lat="56.0178393" lon="9.6412898" version="1" timestamp="2014-08-20T15:22:09Z" changeset="24887633" uid="445576" user="Krægpøth"/>
+  <node id="3029821991" lat="56.0171436" lon="9.6407641" version="1" timestamp="2014-08-20T15:22:09Z" changeset="24887633" uid="445576" user="Krægpøth"/>
+  <node id="3029821995" lat="56.0181301" lon="9.6409304" version="1" timestamp="2014-08-20T15:22:09Z" changeset="24887633" uid="445576" user="Krægpøth"/>
+  <node id="3029867316" lat="56.0086202" lon="9.6307582" version="1" timestamp="2014-08-20T15:49:25Z" changeset="24888192" uid="445576" user="Krægpøth"/>
+  <node id="3029867322" lat="56.0083529" lon="9.6302762" version="1" timestamp="2014-08-20T15:49:25Z" changeset="24888192" uid="445576" user="Krægpøth"/>
+  <node id="3210875357" lat="56.0234432" lon="9.6413194" version="1" timestamp="2014-11-29T15:34:50Z" changeset="27111419" uid="445576" user="Krægpøth"/>
+  <node id="3210876565" lat="56.0235390" lon="9.6418129" version="1" timestamp="2014-11-29T15:34:50Z" changeset="27111419" uid="445576" user="Krægpøth"/>
+  <node id="3210876652" lat="56.0243406" lon="9.6426675" version="2" timestamp="2017-12-25T19:54:05Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="3210876660" lat="56.0238849" lon="9.6415839" version="2" timestamp="2017-12-25T19:54:05Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="3210876676" lat="56.0230403" lon="9.6404828" version="2" timestamp="2017-12-25T19:54:05Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="3210876697" lat="56.0242717" lon="9.6418816" version="2" timestamp="2017-12-25T19:54:05Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="3210876707" lat="56.0238849" lon="9.6417877" version="2" timestamp="2017-12-25T19:54:05Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="3210876796" lat="56.0229076" lon="9.6406075" version="2" timestamp="2017-12-25T19:54:05Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="3681024940" lat="56.0072530" lon="9.6050212" version="1" timestamp="2015-08-04T18:26:23Z" changeset="33106692" uid="200245" user="docschenk"/>
+  <node id="4710860636" lat="56.0205528" lon="9.6421224" version="1" timestamp="2017-02-28T23:35:12Z" changeset="46480729" uid="1288" user="Niels Elgaard Larsen"/>
+  <node id="5303629063" lat="56.0237740" lon="9.6435767" version="1" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="5303629064" lat="56.0233993" lon="9.6437377" version="1" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="5303629065" lat="56.0234308" lon="9.6433139" version="1" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="5303629066" lat="56.0239059" lon="9.6435606" version="1" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="5303629067" lat="56.0240004" lon="9.6433139" version="1" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="5303629068" lat="56.0232389" lon="9.6442889" version="1" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="5303629069" lat="56.0177043" lon="9.6377376" version="1" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="5303629070" lat="56.0176113" lon="9.6395910" version="1" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="5303629071" lat="56.0176863" lon="9.6365815" version="1" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="5303629072" lat="56.0176428" lon="9.6358225" version="1" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="5303629073" lat="56.0181405" lon="9.6346664" version="1" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="5303629074" lat="56.0196509" lon="9.6410434" version="1" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="5303629075" lat="56.0204222" lon="9.6388721" version="1" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="5303629076" lat="56.0214806" lon="9.6386039" version="1" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="5303629077" lat="56.0214723" lon="9.6382177" version="1" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="5303629078" lat="56.0220457" lon="9.6381426" version="1" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="5303629079" lat="56.0221251" lon="9.6372011" version="1" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="5303629080" lat="56.0221596" lon="9.6357715" version="1" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="5303629081" lat="56.0226003" lon="9.6461168" version="1" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="5303629082" lat="56.0227607" lon="9.6457842" version="1" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="5303629083" lat="56.0217489" lon="9.6471173" version="1" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="5303629084" lat="56.0207265" lon="9.6478844" version="1" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="5303629085" lat="56.0197431" lon="9.6473291" version="1" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="5303629086" lat="56.0192934" lon="9.6464467" version="1" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="5303629087" lat="56.0190235" lon="9.6455857" version="1" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="5303629088" lat="56.0190625" lon="9.6457359" version="1" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="5303629089" lat="56.0189396" lon="9.6444619" version="1" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="5303629090" lat="56.0170671" lon="9.6413773" version="1" timestamp="2017-12-25T19:54:04Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <node id="5303668859" lat="56.0182125" lon="9.6432717" version="1" timestamp="2017-12-25T20:31:12Z" changeset="54914641" uid="207581" user="Hjart">
+    <tag k="barrier" v="cycle_barrier"/>
+  </node>
+  <node id="5303668860" lat="56.0178969" lon="9.6419312" version="1" timestamp="2017-12-25T20:31:12Z" changeset="54914641" uid="207581" user="Hjart"/>
+  <way id="40474654" version="20" timestamp="2015-05-11T07:32:00Z" changeset="30988951" uid="2849804" user="TrafikAlarm">
+    <nd ref="490369483"/>
+    <nd ref="2737468114"/>
+    <nd ref="2737468103"/>
+    <nd ref="3029773406"/>
+    <nd ref="490369564"/>
+    <nd ref="3029773456"/>
+    <nd ref="2737468086"/>
+    <nd ref="490369486"/>
+    <nd ref="2737468053"/>
+    <nd ref="2737468030"/>
+    <nd ref="490369955"/>
+    <nd ref="3029766846"/>
+    <nd ref="3029766840"/>
+    <nd ref="490369976"/>
+    <nd ref="490369957"/>
+    <nd ref="1113542906"/>
+    <nd ref="490369961"/>
+    <nd ref="3029763289"/>
+    <nd ref="490369965"/>
+    <nd ref="3029867316"/>
+    <nd ref="490370041"/>
+    <nd ref="3029867322"/>
+    <nd ref="2091614662"/>
+    <nd ref="3029763269"/>
+    <nd ref="490369952"/>
+    <nd ref="490370023"/>
+    <nd ref="3029763305"/>
+    <nd ref="3029764345"/>
+    <nd ref="490369824"/>
+    <nd ref="3029763301"/>
+    <nd ref="3029757304"/>
+    <nd ref="490369821"/>
+    <nd ref="490370038"/>
+    <nd ref="3029757301"/>
+    <nd ref="490370034"/>
+    <nd ref="2091614668"/>
+    <nd ref="490369806"/>
+    <nd ref="3029753492"/>
+    <nd ref="3029753490"/>
+    <nd ref="490370007"/>
+    <nd ref="3029753497"/>
+    <nd ref="490369809"/>
+    <nd ref="3029753488"/>
+    <nd ref="2091614658"/>
+    <nd ref="490369577"/>
+    <nd ref="490369596"/>
+    <nd ref="3029753480"/>
+    <nd ref="3029753498"/>
+    <nd ref="490369584"/>
+    <nd ref="3029753494"/>
+    <nd ref="2393740254"/>
+    <nd ref="3029753483"/>
+    <nd ref="490369474"/>
+    <nd ref="3029753484"/>
+    <nd ref="3029753478"/>
+    <nd ref="490369572"/>
+    <nd ref="3029802411"/>
+    <nd ref="3029802429"/>
+    <nd ref="693647636"/>
+    <nd ref="3029796013"/>
+    <nd ref="3029802978"/>
+    <nd ref="693647638"/>
+    <nd ref="3029796000"/>
+    <nd ref="693647639"/>
+    <nd ref="3029796031"/>
+    <nd ref="693647640"/>
+    <nd ref="2393740241"/>
+    <nd ref="3029784468"/>
+    <nd ref="693647641"/>
+    <nd ref="693647642"/>
+    <nd ref="2393740234"/>
+    <nd ref="693647643"/>
+    <nd ref="2393740233"/>
+    <nd ref="693647644"/>
+    <nd ref="2393740232"/>
+    <nd ref="2393740231"/>
+    <nd ref="693647646"/>
+    <nd ref="693647647"/>
+    <nd ref="2393740223"/>
+    <nd ref="3029803458"/>
+    <nd ref="693647648"/>
+    <nd ref="693647650"/>
+    <nd ref="2390334531"/>
+    <nd ref="693647651"/>
+    <nd ref="2390334552"/>
+    <nd ref="693647652"/>
+    <nd ref="2393740217"/>
+    <nd ref="693647653"/>
+    <nd ref="693647655"/>
+    <nd ref="693647656"/>
+    <tag k="highway" v="tertiary"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Brokhøjvej"/>
+  </way>
+  <way id="52502718" version="16" timestamp="2017-12-25T20:31:13Z" changeset="54914641" uid="207581" user="Hjart">
+    <nd ref="490369483"/>
+    <nd ref="3027653663"/>
+    <nd ref="3027653644"/>
+    <nd ref="3027642007"/>
+    <nd ref="1201523755"/>
+    <nd ref="3027653681"/>
+    <nd ref="1201523721"/>
+    <nd ref="3027626248"/>
+    <nd ref="1201523822"/>
+    <nd ref="3027626239"/>
+    <nd ref="3027626254"/>
+    <nd ref="1201523772"/>
+    <nd ref="3027626253"/>
+    <nd ref="3029773416"/>
+    <nd ref="2737468082"/>
+    <nd ref="2737468066"/>
+    <nd ref="1201523835"/>
+    <nd ref="3027626258"/>
+    <nd ref="2737468034"/>
+    <nd ref="1201523707"/>
+    <nd ref="1201523792"/>
+    <nd ref="3027613266"/>
+    <nd ref="1201523727"/>
+    <nd ref="1201523794"/>
+    <nd ref="3027609830"/>
+    <nd ref="3027613253"/>
+    <nd ref="3027613254"/>
+    <nd ref="1201523751"/>
+    <nd ref="3027613259"/>
+    <nd ref="1492367371"/>
+    <nd ref="3027584141"/>
+    <nd ref="1201523774"/>
+    <nd ref="3027584026"/>
+    <nd ref="3027584032"/>
+    <nd ref="1201523808"/>
+    <nd ref="3027584156"/>
+    <nd ref="1596241505"/>
+    <nd ref="3027584016"/>
+    <nd ref="1201523714"/>
+    <nd ref="3027584148"/>
+    <nd ref="1201523790"/>
+    <nd ref="3027584029"/>
+    <nd ref="3027584150"/>
+    <nd ref="3027584137"/>
+    <nd ref="1596241502"/>
+    <nd ref="3027584027"/>
+    <nd ref="1201523711"/>
+    <nd ref="3027584134"/>
+    <nd ref="3027584139"/>
+    <nd ref="1201523785"/>
+    <nd ref="3027584153"/>
+    <nd ref="1201523786"/>
+    <nd ref="1201523703"/>
+    <nd ref="3027584157"/>
+    <nd ref="3027584022"/>
+    <nd ref="3027584138"/>
+    <nd ref="3027584140"/>
+    <nd ref="1201523729"/>
+    <nd ref="3027584143"/>
+    <nd ref="3027584155"/>
+    <nd ref="1201523716"/>
+    <nd ref="3027576834"/>
+    <nd ref="1201523763"/>
+    <nd ref="3027573829"/>
+    <nd ref="3027576841"/>
+    <nd ref="1201523709"/>
+    <nd ref="3027573821"/>
+    <nd ref="3027573815"/>
+    <nd ref="1201523733"/>
+    <nd ref="3029738062"/>
+    <nd ref="1201523764"/>
+    <nd ref="3027576840"/>
+    <nd ref="3027573825"/>
+    <nd ref="3029728495"/>
+    <nd ref="1201523765"/>
+    <nd ref="1201523768"/>
+    <nd ref="3681024940"/>
+    <nd ref="1201523725"/>
+    <tag k="highway" v="unclassified"/>
+    <tag k="name" v="Burgårdevej"/>
+    <tag k="note" v="unfinished"/>
+  </way>
+  <way id="96105612" version="3" timestamp="2017-12-25T20:31:14Z" changeset="54914641" uid="207581" user="Hjart">
+    <nd ref="1113520641"/>
+    <nd ref="1113520644"/>
+    <nd ref="5303668860"/>
+    <nd ref="1113520650"/>
+    <nd ref="1113520626"/>
+    <nd ref="1113520641"/>
+    <nd ref="5303668859"/>
+    <tag k="highway" v="residential"/>
+    <tag k="name" v="Granvangen"/>
+  </way>
+  <way id="96105614" version="3" timestamp="2017-12-25T20:31:14Z" changeset="54914641" uid="207581" user="Hjart">
+    <nd ref="1113520674"/>
+    <nd ref="1113520683"/>
+    <tag k="highway" v="residential"/>
+    <tag k="name" v="Rødkildevej"/>
+  </way>
+  <way id="126246930" version="2" timestamp="2017-12-25T20:31:14Z" changeset="54914641" uid="207581" user="Hjart">
+    <nd ref="5303668859"/>
+    <nd ref="1113520674"/>
+    <nd ref="1113520638"/>
+    <tag k="highway" v="residential"/>
+    <tag k="name" v="Rødkildevej"/>
+  </way>
+  <way id="146355283" version="6" timestamp="2017-02-28T23:35:16Z" changeset="46480729" uid="1288" user="Niels Elgaard Larsen">
+    <nd ref="490369483"/>
+    <nd ref="3027641959"/>
+    <nd ref="3029821961"/>
+    <nd ref="3027641968"/>
+    <nd ref="2737468122"/>
+    <nd ref="251721157"/>
+    <nd ref="3027641995"/>
+    <nd ref="1113520624"/>
+    <nd ref="1113520679"/>
+    <nd ref="3029821976"/>
+    <nd ref="3027653640"/>
+    <nd ref="667280726"/>
+    <nd ref="3027642017"/>
+    <nd ref="1113530290"/>
+    <nd ref="4710860636"/>
+    <nd ref="2737468316"/>
+    <nd ref="251721187"/>
+    <tag k="highway" v="tertiary"/>
+    <tag k="name" v="Smedegade"/>
+  </way>
+  <way id="268411491" version="1" timestamp="2014-03-23T18:45:47Z" changeset="21270711" uid="19775" user="Spectrokid">
+    <nd ref="2737468114"/>
+    <nd ref="2737468109"/>
+    <nd ref="1113520650"/>
+    <tag k="highway" v="residential"/>
+    <tag k="name" v="Granvangen"/>
+  </way>
+  <way id="268411495" version="4" timestamp="2017-12-25T19:54:05Z" changeset="54914641" uid="207581" user="Hjart">
+    <nd ref="2737468116"/>
+    <nd ref="5303629072"/>
+    <nd ref="5303629071"/>
+    <nd ref="5303629069"/>
+    <nd ref="2737468118"/>
+    <nd ref="5303629070"/>
+    <nd ref="2737468113"/>
+    <nd ref="5303629090"/>
+    <nd ref="2737468101"/>
+    <nd ref="2737468130"/>
+    <nd ref="5303629089"/>
+    <nd ref="5303629087"/>
+    <nd ref="5303629088"/>
+    <nd ref="2737468126"/>
+    <nd ref="5303629086"/>
+    <nd ref="2737468182"/>
+    <nd ref="5303629085"/>
+    <nd ref="2737468195"/>
+    <nd ref="2737468209"/>
+    <nd ref="2737468298"/>
+    <nd ref="5303629084"/>
+    <nd ref="2737468340"/>
+    <nd ref="5303629083"/>
+    <nd ref="2737468706"/>
+    <nd ref="5303629081"/>
+    <nd ref="5303629082"/>
+    <nd ref="1596241457"/>
+    <nd ref="5303629068"/>
+    <nd ref="5303629064"/>
+    <nd ref="5303629065"/>
+    <nd ref="5303629063"/>
+    <nd ref="5303629066"/>
+    <nd ref="5303629067"/>
+    <nd ref="2737468879"/>
+    <nd ref="3210876652"/>
+    <nd ref="3210876697"/>
+    <nd ref="2737468885"/>
+    <nd ref="3210876660"/>
+    <nd ref="3210876707"/>
+    <nd ref="3210876565"/>
+    <nd ref="3210875357"/>
+    <nd ref="2737468868"/>
+    <nd ref="3210876676"/>
+    <nd ref="3210876796"/>
+    <nd ref="2737468766"/>
+    <nd ref="2737468872"/>
+    <nd ref="2737468858"/>
+    <nd ref="2737468708"/>
+    <nd ref="5303629080"/>
+    <nd ref="5303629079"/>
+    <nd ref="5303629078"/>
+    <nd ref="5303629077"/>
+    <nd ref="5303629076"/>
+    <nd ref="5303629075"/>
+    <nd ref="2737468225"/>
+    <nd ref="2737468238"/>
+    <nd ref="2737468223"/>
+    <nd ref="2737468203"/>
+    <nd ref="2737468185"/>
+    <nd ref="2737468186"/>
+    <nd ref="5303629074"/>
+    <nd ref="2737468161"/>
+    <nd ref="2737468154"/>
+    <nd ref="1865677758"/>
+    <nd ref="2737468128"/>
+    <nd ref="2737468120"/>
+    <nd ref="1865677661"/>
+    <nd ref="5303629073"/>
+    <nd ref="1865677795"/>
+    <nd ref="2737468116"/>
+    <tag k="landuse" v="residential"/>
+    <tag k="name" v="Sønder Vissing"/>
+    <tag k="place" v="village"/>
+    <tag k="population" v="456"/>
+    <tag k="wikidata" v="Q4413426"/>
+    <tag k="wikipedia" v="da:Sønder Vissing"/>
+  </way>
+  <way id="298818374" version="1" timestamp="2014-08-19T15:10:05Z" changeset="24860931" uid="445576" user="Krægpøth">
+    <nd ref="3027641959"/>
+    <nd ref="3027653679"/>
+    <nd ref="3027653664"/>
+    <nd ref="3027653660"/>
+    <nd ref="3027653665"/>
+    <nd ref="3027653635"/>
+    <nd ref="3027641965"/>
+    <tag k="highway" v="service"/>
+    <tag k="name" v="Smedegade"/>
+    <tag k="service" v="driveway"/>
+  </way>
+  <way id="298818388" version="1" timestamp="2014-08-19T15:10:06Z" changeset="24860931" uid="445576" user="Krægpøth">
+    <nd ref="3027641968"/>
+    <nd ref="3027653684"/>
+    <tag k="highway" v="service"/>
+    <tag k="service" v="driveway"/>
+  </way>
+  <way id="299049686" version="1" timestamp="2014-08-20T15:22:09Z" changeset="24887633" uid="445576" user="Krægpøth">
+    <nd ref="3029821991"/>
+    <nd ref="3029821981"/>
+    <tag k="barrier" v="hedge"/>
+  </way>
+  <way id="299049687" version="1" timestamp="2014-08-20T15:22:09Z" changeset="24887633" uid="445576" user="Krægpøth">
+    <nd ref="3029821951"/>
+    <nd ref="3029821968"/>
+    <nd ref="3029821975"/>
+    <tag k="barrier" v="hedge"/>
+  </way>
+  <way id="299049690" version="1" timestamp="2014-08-20T15:22:09Z" changeset="24887633" uid="445576" user="Krægpøth">
+    <nd ref="3029821953"/>
+    <nd ref="3029821972"/>
+    <tag k="barrier" v="hedge"/>
+  </way>
+  <way id="299049691" version="1" timestamp="2014-08-20T15:22:09Z" changeset="24887633" uid="445576" user="Krægpøth">
+    <nd ref="3029821961"/>
+    <nd ref="3029821995"/>
+    <nd ref="3029821962"/>
+    <nd ref="3029821963"/>
+    <nd ref="3029821977"/>
+    <tag k="highway" v="service"/>
+    <tag k="name" v="Smedegade"/>
+    <tag k="service" v="driveway"/>
+  </way>
+  <way id="299049693" version="1" timestamp="2014-08-20T15:22:09Z" changeset="24887633" uid="445576" user="Krægpøth">
+    <nd ref="3029821954"/>
+    <nd ref="3029821987"/>
+    <nd ref="3029821955"/>
+    <tag k="barrier" v="hedge"/>
+  </way>
+
+</osm>

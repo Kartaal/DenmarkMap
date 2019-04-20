@@ -1,8 +1,8 @@
 package bfst19.Route_parsing;
 
+import bfst19.Line.OSMNode;
+import bfst19.Line.OSMWay;
 import bfst19.Model;
-import bfst19.OSMNode;
-import bfst19.OSMWay;
 import bfst19.WayType;
 
 import java.util.ArrayList;
@@ -90,7 +90,7 @@ public class RouteHandler {
         for(String waytype : drivableCases.keySet()){
             for(String vehicletype : drivableCases.get(waytype).keySet()){
                 ArrayList<String[]> vehicleCases = drivableCases.get(waytype).get(vehicletype);
-                
+
                 vehicletype = vehicletype.split(" ")[0];
                 for(int i = 0 ; i<vehicleCases.size() ; i++){
                     String[] caseTokens = vehicleCases.get(i);
@@ -112,7 +112,7 @@ public class RouteHandler {
         return isNodegraphWay;
     }
 
-    public void addWayToNodeGraph(OSMWay way, WayType type,String name,int speedlimit) {
+    public void addWayToNodeGraph(OSMWay way, WayType type, String name, int speedlimit) {
         HashMap<String,Integer> drivabilltyForWay = drivabillty.get(type.toString());
         OSMNode previousnode = way.get(0);
 

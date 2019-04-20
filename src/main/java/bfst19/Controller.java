@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
@@ -27,6 +28,9 @@ public class Controller {
 
     @FXML
     private BorderPane borderPane;
+
+    @FXML
+    private StackPane stackPane;
 
     public void init(Model model) {
         //TODO: figure out init methods
@@ -67,9 +71,28 @@ public class Controller {
 
     public void parseTheme(boolean colorBlindEnabled){ model.switchColorScheme(colorBlindEnabled);}
 
-    public void parseOnlyRodesMode(boolean enabled){
+    public void parseOnlyRoadsMode(boolean enabled){
         mapCanvas.toggleNonRoads(enabled);
         mapCanvas.repaint();
+    }
+
+    //Initialize PointOfInterestPanel
+    public void setUpPointOfInterestPanel(double x, double y){
+            VBox vBox = null;
+
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("PointOfInterestPanel.fxml"));
+            try {
+                vBox = fxmlLoader.load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            vBox.setLayoutX(x);
+            vBox.setLayoutX(y);
+            stackPane.getChildren().add(vBox);
+
+            ControllerPointOfInterestPanel controllerPointOfInterestPanel = fxmlLoader.getController();
+            controllerPointOfInterestPanel.init(this);
     }
 
     //Initialize BarPanel
@@ -142,7 +165,7 @@ public class Controller {
         double minX = mapCanvas.getModelCoords(0, 0).getY();
         double maxX = mapCanvas.getModelCoords(0, mapCanvas.getHeight()).getY();
         double y = mapCanvas.getModelCoords(0, 0).getX()/model.getLonfactor();
-        scaleText.setText(Scalebar.getScaleText(minX, y, maxX, y, mapCanvas.getWidth()));
+        scaleText.setText(ScaleBar.getScaleText(minX, y, maxX, y, mapCanvas.getWidth()));
     }
 
     public void panToPoint(double x, double y){

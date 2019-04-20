@@ -2,15 +2,12 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import bfst19.AutoTextField?>
-
-
-
 <?import bfst19.AutoTextField?>
+
 <HBox fx:id="BarPanel" maxHeight="50.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bfst19.ControllerBarPanel">
 
 
@@ -29,7 +26,6 @@
          </graphic>
       </Button>
 
-
       <!-- Self-made FXML object AutoTextField which extends the class TextField -->
       <AutoTextField fx:id = "autoTextField" promptText="Search here"/>
 
@@ -46,7 +42,7 @@
          </graphic>
       </Button>
 
-      <Button fx:id="ruteButton" mnemonicParsing="false" onAction="#openRoute" style="-fx-background-color: white;  -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);">
+      <Button fx:id="routeButton" mnemonicParsing="false" onAction="#openRoute" style="-fx-background-color: white;  -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);">
          <HBox.margin>
             <Insets left="5.0" />
          </HBox.margin>

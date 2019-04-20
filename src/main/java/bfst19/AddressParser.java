@@ -39,22 +39,19 @@ public class AddressParser {
         }
     }
 
-
-
-    //Todo: maybe add support for different order
     final String houseRegex = "(?<house>([0-9]{1,3} ?[a-zA-Z]?))?";
     final String floorRegex = "(?<floor>([1-9]{1,3}\\.?)|(1st\\.)|(st\\.))?";
     final String sideRegex = "(?<side>th\\.?|tv\\.?|mf\\.?|md\\.?|([0-9]{1,3}\\.?))?";
 
-    //This only checks the remainder of the string at the end for housenumber, floor and side for the adress.
+    //This only checks the remainder of the string at the end for house number, floor and side for the address.
     final String[] regex = {
             "^"+houseRegex+",? ?"+floorRegex+",? ?"+sideRegex+",?$"
     };
 
     /* Pattern:A regular expression, specified as a string, must first be compiled into an instance of this class
-     * Arrays.stresm:Returns a sequential Stream with the specified array as its source
+     * Arrays.stream:Returns a sequential Stream with the specified array as its source
      * Stream.map: Returns a stream consisting of the results of applying the given function to the elements of this stream.
-     * Patteren. compile: Compiles the given regular expression into a pattern.
+     * Pattern. compile: Compiles the given regular expression into a pattern.
      */
     final Pattern[] patterns =
             Arrays.stream(regex).map(Pattern::compile).toArray(Pattern[]::new);
@@ -103,8 +100,8 @@ public class AddressParser {
             }
         }
 
-        //after all other things have been done, we find the lattitude, longettiude
-        // and Id of the node that this address belongs to in the streetname's file
+        //after all other things have been done, we find the latitude, longitude
+        // and Id of the node that this address belongs to in the streetname file
         if(!b.streetName.equals("Unknown")&&!b.city.equals("")&&!b.postcode.equals("")){
             String[] address = getAddress(country, b.city, b.postcode, b.streetName, b.houseNumber,true).get(0);
             if(!address[0].equals("")) {
@@ -117,22 +114,21 @@ public class AddressParser {
         return b.build();
     }
 
-    //this method gets an address' remaining information from the streetname's text file,
+    //this method gets an address' remaining information from the streetname text file,
     // this information is called addressfields in this method, but is perhaps not the best name
     public ArrayList<String[]> getAddress(String country, String city,
                                           String postcode, String streetName,
                                           String houseNumber, boolean singleSearch){
         ArrayList<String> addressesOnStreet = model.getAddressesOnStreet(country,city,postcode,streetName);
-        String address = addressesOnStreet.get(0);
         ArrayList<String[]> matches = new ArrayList<>();
         String[] addressFields;
-
+        String address;
         if(singleSearch){
             if(houseNumber==null||houseNumber.equals("")){
                 matches.add(new String[]{""});
                 return matches;
             }
-            for(int i = 1 ; i < addressesOnStreet.size()-1 ; i++){
+            for(int i = 0 ; i <= addressesOnStreet.size()-1 ; i++){
                 address = addressesOnStreet.get(i);
                 addressFields=address.split(" ");
                 if(addressFields[3].toLowerCase().equalsIgnoreCase(houseNumber)){
@@ -141,7 +137,7 @@ public class AddressParser {
                 }
             }
         }else{
-            for(int i = 1 ; i < addressesOnStreet.size()-1 ; i++){
+            for(int i = 0 ; i <= addressesOnStreet.size()-1 ; i++){
                 address = addressesOnStreet.get(i);
                 addressFields = address.split(" ");
                 matches.add(addressFields);
@@ -158,7 +154,7 @@ public class AddressParser {
         if (cityMatch[0].equals("")) {
             return "";
         } else {
-            ArrayList<String> streetsInCity = model.getStreetsInCity(country, cityMatch[1], cityMatch[2]);
+            ArrayList<String> streetsInCity = model.textHandler.getStreetsInCity(country, cityMatch[1], cityMatch[2], model);
             String mostCompleteMatch = "";
             for (int i = 0; i < streetsInCity.size(); i++) {
                 String line = streetsInCity.get(i);

@@ -1,7 +1,6 @@
 package bfst19.Route_parsing;
 
-import bfst19.OSMNode;
-import bfst19.OSMWay;
+import bfst19.Line.OSMNode;
 
 import java.util.HashMap;
 
