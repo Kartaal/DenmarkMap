@@ -85,7 +85,7 @@ public class AutoTextField extends TextField {
             for (Label addressLabel : addressLabels) {
                 CustomMenuItem item = new CustomMenuItem(addressLabel, true);
 
-                item.setOnAction((event) -> {
+                item .setOnAction((event) -> {
                     setText(addressLabel.getText());
                 });
                 menuItems.add(item);

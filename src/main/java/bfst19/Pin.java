@@ -2,7 +2,6 @@ package bfst19;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 import javafx.scene.transform.Affine;
 
 public class Pin {
@@ -22,7 +21,7 @@ public class Pin {
         double scale = Math.sqrt(Math.abs(transform.determinant()));
         double width = 0.8 * image.getWidth() / scale;
         double count = Math.max(0.00005, width);
-        gc.drawImage(image, lon - width / 2, lat - width - 0.00001, count, count);
+        gc.drawImage(image, lon - width / 2, lat, count, count);
         System.out.println("DRAW: X: " + lon + " Y: " + lat);
     }
 }
