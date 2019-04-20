@@ -11,13 +11,10 @@ import java.awt.*;
 
 public class ControllerPointOfInterestPanel implements BackBtnEffect {
 
-    @FXML
-    private Button btnPointOfInterest;
+    private Controller controller;
 
     @FXML
     private VBox vBox;
-
-    private Controller controller;
 
     @FXML
     private ImageView clearBtn;
@@ -32,7 +29,15 @@ public class ControllerPointOfInterestPanel implements BackBtnEffect {
     private javafx.scene.control.Label latlon;
 
 
-    public void init(Controller controller) { this.controller = controller; setAddressCoordsLabels("En adresse", 6.66, 6.66 ); }
+    public void init(Controller controller) {
+        this.controller = controller;
+
+        String[] inputArray = AutoTextField.autoTextFieldInput.split("&");
+        String adress = inputArray[0];
+        String x = inputArray[1];
+        String y = inputArray[2];
+
+        setAddressCoordsLabels(adress,x,y);}
 
     @FXML
     private void setBackBtnEffect(){
@@ -57,7 +62,7 @@ public class ControllerPointOfInterestPanel implements BackBtnEffect {
         vBox.setVisible(false);
     }
 
-    private void setAddressCoordsLabels(String location, double x, double y){
+    private void setAddressCoordsLabels(String location, String x, String y){
         address.setText(location);
         latlon.setText(x + ", " + y);
     }

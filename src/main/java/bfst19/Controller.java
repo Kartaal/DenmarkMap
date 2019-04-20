@@ -71,7 +71,7 @@ public class Controller {
     }
 
     //Initialize PointOfInterestPanel
-    public void setUpPointOfInterestPanel(double x, double y){
+    public void setUpPointOfInterestPanel(){
             VBox vBox = null;
 
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("PointOfInterestPanel.fxml"));
@@ -81,8 +81,8 @@ public class Controller {
                 e.printStackTrace();
             }
 
-            vBox.setLayoutX(x);
-            vBox.setLayoutX(y);
+            vBox.setLayoutX(-200);
+            vBox.setLayoutY(200);
             stackPane.getChildren().add(vBox);
 
             ControllerPointOfInterestPanel controllerPointOfInterestPanel = fxmlLoader.getController();
@@ -104,7 +104,7 @@ public class Controller {
             e.printStackTrace();
         }
 
-        borderPane.setLeft(hBox);
+        borderPane.setTop(hBox);
 
         ControllerBarPanel controllerBarPanel = fxmlLoader.getController();
         controllerBarPanel.init(this);

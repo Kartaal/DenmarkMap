@@ -1,5 +1,7 @@
 package bfst19;
 
+import bfst19.KDTree.BoundingBox;
+import bfst19.KDTree.Drawable;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -102,9 +104,14 @@ public class MapCanvas extends Canvas {
                     }else{
                         gc.setStroke(getColor(type));
                         for (Drawable way : model.getWaysOfType(type, getExtentInModel())) way.stroke(gc,singlePixelLength);
+
                     }
                 }
             }
+        }
+        Pin pin = Pin.currentPin;
+        if(pin != null) {
+            pin.drawPin(gc, transform);
         }
     }
 
@@ -163,7 +170,12 @@ public class MapCanvas extends Canvas {
         double centerX = getWidth()/2.0;
         double centerY = getHeight()/2.0;
         Point2D point = transform.transform(x,y);
+
+        System.out.println("X: " + x + " Y: " + y);
+        Pin.currentPin = new Pin(x, y);
+
         pan(centerX-point.getX(),centerY-point.getY());
+
 
     }
 

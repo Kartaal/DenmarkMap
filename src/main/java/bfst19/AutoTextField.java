@@ -15,6 +15,8 @@ public class AutoTextField extends TextField {
     Controller controller;
     Model model;
 
+    public static String autoTextFieldInput;
+
     private ContextMenu addressDropDown;
 
     public AutoTextField(){
@@ -103,7 +105,8 @@ public class AutoTextField extends TextField {
     }
 
     private void panAddress(double x, double y){
+        autoTextFieldInput = this.getText()+"&"+x+"&"+y;
         controller.panToPoint(x,y);
-        controller.setUpPointOfInterestPanel(x, y);
+        controller.setUpPointOfInterestPanel();
     }
 }

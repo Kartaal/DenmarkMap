@@ -76,16 +76,6 @@
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding>
       </VBox>
-
-      <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-            <VBox.margin>
-               <Insets bottom="5.0" left="5.0" right="5.0" top="20.0" />
-            </VBox.margin>
-            <image>
-               <Image url="/point.png" />
-            </image>
-      </ImageView>
-
    </children>
    <padding>
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
