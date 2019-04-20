@@ -1,10 +1,7 @@
 package bfst19;
 
 import bfst19.KDTree.KDTree;
-import bfst19.Route_parsing.DijkstraSP;
-import bfst19.Route_parsing.Edge;
-import bfst19.Route_parsing.EdgeWeightedGraph;
-import bfst19.Route_parsing.Vehicle;
+import bfst19.Route_parsing.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javax.xml.stream.XMLInputFactory;
@@ -17,6 +14,7 @@ import java.util.zip.ZipInputStream;
 import static javax.xml.stream.XMLStreamConstants.*;
 
 public class Model {
+	RouteHandler routeHandler;
 	float lonfactor = 1.0f;
 	private boolean colorBlindEnabled;
 	private String datasetName;
@@ -24,13 +22,14 @@ public class Model {
 
 	List<Runnable> colorObservers = new ArrayList<>();
 	List<Runnable> foundMatchesObservers = new ArrayList<>();
+	List<Runnable> pathObservers = new ArrayList<>();
 	float minlat, minlon, maxlat, maxlon;
 
 	String CurrentTypeColorTxt  = "data/TypeColorsNormal.txt";
 	HashMap<String,ArrayList<String[]>> wayTypeCases = new HashMap<>();
-	HashMap<String,ArrayList<String[]>> drivableCases = new HashMap<>();
 	ObservableList<String[]> foundMatches = FXCollections.observableArrayList();
 	ObservableList<String> typeColors = FXCollections.observableArrayList();
+	ObservableList<Edge> foundPath = FXCollections.observableArrayList();
 	Map<WayType, KDTree> kdTreeMap = new TreeMap<>();
 
 	//for building addresses during parsing
@@ -65,16 +64,15 @@ public class Model {
 	public Iterable<Drawable> getWaysOfType(WayType type, BoundingBox bbox) {
 		return kdTreeMap.get(type).rangeQuery(bbox);
 	}
-
+	public void addPathObserver(Runnable observer){pathObservers.add(observer);}
 	public void addFoundMatchesObserver(Runnable observer) {
 		foundMatchesObservers.add(observer);
 	}
 	public void addColorObserver(Runnable observer) { colorObservers.add(observer); }
-	public void notifyFoundMatchesObservers() {
-		for (Runnable observer : foundMatchesObservers) observer.run();
-	}
-	public void notifyColorObservers() {for (Runnable observer : colorObservers) observer.run();}
 
+	public void notifyFoundMatchesObservers() { for (Runnable observer : foundMatchesObservers) observer.run(); }
+	public void notifyColorObservers() {for (Runnable observer : colorObservers) observer.run();}
+	public void notifyPathObservers(){for(Runnable observer : pathObservers) observer.run();}
 
 	//contructor just for testing of addressparsing
 	public Model(String dataset){
@@ -132,58 +130,9 @@ public class Model {
 			}
 		}
 
-
-
         AddressParser.getInstance(this).setDefaults(getDefault(getDatasetName()));
         AddressParser.getInstance(this).parseCitiesAndPostCodes(getCities(getDatasetName()));
 	}
-
-	private HashMap<String,Integer> parseSpeedDefaults(String filepath){
-		ArrayList<String> cases = getTextFile(filepath);
-		HashMap<String,Integer> speedDefaults = new HashMap<>();
-		for(int i = 0 ; i<cases.size() ; i++){
-			String line = cases.get(i);
-			String[] tokens = line.split(" ");
-			speedDefaults.put(tokens[0],Integer.valueOf(tokens[1]));
-		}
-		return speedDefaults;
-	}
-
-    private HashMap<String,HashMap<String,ArrayList<String[]>>> parseDrivableCases(String filepath) {
-	    ArrayList<String> cases = getTextFile(filepath);
-        HashMap<String,HashMap<String,ArrayList<String[]>>> drivableCases = new HashMap<>();
-
-	    String wayType = cases.get(0);
-		drivableCases.put(wayType,new HashMap<>());
-	    String[] tokens;
-	    String vehicleType = "";
-	    String vehicleDrivable = "";
-	    ArrayList <String[]> vehicleCases = new ArrayList<>();
-
-	    for(int i = 1 ; i<cases.size() ; i++){
-	        String line = cases.get(i);
-	        if(line.startsWith("%")){
-				tokens = cases.get(i+1).split(" ");
-				i++;
-				if(tokens.length==1){
-					System.out.print("boop");
-				}
-				vehicleType = tokens[0];
-				vehicleDrivable = tokens[1];
-				drivableCases.get(wayType).put(vehicleType+" "+vehicleDrivable,vehicleCases);
-	            vehicleCases = new ArrayList<>();
-	        }else if(line.startsWith("$")){
-				drivableCases.get(wayType).put(vehicleType+" "+vehicleDrivable,vehicleCases);
-				wayType = cases.get(i+1);
-	            drivableCases.put(wayType,new HashMap<>());
-	            i++;
-	        }else{
-	        	String[] lineTokens = line.split(" ");
-	        	vehicleCases.add(lineTokens);
-            }
-	    }
-	    return drivableCases;
-    }
 
     public void ParseWayColors(){
 		try {
@@ -223,21 +172,9 @@ public class Model {
 		for (WayType type : WayType.values()) {
 			ways.put(type, new ArrayList<>());
 		}
-		HashMap<String,Integer> speedDefaults = parseSpeedDefaults("data/Speed_cases.txt");
 		EdgeWeightedGraph nodeGraph = new EdgeWeightedGraph();
-		HashMap<String,HashMap<String,ArrayList<String[]>>> drivableCases = parseDrivableCases("data/Drivable_cases.txt");
-		HashMap<String,HashMap<String, Integer>> drivabillty = new HashMap<>();
-
-		for(String wayType : drivableCases.keySet()){
-			drivabillty.put(wayType,new HashMap<>());
-			for(String vehicleType : drivableCases.get(wayType).keySet()){
-				String[] tokens = vehicleType.split(" ");
-				vehicleType = tokens[0];
-				int defaultDrivable = Integer.valueOf(tokens[1]);
-				drivabillty.get(wayType).put(vehicleType,defaultDrivable);
-			}
-		}
-
+		//todo change to other hashmaps or do something else
+		routeHandler = new RouteHandler(this,nodeGraph,new HashMap<>(),new HashMap<>());
 		XMLStreamReader reader = XMLInputFactory
 				.newInstance()
 				.createXMLStreamReader(osmsource);
@@ -336,20 +273,8 @@ public class Model {
 									}
 								}
 							}
-							for(String waytype : drivableCases.keySet()){
-								for(String vehicletype : drivableCases.get(waytype).keySet()){
-									ArrayList<String[]> vehicleCases = drivableCases.get(waytype).get(vehicletype);
-									for(int i = 0 ; i<vehicleCases.size() ; i++){
-										String[] caseTokens = vehicleCases.get(i);
-										if(k.equals(caseTokens[0])&&v.equals(caseTokens[1])){
-											if(caseTokens.length==2){
-												System.out.print("boop");
-											}
-											drivabillty.get(waytype).put(vehicletype,Integer.valueOf(caseTokens[2]));
-										}
-									}
-								}
-							}
+
+							routeHandler.checkDrivabillty(k,v);
 
 							switch (k){
 								case "relation":
@@ -383,51 +308,10 @@ public class Model {
 								ways.get(type).add(new Polyline(way));
 							}
 
-							boolean isNodegraphWay = false;
-							for(String wayType : drivabillty.keySet()){
-								if(type.toString().equals(wayType)){
-									isNodegraphWay = true;
-								}
-							}
-
-							if(isNodegraphWay){
-								HashMap<String,Integer> drivabilltyForWay = drivabillty.get(type.toString());
-								OSMNode previousnode = way.get(0);
-
-								long previousnodeID = previousnode.getAsLong();
-								nodeGraph.addVertex(previousnodeID);
-								for(int i = 1 ; i<way.size() ; i++){
-
-									OSMNode currentNode = way.get(i);
-
-									double previousNodeLat = previousnode.getLat();
-									double previousNodeLon = previousnode.getLon()/lonfactor;
-									double currentNodeLat = currentNode.getLat();
-									double currentNodeLon = currentNode.getLon()/lonfactor;
-
-									double length = calculateDistanceInMeters(previousNodeLat,previousNodeLon,currentNodeLat,currentNodeLon);
-
-                                    if(speedlimit==0){
-										speedlimit = speedDefaults.get(type.toString());
-									}
-
-									Edge edge = new Edge(length,speedlimit,previousnode,currentNode,drivabilltyForWay);
-
-                                    long currentnodeID = currentNode.getAsLong();
-                                    nodeGraph.addVertex(currentnodeID);
-									nodeGraph.addEdge(edge);
-									previousnode = currentNode;
-
-									HashMap<String,ArrayList<String[]>> drivabilltyForway = drivableCases.get(type.toString());
-									HashMap<String,Integer> resetDefaults = new HashMap<>();
-									for(String vehicleType : drivabilltyForway.keySet()){
-										String[] tokens = vehicleType.split(" ");
-										vehicleType = tokens[0];
-										int drivable = Integer.valueOf(tokens[1]);
-										resetDefaults.put(vehicleType,drivable);
-									}
-									drivabillty.put(type.toString(),resetDefaults);
-								}
+							//checks if the current waytype is one
+							// of the one's that should be in the nodegraph
+							if(routeHandler.isNodeGraphWay(type)) {
+								routeHandler.addWayToNodeGraph(way, type,lonfactor,speedlimit);
 							}
 
 							if(b.hasFields()) {
@@ -436,6 +320,8 @@ public class Model {
 								b.lon = lon;
 								addresses.add(b.build());
 							}
+
+							//resetting variables
 							way = null;
 							b.reset();
 							speedlimit = 0;
@@ -484,12 +370,11 @@ public class Model {
 					File parseCheck = new File("data/"+ getDatasetName());
 					addresses.sort(Address::compareTo);
 					makeDatabase(addresses, getDatasetName());
-					System.out.println(nodeGraph.V());
-					System.out.println(nodeGraph.E());
 
-					DijkstraSP shortpath = new DijkstraSP(nodeGraph,3955434296L, Vehicle.CAR,false);
 
-					Iterable<Edge> path = shortpath.pathTo(nodeGraph.getIndexFromId(4048894613L));
+
+
+					Iterable<Edge> path = routeHandler.findPath(3955434296L,4048894613L,Vehicle.CAR,false);
 					for(Edge edge : path){
 						System.out.println(edge.toString());
 					}
@@ -725,6 +610,7 @@ public class Model {
 		return null;
 	}
 
+	public Iterator<Edge> pathIterator(){ return foundPath.iterator();}
 	public Iterator<String> colorIterator() {
 		return typeColors.iterator();
 	}

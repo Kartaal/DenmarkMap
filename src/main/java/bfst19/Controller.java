@@ -51,6 +51,10 @@ public class Controller {
         return model;
     }
 
+    public Double getDistanceFromModel(double startLat, double startLon, double endLat, double endLon){
+        return model.calculateDistanceInMeters(startLat,startLon,endLat,endLon);
+    }
+
     public Iterator<String[]> getFoundMatchesIterator(){
         return model.foundMatchesIterator();
     }
@@ -132,6 +136,7 @@ public class Controller {
 
     public void setScalebar() {
         // TODO findout and resolve getY so it can be getX, since it the te x-coor we want
+        //todo fix using model to calculate distance
         double minX = mapCanvas.getModelCoords(0, 0).getY();
         double maxX = mapCanvas.getModelCoords(0, mapCanvas.getHeight()).getY();
         double y = mapCanvas.getModelCoords(0, 0).getX()/model.lonfactor;

@@ -38,6 +38,9 @@ public class DijkstraSP {
 
     // relax edge e and update pq if changed
     private void relax(Edge e,int vertexV ,Vehicle type, boolean fastestPath) {
+        //the intent is to get both ends of the edge so we use e.getOtherEnd to do so,
+        // tho we do first need to get the v's corresponding id, then get the other end on that id,
+        // and then convert the id we get back to it's corresponding index
         int v = vertexV, w = G.getIndexFromId(e.getOtherEnd(G.getIdFromIndex(v)));
         double distToW = distTo[w];
         double distToV = distTo[v];
