@@ -1,5 +1,6 @@
 package bfst19;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
@@ -64,8 +65,12 @@ public class ControllerPointOfInterestPanel implements BackBtnEffect {
 
     private void setAddressCoordsLabels(String location, String x, String y){
         address.setText(location);
-        latlon.setText(x + ", " + y);
+        latlon.setText("Coords: " + x + ", " + y);
     }
 
+    //TODO: Have an observable list with the point of interest the user has added, which can be removed and added from/to
+    @FXML
+    public void addPointOfInterest(ActionEvent actionEvent) {
 
+    }
 }

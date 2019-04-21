@@ -23,7 +23,7 @@ public class AutoTextField extends TextField {
         super();
 
         addressDropDown = new ContextMenu();
-        addressDropDown.setStyle("-fx-min-width: 300; -fx-max-height: 400");
+        addressDropDown.setStyle("-fx-max-height: 400");
 
         this.setOnKeyPressed(event -> {
             switch (event.getCode())  {
@@ -82,13 +82,14 @@ public class AutoTextField extends TextField {
                     addressLabels.add(labelAddress);
                 }
             }
+
             for (Label addressLabel : addressLabels) {
                 CustomMenuItem item = new CustomMenuItem(addressLabel, true);
+                menuItems.add(item);
 
-                item .setOnAction((event) -> {
+                item.setOnAction((event) -> {
                     setText(addressLabel.getText());
                 });
-                menuItems.add(item);
             }
         }
 
