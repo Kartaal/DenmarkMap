@@ -183,10 +183,10 @@ public class Model{
 		System.out.println("Colorblind mode enabled: " + colorBlindEnabled);
 
 		if (colorBlindEnabled) {
-			CurrentTypeColorTxt = ("data/TypeColorsColorblind.txt");
+			CurrentTypeColorTxt = ("src/main/resources/config/TypeColorsColorblind.txt");
 		}
 		else {
-			CurrentTypeColorTxt = ("data/TypeColorsNormal.txt");
+			CurrentTypeColorTxt = ("src/main/resources/config/TypeColorsNormal.txt");
 		}
 		ParseWayColors();
 	}
