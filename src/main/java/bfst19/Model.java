@@ -174,42 +174,23 @@ public class Model{
         AddressParser.getInstance(this).parseCitiesAndPostCodes(textHandler.getCities(this, getDatasetName()));
 	}
 
-
-    public void ParseWayColors(){
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(CurrentTypeColorTxt));
-			int m = Integer.parseInt(br.readLine());
-
-			for (int i = 0; i < m; i++) {
-				String[] strArr = br.readLine().split(" ");
-				typeColors.add(strArr[0]);
-				typeColors.add(strArr[1]);
-			}
-		}
-		catch(Exception e){
-			e.printStackTrace();
-			//TODO: fix this, uncle bob wont like this one hehe;)
-			System.out.println("something went wrong");
-		}
-		notifyColorObservers();
-	}
-
 	public double getLonfactor(){
 		return lonfactor;
 	}
 
-	public void switchColorScheme(boolean colorBlindEnabled){
-
+	public void switchColorScheme(boolean colorBlindEnabled) {
+		//TODO Remember to remove debug println
 		System.out.println("Colorblind mode enabled: " + colorBlindEnabled);
 
-		if (colorBlindEnabled){
-			CurrentTypeColorTxt = ("src/main/resources/config/TypeColorsColorblind.txt");
+		if (colorBlindEnabled) {
+			CurrentTypeColorTxt = ("data/TypeColorsColorblind.txt");
 		}
-		else if(!colorBlindEnabled){
-			CurrentTypeColorTxt = ("src/main/resources/config/TypeColorsNormal.txt");
+		else {
+			CurrentTypeColorTxt = ("data/TypeColorsNormal.txt");
 		}
-		textHandler.ParseWayColors(this);
+		ParseWayColors();
 	}
+
 
 	private void parseOSM(InputStream osmsource) throws XMLStreamException {
 		//Changed from field to local variable so it can be garbage collected
@@ -517,19 +498,6 @@ public class Model{
 		}
 
 		notifyColorObservers();
-	}
-
-	public void switchColorScheme(boolean colorBlindEnabled) {
-		//TODO Remember to remove debug println
-		System.out.println("Colorblind mode enabled: " + colorBlindEnabled);
-
-		if (colorBlindEnabled) {
-			CurrentTypeColorTxt = ("data/TypeColorsColorblind.txt");
-		}
-		else {
-			CurrentTypeColorTxt = ("data/TypeColorsNormal.txt");
-		}
-		ParseWayColors();
 	}
 
 	public void parseSearch(String proposedAddress) {

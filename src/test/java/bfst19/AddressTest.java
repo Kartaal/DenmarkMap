@@ -1,4 +1,4 @@
-package bfst19;
+    package bfst19;
 
 import org.junit.Test;
 
@@ -21,18 +21,6 @@ public class AddressTest {
     }
 
     @Test
-    public void testGetAddressesFromDefaultWithDanLetters(){
-        ArrayList<String[]> matches = AddressParser.getInstance(model).getMatchesFromDefault("Højderyggen",false);
-        String[] match1 = matches.get(0);
-        String[] expectedMatch1 = new String[]{"Højderyggen","Vejle Øst","7120"};
-        String[] match2 = matches.get(1);
-        String[] expectedMatch2 = new String[]{"Højderyggen", "Herlev", "2730"};
-        assertArrayEquals(expectedMatch1, match1);
-        assertArrayEquals(expectedMatch2, match2);
-    }
-
-    @Test
-    //this test does not work with our current implementation, as we abandon finding a match and simply ask the user which match they meant.
     public void testGetAddressesFromDefault1(){
         ArrayList<String[]> matches = AddressParser.getInstance(model).getMatchesFromDefault("Terrasserne",false);
         String[] match1 = matches.get(0);
@@ -45,7 +33,6 @@ public class AddressTest {
 
     //TODO Are two of these really necessary?
     @Test
-    //this test does not work with our current implementation, as we abandon finding a match and simply ask the user which match they meant.
     public void testGetAddressesFromDefault2(){
         ArrayList<String[]> matches = AddressParser.getInstance(model).getMatchesFromDefault("Rued Langgaards Vej",false);
         String[] match1 = matches.get(0);
@@ -56,9 +43,19 @@ public class AddressTest {
         assertArrayEquals(expectedMatch2, match2);
     }
 
+    @Test
+    public void testGetAddressesFromDefaultWithDanLetters(){
+        ArrayList<String[]> matches = AddressParser.getInstance(model).getMatchesFromDefault("Højderyggen",false);
+        String[] match1 = matches.get(0);
+        String[] expectedMatch1 = new String[]{"Højderyggen","Vejle Øst","7120"};
+        String[] match2 = matches.get(1);
+        String[] expectedMatch2 = new String[]{"Højderyggen", "Herlev", "2730"};
+        assertArrayEquals(expectedMatch1, match1);
+        assertArrayEquals(expectedMatch2, match2);
+    }
 
     @Test
-    public void testAddressWithStreetAndCity(){
+    public void testAddressWithStreetHousenumberPostCodeAndCity(){
         Address address = AddressParser.getInstance(model).singleSearch("Tommelise 48,7500 Holstebro", datasetName);
         assertEquals("Tommelise", address.getStreetName().trim());
         assertEquals("48", address.getHouseNumber().trim());
@@ -76,7 +73,6 @@ public class AddressTest {
     }
 
     @Test
-    //this doesn't work because it uses the postcode as the more significant than the given city name in the string
     public void testAddressWithStreetHouseSideCityDanLetters(){
         Address address = AddressParser.getInstance(model).singleSearch("Valby Maskinfabriksvej 1, 1, 2500 Valby ", datasetName);
         assertEquals("Valby Maskinfabriksvej", address.getStreetName().trim());
