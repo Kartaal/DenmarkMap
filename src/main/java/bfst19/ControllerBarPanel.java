@@ -46,4 +46,9 @@ public class ControllerBarPanel {
             }
         });
     }
+
+    @FXML
+    public void openPointOfInterest(ActionEvent actionEvent) {
+        controller.setUpPointOfInterestPanel();
+    }
 }

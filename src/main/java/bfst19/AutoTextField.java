@@ -108,6 +108,6 @@ public class AutoTextField extends TextField {
     private void panAddress(double x, double y){
         autoTextFieldInput = this.getText()+"&"+x+"&"+y;
         controller.panToPoint(x,y);
-        controller.setUpPointOfInterestPanel();
+        controller.setUpInfoPanel();
     }
 }

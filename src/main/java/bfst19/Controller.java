@@ -1,13 +1,14 @@
 package bfst19;
-import bfst19.KDTree.Drawable;
 import bfst19.Route_parsing.Edge;
-import bfst19.Route_parsing.EdgeWeightedGraph;
 import bfst19.Route_parsing.Vehicle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+
+import java.awt.*;
 import java.io.IOException;
 import java.util.Iterator;
 import javafx.scene.layout.BorderPane;
@@ -30,9 +31,6 @@ public class Controller {
 
     @FXML
     private BorderPane borderPane;
-
-    @FXML
-    private StackPane stackPane;
 
     public void init(Model model) {
         //TODO: figure out init methods
@@ -79,27 +77,45 @@ public class Controller {
     }
 
     //Initialize PointOfInterestPanel
-    public void setUpPointOfInterestPanel(){
+    public void setUpPointOfInterestPanel() {
+        ScrollPane scrollPane = null;
+
+        if(borderPane.getLeft() != null){
+            borderPane.setLeft(null);
+        }
+
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("PointOfInterestPanel.fxml"));
+        try {
+            scrollPane = fxmlLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        borderPane.setLeft(scrollPane);
+
+        ControllerPointOfInterestPanel controllerPointOfInterestPanel = fxmlLoader.getController();
+        controllerPointOfInterestPanel.init(this);
+    }
+
+    //Initialize InfoPanel
+    public void setUpInfoPanel(){
             VBox vBox = null;
 
-            if(borderPane.getLeft() != null){
+            if(borderPane.getRight() != null){
                 borderPane.setRight(null);
             }
 
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("PointOfInterestPanel.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("InfoPanel.fxml"));
             try {
                 vBox = fxmlLoader.load();
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            vBox.setLayoutX(-200);
-            vBox.setLayoutY(200);
-
             borderPane.setRight(vBox);
 
-            ControllerPointOfInterestPanel controllerPointOfInterestPanel = fxmlLoader.getController();
-            controllerPointOfInterestPanel.init(this);
+            ControllerInfoPanel controllerInfoPanel = fxmlLoader.getController();
+            controllerInfoPanel.init(this);
     }
 
     //Initialize BarPanel
