@@ -135,6 +135,10 @@ public class MapCanvas extends Canvas {
             }
 
         }
+        Pin pin = Pin.currentPin;
+        if(pin != null) {
+            pin.drawPin(gc, transform);
+        }
     }
 
     private BoundingBox getExtentInModel(){ return getBounds(); }
@@ -192,6 +196,10 @@ public class MapCanvas extends Canvas {
         double centerX = getWidth()/2.0;
         double centerY = getHeight()/2.0;
         Point2D point = transform.transform(x,y);
+
+        System.out.println("X: " + x + " Y: " + y);
+        Pin.currentPin = new Pin(x, y);
+
         pan(centerX-point.getX(),centerY-point.getY());
 
     }

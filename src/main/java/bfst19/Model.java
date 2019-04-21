@@ -84,10 +84,20 @@ public class Model{
 	public void addFoundMatchesObserver(Runnable observer) {
 		foundMatchesObservers.add(observer);
 	}
-  
+
 	public void addColorObserver(Runnable observer) {
 		colorObservers.add(observer);
 	}
+
+
+	//TODO Might not be ideal solution if we need more then two autoTextFields...
+	public void clearAddFoundMatchesObservers(){
+		foundMatchesObservers = new ArrayList<>();
+	}
+
+	public void addColorObserver(Runnable observer) {
+        colorObservers.add(observer);
+    }
 
 	public void notifyFoundMatchesObservers() {
 		for (Runnable observer : foundMatchesObservers) {
@@ -100,8 +110,8 @@ public class Model{
 			observer.run();
 		}
 	}
-  
-  
+
+
 	public void notifyPathObservers(){
     for(Runnable observer : pathObservers) {
       observer.run();
@@ -153,7 +163,7 @@ public class Model{
 			} else {
 				OSMSource = new BufferedInputStream(new FileInputStream(filename));
 			}
-      
+
 			parseOSM(OSMSource);
 			time += System.nanoTime();
 			System.out.printf("parse time: %.1fs\n", time / 1e9);
@@ -397,6 +407,24 @@ public class Model{
 									|| type == WayType.CONSTRUCTION || type == WayType.PARKING) {
 								ways.get(type).add(new MultiPolyline(rel));
 								way = null;
+							}else if(type == WayType.BUILDING){
+								ways.get(type).add(new MultiPolyline(rel));
+							}else if(type == WayType.FOREST){
+								ways.get(type).add(new MultiPolyline(rel));
+							}else if(type == WayType.FARMLAND){
+								ways.get(type).add(new MultiPolyline(rel));
+							}else if(type == WayType.PARK){
+								ways.get(type).add(new MultiPolyline(rel));
+							}else if(type == WayType.RECREATION){
+								ways.get(type).add(new MultiPolyline(rel));
+							}else if(type == WayType.BOUNDARY_ADMINISTRATIVE){
+								ways.get(type).add(new MultiPolyline(rel));
+							}else if(type == WayType.RAILWAY_PLATFORM){
+								ways.get(type).add(new MultiPolyline(rel));
+							}else if(type == WayType.CONSTRUCTION){
+								ways.get(type).add(new MultiPolyline(rel));
+							}else if(type == WayType.PARKING){
+								ways.get(type).add(new MultiPolyline(rel));
 							}
 							break;
 					}
@@ -581,10 +609,10 @@ public class Model{
 	}
 
 
-	public Iterator<Iterable<Edge>> pathIterator(){ 
+	public Iterator<Iterable<Edge>> pathIterator(){
     return foundPath.iterator();
   }
-  
+
 	public Iterator<String> colorIterator() {
 		return typeColors.iterator();
 	}

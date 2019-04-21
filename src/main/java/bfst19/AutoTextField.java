@@ -15,13 +15,15 @@ public class AutoTextField extends TextField {
     Controller controller;
     Model model;
 
+    public static String autoTextFieldInput;
+
     private ContextMenu addressDropDown;
 
     public AutoTextField(){
         super();
 
         addressDropDown = new ContextMenu();
-        addressDropDown.setStyle("-fx-min-width: 300; -fx-max-height: 400");
+        addressDropDown.setStyle("-fx-max-height: 400");
 
         this.setOnKeyPressed(event -> {
             switch (event.getCode())  {
@@ -34,11 +36,11 @@ public class AutoTextField extends TextField {
 
     public void init(Controller controller){
         this.setStyle("-fx-min-width: 300; -fx-min-height: 40");
-
         this.controller = controller;
         this.model = controller.getModel();
+        //Making sure to clear the old observer which should no longer be a living object.
+        model.clearAddFoundMatchesObservers();
         model.addFoundMatchesObserver(this::showResults);
-
     }
 
     public void parseSearch(){
@@ -80,13 +82,14 @@ public class AutoTextField extends TextField {
                     addressLabels.add(labelAddress);
                 }
             }
+
             for (Label addressLabel : addressLabels) {
                 CustomMenuItem item = new CustomMenuItem(addressLabel, true);
+                menuItems.add(item);
 
                 item.setOnAction((event) -> {
                     setText(addressLabel.getText());
                 });
-                menuItems.add(item);
             }
         }
 
@@ -103,7 +106,8 @@ public class AutoTextField extends TextField {
     }
 
     private void panAddress(double x, double y){
+        autoTextFieldInput = this.getText()+"&"+x+"&"+y;
         controller.panToPoint(x,y);
-        controller.setUpPointOfInterestPanel(x, y);
+        controller.setUpPointOfInterestPanel();
     }
 }
