@@ -1,0 +1,119 @@
+FOOTWAY
+%
+CAR -1
+%
+BIKE 2
+%
+WALKING 2
+$
+MOTORWAY
+%
+CAR 0
+%
+BIKE -1
+%
+WALKING -1
+$
+PRIMARY
+%
+CAR 2
+junction roundabout 0
+oneway yes 0
+%
+BIKE -1
+cycleway:right lane 0
+cycleway:right track 0
+cycleway:left track 0
+cycle yes 2
+%
+WALKING -1
+sidewalk both 2
+foot yes 2
+$
+SECONDARY
+%
+CAR 2
+junction roundabout 0
+oneway yes 0
+%
+BIKE -1
+cycleway:right lane 0
+cycleway:right track 0
+cycleway:left track 0
+cycle yes 2
+%
+WALKING -1
+sidewalk both 2
+foot yes 2
+$
+TERTIARY
+%
+CAR 2
+junction roundabout 0
+oneway yes 0
+%
+BIKE -1
+cycleway:right lane 0
+cycleway track 2
+%
+WALKING -1
+sidewalk both 2
+foot yes 2
+$
+SERVICE
+%
+CAR 2
+%
+BIKE 2
+%
+WALKING 2
+$
+ROAD_RESIDENTIAL
+%
+CAR 2
+%
+BIKE 2
+%
+WALKING 2
+$
+CYCLEWAY
+%
+CAR -1
+%
+BIKE 2
+%
+WALKING 2
+$
+BRIDGE
+%
+CAR 2
+oneway yes 0
+%
+BIKE -1
+cycleway:right track 0
+cycleway:left track 0
+cycle yes 2
+%
+WALKING -1
+sidewalk both 2
+foot yes 2
+$
+BOAT
+%
+CAR -1
+motor_vehicle yes 2
+%
+BIKE -1
+bicycle yes 2
+%
+WALKING 2
+$
+PEDESTRIAN
+%
+CAR -1
+motor_vehicle yes 2
+%
+BIKE 2
+bicycle dismount 2
+%
+WALKING 2

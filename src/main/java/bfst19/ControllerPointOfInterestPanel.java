@@ -26,13 +26,13 @@ public class ControllerPointOfInterestPanel implements BackBtnEffect {
     private ImageView addBtn;
 
     @FXML
-    private javafx.scene.control.Label adress;
+    private javafx.scene.control.Label address;
 
     @FXML
     private javafx.scene.control.Label latlon;
 
 
-    public void init(Controller controller) { this.controller = controller; setadressCoordsLabels("En adresse", 6.66, 6.66 ); }
+    public void init(Controller controller) { this.controller = controller; setAddressCoordsLabels("En adresse", 6.66, 6.66 ); }
 
     @FXML
     private void setBackBtnEffect(){
@@ -57,8 +57,8 @@ public class ControllerPointOfInterestPanel implements BackBtnEffect {
         vBox.setVisible(false);
     }
 
-    private void setadressCoordsLabels(String location, double x, double y){
-        adress.setText(location);
+    private void setAddressCoordsLabels(String location, double x, double y){
+        address.setText(location);
         latlon.setText(x + ", " + y);
     }
 
