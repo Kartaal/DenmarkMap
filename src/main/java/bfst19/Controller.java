@@ -1,4 +1,5 @@
 package bfst19;
+import bfst19.KDTree.Drawable;
 import bfst19.Route_parsing.Edge;
 import bfst19.Route_parsing.Vehicle;
 import javafx.fxml.FXML;
@@ -183,11 +184,7 @@ public class Controller {
                 mapCanvas.panToPoint(14.8429560,55.0967440);
                 break;
             case C:
-                Iterable<Edge> path = model.routeHandler.findPath(3955434296L,846322672L, Vehicle.CAR,false);
-                Iterable<Edge> adj =  model.routeHandler.getAdj(2091635039L,Vehicle.CAR);
-                for(Edge edge : adj){
-                    System.out.println(edge.toString());
-                }
+                Iterable<Edge> path = model.routeHandler.findPath(297673835L,252725980L, Vehicle.CAR,false);
                 model.foundPath.add(path);
                 model.notifyPathObservers();
                 mapCanvas.repaint();

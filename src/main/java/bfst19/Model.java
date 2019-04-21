@@ -16,7 +16,7 @@ import java.util.zip.ZipInputStream;
 
 import static javax.xml.stream.XMLStreamConstants.*;
 
-public class Model {
+public class Model{
 	RouteHandler routeHandler;
 	private float lonfactor = 1.0f;
 	private boolean colorBlindEnabled;
@@ -116,6 +116,7 @@ public class Model {
 				minlon = input.readFloat();
 				maxlat = input.readFloat();
 				maxlon = input.readFloat();
+				routeHandler = new RouteHandler(this,(EdgeWeightedGraph)input.readObject());
 			}
 			time += System.nanoTime();
 			System.out.printf("Load time: %.1fs\n", time / 1e9);
@@ -137,6 +138,7 @@ public class Model {
 				output.writeFloat(minlon);
 				output.writeFloat(maxlat);
 				output.writeFloat(maxlon);
+				output.writeObject(routeHandler.getNodeGraph());
 			}
 		}
 
@@ -204,7 +206,7 @@ public class Model {
 		OSMRelation rel = null;
 		WayType type = null;
 
-		int speedlimit = 0;
+		double speedlimit = 0;
 		String name = "";
 
 		//variables for addressParsing and OSMNode creation
@@ -267,9 +269,15 @@ public class Model {
 							}
 
 							if(k.equals("source:maxspeed")){
-								if(v.equals("DK:urban")){
+								if(v.equalsIgnoreCase("DK:urban")||v.equalsIgnoreCase("DK:urabn")||v.equalsIgnoreCase("DK:city")||v.equalsIgnoreCase("DK:zone50")||v.equalsIgnoreCase("dk:urban-")||v.equalsIgnoreCase("DK:uban")||v.equalsIgnoreCase("DK.urban")||v.equalsIgnoreCase("dk:urban;sign")||v.equalsIgnoreCase("urban")) {
 									speedlimit = 50;
-								}else if(v.equals("DK:rural")){
+								}else if (v.equalsIgnoreCase("DK:zone20")){
+									speedlimit = 20;
+								}else if(v.equalsIgnoreCase("dk:zone30")||v.equalsIgnoreCase("DK:zone30;DK:urban")||v.equalsIgnoreCase("DK:zone:30")){
+									speedlimit = 30;
+								}else if(v.equalsIgnoreCase("dk:zone40")||v.equalsIgnoreCase("DK:zone:40")){
+									speedlimit = 40;
+								}else if(v.equalsIgnoreCase("DK:rural")||v.equalsIgnoreCase("dk:rutal")||v.equalsIgnoreCase("DK.rural")||v.equalsIgnoreCase("DK:trunk")){
 									speedlimit = 80;
 								}else if(v.equals("DK:motorway")){
 									speedlimit = 130;
@@ -281,7 +289,16 @@ public class Model {
 							}
 
 							if(k.equals("maxspeed")){
-								speedlimit = Integer.valueOf(v);
+								if(v.equalsIgnoreCase("DK:urban")){
+									speedlimit = 50;
+								}else if(v.equalsIgnoreCase("DK:rural")){
+									speedlimit = 80;
+								}else if(v.equalsIgnoreCase("DK:motorway")) {
+									speedlimit = 130;
+								}else if(v.equalsIgnoreCase("default")||v.equalsIgnoreCase("implicit")||v.equalsIgnoreCase("none")||v.equalsIgnoreCase("signals")||v.equalsIgnoreCase("5 knots")){
+								}else{
+									speedlimit = Double.valueOf(v);
+								}
 							}
 
 							//string[0]=waytype's name, strings[1] = k for the case, strings = v for the case.

@@ -2,9 +2,12 @@ package bfst19.Route_parsing;
 
 import bfst19.Line.OSMNode;
 
+import javax.swing.*;
+import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Iterator;
 
-public class Edge{
+public class Edge implements Serializable {
     //allways set length and speedlimit as the same unit of measurement, currently km
     private double length;
     private double speedlLimit;
@@ -12,7 +15,7 @@ public class Edge{
     //0 node v to node w
     //1 node w to node v
     //2 both ways
-    private HashMap<String, Integer> vehicleTypeToDrivable;
+    private int[] drivabillity;
     private OSMNode v;
     private OSMNode w;
     String name;
@@ -23,7 +26,10 @@ public class Edge{
         this.v = v;
         this.w = w;
         this.name = name;
-        this.vehicleTypeToDrivable = vehicleTypeToDrivable;
+        drivabillity = new int[vehicleTypeToDrivable.keySet().size()];
+        drivabillity[0] = vehicleTypeToDrivable.get("CAR");
+        drivabillity[1] = vehicleTypeToDrivable.get("WALKING");
+        drivabillity[2] = vehicleTypeToDrivable.get("BIKE");
     }
 
     public double getWeight(Vehicle type, boolean fastestPath){
@@ -92,7 +98,14 @@ public class Edge{
 
 
     private int getDrivableFromVehicleType(String type){
-        return vehicleTypeToDrivable.get(type);
+        if(type.equals("CAR")){
+            return drivabillity[0];
+        }else if(type.equals("WALKING")){
+            return drivabillity[1];
+        }else if(type.equals("BIKE")){
+            return drivabillity[2];
+        }
+        return -1;
     }
 
     public int compareTo(Edge e, Vehicle type, boolean fastestPath) {

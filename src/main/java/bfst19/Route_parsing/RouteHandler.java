@@ -8,7 +8,7 @@ import bfst19.WayType;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class RouteHandler {
+public class RouteHandler{
     private Model model;
     private EdgeWeightedGraph G;
     private HashMap<Long,Integer> idToIndex;
@@ -17,7 +17,12 @@ public class RouteHandler {
     private HashMap<String,HashMap<String, Integer>> drivabillty;
     HashMap<String,Integer> speedDefaults;
 
-    public RouteHandler(Model model, EdgeWeightedGraph G, HashMap<Long,Integer> idToIndex, HashMap<Integer,Long> indexToId){
+    public RouteHandler(Model model, EdgeWeightedGraph G){
+        this.model = model;
+        this.G = G;
+    }
+
+    public RouteHandler(Model model, EdgeWeightedGraph G, HashMap<Long,Integer> idToIndex, HashMap<Integer,Long> indexToId) {
         this.model = model;
         this.G = G;
         this.idToIndex = idToIndex;
@@ -112,7 +117,7 @@ public class RouteHandler {
         return isNodegraphWay;
     }
 
-    public void addWayToNodeGraph(OSMWay way, WayType type, String name, int speedlimit) {
+    public void addWayToNodeGraph(OSMWay way, WayType type, String name, double speedlimit) {
         HashMap<String,Integer> drivabilltyForWay = drivabillty.get(type.toString());
         OSMNode previousnode = way.get(0);
 
@@ -161,5 +166,9 @@ public class RouteHandler {
     public Iterable<Edge> getAdj(long id, Vehicle type) {
         int index = G.getIndexFromId(id);
         return G.adj(index,type);
+    }
+
+    public Object getNodeGraph() {
+        return G;
     }
 }
