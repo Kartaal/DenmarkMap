@@ -191,7 +191,6 @@ public class MapCanvas extends Canvas {
     public void panToPoint(double x,double y){
         double centerX = getWidth()/2.0;
         double centerY = getHeight()/2.0;
-        x = x*model.getLonfactor();
         Point2D point = transform.transform(x,y);
         pan(centerX-point.getX(),centerY-point.getY());
 

@@ -13,8 +13,8 @@ public class RouteHandler{
     private EdgeWeightedGraph G;
     private HashMap<Long,Integer> idToIndex;
     private HashMap<Integer,Long> indexToId;
-    private HashMap<String,HashMap<String, ArrayList<String[]>>> drivableCases;
-    private HashMap<String,HashMap<String, Integer>> drivabillty;
+    private HashMap<WayType,HashMap<String, ArrayList<String[]>>> drivableCases;
+    private HashMap<WayType,HashMap<Vehicle, Integer>> drivabillty;
     HashMap<String,Integer> speedDefaults;
 
     public RouteHandler(Model model, EdgeWeightedGraph G){
@@ -31,11 +31,11 @@ public class RouteHandler{
         drivableCases = parseDrivableCases("data/Drivable_cases.txt");
         drivabillty = new HashMap<>();
 
-        for(String wayType : drivableCases.keySet()){
+        for(WayType wayType : drivableCases.keySet()){
             drivabillty.put(wayType,new HashMap<>());
-            for(String vehicleType : drivableCases.get(wayType).keySet()){
-                String[] tokens = vehicleType.split(" ");
-                vehicleType = tokens[0];
+            for(String vehicleTypeAndDrivable : drivableCases.get(wayType).keySet()){
+                String[] tokens = vehicleTypeAndDrivable.split(" ");
+                Vehicle vehicleType = Vehicle.valueOf(tokens[0]);
                 int defaultDrivable = Integer.valueOf(tokens[1]);
                 drivabillty.get(wayType).put(vehicleType,defaultDrivable);
             }
@@ -50,11 +50,11 @@ public class RouteHandler{
     }
 
 
-    private HashMap<String,HashMap<String,ArrayList<String[]>>> parseDrivableCases(String filepath) {
+    private HashMap<WayType,HashMap<String,ArrayList<String[]>>> parseDrivableCases(String filepath) {
         ArrayList<String> cases = model.getTextFile(filepath);
-        HashMap<String,HashMap<String,ArrayList<String[]>>> drivableCases = new HashMap<>();
+        HashMap<WayType,HashMap<String,ArrayList<String[]>>> drivableCases = new HashMap<>();
 
-        String wayType = cases.get(0);
+        WayType wayType = WayType.valueOf(cases.get(0));
         drivableCases.put(wayType,new HashMap<>());
         String[] tokens;
         String vehicleType = "";
@@ -69,7 +69,7 @@ public class RouteHandler{
                 vehicleDrivable = tokens[1];
                 drivableCases.get(wayType).put(vehicleType+" "+vehicleDrivable,new ArrayList<>());
             }else if(line.startsWith("$")){
-                wayType = cases.get(i+1);
+                wayType = WayType.valueOf(cases.get(i+1));
                 drivableCases.put(wayType,new HashMap<>());
                 i++;
             }else{
@@ -92,11 +92,11 @@ public class RouteHandler{
     }
 
     public void checkDrivabillty(String k, String v) {
-        for(String waytype : drivableCases.keySet()){
-            for(String vehicletype : drivableCases.get(waytype).keySet()){
-                ArrayList<String[]> vehicleCases = drivableCases.get(waytype).get(vehicletype);
+        for(WayType waytype : drivableCases.keySet()){
+            for(String vehicletypeAndDrivable : drivableCases.get(waytype).keySet()){
+                ArrayList<String[]> vehicleCases = drivableCases.get(waytype).get(vehicletypeAndDrivable);
 
-                vehicletype = vehicletype.split(" ")[0];
+                Vehicle vehicletype = Vehicle.valueOf(vehicletypeAndDrivable.split(" ")[0]);
                 for(int i = 0 ; i<vehicleCases.size() ; i++){
                     String[] caseTokens = vehicleCases.get(i);
                     if(k.equals(caseTokens[0])&&v.equals(caseTokens[1])){
@@ -109,8 +109,8 @@ public class RouteHandler{
 
     public boolean isNodeGraphWay(WayType type){
         boolean isNodegraphWay = false;
-        for(String wayType : drivabillty.keySet()){
-            if(type.toString().equals(wayType)){
+        for(WayType wayType : drivabillty.keySet()){
+            if(type==wayType){
                 isNodegraphWay = true;
             }
         }
@@ -118,7 +118,7 @@ public class RouteHandler{
     }
 
     public void addWayToNodeGraph(OSMWay way, WayType type, String name, double speedlimit) {
-        HashMap<String,Integer> drivabilltyForWay = drivabillty.get(type.toString());
+        HashMap<Vehicle,Integer> drivabilltyForWay = drivabillty.get(type);
         OSMNode previousnode = way.get(0);
 
         long previousnodeID = previousnode.getAsLong();
@@ -151,11 +151,11 @@ public class RouteHandler{
     }
 
     private void resetDrivabillty(){
-        for(String waytype : drivableCases.keySet()){
-            HashMap<String,Integer> resetDefaults = new HashMap<>();
-            for(String vehicleType : drivableCases.get(waytype).keySet()){
-                String[] tokens = vehicleType.split(" ");
-                vehicleType = tokens[0];
+        for(WayType waytype : drivableCases.keySet()){
+            HashMap<Vehicle,Integer> resetDefaults = new HashMap<>();
+            for(String vehicleTypeAndDrivable : drivableCases.get(waytype).keySet()){
+                String[] tokens = vehicleTypeAndDrivable.split(" ");
+                Vehicle vehicleType = Vehicle.valueOf(tokens[0]);
                 int drivable = Integer.valueOf(tokens[1]);
                 resetDefaults.put(vehicleType,drivable);
             }
@@ -168,7 +168,7 @@ public class RouteHandler{
         return G.adj(index,type);
     }
 
-    public Object getNodeGraph() {
+    public EdgeWeightedGraph getNodeGraph() {
         return G;
     }
 }

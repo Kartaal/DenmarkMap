@@ -20,16 +20,16 @@ public class Edge implements Serializable {
     private OSMNode w;
     String name;
 
-    public Edge(double length, double speedlLimit, OSMNode v, OSMNode w,String name,HashMap<String, Integer> vehicleTypeToDrivable) {
+    public Edge(double length, double speedlLimit, OSMNode v, OSMNode w,String name,HashMap<Vehicle, Integer> vehicleTypeToDrivable) {
         this.length = length;
         this.speedlLimit = speedlLimit;
         this.v = v;
         this.w = w;
         this.name = name;
         drivabillity = new int[vehicleTypeToDrivable.keySet().size()];
-        drivabillity[0] = vehicleTypeToDrivable.get("CAR");
-        drivabillity[1] = vehicleTypeToDrivable.get("WALKING");
-        drivabillity[2] = vehicleTypeToDrivable.get("BIKE");
+        drivabillity[0] = vehicleTypeToDrivable.get(Vehicle.CAR);
+        drivabillity[1] = vehicleTypeToDrivable.get(Vehicle.WALKING);
+        drivabillity[2] = vehicleTypeToDrivable.get(Vehicle.BIKE);
     }
 
     public double getWeight(Vehicle type, boolean fastestPath){
@@ -73,7 +73,7 @@ public class Edge implements Serializable {
     }
 
     public boolean isForwardAllowed(Vehicle type, long id) {
-        int drivable = getDrivableFromVehicleType(type.name());
+        int drivable = getDrivableFromVehicleType(type);
         if(drivable==2){
             return true;
         }else if(drivable==0&&v.getAsLong()==id) {
@@ -86,7 +86,7 @@ public class Edge implements Serializable {
 
     public boolean isBackWardsAllowed(Vehicle type){
 
-        int drivable = getDrivableFromVehicleType(type.name());
+        int drivable = getDrivableFromVehicleType(type);
 
         if (drivable == 1) {
             return true;
@@ -97,12 +97,12 @@ public class Edge implements Serializable {
     }
 
 
-    private int getDrivableFromVehicleType(String type){
-        if(type.equals("CAR")){
+    private int getDrivableFromVehicleType(Vehicle type){
+        if(type==Vehicle.CAR){
             return drivabillity[0];
-        }else if(type.equals("WALKING")){
+        }else if(type==Vehicle.WALKING){
             return drivabillity[1];
-        }else if(type.equals("BIKE")){
+        }else if(type==Vehicle.BIKE){
             return drivabillity[2];
         }
         return -1;
@@ -117,6 +117,6 @@ public class Edge implements Serializable {
 
     @Override
     public String toString(){
-        return "name: "+name +" Length: "+length+"m "+" bike: "+getDrivableFromVehicleType("BIKE")+" Car: "+getDrivableFromVehicleType("CAR")+" walking: "+getDrivableFromVehicleType("WALKING")+" "+speedlLimit+" Node v:" + v.toString() + " Node W:" + w.toString();
+        return "name: "+name +" Length: "+length+"m "+" bike: "+getDrivableFromVehicleType(Vehicle.BIKE)+" Car: "+getDrivableFromVehicleType(Vehicle.CAR)+" walking: "+getDrivableFromVehicleType(Vehicle.WALKING)+" "+speedlLimit+" Node v:" + v.toString() + " Node W:" + w.toString();
     }
 }
