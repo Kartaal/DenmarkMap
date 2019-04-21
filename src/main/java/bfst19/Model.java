@@ -95,10 +95,6 @@ public class Model{
 		foundMatchesObservers = new ArrayList<>();
 	}
 
-	public void addColorObserver(Runnable observer) {
-        colorObservers.add(observer);
-    }
-
 	public void notifyFoundMatchesObservers() {
 		for (Runnable observer : foundMatchesObservers) {
 			observer.run();
