@@ -30,7 +30,7 @@ public class Model{
 	List<Runnable> pathObservers = new ArrayList<>();
 	float minlat, minlon, maxlat, maxlon;
 
-	String CurrentTypeColorTxt  = "data/TypeColorsNormal.txt";
+	String CurrentTypeColorTxt  = "src/main/resources/config/TypeColorsNormal.txt";
 	HashMap<String,ArrayList<String[]>> wayTypeCases = new HashMap<>();
 	ObservableList<String[]> foundMatches = FXCollections.observableArrayList();
 	ObservableList<String> typeColors = FXCollections.observableArrayList();
@@ -100,7 +100,7 @@ public class Model{
 		}
 
 		//todo figure out how to do singleton but also include model in its constructor without needing to give model for every call of getInstance
-		textHandler.parseWayTypeCases("data/WayTypeCases.txt", this);
+		textHandler.parseWayTypeCases("src/main/resources/config/WayTypeCases.txt", this);
 		textHandler.ParseWayColors(this);
 
 		String filename = args.get(0);
@@ -175,10 +175,10 @@ public class Model{
 		System.out.println("Colorblind mode enabled: " + colorBlindEnabled);
 
 		if (colorBlindEnabled){
-			CurrentTypeColorTxt = ("data/TypeColorsColorblind.txt");
+			CurrentTypeColorTxt = ("src/main/resources/config/TypeColorsColorblind.txt");
 		}
 		else if(!colorBlindEnabled){
-			CurrentTypeColorTxt = ("data/TypeColorsNormal.txt");
+			CurrentTypeColorTxt = ("src/main/resources/config/TypeColorsNormal.txt");
 		}
 		textHandler.ParseWayColors(this);
 	}

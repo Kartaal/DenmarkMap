@@ -27,8 +27,8 @@ public class RouteHandler{
         this.G = G;
         this.idToIndex = idToIndex;
         this.indexToId = indexToId;
-        speedDefaults = parseSpeedDefaults("data/Speed_cases.txt");
-        drivableCases = parseDrivableCases("data/Drivable_cases.txt");
+        speedDefaults = parseSpeedDefaults("src/main/resources/config/Speed_cases.txt");
+        drivableCases = parseDrivableCases("src/main/resources/config/Drivable_cases.txt");
         drivabillty = new HashMap<>();
 
         for(WayType wayType : drivableCases.keySet()){
