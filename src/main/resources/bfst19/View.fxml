@@ -10,6 +10,8 @@
 <?import javafx.geometry.Insets?>
 <Scene xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
+       width="800"
+       height="600"
        fx:controller="bfst19.Controller"
        fx:id="scene"
        onKeyPressed="#onKeyPressed"
@@ -24,10 +26,9 @@
 
                 <BorderPane fx:id="borderPane" pickOnBounds="false" VBox.vgrow="ALWAYS">
 
-
                     <bottom>
-                        <!--Start  Scalebar -->
-                        <Pane fx:id="scalebar" BorderPane.alignment="BOTTOM_RIGHT" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);" prefWidth="${scene.width}" maxHeight="20" prefHeight="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" layoutX="180.0" layoutY="350.0" >
+                        <!--Start  ScaleBar -->
+                        <Pane fx:id="scaleBar" BorderPane.alignment="BOTTOM_RIGHT" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);" prefWidth="${scene.width}" maxHeight="20" prefHeight="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" layoutX="180.0" layoutY="350.0" >
 
                             <children>
                                 <BorderPane  prefWidth="${scene.width}"  >
@@ -36,17 +37,17 @@
                                             <Text fx:id="scaleText"  text=""/>
                                             <BorderPane >
                                                 <left>
-                                                    <SVGPath fx:id="scalebarLeft"  content="M40,-10 L40,0"  stroke="#094e10"
+                                                    <SVGPath fx:id="scaleBarLeft" content="M40,-10 L40,0" stroke="#094e10"
                                                              strokeWidth="3.0" />
                                                 </left>
                                                 <bottom>
                                                     <!--   It is this value   -->
-                                                    <SVGPath fx:id="scalebarMiddle"   content="M40,10 L100,10"  stroke="#094e10"
+                                                    <SVGPath fx:id="scaleBarMiddle" content="M40,10 L100,10" stroke="#094e10"
                                                              strokeWidth="3.0" />
                                                 </bottom>
                                                 <right>
-                                                    <!-- and  this     +this one witch has to be changed in order to make the scalebar longer -->
-                                                    <SVGPath fx:id="scalebarRight" content="M100,-10 L100,0"  stroke="#094e10"
+                                                    <!-- and this one witch has to be changed in order to make the ScaleBar longer -->
+                                                    <SVGPath fx:id="scaleBarRight" content="M100,-10 L100,0" stroke="#094e10"
                                                              strokeWidth="3.0" />
                                                 </right>
 
@@ -60,7 +61,7 @@
 
                             </children>
                         </Pane>
-                        <!--End Scalebar  -->
+                        <!--End ScaleBar  -->
                     </bottom>
 
                 </BorderPane>

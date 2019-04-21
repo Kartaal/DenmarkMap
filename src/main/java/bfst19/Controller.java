@@ -1,4 +1,8 @@
 package bfst19;
+import bfst19.KDTree.Drawable;
+import bfst19.Route_parsing.Edge;
+import bfst19.Route_parsing.EdgeWeightedGraph;
+import bfst19.Route_parsing.Vehicle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.input.KeyEvent;
@@ -8,6 +12,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
@@ -25,6 +30,9 @@ public class Controller {
 
     @FXML
     private BorderPane borderPane;
+
+    @FXML
+    private StackPane stackPane;
 
     public void init(Model model) {
         //TODO: figure out init methods
@@ -51,7 +59,11 @@ public class Controller {
         return model;
     }
 
-    public Iterator<String> parsefoundMatchesIterator(){
+    public Double getDistanceFromModel(double startLat, double startLon, double endLat, double endLon){
+        return model.calculateDistanceInMeters(startLat,startLon,endLat,endLon);
+    }
+
+    public Iterator<String[]> getFoundMatchesIterator(){
         return model.foundMatchesIterator();
     }
 
@@ -61,9 +73,33 @@ public class Controller {
 
     public void parseTheme(boolean colorBlindEnabled){ model.switchColorScheme(colorBlindEnabled);}
 
-    public void parseOnlyRodesMode(boolean enabled){
+    public void parseOnlyRoadsMode(boolean enabled){
         mapCanvas.toggleNonRoads(enabled);
         mapCanvas.repaint();
+    }
+
+    //Initialize PointOfInterestPanel
+    public void setUpPointOfInterestPanel(){
+            VBox vBox = null;
+
+            if(borderPane.getLeft() != null){
+                borderPane.setRight(null);
+            }
+
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("PointOfInterestPanel.fxml"));
+            try {
+                vBox = fxmlLoader.load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            vBox.setLayoutX(-200);
+            vBox.setLayoutY(200);
+
+            borderPane.setRight(vBox);
+
+            ControllerPointOfInterestPanel controllerPointOfInterestPanel = fxmlLoader.getController();
+            controllerPointOfInterestPanel.init(this);
     }
 
     //Initialize BarPanel
@@ -72,13 +108,17 @@ public class Controller {
             borderPane.setLeft(null);
         }
 
+        //TODO Should maybe add the clear observer method here, so that it doesnt clear on each init() but instead when the bar is created
+
         HBox hBox = null;
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ViewBarPanel.fxml"));
+
         try {
             hBox = fxmlLoader.load();
         } catch (IOException e) {
             e.printStackTrace();
+			System.out.println("Failed to load from FXMLLoader associated with ViewBarPanel.fxml");
         }
 
         borderPane.setLeft(hBox);
@@ -96,10 +136,12 @@ public class Controller {
         VBox VBox = null;
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ViewMenuPanel.fxml"));
+
         try {
             VBox = fxmlLoader.load();
         } catch (IOException event) {
             event.printStackTrace();
+			System.out.println("Failed to load from FXMLLoader associated with ViewMenuPanel.fxml");
         }
 
         borderPane.setLeft(VBox);
@@ -118,10 +160,12 @@ public class Controller {
         VBox VBox = null;
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ViewRoutePanel.fxml"));
+
         try {
             VBox = fxmlLoader.load();
         } catch (IOException event) {
             event.printStackTrace();
+			System.out.println("Failed to load from FXMLLoader associated with ViewRoutePanel.fxml");
         }
 
         borderPane.setLeft(VBox);
@@ -132,10 +176,15 @@ public class Controller {
 
     public void setScalebar() {
         // TODO findout and resolve getY so it can be getX, since it the te x-coor we want
+        //todo fix using model to calculate distance
         double minX = mapCanvas.getModelCoords(0, 0).getY();
         double maxX = mapCanvas.getModelCoords(0, mapCanvas.getHeight()).getY();
-        double y = mapCanvas.getModelCoords(0, 0).getX();
-        scaleText.setText(Scalebar.getScaleText(minX, y, maxX, y, mapCanvas.getWidth()));
+        double y = mapCanvas.getModelCoords(0, 0).getX()/model.getLonfactor();
+        scaleText.setText(ScaleBar.getScaleText(minX, y, maxX, y, mapCanvas.getWidth()));
+    }
+
+    public void panToPoint(double x, double y){
+        mapCanvas.panToPoint(x,y);
     }
 
     @FXML
@@ -145,11 +194,14 @@ public class Controller {
                 mapCanvas.toggleNonRoads();
                 mapCanvas.repaint();
                 break;
-            case C: //Toggle colorblind colorfile
-                model.switchColorScheme();
-                break;
             case P:
                 mapCanvas.panToPoint(14.8429560,55.0967440);
+                break;
+            case C:
+                Iterable<Edge> path = model.routeHandler.findPath(4048894613L,489365650L, Vehicle.CAR,false);
+                model.foundPath.add(path);
+                model.notifyPathObservers();
+                mapCanvas.repaint();
                 break;
         }
     }

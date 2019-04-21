@@ -9,8 +9,6 @@ import javafx.scene.control.ToggleGroup;
 
 public class ControllerMenuPanel implements BackBtnEffect {
 
-
-
     @FXML
     ImageView backBtnMenu;
 
@@ -43,22 +41,22 @@ public class ControllerMenuPanel implements BackBtnEffect {
     @FXML
     private void setToggleTheme(){
         RadioButton selectedRadioButton = (RadioButton) toggleTheme.getSelectedToggle();
-        String toogleGroupValue = selectedRadioButton.getText();
-        if(toogleGroupValue.equals("ColorBlind Mode")){
+        String toggleGroupValue = selectedRadioButton.getText();
+        if(toggleGroupValue.equals("ColorBlind Mode")){
             controller.parseTheme(true);
-            controller.parseOnlyRodesMode(false);
+            controller.parseOnlyRoadsMode(false);
         }
-        else if(toogleGroupValue.equals("Only Rodes Mode")){
+        else if(toggleGroupValue.equals("Roads Only Mode")){
             controller.parseTheme(false);
-            controller.parseOnlyRodesMode(true);
+            controller.parseOnlyRoadsMode(true);
         }
-        else if (toogleGroupValue.equals("Dark Theme")){
+        else if (toggleGroupValue.equals("Dark Theme")){
             controller.parseTheme(false);
-            controller.parseOnlyRodesMode(false);
+            controller.parseOnlyRoadsMode(false);
         }
-        else if (toogleGroupValue.equals("Black/White Mode")){
+        else if (toggleGroupValue.equals("Black/White Mode")){
             controller.parseTheme(false);
-            controller.parseOnlyRodesMode(false);
+            controller.parseOnlyRoadsMode(false);
         }
 
     }

@@ -1,6 +1,10 @@
 package bfst19;
 
+import bfst19.KDTree.BoundingBox;
+import bfst19.KDTree.Drawable;
 import bfst19.KDTree.KDTree;
+import bfst19.Route_parsing.*;
+import bfst19.Line.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javax.xml.stream.XMLInputFactory;
@@ -12,47 +16,63 @@ import java.util.zip.ZipInputStream;
 
 import static javax.xml.stream.XMLStreamConstants.*;
 
-public class Model {
-	float lonfactor = 1.0f;
+public class Model{
+	RouteHandler routeHandler;
+	private float lonfactor = 1.0f;
 	private boolean colorBlindEnabled;
 	private String datasetName;
+	HashMap<Long,String> pointsOfInterest = new HashMap<>();
+	TextHandler textHandler = new TextHandler();
 
-
-
-	List<Runnable> observers = new ArrayList<>();
+	List<Runnable> colorObservers = new ArrayList<>();
+	List<Runnable> foundMatchesObservers = new ArrayList<>();
+	List<Runnable> pathObservers = new ArrayList<>();
 	float minlat, minlon, maxlat, maxlon;
 
-	String CurrentTypeColorTxt  = "data/TypeColorsNormal.txt";
+	String CurrentTypeColorTxt  = "src/main/resources/config/TypeColorsNormal.txt";
 	HashMap<String,ArrayList<String[]>> wayTypeCases = new HashMap<>();
-	ObservableList<String> foundMatches = FXCollections.observableArrayList();
+	ObservableList<String[]> foundMatches = FXCollections.observableArrayList();
 	ObservableList<String> typeColors = FXCollections.observableArrayList();
+	ObservableList<Iterable<Edge>> foundPath = FXCollections.observableArrayList();
 	Map<WayType, KDTree> kdTreeMap = new TreeMap<>();
 
-	//for building addresses during parsing
+    public ArrayList<String> getTextFile(String filepath) {
+        return textHandler.getTextFile(filepath);
+    }
+
+    //for building addresses during parsing
 	public static class Builder {
 		private long id;
 		private float lat, lon;
 		private String streetName = "Unknown", houseNumber="", postcode="", city="",municipality="";
+
 		public void reset(){
 			id = 0;
-			lat =0;
+			lat = 0;
 			lon = 0;
 			streetName = "Unknown";
 			houseNumber = "";
 			postcode = "";
-			city="";
+			city = "";
 		}
+
 		public boolean hasFields(){
-			if(!streetName.equals("Unknown")&&!houseNumber.equals("")&&!postcode.equals("")&&(!city.equals("")||!municipality.equals(""))) return true;
-			return false;}
+			if(!streetName.equals("Unknown") && !houseNumber.equals("") && !postcode.equals("") &&
+					(!city.equals("") || !municipality.equals(""))) {
+				return true;
+			}
+			return false;
+		}
+
 		public Address build() {
-			if(streetName.contains("/")){
+			if(streetName.contains("/")) {
 				streetName = streetName.replaceAll("/","");
 			}
-			if(city.equals("")){
+			if(city.equals("")) {
 				city = municipality;
 			}
-			return new Address(id,lat,lon,streetName, houseNumber, postcode, city);
+
+			return new Address(id, lat, lon, streetName, houseNumber, postcode, city);
 		}
 	}
 
@@ -60,37 +80,64 @@ public class Model {
 	public Iterable<Drawable> getWaysOfType(WayType type, BoundingBox bbox) {
 		return kdTreeMap.get(type).rangeQuery(bbox);
 	}
-
-	public void addObserver(Runnable observer) {
-		observers.add(observer);
+	public void addPathObserver(Runnable observer){pathObservers.add(observer);}
+	public void addFoundMatchesObserver(Runnable observer) {
+		foundMatchesObservers.add(observer);
 	}
 
-	public void notifyObservers() {
-		for (Runnable observer : observers) observer.run();
+	public void addColorObserver(Runnable observer) {
+		colorObservers.add(observer);
 	}
 
-	public Model(String dataset){
+
+	//TODO Might not be ideal solution if we need more then two autoTextFields...
+	public void clearAddFoundMatchesObservers(){
+		foundMatchesObservers = new ArrayList<>();
+	}
+
+	public void notifyFoundMatchesObservers() {
+		for (Runnable observer : foundMatchesObservers) {
+			observer.run();
+		}
+	}
+
+	public void notifyColorObservers() {
+		for (Runnable observer : colorObservers) {
+			observer.run();
+		}
+	}
+
+
+	public void notifyPathObservers(){
+    for(Runnable observer : pathObservers) {
+      observer.run();
+    }
+  }
+
+	public Model(String dataset) {
 		datasetName = dataset;
-		AddressParser.getInstance(this).setDefaults(getDefault(getDatasetName()));
-		AddressParser.getInstance(this).parseCitiesAndPostCodes(getCities(getDatasetName()));
+		//this keeps the cities and the default streets files in memory, it's about 1mb for Zealand of memory
+		AddressParser.getInstance(this).setDefaults(textHandler.getDefault(getDatasetName()));
+		AddressParser.getInstance(this).parseCitiesAndPostCodes(textHandler.getCities(this, getDatasetName()));
 	}
 
 	public Model(List<String> args) throws IOException, XMLStreamException, ClassNotFoundException {
+
 		//Changed from field to local variable so it can be garbage collected
 		Map<WayType, List<Drawable>> ways = new EnumMap<>(WayType.class);
 		for (WayType type : WayType.values()) {
 			ways.put(type, new ArrayList<>());
 		}
-		//todo figure out how to do singleton but also include model in its constructor without needing to give model for every call of getinstance
-		parseWayTypeCases("data/Waytype_cases.txt");
 
-		ParseWayColors();
+		//todo figure out how to do singleton but also include model in its constructor without needing to give model for every call of getInstance
+		textHandler.parseWayTypeCases("src/main/resources/config/WayTypeCases.txt", this);
+		textHandler.ParseWayColors(this);
 
 		String filename = args.get(0);
 		//this might not be optimal
 		String[] arr = filename.split("\\.");
-		datasetName = arr[0] + " Database";
-		InputStream osmsource;
+		datasetName = arr[0].replace("data/","") + " Database";
+		InputStream OSMSource;
 		if (filename.endsWith(".obj")) {
 			long time = -System.nanoTime();
 			try (ObjectInputStream input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(filename)))) {
@@ -99,6 +146,7 @@ public class Model {
 				minlon = input.readFloat();
 				maxlat = input.readFloat();
 				maxlon = input.readFloat();
+				routeHandler = new RouteHandler(this,(EdgeWeightedGraph)input.readObject());
 			}
 			time += System.nanoTime();
 			System.out.printf("Load time: %.1fs\n", time / 1e9);
@@ -107,56 +155,48 @@ public class Model {
 			if (filename.endsWith(".zip")) {
 				ZipInputStream zip = new ZipInputStream(new BufferedInputStream(new FileInputStream(filename)));
 				zip.getNextEntry();
-				osmsource = zip;
+				OSMSource = zip;
 			} else {
-				osmsource = new BufferedInputStream(new FileInputStream(filename));
+				OSMSource = new BufferedInputStream(new FileInputStream(filename));
 			}
-			parseOSM(osmsource);
+
+			parseOSM(OSMSource);
 			time += System.nanoTime();
 			System.out.printf("parse time: %.1fs\n", time / 1e9);
-			try (ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(filename + ".obj")))) {
+
+			try (ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(
+					new FileOutputStream(filename + ".obj")))) {
+
 				output.writeObject(kdTreeMap);
 				output.writeFloat(minlat);
 				output.writeFloat(minlon);
 				output.writeFloat(maxlat);
 				output.writeFloat(maxlon);
+				output.writeObject(routeHandler.getNodeGraph());
 			}
 		}
-        AddressParser.getInstance(this).setDefaults(getDefault(getDatasetName()));
-        AddressParser.getInstance(this).parseCitiesAndPostCodes(getCities(getDatasetName()));
+
+        AddressParser.getInstance(this).setDefaults(textHandler.getDefault(getDatasetName()));
+        AddressParser.getInstance(this).parseCitiesAndPostCodes(textHandler.getCities(this, getDatasetName()));
 	}
 
-    public void ParseWayColors(){
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(CurrentTypeColorTxt));
-			int m = Integer.parseInt(br.readLine());
-
-			for (int i = 0; i < m; i++) {
-				String[] strArr = br.readLine().split(" ");
-				typeColors.add(strArr[0]);
-				typeColors.add(strArr[1]);
-			}
-		}
-		catch(Exception e){
-			e.printStackTrace();
-			//TODO: fix this, uncle bob wont like this one hehe;)
-			System.out.println("something went wrong");
-		}
-		notifyObservers();
+	public double getLonfactor(){
+		return lonfactor;
 	}
 
-	public void switchColorScheme(boolean colorBlindEnabled){
-
+	public void switchColorScheme(boolean colorBlindEnabled) {
+		//TODO Remember to remove debug println
 		System.out.println("Colorblind mode enabled: " + colorBlindEnabled);
 
-		if (colorBlindEnabled){
-			CurrentTypeColorTxt = ("data/TypeColorsColorblind.txt");
+		if (colorBlindEnabled) {
+			CurrentTypeColorTxt = ("src/main/resources/config/TypeColorsColorblind.txt");
 		}
-		else if(!colorBlindEnabled){
-			CurrentTypeColorTxt = ("data/TypeColorsNormal.txt");
+		else {
+			CurrentTypeColorTxt = ("src/main/resources/config/TypeColorsNormal.txt");
 		}
 		ParseWayColors();
 	}
+
 
 	private void parseOSM(InputStream osmsource) throws XMLStreamException {
 		//Changed from field to local variable so it can be garbage collected
@@ -164,13 +204,15 @@ public class Model {
 		for (WayType type : WayType.values()) {
 			ways.put(type, new ArrayList<>());
 		}
-
+		EdgeWeightedGraph nodeGraph = new EdgeWeightedGraph();
+		//todo change to other hashmaps or do something else
+		routeHandler = new RouteHandler(this,nodeGraph,new HashMap<>(),new HashMap<>());
 		XMLStreamReader reader = XMLInputFactory
 				.newInstance()
 				.createXMLStreamReader(osmsource);
 
-		LongIndex<OSMNode> idToNode = new LongIndex<OSMNode>();
-		LongIndex<OSMWay> idToWay = new LongIndex<OSMWay>();
+		LongIndex<OSMNode> idToNode = new LongIndex<>();
+		LongIndex<OSMWay> idToWay = new LongIndex<>();
 		ArrayList<Address> addresses = new ArrayList<>();
 		List<OSMWay> coast = new ArrayList<>();
 
@@ -178,6 +220,9 @@ public class Model {
 		OSMWay way = null;
 		OSMRelation rel = null;
 		WayType type = null;
+
+		double speedlimit = 0;
+		String name = "";
 
 		//variables for addressParsing and OSMNode creation
 		Builder b = new Builder();
@@ -201,13 +246,14 @@ public class Model {
 						case "node":
 							id = Long.parseLong(reader.getAttributeValue(null, "id"));
 							lat = Float.parseFloat(reader.getAttributeValue(null, "lat"));
-							lon = lonfactor * Float.parseFloat(reader.getAttributeValue(null, "lon"));
-							idToNode.add(new OSMNode(id, lon, lat));
+							lon = Float.parseFloat(reader.getAttributeValue(null, "lon"));
+							idToNode.add(new OSMNode(id, lon*lonfactor, lat));
 							break;
 						case "way":
 							id = Long.parseLong(reader.getAttributeValue(null, "id"));
 							type = WayType.UNKNOWN;
 							way = new OSMWay(id);
+
 							idToWay.add(way);
 							break;
 						case "nd":
@@ -218,37 +264,72 @@ public class Model {
 							String k = reader.getAttributeValue(null, "k");
 							String v = reader.getAttributeValue(null, "v");
 
-							if(k.equals("addr:housenumber")){
+              if(k.equals("addr:housenumber")) {
 								b.houseNumber = v.trim();
 							}
 
-							if(k.equals("addr:street")){
+							if(k.equals("addr:street")) {
 								b.streetName = v.trim();
 							}
 
-							if(k.equals("addr:postcode")){
+							if(k.equals("addr:postcode")) {
 								b.postcode = v.trim();
 							}
 
 
-							if(k.equals("addr:city")){
+							if(k.equals("addr:city")) {
 								b.city = v.trim();
 							}
 
-							if(k.equals("addr:municipality")){
+							if(k.equals("addr:municipality")) {
 								b.municipality = v.trim();
 							}
 
-							//string[0]=waytype's name, strings[1] = k for the case, strings = v for the case.
+							if(k.equals("source:maxspeed")){
+								if(v.equalsIgnoreCase("DK:urban")||v.equalsIgnoreCase("DK:urabn")||v.equalsIgnoreCase("DK:city")||v.equalsIgnoreCase("DK:zone50")||v.equalsIgnoreCase("dk:urban-")||v.equalsIgnoreCase("DK:uban")||v.equalsIgnoreCase("DK.urban")||v.equalsIgnoreCase("dk:urban;sign")||v.equalsIgnoreCase("urban")) {
+									speedlimit = 50;
+								}else if (v.equalsIgnoreCase("DK:zone20")){
+									speedlimit = 20;
+								}else if(v.equalsIgnoreCase("dk:zone30")||v.equalsIgnoreCase("DK:zone30;DK:urban")||v.equalsIgnoreCase("DK:zone:30")){
+									speedlimit = 30;
+								}else if(v.equalsIgnoreCase("dk:zone40")||v.equalsIgnoreCase("DK:zone:40")){
+									speedlimit = 40;
+								}else if(v.equalsIgnoreCase("DK:rural")||v.equalsIgnoreCase("dk:rutal")||v.equalsIgnoreCase("DK.rural")||v.equalsIgnoreCase("DK:trunk")){
+									speedlimit = 80;
+								}else if(v.equals("DK:motorway")){
+									speedlimit = 130;
+								}
+							}
 
+							if(k.equals("name")){
+								name = v;
+							}
+
+							if(k.equals("maxspeed")){
+								if(v.equalsIgnoreCase("DK:urban")){
+									speedlimit = 50;
+								}else if(v.equalsIgnoreCase("DK:rural")){
+									speedlimit = 80;
+								}else if(v.equalsIgnoreCase("DK:motorway")) {
+									speedlimit = 130;
+								}else if(v.equalsIgnoreCase("default")||v.equalsIgnoreCase("implicit")||v.equalsIgnoreCase("none")||v.equalsIgnoreCase("signals")||v.equalsIgnoreCase("5 knots")){
+								}else{
+									speedlimit = Double.valueOf(v);
+								}
+							}
+
+							//string[0]=waytype's name, strings[1] = k for the case, strings = v for the case.
 							for(Map.Entry<String,ArrayList<String[]>> wayType : wayTypeCases.entrySet()){
 								String wayTypeString = wayType.getKey();
-								for(String[] waycase:wayType.getValue()){
-									if(k.equals(waycase[0])&&v.equals(waycase[1])){
+								for(String[] waycase : wayType.getValue()) {
+									if(k.equals(waycase[0])&&v.equals(waycase[1])) {
 										type = WayType.valueOf(wayTypeString);
 									}
 								}
 							}
+
+							routeHandler.checkDrivabillty(k,v);
+
 							switch (k){
 								case "relation":
 									type = WayType.UNKNOWN;
@@ -280,17 +361,31 @@ public class Model {
 							} else {
 								ways.get(type).add(new Polyline(way));
 							}
+
+							//checks if the current waytype is one
+							// of the one's that should be in the nodegraph
+							if(routeHandler.isNodeGraphWay(type)) {
+								if(way.getAsLong()==199123707){
+									System.out.print("boop");
+								}
+								routeHandler.addWayToNodeGraph(way, type,name,speedlimit);
+							}
+
 							if(b.hasFields()) {
 								b.id = id;
 								b.lat = lat;
 								b.lon = lon;
 								addresses.add(b.build());
 							}
+
+							//resetting variables
 							way = null;
 							b.reset();
+							speedlimit = 0;
+							name = "";
 							break;
 						case "node":
-							if(b.hasFields()){
+							if(b.hasFields()) {
 								b.id = id;
 								b.lat = lat;
 								b.lon = lon;
@@ -299,7 +394,13 @@ public class Model {
 							b.reset();
 							break;
 						case "relation":
-							if (type == WayType.WATER) {
+							//Add rel to the list associated with its WayType in ways if type is one of following:
+							// WATER, BUILDING, FOREST, FARMLAND, PARK, RECREATION, BOUNDARY_ADMINISTRATIVE,
+							// RAILWAY_PLATFORM, CONSTRUCTION, PARKING
+							if (type == WayType.WATER || type == WayType.BUILDING || type == WayType.FOREST
+									|| type == WayType.FARMLAND || type == WayType.PARK || type == WayType.RECREATION
+									|| type == WayType.BOUNDARY_ADMINISTRATIVE || type == WayType.RAILWAY_PLATFORM
+									|| type == WayType.CONSTRUCTION || type == WayType.PARKING) {
 								ways.get(type).add(new MultiPolyline(rel));
 								way = null;
 							}else if(type == WayType.BUILDING){
@@ -330,12 +431,10 @@ public class Model {
 				case SPACE: break;
 				case START_DOCUMENT: break;
 				case END_DOCUMENT:
-					File parseCheck = new File("data/"+ getDatasetName());
-					if(!parseCheck.isDirectory()) {
-						addresses.sort(Address::compareTo);
-						makeDatabase(addresses, getDatasetName());
-						//this keeps the cities and the default streets files in memory, it's about 1mb for Zealand of memory
-					}
+					//TODO Do we need this variable? IntelliJ says it is unused
+					File parseCheck = new File("data/" + getDatasetName());
+					addresses.sort(Address::compareTo);
+					textHandler.makeDatabase(this, addresses, getDatasetName());
 
 					for (OSMWay c : merge(coast)) {
 						ways.get(WayType.COASTLINE).add(new Polyline(c));
@@ -361,99 +460,24 @@ public class Model {
 		}
 	}
 
-	private void makeDatabase(ArrayList<Address> addresses,String country){
-		File contryDir = new File("data/"+country);
-		contryDir.mkdir();
-		String currentCityAndPostcode = "";
-		String currentStreet = "";
-		try {
-			//this first step looks ugly and is perhaps unnecessary
-			BufferedWriter allStreetsInCountryWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("data/"+country+"/streets.txt")),"UTF-8"));
-			BufferedWriter streetsInCityWriter =  new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("data/"+country+"/"+currentCityAndPostcode+"/streets.txt")),"UTF-8"));
-			BufferedWriter citiesInCountryWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("data/"+country+"/cities.txt")),"UTF-8"));
-			File streetFile = new File("data/"+country+"/"+currentCityAndPostcode+"/"+currentStreet+".txt");
-			BufferedWriter adressesInStreetWriter =  new BufferedWriter(new OutputStreamWriter(new FileOutputStream(streetFile)));
-		for(Address address:addresses) {
-			//if the streetName remains the same, and the city changes we need to change the writers for streets and adresses,
-			//along with writing to the appropriate files, we also change the current city and postcode, and make the directory for it
-			//todo fix code dupes here
-			if (address.getStreetName().equals(currentStreet) && !(address.getCity() + getDelimeter() + address.getPostcode()).equals(currentCityAndPostcode)) {
-				currentCityAndPostcode = address.getCity() + " QQQ " + address.getPostcode();
-				File cityDir = new File("data/" + country + "/" + currentCityAndPostcode);
-				cityDir.mkdir();
-				File streetsIncityFile = new File("data/" + country + "/" + currentCityAndPostcode + "/streets.txt");
-				streetFile = new File("data/" + country + "/" + currentCityAndPostcode + "/" + currentStreet + ".txt");
-				streetsInCityWriter.flush();
-				adressesInStreetWriter.flush();
-				//because the addresses are sorted by their streetnames first, we need to accomadate changing cities many times.
-				streetsInCityWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(streetsIncityFile, true), "UTF-8"));
-				adressesInStreetWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(streetFile)));
-				citiesInCountryWriter.write(currentCityAndPostcode + "\n");
-				streetsInCityWriter.write(currentStreet + "\n");
-				allStreetsInCountryWriter.write(currentStreet + getDelimeter() + currentCityAndPostcode + "\n");
-			} else {
-				//if the city changes, flush the writers and change the writer for the streets in that city,
-				// write to the file with all the cities and make the cities directory, also change the current city and postcode
-				if (!(address.getCity() + getDelimeter() + address.getPostcode()).equals(currentCityAndPostcode)) {
-					currentCityAndPostcode = address.getCity() + " QQQ " + address.getPostcode();
-					File cityDir = new File("data/" + country + "/" + currentCityAndPostcode);
-					cityDir.mkdir();
-					File streetsIncityFile = new File("data/" + country + "/" + currentCityAndPostcode + "/streets.txt");
-					streetsInCityWriter.flush();
-					//because the addresses are sorted by their streetnames first, we need to accomadate changing cities many times.
-					streetsInCityWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(streetsIncityFile, true), "UTF-8"));
-					citiesInCountryWriter.write(currentCityAndPostcode + "\n");
-				}
-				//if the addresses street is different, make a new street file, write to that city's streets.txt file and change the current street.
-				if (!address.getStreetName().equals(currentStreet)) {
-					currentStreet = address.getStreetName();
-					streetFile = new File("data/" + country + "/" + currentCityAndPostcode + "/" + currentStreet + ".txt");
-					adressesInStreetWriter.flush();
-					adressesInStreetWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(streetFile)));
-					streetsInCityWriter.write(currentStreet + "\n");
-					allStreetsInCountryWriter.write(currentStreet + getDelimeter() + currentCityAndPostcode + "\n");
-				}
-			}
-				adressesInStreetWriter.write(address.getId() + " " + address.getLat() + " " + address.getLon() + " " + address.getHouseNumber() + "\n");
-			}
 
-		//closes all writers
-			allStreetsInCountryWriter.close();
-			citiesInCountryWriter.close();
-			streetsInCityWriter.close();
-			adressesInStreetWriter.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public double calculateDistanceInMeters(double startLat, double startLon, double endLat, double endLon){
+		//Found the formula on https://www.movable-type.co.uk/scripts/latlong.html
+		//Basically the same code as is shown on the site mentioned above
+		final int R = 6371000; // CA. Earth radius in meters
+		double φ1  = Math.toRadians(startLat);
+		double φ2  = Math.toRadians(endLat);
+		double Δφ  = Math.toRadians(endLat - startLat);
+		double Δλ  = Math.toRadians(endLon - startLon);
+
+		double a  = Math.sin(Δφ/2)* Math.sin(Δφ/2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
+		double c  = 2*Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+		double d = R * c;
+		return d;
 	}
 
-	public String getDelimeter(){
+	public String getDelimeter() {
 		return " QQQ ";
-	}
-
-	public void parseWayTypeCases(String pathToCasesFile){
-		try {
-			BufferedReader in = new BufferedReader(new InputStreamReader(
-					new FileInputStream(pathToCasesFile),"UTF-8"));
-			int n = Integer.parseInt(in.readLine().trim());
-			for(int i = 0; i < n ; i++) {
-				String wayType = in.readLine();
-				String wayCase = in.readLine();
-
-				while((wayCase != null) && !(wayCase.startsWith("$"))){
-					String[] tokens = wayCase.split(" ");
-					if(wayTypeCases.get(wayType)==null){
-						wayTypeCases.put(wayType,new ArrayList<>());
-					}
-					wayTypeCases.get(wayType).add(new String[]{tokens[0],tokens[1]});
-					wayCase = in.readLine();
-				}
-			}
-		} catch (UnsupportedEncodingException | FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	private Iterable<OSMWay> merge(List<OSMWay> coast) {
@@ -482,88 +506,114 @@ public class Model {
 		return pieces.values();
 	}
 
-	public void parseSearch(String proposedAddress) {
-        Address a = AddressParser.getInstance(this).singleSearch(proposedAddress, getDatasetName());
-        //a is null if the singlesearch did not find a city in the string, hence we start the autocomplete
-        if(a.getStreetName().equals("Unknown")){
-			ArrayList<String[]> possibleMatches = AddressParser.getInstance(this).getMatchesFromDefault(proposedAddress, false);
-			if (possibleMatches != null) {
-				foundMatches.clear();
-				//each string array in this arraylist has a streetname on index 0, city on idex 1 and postcode on index 2
-				//give possible matches to the ui somehow
-				for (String[] match : possibleMatches) {
-					foundMatches.add(match[0] + " " + match[1] + " " + match[2]);
-				}
-			}
-        	//print out some failure message
-	    }else if(a.getCity().equals("")){
-            //this returns an arraylist of string arrays that hold a streetname city and postcode
-            ArrayList<String[]> possibleMatches = AddressParser.getInstance(this).getMatchesFromDefault(proposedAddress, false);
-            if (possibleMatches != null) {
-                foundMatches.clear();
-                //each string array in this arraylist has a streetname on index 0, city on idex 1 and postcode on index 2
-                //give possible matches to the ui somehow
-                for(String[] match : possibleMatches){
-                    foundMatches.add(match[0]+" "+match[1]+" "+match[2]);
-                }
-                //insert the index of the city+postcode chosen
-                String[] match = possibleMatches.get(0);
-                //after a specific city + postcode is chosen insert it into the textfield and inititiat the search again
+	public void ParseWayColors() {
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(CurrentTypeColorTxt));
+			int m = Integer.parseInt(br.readLine());
 
-            }
-            System.out.println(a.toString() + a.getHouseNumber());
-        }else if(a.getHouseNumber().equals("")){
-            //each string array in this arraylist has a id for the node on index 0, lat on index 1, lon on index 2 and housenumber on index 3
-            ArrayList<String[]> possibleAddresses = AddressParser.getInstance(this).getAddress(getDatasetName(),a.getCity(),a.getPostcode(),a.getStreetName(),"",false);
-            //insert the index of the housenumber chosen
-            String[] addressMatch = possibleAddresses.get(0);
-            //after a housenumber is chosen, insert it inn the textfield and reinitiate a search
-        }
+			for (int i = 0 ; i < m ; i++) {
+				String[] strArr = br.readLine().split(" ");
+				typeColors.add(strArr[0]);
+				typeColors.add(strArr[1]);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("Couldn't create a file reader from color scheme file (" + CurrentTypeColorTxt + ") or failed to read from it.");
+		}
+
+		notifyColorObservers();
 	}
 
-	//TODO change it to be the name of the dataset
-    //it's only denmark right now.
-	public String getDatasetName(){
-		return "denmark";
+	public void parseSearch(String proposedAddress) {
+        Address a = AddressParser.getInstance(this).singleSearch(proposedAddress, getDatasetName());
+        //if the address does not have a city or a streetname, get the string's matches from the default file and display them
+        if(a.getStreetName().equals("Unknown") || a.getCity().equals("")) {
+			ArrayList<String[]> possibleMatches =
+					AddressParser.getInstance(this).getMatchesFromDefault(proposedAddress, false);
+
+			if (possibleMatches != null) {
+				foundMatches.clear();
+				System.out.println(possibleMatches.size());
+				for (String[] match : possibleMatches) {
+					foundMatches.add(new String[]{match[0],match[1],match[2]});
+				}
+			}
+        }else if(a.getHouseNumber()==null){
+            //if the housenumber is null, bet all the addresses housenumbers from the streets file and display them
+            ArrayList<String[]> possibleAddresses = AddressParser.getInstance(this).getAddress(getDatasetName(),a.getCity(),a.getPostcode(),a.getStreetName(),"",false);
+			if (possibleAddresses != null) {
+				foundMatches.clear();
+				String street = a.getStreetName();
+				String city = a.getCity();
+				String postcode = a.getPostcode();
+				for (String[] match : possibleAddresses) {
+					foundMatches.add(new String[]{street, match[3], city, postcode});
+				}
+			}
+        }else{
+        	//if those 3 fields are filled, just put the address in the ui will handle the rest
+			foundMatches.clear();
+			foundMatches.add(new String[]{String.valueOf(a.getLon()),
+					String.valueOf(a.getLat()), a.getStreetName(), a.getHouseNumber(),
+					a.getFloor(), a.getSide(), a.getCity(), a.getPostcode()});
+		}
+        notifyFoundMatchesObservers();
+	}
+
+	public String getDatasetName() {
+		return datasetName;
 	}
 
 	public ArrayList<String> getAddressesOnStreet(String country,String city,String postcode,String streetName){
-	    return getTextFile("data/"+country+"/"+city+" QQQ "+postcode+"/"+streetName+".txt");
+	    return textHandler.getTextFile("data/"+country+"/"+city+" QQQ "+postcode+"/"+streetName+".txt");
     }
 
-	public ArrayList<String> getStreetsInCity(String country, String city,String postcode){
-		return getTextFile("data/"+country+"/"+city+" QQQ "+postcode+"/streets.txt");
-	}
-
-	public ArrayList<String> getCities(String country){
-		return getTextFile("data/"+country+"/cities.txt");
-	}
-
-    private ArrayList<String> getDefault(String country) {
-		return getTextFile("data/"+country+"/streets.txt");
-	}
-
-	//generalized getCities and getStreets to getTextFile, might not be final.
-	public ArrayList<String> getTextFile(String filepath){
+    public void writePointsOfInterest(String datasetName) {
 		try {
-			BufferedReader reader= new BufferedReader(new InputStreamReader(
-					new FileInputStream(filepath),"UTF-8"));
-			ArrayList<String> textFile = new ArrayList<>();
-			String line;
-			while((line = reader.readLine()) != null){
-				textFile.add(line);
-			}
-			return textFile;
+			BufferedWriter pointsOfInterestWriter = new BufferedWriter(
+					new OutputStreamWriter(new FileOutputStream(
+							new File("data/" + datasetName + "/pointsOfInterest.txt"))
+					,"UTF-8"));
 
+			for(Map.Entry<Long, String> entry : pointsOfInterest.entrySet()) {
+				pointsOfInterestWriter.write(entry.getKey() + getDelimeter() + entry.getValue());
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.out.println("Couldn't create an OutputStream for points of interests or failed to write to it.");
 		}
-		return null;
 	}
+
+    public HashMap<Long,String> getPointsOfInterest(String datasetName){
+		HashMap<Long,String> pointsOfInterest = new HashMap<>();
+		ArrayList<String> pointOfInterestFile = textHandler.getTextFile("data/"+datasetName+"/pointsOfInterest.txt");
+		for(String address : pointOfInterestFile){
+			String[] addressFields = address.split(getDelimeter());
+			long id = Long.valueOf(addressFields[0]);
+			String addressString = addressFields[1]+getDelimeter()+addressFields[2]+getDelimeter()+addressFields[3]+getDelimeter()+addressFields[4]+getDelimeter()+getDelimeter()+addressFields[5];
+			pointsOfInterest.put(id,addressString);
+		}
+		return pointsOfInterest;
+	}
+
+    public void addPointsOfInterest(long id,String pointOfInterest) {
+		pointsOfInterest.put(id,pointOfInterest);
+	}
+
+	public void removePointOfInterest(long id) {
+		pointsOfInterest.remove(id);
+	}
+
+
+	public Iterator<Iterable<Edge>> pathIterator(){
+    return foundPath.iterator();
+  }
 
 	public Iterator<String> colorIterator() {
 		return typeColors.iterator();
 	}
 
-	public Iterator<String> foundMatchesIterator() { return foundMatches.iterator();}
+	public Iterator<String[]> foundMatchesIterator() {
+		return foundMatches.iterator();
+	}
 }
