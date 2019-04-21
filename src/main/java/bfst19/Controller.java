@@ -106,10 +106,12 @@ public class Controller {
         HBox hBox = null;
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ViewBarPanel.fxml"));
+
         try {
             hBox = fxmlLoader.load();
         } catch (IOException e) {
             e.printStackTrace();
+			System.out.println("Failed to load from FXMLLoader associated with ViewBarPanel.fxml");
         }
 
         borderPane.setLeft(hBox);
@@ -127,10 +129,12 @@ public class Controller {
         VBox VBox = null;
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ViewMenuPanel.fxml"));
+
         try {
             VBox = fxmlLoader.load();
         } catch (IOException event) {
             event.printStackTrace();
+			System.out.println("Failed to load from FXMLLoader associated with ViewMenuPanel.fxml");
         }
 
         borderPane.setLeft(VBox);
@@ -149,10 +153,12 @@ public class Controller {
         VBox VBox = null;
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ViewRoutePanel.fxml"));
+
         try {
             VBox = fxmlLoader.load();
         } catch (IOException event) {
             event.printStackTrace();
+			System.out.println("Failed to load from FXMLLoader associated with ViewRoutePanel.fxml");
         }
 
         borderPane.setLeft(VBox);

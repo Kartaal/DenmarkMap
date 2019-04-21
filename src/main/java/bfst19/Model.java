@@ -24,7 +24,6 @@ public class Model{
 	HashMap<Long,String> pointsOfInterest = new HashMap<>();
 	TextHandler textHandler = new TextHandler();
 
-
 	List<Runnable> colorObservers = new ArrayList<>();
 	List<Runnable> foundMatchesObservers = new ArrayList<>();
 	List<Runnable> pathObservers = new ArrayList<>();
@@ -46,26 +45,34 @@ public class Model{
 		private long id;
 		private float lat, lon;
 		private String streetName = "Unknown", houseNumber="", postcode="", city="",municipality="";
+
 		public void reset(){
 			id = 0;
-			lat =0;
+			lat = 0;
 			lon = 0;
 			streetName = "Unknown";
 			houseNumber = "";
 			postcode = "";
-			city="";
+			city = "";
 		}
+
 		public boolean hasFields(){
-			if(!streetName.equals("Unknown")&&!houseNumber.equals("")&&!postcode.equals("")&&(!city.equals("")||!municipality.equals(""))) return true;
-			return false;}
+			if(!streetName.equals("Unknown") && !houseNumber.equals("") && !postcode.equals("") &&
+					(!city.equals("") || !municipality.equals(""))) {
+				return true;
+			}
+			return false;
+		}
+
 		public Address build() {
-			if(streetName.contains("/")){
+			if(streetName.contains("/")) {
 				streetName = streetName.replaceAll("/","");
 			}
-			if(city.equals("")){
+			if(city.equals("")) {
 				city = municipality;
 			}
-			return new Address(id,lat,lon,streetName, houseNumber, postcode, city);
+
+			return new Address(id, lat, lon, streetName, houseNumber, postcode, city);
 		}
 	}
 
@@ -77,14 +84,31 @@ public class Model{
 	public void addFoundMatchesObserver(Runnable observer) {
 		foundMatchesObservers.add(observer);
 	}
-	public void addColorObserver(Runnable observer) { colorObservers.add(observer); }
+  
+	public void addColorObserver(Runnable observer) {
+		colorObservers.add(observer);
+	}
 
-	public void notifyFoundMatchesObservers() { for (Runnable observer : foundMatchesObservers) observer.run(); }
-	public void notifyColorObservers() {for (Runnable observer : colorObservers) observer.run();}
-	public void notifyPathObservers(){for(Runnable observer : pathObservers) observer.run();}
+	public void notifyFoundMatchesObservers() {
+		for (Runnable observer : foundMatchesObservers) {
+			observer.run();
+		}
+	}
 
-	//contructor just for testing of addressparsing
-	public Model(String dataset){
+	public void notifyColorObservers() {
+		for (Runnable observer : colorObservers) {
+			observer.run();
+		}
+	}
+  
+  
+	public void notifyPathObservers(){
+    for(Runnable observer : pathObservers) {
+      observer.run();
+    }
+  }
+
+	public Model(String dataset) {
 		datasetName = dataset;
 		//this keeps the cities and the default streets files in memory, it's about 1mb for Zealand of memory
 		AddressParser.getInstance(this).setDefaults(textHandler.getDefault(getDatasetName()));
@@ -129,10 +153,14 @@ public class Model{
 			} else {
 				OSMSource = new BufferedInputStream(new FileInputStream(filename));
 			}
+      
 			parseOSM(OSMSource);
 			time += System.nanoTime();
 			System.out.printf("parse time: %.1fs\n", time / 1e9);
-			try (ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(filename + ".obj")))) {
+
+			try (ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(
+					new FileOutputStream(filename + ".obj")))) {
+
 				output.writeObject(kdTreeMap);
 				output.writeFloat(minlat);
 				output.writeFloat(minlon);
@@ -248,23 +276,25 @@ public class Model{
 						case "tag":
 							String k = reader.getAttributeValue(null, "k");
 							String v = reader.getAttributeValue(null, "v");
-							if(k.equals("addr:housenumber")){
+
+              if(k.equals("addr:housenumber")) {
 								b.houseNumber = v.trim();
 							}
 
-							if(k.equals("addr:street")){
+							if(k.equals("addr:street")) {
 								b.streetName = v.trim();
 							}
 
-							if(k.equals("addr:postcode")){
+							if(k.equals("addr:postcode")) {
 								b.postcode = v.trim();
 							}
 
-							if(k.equals("addr:city")){
+
+							if(k.equals("addr:city")) {
 								b.city = v.trim();
 							}
 
-							if(k.equals("addr:municipality")){
+							if(k.equals("addr:municipality")) {
 								b.municipality = v.trim();
 							}
 
@@ -304,8 +334,8 @@ public class Model{
 							//string[0]=waytype's name, strings[1] = k for the case, strings = v for the case.
 							for(Map.Entry<String,ArrayList<String[]>> wayType : wayTypeCases.entrySet()){
 								String wayTypeString = wayType.getKey();
-								for(String[] waycase:wayType.getValue()){
-									if(k.equals(waycase[0])&&v.equals(waycase[1])){
+								for(String[] waycase : wayType.getValue()) {
+									if(k.equals(waycase[0])&&v.equals(waycase[1])) {
 										type = WayType.valueOf(wayTypeString);
 									}
 								}
@@ -368,7 +398,7 @@ public class Model{
 							name = "";
 							break;
 						case "node":
-							if(b.hasFields()){
+							if(b.hasFields()) {
 								b.id = id;
 								b.lat = lat;
 								b.lon = lon;
@@ -377,27 +407,15 @@ public class Model{
 							b.reset();
 							break;
 						case "relation":
-							if (type == WayType.WATER) {
+							//Add rel to the list associated with its WayType in ways if type is one of following:
+							// WATER, BUILDING, FOREST, FARMLAND, PARK, RECREATION, BOUNDARY_ADMINISTRATIVE,
+							// RAILWAY_PLATFORM, CONSTRUCTION, PARKING
+							if (type == WayType.WATER || type == WayType.BUILDING || type == WayType.FOREST
+									|| type == WayType.FARMLAND || type == WayType.PARK || type == WayType.RECREATION
+									|| type == WayType.BOUNDARY_ADMINISTRATIVE || type == WayType.RAILWAY_PLATFORM
+									|| type == WayType.CONSTRUCTION || type == WayType.PARKING) {
 								ways.get(type).add(new MultiPolyline(rel));
 								way = null;
-							}else if(type == WayType.BUILDING){
-								ways.get(type).add(new MultiPolyline(rel));
-							}else if(type == WayType.FOREST){
-								ways.get(type).add(new MultiPolyline(rel));
-							}else if(type == WayType.FARMLAND){
-								ways.get(type).add(new MultiPolyline(rel));
-							}else if(type == WayType.PARK){
-								ways.get(type).add(new MultiPolyline(rel));
-							}else if(type == WayType.RECREATION){
-								ways.get(type).add(new MultiPolyline(rel));
-							}else if(type == WayType.BOUNDARY_ADMINISTRATIVE){
-								ways.get(type).add(new MultiPolyline(rel));
-							}else if(type == WayType.RAILWAY_PLATFORM){
-								ways.get(type).add(new MultiPolyline(rel));
-							}else if(type == WayType.CONSTRUCTION){
-								ways.get(type).add(new MultiPolyline(rel));
-							}else if(type == WayType.PARKING){
-								ways.get(type).add(new MultiPolyline(rel));
 							}
 							break;
 					}
@@ -408,7 +426,8 @@ public class Model{
 				case SPACE: break;
 				case START_DOCUMENT: break;
 				case END_DOCUMENT:
-					File parseCheck = new File("data/"+ getDatasetName());
+					//TODO Do we need this variable? IntelliJ says it is unused
+					File parseCheck = new File("data/" + getDatasetName());
 					addresses.sort(Address::compareTo);
 					textHandler.makeDatabase(this, addresses, getDatasetName());
 
@@ -436,6 +455,7 @@ public class Model{
 		}
 	}
 
+
 	public double calculateDistanceInMeters(double startLat, double startLon, double endLat, double endLon){
 		//Found the formula on https://www.movable-type.co.uk/scripts/latlong.html
 		//Basically the same code as is shown on the site mentioned above
@@ -451,7 +471,7 @@ public class Model{
 		return d;
 	}
 
-	public String getDelimeter(){
+	public String getDelimeter() {
 		return " QQQ ";
 	}
 
@@ -481,11 +501,44 @@ public class Model{
 		return pieces.values();
 	}
 
+	public void ParseWayColors() {
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(CurrentTypeColorTxt));
+			int m = Integer.parseInt(br.readLine());
+
+			for (int i = 0 ; i < m ; i++) {
+				String[] strArr = br.readLine().split(" ");
+				typeColors.add(strArr[0]);
+				typeColors.add(strArr[1]);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("Couldn't create a file reader from color scheme file (" + CurrentTypeColorTxt + ") or failed to read from it.");
+		}
+
+		notifyColorObservers();
+	}
+
+	public void switchColorScheme(boolean colorBlindEnabled) {
+		//TODO Remember to remove debug println
+		System.out.println("Colorblind mode enabled: " + colorBlindEnabled);
+
+		if (colorBlindEnabled) {
+			CurrentTypeColorTxt = ("data/TypeColorsColorblind.txt");
+		}
+		else {
+			CurrentTypeColorTxt = ("data/TypeColorsNormal.txt");
+		}
+		ParseWayColors();
+	}
+
 	public void parseSearch(String proposedAddress) {
         Address a = AddressParser.getInstance(this).singleSearch(proposedAddress, getDatasetName());
         //if the address does not have a city or a streetname, get the string's matches from the default file and display them
-        if(a.getStreetName().equals("Unknown")||(a.getCity().equals(""))){
-			ArrayList<String[]> possibleMatches = AddressParser.getInstance(this).getMatchesFromDefault(proposedAddress, false);
+        if(a.getStreetName().equals("Unknown") || a.getCity().equals("")) {
+			ArrayList<String[]> possibleMatches =
+					AddressParser.getInstance(this).getMatchesFromDefault(proposedAddress, false);
+
 			if (possibleMatches != null) {
 				foundMatches.clear();
 				System.out.println(possibleMatches.size());
@@ -502,18 +555,20 @@ public class Model{
 				String city = a.getCity();
 				String postcode = a.getPostcode();
 				for (String[] match : possibleAddresses) {
-					foundMatches.add(new String[]{street,match[3],city,postcode});
+					foundMatches.add(new String[]{street, match[3], city, postcode});
 				}
 			}
         }else{
         	//if those 3 fields are filled, just put the address in the ui will handle the rest
 			foundMatches.clear();
-			foundMatches.add(new String[]{String.valueOf(a.getLon()),String.valueOf(a.getLat()),a.getStreetName(),a.getHouseNumber(),a.getFloor(),a.getSide(),a.getCity(),a.getPostcode()});
+			foundMatches.add(new String[]{String.valueOf(a.getLon()),
+					String.valueOf(a.getLat()), a.getStreetName(), a.getHouseNumber(),
+					a.getFloor(), a.getSide(), a.getCity(), a.getPostcode()});
 		}
         notifyFoundMatchesObservers();
 	}
 
-	public String getDatasetName(){
+	public String getDatasetName() {
 		return datasetName;
 	}
 
@@ -521,14 +576,19 @@ public class Model{
 	    return textHandler.getTextFile("data/"+country+"/"+city+" QQQ "+postcode+"/"+streetName+".txt");
     }
 
-    public void writePointsOfInterest(String datasetName){
+    public void writePointsOfInterest(String datasetName) {
 		try {
-			BufferedWriter pointsOfInterestWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("data/"+datasetName+"/pointsOfInterest.txt")),"UTF-8"));
-			for(Map.Entry<Long,String> entry : pointsOfInterest.entrySet()){
-				pointsOfInterestWriter.write(entry.getKey()+getDelimeter()+entry.getValue());
+			BufferedWriter pointsOfInterestWriter = new BufferedWriter(
+					new OutputStreamWriter(new FileOutputStream(
+							new File("data/" + datasetName + "/pointsOfInterest.txt"))
+					,"UTF-8"));
+
+			for(Map.Entry<Long, String> entry : pointsOfInterest.entrySet()) {
+				pointsOfInterestWriter.write(entry.getKey() + getDelimeter() + entry.getValue());
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.out.println("Couldn't create an OutputStream for points of interests or failed to write to it.");
 		}
 	}
 
@@ -544,18 +604,24 @@ public class Model{
 		return pointsOfInterest;
 	}
 
-    public void addPointsOfInterest(long id,String pointOfInterest){
+    public void addPointsOfInterest(long id,String pointOfInterest) {
 		pointsOfInterest.put(id,pointOfInterest);
 	}
 
-	public void removePointOfInterest(long id){
+	public void removePointOfInterest(long id) {
 		pointsOfInterest.remove(id);
 	}
 
-	public Iterator<Iterable<Edge>> pathIterator(){ return foundPath.iterator();}
+
+	public Iterator<Iterable<Edge>> pathIterator(){ 
+    return foundPath.iterator();
+  }
+  
 	public Iterator<String> colorIterator() {
 		return typeColors.iterator();
 	}
 
-	public Iterator<String[]> foundMatchesIterator() { return foundMatches.iterator();}
+	public Iterator<String[]> foundMatchesIterator() {
+		return foundMatches.iterator();
+	}
 }
