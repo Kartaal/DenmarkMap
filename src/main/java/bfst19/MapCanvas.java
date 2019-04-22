@@ -29,6 +29,7 @@ public class MapCanvas extends Canvas {
 
     private boolean colorBlindEnabled = false;
     private double singlePixelLength;
+    private double percentOfScreenArea;
 
 
 
@@ -80,12 +81,12 @@ public class MapCanvas extends Canvas {
         //color for landmasses with nothing drawn on top
         gc.setFill(Color.WHITE);
         for (Drawable way : model.getWaysOfType(WayType.COASTLINE, getExtentInModel())) {
-            way.fill(gc,singlePixelLength);
+            way.fill(gc,singlePixelLength,percentOfScreenArea);
         }
 
         gc.setFill(getColor(WayType.WATER));
         for (Drawable way : model.getWaysOfType(WayType.WATER, getExtentInModel())) {
-            way.fill(gc,singlePixelLength);
+            way.fill(gc,singlePixelLength,percentOfScreenArea);
         }
 
 
@@ -96,7 +97,7 @@ public class MapCanvas extends Canvas {
                 if (!(type.isRoadOrSimilar()) && type.levelOfDetail() < detailLevel) {
                     if(type != WayType.COASTLINE) {
                         gc.setFill(getColor(type));
-                        for (Drawable way : model.getWaysOfType(type, getExtentInModel())) way.fill(gc,singlePixelLength);
+                        for (Drawable way : model.getWaysOfType(type, getExtentInModel())) way.fill(gc,singlePixelLength,percentOfScreenArea);
                     }
                 } else if (type.isRoadOrSimilar() && type.levelOfDetail() < detailLevel) {
                     if (type != WayType.COASTLINE && type != WayType.UNKNOWN) {
@@ -223,7 +224,9 @@ public class MapCanvas extends Canvas {
         double singleYPixelLength = minYPlus1px.getY()-minXAndY.getY();
 
         singlePixelLength = Math.sqrt(Math.pow(singleXPixelLength,2)+Math.pow(singleYPixelLength,2));
-      
+        percentOfScreenArea = (singleXPixelLength*25)*singleYPixelLength*25;
+        System.out.println("2percent of screen area: "+percentOfScreenArea);
+
         repaint();
     }
 

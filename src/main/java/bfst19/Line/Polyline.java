@@ -93,8 +93,12 @@ public class Polyline implements Drawable, Serializable, BoundingBoxable {
 		}*/
 	}
 
-	public void fill(GraphicsContext gc,double singlePixelLength) {
+	public void fill(GraphicsContext gc,double singlePixelLength,double percentOfScreenArea) {
 		gc.beginPath();
+		double area = (bb.getMaxX()-bb.getMinX())*(bb.getMaxY()-bb.getMinY());
+		if(area<percentOfScreenArea){
+			return;
+		}
 		trace(gc,singlePixelLength);
 		gc.fill();
 	}
