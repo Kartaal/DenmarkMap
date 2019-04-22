@@ -12,6 +12,7 @@ public class Polyline implements Drawable, Serializable, BoundingBoxable {
 	//Serializable interface works as a pseudo tag that tells the compiler
 	// it can serialize objects of this type to be saved in .obj files
 	private float[] coord;
+	private OSMNode[] nodes;
 	private final float centerX, centerY;
 	private BoundingBox bb;
 
@@ -30,7 +31,7 @@ public class Polyline implements Drawable, Serializable, BoundingBoxable {
 
 
 	public Polyline(OSMWay way) {
-	    //Gets a pairs of x and y coords from the given way and stores them in the coord array
+		//Gets a pairs of x and y coords from the given way and stores them in the coord array
 		// with lon coordinates stored at even indices and lat coordinates stored at odd indices
 
 		//Set initial min and max values
@@ -40,10 +41,12 @@ public class Polyline implements Drawable, Serializable, BoundingBoxable {
 		float yMax = way.get(0).getLat();
 
 		coord = new float[way.size() * 2];
+		//nodes = new OSMNode[way.size()];
 		//Update min and max values as we read through the nodes
 		for (int i = 0 ; i < way.size() ; i++) {
 			coord[2*i] = way.get(i).getLon();
 			coord[2*i+1] = way.get(i).getLat();
+			//nodes[i] = way.get(i);
 
 			// get bounding box min/man coords
 			xMin = Math.min(xMin, way.get(i).getLon());
@@ -66,16 +69,28 @@ public class Polyline implements Drawable, Serializable, BoundingBoxable {
 
 	public void trace(GraphicsContext gc, double singlePixelLength) {
 		//See constructor for explanation
-	    gc.moveTo(coord[0], coord[1]);
+		gc.moveTo(coord[0], coord[1]);
 		float previousX = coord[0];
 		float previousY = coord[1];
-	    for (int i = 2 ; i < coord.length ; i+=2) {
-	    	if(Math.sqrt(Math.pow(Math.abs(coord[i]-previousX),2)+Math.pow(Math.abs(coord[i+1]-previousY),2))>singlePixelLength) {
-	    		previousX = coord[i];
-	    		previousY = coord[i+1];
+		for (int i = 2 ; i < coord.length ; i+=2) {
+			if(Math.sqrt(Math.pow(Math.abs(coord[i]-previousX),2)+Math.pow(Math.abs(coord[i+1]-previousY),2))>singlePixelLength) {
+				previousX = coord[i];
+				previousY = coord[i+1];
 				gc.lineTo(coord[i], coord[i + 1]);
 			}
 		}
+	    /*OSMNode firstnode = nodes[0];
+	    gc.moveTo(firstnode.getLon(),firstnode.getLat());
+		float previousX = firstnode.getLon();
+		float previousY = firstnode.getLat();
+		for(int i = 1 ; i < nodes.length ; i++) {
+			OSMNode currentNode = nodes[i];
+			if (Math.sqrt(Math.pow(Math.abs(currentNode.getLon() - previousX), 2) + Math.pow(Math.abs(currentNode.getLat() - previousY), 2)) > singlePixelLength) {
+				previousX = currentNode.getLon();
+				previousY = currentNode.getLat();
+				gc.lineTo(previousX,previousY);
+			}
+		}*/
 	}
 
 	public void fill(GraphicsContext gc,double singlePixelLength) {
