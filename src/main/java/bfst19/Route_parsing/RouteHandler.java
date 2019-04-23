@@ -14,7 +14,7 @@ public class RouteHandler{
     private HashMap<Long,Integer> idToIndex;
     private HashMap<Integer,Long> indexToId;
     private HashMap<WayType,HashMap<String, ArrayList<String[]>>> drivableCases;
-    private HashMap<WayType,HashMap<Vehicle, Integer>> drivabillty;
+    private HashMap<WayType,HashMap<Vehicle, Drivabillity>> drivabillty;
     HashMap<String,Integer> speedDefaults;
 
     public RouteHandler(Model model, EdgeWeightedGraph G){
@@ -36,7 +36,7 @@ public class RouteHandler{
             for(String vehicleTypeAndDrivable : drivableCases.get(wayType).keySet()){
                 String[] tokens = vehicleTypeAndDrivable.split(" ");
                 Vehicle vehicleType = Vehicle.valueOf(tokens[0]);
-                int defaultDrivable = Integer.valueOf(tokens[1]);
+                Drivabillity defaultDrivable = Drivabillity.valueToDrivabillity(Integer.valueOf(tokens[1]));
                 drivabillty.get(wayType).put(vehicleType,defaultDrivable);
             }
         }
@@ -100,7 +100,7 @@ public class RouteHandler{
                 for(int i = 0 ; i<vehicleCases.size() ; i++){
                     String[] caseTokens = vehicleCases.get(i);
                     if(k.equals(caseTokens[0])&&v.equals(caseTokens[1])){
-                        drivabillty.get(waytype).put(vehicletype,Integer.valueOf(caseTokens[2]));
+                        drivabillty.get(waytype).put(vehicletype,Drivabillity.valueToDrivabillity(Integer.valueOf(caseTokens[2])));
                     }
                 }
             }
@@ -118,7 +118,7 @@ public class RouteHandler{
     }
 
     public void addWayToNodeGraph(OSMWay way, WayType type, String name, double speedlimit) {
-        HashMap<Vehicle,Integer> drivabilltyForWay = drivabillty.get(type);
+        HashMap<Vehicle,Drivabillity> drivabilltyForWay = drivabillty.get(type);
         OSMNode previousnode = way.get(0);
 
         long previousnodeID = previousnode.getAsLong();
@@ -152,11 +152,11 @@ public class RouteHandler{
 
     private void resetDrivabillty(){
         for(WayType waytype : drivableCases.keySet()){
-            HashMap<Vehicle,Integer> resetDefaults = new HashMap<>();
+            HashMap<Vehicle,Drivabillity> resetDefaults = new HashMap<>();
             for(String vehicleTypeAndDrivable : drivableCases.get(waytype).keySet()){
                 String[] tokens = vehicleTypeAndDrivable.split(" ");
                 Vehicle vehicleType = Vehicle.valueOf(tokens[0]);
-                int drivable = Integer.valueOf(tokens[1]);
+                Drivabillity drivable = Drivabillity.valueToDrivabillity(Integer.valueOf(tokens[1]));
                 resetDefaults.put(vehicleType,drivable);
             }
             drivabillty.put(waytype,resetDefaults);

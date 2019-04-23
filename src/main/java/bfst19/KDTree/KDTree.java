@@ -116,38 +116,17 @@ public class KDTree implements Serializable {
 			}
 		}
 
-		float splitVal = node.split;
-
-		boolean lowerIntersects;
-		boolean higherIntersects;
-		//Node splits on x-values
-		if(node.vertical) {
-			lowerIntersects = queryBB.getMaxX() > node.getSplit();
-			higherIntersects = queryBB.getMinX() < node.getSplit();
-		} else {
-			lowerIntersects = queryBB.getMaxY() > node.getSplit();
-			higherIntersects = queryBB.getMinY() < node.getSplit();
+		//Make temporary list to keep elements, so null returns don't cause problems
+		//Check the left subtree for elements intersecting BoundingBox
+		Set<Drawable> tempList = rangeQuery(queryBB, node.nodeL, returnElements);
+		if(tempList != null) {
+			returnElements.addAll(tempList);
 		}
 
-		Set<Drawable> tempList;
-
-		//Check whether or not to query left subtree
-		if(lowerIntersects) {
-			//Make temporary list to keep elements, so null returns don't cause problems
-			//Check the left subtree for elements intersecting BoundingBox
-			tempList = rangeQuery(queryBB, node.nodeL, returnElements);
-			if (tempList != null) {
-				returnElements.addAll(tempList);
-			}
-		}
-
-		//Check whether or not to query right subtree
-		if(higherIntersects) {
-			//Check the right subtree for elements intersecting BoundingBox
-			tempList = rangeQuery(queryBB, node.nodeR, returnElements);
-			if (tempList != null) {
-				returnElements.addAll(tempList);
-			}
+		//Check the right subtree for elements intersecting BoundingBox
+		tempList = rangeQuery(queryBB, node.nodeR, returnElements);
+		if(tempList != null) {
+			returnElements.addAll(tempList);
 		}
 
 		return returnElements;

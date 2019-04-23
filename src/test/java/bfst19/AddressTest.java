@@ -53,6 +53,7 @@ public class AddressTest {
         assertArrayEquals(expectedMatch1, match1);
         assertArrayEquals(expectedMatch2, match2);
     }
+    //singleSearch testing
 
     @Test
     public void testAddressWithStreetHousenumberPostCodeAndCity(){
@@ -64,26 +65,7 @@ public class AddressTest {
     }
 
     @Test
-    public void testAddressWithStreetAndCityWithDanLetters(){
-        Address address = AddressParser.getInstance(model).singleSearch("Månen 13,8850 Bjerringbro", datasetName);
-        assertEquals("Månen", address.getStreetName().trim());
-        assertEquals("13", address.getHouseNumber().trim());
-        assertEquals("8850", address.getPostcode().trim());
-        assertEquals("Bjerringbro", address.getCity().trim());
-    }
-
-    @Test
-    public void testAddressWithStreetHouseSideCityDanLetters(){
-        Address address = AddressParser.getInstance(model).singleSearch("Valby Maskinfabriksvej 1, 1, 2500 Valby ", datasetName);
-        assertEquals("Valby Maskinfabriksvej", address.getStreetName().trim());
-        assertEquals("1", address.getHouseNumber().trim());
-        assertEquals("1", address.getFloor().trim());
-        assertEquals("2500", address.getPostcode().trim());
-        assertEquals("Valby", address.getCity().trim());
-    }
-
-    @Test
-    public void testAddressWithStreetAndCityDanLetters(){
+    public void testAddressWithLettersInHouseNumberWithDanLetters(){
         Address address = AddressParser.getInstance(model).singleSearch("Sauntevænget 5B,3100 Hornbæk", datasetName);
         assertEquals("Sauntevænget", address.getStreetName().trim());
         assertEquals("5B", address.getHouseNumber().trim());
@@ -91,4 +73,44 @@ public class AddressTest {
         assertEquals("Hornbæk", address.getCity().trim());
     }
 
+    @Test
+    public void testAddressWithStreetFloorAndCityWithDanLetters(){
+        Address address = AddressParser.getInstance(model).singleSearch("Månen 13, 1, 8850 Bjerringbro", datasetName);
+        assertEquals("Månen", address.getStreetName().trim());
+        assertEquals("13", address.getHouseNumber().trim());
+        assertEquals("1", address.getFloor().trim());
+        assertEquals("8850", address.getPostcode().trim());
+        assertEquals("Bjerringbro", address.getCity().trim());
+    }
+
+
+    @Test
+    public void testAddressWithStreetFloorSideAndCity(){
+        Address address = AddressParser.getInstance(model).singleSearch("Valby Maskinfabriksvej 1, 1, TH. 2500 Valby ", datasetName);
+            assertEquals("Valby Maskinfabriksvej", address.getStreetName().trim());
+        assertEquals("1", address.getHouseNumber().trim());
+        assertEquals("1", address.getFloor().trim());
+        assertEquals("TH.", address.getSide().trim());
+        assertEquals("2500", address.getPostcode().trim());
+        assertEquals("Valby", address.getCity().trim());
+    }
+
+    @Test
+    public void testAddressWithStreetAndPostcodeNoCity(){
+        Address address = AddressParser.getInstance(model).singleSearch("Pingels Alle 47 3700", datasetName);
+        assertEquals("Pingels Alle", address.getStreetName().trim());
+        assertEquals("47", address.getHouseNumber().trim());
+        assertEquals("3700", address.getPostcode().trim());
+        assertEquals("Rønne", address.getCity().trim());
+    }
+
+
+    @Test
+    public void testAddressWithStreetAndPostcodeMismatchingCity(){
+        Address address = AddressParser.getInstance(model).singleSearch("Solskiftevej 8 2300 København", datasetName);
+        assertEquals("Solskiftevej", address.getStreetName().trim());
+        assertEquals("8", address.getHouseNumber().trim());
+        assertEquals("2300", address.getPostcode().trim());
+        assertEquals("København S", address.getCity().trim());
+    }
 }

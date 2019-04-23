@@ -190,8 +190,7 @@ public class Model{
 
 		if (colorBlindEnabled) {
 			CurrentTypeColorTxt = ("src/main/resources/config/TypeColorsColorblind.txt");
-		}
-		else {
+		}  else {
 			CurrentTypeColorTxt = ("src/main/resources/config/TypeColorsNormal.txt");
 		}
 		ParseWayColors();

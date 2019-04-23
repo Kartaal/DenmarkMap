@@ -2,31 +2,29 @@ package bfst19.Route_parsing;
 
 import bfst19.Line.OSMNode;
 
-import javax.swing.*;
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Iterator;
 
 public class Edge implements Serializable {
     //allways set length and speedlimit as the same unit of measurement, currently km
+    String name;
     private double length;
     private double speedlLimit;
     //-1 = you can't drive here
     //0 node v to node w
     //1 node w to node v
     //2 both ways
-    private int[] drivabillity;
+    private Drivabillity[] drivabillity;
     private OSMNode v;
     private OSMNode w;
-    String name;
 
-    public Edge(double length, double speedlLimit, OSMNode v, OSMNode w,String name,HashMap<Vehicle, Integer> vehicleTypeToDrivable) {
+    public Edge(double length, double speedlLimit, OSMNode v, OSMNode w,String name,HashMap<Vehicle, Drivabillity> vehicleTypeToDrivable) {
         this.length = length;
         this.speedlLimit = speedlLimit;
         this.v = v;
         this.w = w;
         this.name = name;
-        drivabillity = new int[vehicleTypeToDrivable.keySet().size()];
+        drivabillity = new Drivabillity[vehicleTypeToDrivable.keySet().size()];
         drivabillity[0] = vehicleTypeToDrivable.get(Vehicle.CAR);
         drivabillity[1] = vehicleTypeToDrivable.get(Vehicle.WALKING);
         drivabillity[2] = vehicleTypeToDrivable.get(Vehicle.BIKE);
@@ -72,32 +70,31 @@ public class Edge implements Serializable {
         return w.getAsLong();
     }
 
+    public OSMNode getOtherEndNode(OSMNode node){
+        if(node.getAsLong()==w.getAsLong()){
+            return v;
+        }
+        return w;
+    }
+
     public boolean isForwardAllowed(Vehicle type, long id) {
-        int drivable = getDrivableFromVehicleType(type);
-        if(drivable==2){
+        Drivabillity drivable = getDrivableFromVehicleType(type);
+        if(drivable==Drivabillity.BOTHWAYS){
             return true;
-        }else if(drivable==0&&v.getAsLong()==id) {
-            return true;
-        }else if(drivable==1&&w.getAsLong()==id){
-            return true;
+        }else if(v.getAsLong()==id) {
+            if(drivable==Drivabillity.FORWARD){
+                return true;
+            }
+        //this will actually never happen, as the dataset never has data in such a way that it never happens
+        }else if(w.getAsLong()==id){
+            if(drivable==Drivabillity.BACKWARD){
+                return true;
+            }
         }
         return false;
     }
 
-    public boolean isBackWardsAllowed(Vehicle type){
-
-        int drivable = getDrivableFromVehicleType(type);
-
-        if (drivable == 1) {
-            return true;
-        } else if (drivable == 2) {
-            return true;
-        }
-        return false;
-    }
-
-
-    private int getDrivableFromVehicleType(Vehicle type){
+    private Drivabillity getDrivableFromVehicleType(Vehicle type){
         if(type==Vehicle.CAR){
             return drivabillity[0];
         }else if(type==Vehicle.WALKING){
@@ -105,7 +102,7 @@ public class Edge implements Serializable {
         }else if(type==Vehicle.BIKE){
             return drivabillity[2];
         }
-        return -1;
+        return Drivabillity.NOWAY;
     }
 
     public int compareTo(Edge e, Vehicle type, boolean fastestPath) {
