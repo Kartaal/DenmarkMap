@@ -73,7 +73,8 @@ public class MapCanvas extends Canvas {
         gc.setTransform(transform);
 
         //linewidth equals 1 px wide relative to the screen no matter zoom level
-        gc.setLineWidth(1/Math.sqrt(Math.abs(getDeterminant())));
+        gc.setLineWidth(0.1 * (1/(2000/(getDeterminant()))));
+
 
         gc.setFillRule(FillRule.EVEN_ODD);
 
@@ -99,22 +100,40 @@ public class MapCanvas extends Canvas {
                         for (Drawable way : model.getWaysOfType(type, getExtentInModel())) way.fill(gc,singlePixelLength);
                     }
                 } else if (type.isRoadOrSimilar() && type.levelOfDetail() < detailLevel) {
+                    if (type == WayType.PRIMARY) {
+                        gc.setStroke(getColor(type));
+
+                        for (Drawable way : model.getWaysOfType(type, getExtentInModel())){
+                            way.stroke(gc,singlePixelLength);
+                            gc.setLineWidth(10 * (1/(500/(getDeterminant()))));
+                        }
+                    }else{
                     if (type != WayType.COASTLINE && type != WayType.UNKNOWN) {
                         gc.setStroke(getColor(type));
-                        for (Drawable way : model.getWaysOfType(type, getExtentInModel())) way.stroke(gc,singlePixelLength);
+                        gc.setLineWidth(0.1 * (1/(2000/(getDeterminant()))));
+                        for (Drawable way : model.getWaysOfType(type, getExtentInModel())){
+
+                            way.stroke(gc,singlePixelLength);
+
+                        }
                     }
+                    }
+
                 }
             }
 
         }else{
             for(WayType type : WayType.values()){
                 if(type.isRoadOrSimilar() && type.levelOfDetail() < detailLevel){
-                    if(type == WayType.UNKNOWN){
-                    // The unknown WayType is ways that have not been parsed to an implemented WayType,
-                    // so it's better to exclude it.
+                    if(type == WayType.UNKNOWN) {
+                        // The unknown WayType is ways that have not been parsed to an implemented WayType,
+                        // so it's better to exclude it.
                     }else{
                         gc.setStroke(getColor(type));
-                        for (Drawable way : model.getWaysOfType(type, getExtentInModel())) way.stroke(gc,singlePixelLength);
+
+                        for (Drawable way : model.getWaysOfType(type, getExtentInModel())){
+                            way.stroke(gc,singlePixelLength);
+                        }
                     }
                 }
             }
@@ -141,14 +160,20 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    private BoundingBox getExtentInModel(){ return getBounds(); }
+    private BoundingBox getExtentInModel(){
+        if(!Controller.KdTreeBoolean()){
+        return getBounds(); }
+        else{
+            return getBoundsDebug();
+        }
+    }
 
     private BoundingBox getBoundsDebug() {
         Bounds localBounds = this.getBoundsInLocal();
-        double minX = localBounds.getMinX() + 200;
-        double maxX = localBounds.getMaxX() - 200;
-        double minY = localBounds.getMinY() + 200;
-        double maxY = localBounds.getMaxY() - 500;
+        double minX = localBounds.getMinX() + 250;
+        double maxX = localBounds.getMaxX() - 250;
+        double minY = localBounds.getMinY() + 250;
+        double maxY = localBounds.getMaxY() - 250;
 
         //Flip the boundingbox' y-coords, as the rendering is flipped, but the model isn't.
         Point2D minPoint = getModelCoords(minX, maxY);
@@ -197,7 +222,7 @@ public class MapCanvas extends Canvas {
         double centerY = getHeight()/2.0;
         x=x*model.getLonfactor();
         Point2D point = transform.transform(x,y);
-        System.out.println("X: " + x + " Y: " + y);
+        //System.out.println("X: " + x + " Y: " + y);
         Pin.currentPin = new Pin(x, y);
 
         pan(centerX-point.getX(),centerY-point.getY());

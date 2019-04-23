@@ -1,5 +1,6 @@
 package bfst19;
 import bfst19.KDTree.Drawable;
+import bfst19.KDTree.KDTree;
 import bfst19.Route_parsing.Edge;
 import bfst19.Route_parsing.EdgeWeightedGraph;
 import bfst19.Route_parsing.Vehicle;
@@ -17,9 +18,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 public class Controller {
+
     private Model model;
     double x, y;
     private double factor, oldDeterminant, zoomLevel;
+    private boolean fastestBoolean = false;
+    private static boolean kdTreeBoolean = false;
 
     //This only means that .fxml can use this field despite visibility
     @FXML
@@ -197,8 +201,15 @@ public class Controller {
             case P:
                 mapCanvas.panToPoint(14.8429560,55.0967440);
                 break;
+            case H:
+                fastestBoolean = !fastestBoolean;
+                break;
+            case K:
+                kdTreeBoolean = !kdTreeBoolean;
+                break;
             case C:
-                Iterable<Edge> path = model.routeHandler.findPath(4048894613L,489365650L, Vehicle.CAR,false);
+                Iterable<Edge> path = model.routeHandler.findPath(4048894613L,489365650L, Vehicle.CAR, fastestBoolean);
+                model.foundPath.clear();
                 model.foundPath.add(path);
                 model.notifyPathObservers();
                 mapCanvas.repaint();
@@ -227,6 +238,14 @@ public class Controller {
     private void onMousePressed(MouseEvent e) {
         x = e.getX();
         y = e.getY();
+        if(e.isSecondaryButtonDown()){
+        KDTree.getNearestNeighbor(x,y);
+        }
+    }
+
+
+    public static boolean KdTreeBoolean() {
+        return kdTreeBoolean;
     }
 }
 
