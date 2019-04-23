@@ -3,8 +3,10 @@ package bfst19.Line;
 import bfst19.KDTree.BoundingBox;
 import bfst19.KDTree.BoundingBoxable;
 import bfst19.KDTree.Drawable;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 
+import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -58,6 +60,11 @@ public class MultiPolyline implements Drawable, Serializable, BoundingBoxable {
 	@Override
 	public float getCenterY() {
 		return centerY;
+	}
+
+	@Override
+	public double distanceTo(double x, double y){
+		return Math.sqrt((getCenterY() - y) * (getCenterY() - y) + (getCenterX() - x) * (getCenterX() - x));
 	}
 
 	@Override

@@ -20,6 +20,7 @@ import javafx.scene.text.Text;
 public class Controller {
 
     private Model model;
+    private KDTree kdTree;
     double x, y;
     private double factor, oldDeterminant, zoomLevel;
     private boolean fastestBoolean = false;
@@ -238,8 +239,11 @@ public class Controller {
     private void onMousePressed(MouseEvent e) {
         x = e.getX();
         y = e.getY();
+
         if(e.isSecondaryButtonDown()){
-        KDTree.getNearestNeighbor(x,y);
+            Drawable something = model.kdTreeMap.get(WayType.ROAD_RESIDENTIAL).getNearestNeighbor(mapCanvas.getModelCoords(x,y));
+            double lonfactor = model.getLonfactor();
+            System.out.println(something);
         }
     }
 

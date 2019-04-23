@@ -100,14 +100,7 @@ public class MapCanvas extends Canvas {
                         for (Drawable way : model.getWaysOfType(type, getExtentInModel())) way.fill(gc,singlePixelLength);
                     }
                 } else if (type.isRoadOrSimilar() && type.levelOfDetail() < detailLevel) {
-                    if (type == WayType.PRIMARY) {
-                        gc.setStroke(getColor(type));
 
-                        for (Drawable way : model.getWaysOfType(type, getExtentInModel())){
-                            way.stroke(gc,singlePixelLength);
-                            gc.setLineWidth(10 * (1/(500/(getDeterminant()))));
-                        }
-                    }else{
                     if (type != WayType.COASTLINE && type != WayType.UNKNOWN) {
                         gc.setStroke(getColor(type));
                         gc.setLineWidth(0.1 * (1/(2000/(getDeterminant()))));
@@ -117,7 +110,7 @@ public class MapCanvas extends Canvas {
 
                         }
                     }
-                    }
+
 
                 }
             }
@@ -130,7 +123,7 @@ public class MapCanvas extends Canvas {
                         // so it's better to exclude it.
                     }else{
                         gc.setStroke(getColor(type));
-
+                        gc.setLineWidth(0.1 * (1/(2000/(getDeterminant()))));
                         for (Drawable way : model.getWaysOfType(type, getExtentInModel())){
                             way.stroke(gc,singlePixelLength);
                         }

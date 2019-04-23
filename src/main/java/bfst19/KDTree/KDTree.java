@@ -1,5 +1,9 @@
 package bfst19.KDTree;
 
+import bfst19.Exceptions.nothingCloseByException;
+import javafx.geometry.Point2D;
+import javafx.scene.control.Alert;
+
 import java.io.Serializable;
 import java.util.*;
 
@@ -13,6 +17,8 @@ public class KDTree implements Serializable {
 	public KDTree(){
 		root = null;
 	}
+
+
 
 	//Method for creating a KDTree from a list of Drawable
 	public void insertAll(List<Drawable> list) {
@@ -91,6 +97,57 @@ public class KDTree implements Serializable {
 			currNode.nodeR = createTree(list, currNode, splitIndex+1, hi);
 
 		return currNode;
+	}
+
+	public Drawable getNearestNeighbor(Point2D point) {
+		try{
+			int count = 0;
+			double distanceToQueryPoint;
+			double closestDistance = Double.POSITIVE_INFINITY;
+			Drawable closestElement = null;
+			double x = point.getX();
+			double y = point.getY();
+			Double[] vals = {x, y, 0.0000000, 0.0000000};
+			BoundingBox bbox = new BoundingBox(vals[0], vals[1], vals[2], vals[3]);
+			HashSet<Drawable> querySet = (HashSet<Drawable>) rangeQuery(bbox);
+
+
+			while(querySet.isEmpty()){
+				count++;
+				if(count >= 5000){
+					throw new nothingCloseByException();
+				}
+				querySet = growBoundingBox(vals);
+			}
+
+			for(Drawable way: querySet){
+				distanceToQueryPoint = way.distanceTo(x, y);
+				if(distanceToQueryPoint < closestDistance){
+					closestDistance = distanceToQueryPoint;
+					closestElement = way;
+				}
+			}
+
+			count = 0;
+			return closestElement;
+		} catch(nothingCloseByException e){
+			e.printStackTrace();
+
+			return null;
+		}
+	}
+
+	private HashSet<Drawable> growBoundingBox(Double[] vals) {
+		BoundingBox bbox;
+		HashSet<Drawable> querySet;
+		vals[0] -= 0.0000001;
+		vals[1] -= 0.0000001;
+		vals[2] += 0.0000001;
+		vals[3] += 0.0000001;
+
+		bbox = new BoundingBox(vals[0], vals[1], vals[2], vals[3]);
+		querySet = (HashSet<Drawable>) rangeQuery(bbox);
+		return querySet;
 	}
 
 	//Method for finding elements in the KDTree that intersects a BoundingBox

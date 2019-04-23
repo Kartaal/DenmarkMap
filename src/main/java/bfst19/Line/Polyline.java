@@ -28,6 +28,10 @@ public class Polyline implements Drawable, Serializable, BoundingBoxable {
 		return bb;
 	}
 
+	@Override
+	public double distanceTo(double x, double y){
+		return Math.sqrt((getCenterY() - y) * (getCenterY() - y) + (getCenterX() - x) * (getCenterX() - x));
+	}
 
 	public Polyline(OSMWay way) {
 	    //Gets a pairs of x and y coords from the given way and stores them in the coord array
