@@ -78,7 +78,7 @@ public class Controller {
 
     //Initialize PointOfInterestPanel
     public void setUpPointOfInterestPanel() {
-        ScrollPane scrollPane = null;
+        VBox vBox = null;
 
         if(borderPane.getLeft() != null){
             borderPane.setLeft(null);
@@ -86,12 +86,12 @@ public class Controller {
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("PointOfInterestPanel.fxml"));
         try {
-            scrollPane = fxmlLoader.load();
+            vBox = fxmlLoader.load();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        borderPane.setLeft(scrollPane);
+        borderPane.setLeft(vBox);
 
         ControllerPointOfInterestPanel controllerPointOfInterestPanel = fxmlLoader.getController();
         controllerPointOfInterestPanel.init(this);

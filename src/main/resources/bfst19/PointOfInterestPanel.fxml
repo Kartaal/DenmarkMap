@@ -1,31 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="357.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.172-ea" fx:controller="bfst19.ControllerPointOfInterestPanel">
-   <content>
-      <VBox prefHeight="200.0" prefWidth="100.0">
-         <children>
-            <HBox prefHeight="46.0" prefWidth="100.0">
-               <children>
-                  <Label text="Label">
-                     <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </HBox.margin>
-                  </Label>
-                  <Button mnemonicParsing="false" text="Button">
-                     <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </HBox.margin>
-                  </Button>
-               </children>
-            </HBox>
-         </children>
-      </VBox>
-   </content>
-</ScrollPane>
+<?import javafx.scene.control.Button?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.control.Label?>
+<VBox prefHeight="500.0" prefWidth="200.0" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 0);" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bfst19.ControllerPointOfInterestPanel">
+   <children>
+
+      <Button fx:id="backButton" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#returnToBarPanel" onMouseEntered="#setBackBtnEffect" onMouseExited="#setBackBtnEffectNone" style="-fx-background-color: white;">
+         <VBox.margin>
+            <Insets bottom="5.0" right="250.0" />
+         </VBox.margin>
+         <graphic>
+            <ImageView fx:id="backBtnPointOfInterest" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="/back.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+
+      <ScrollPane prefHeight="550.0" prefWidth="200.0" style="-fx-background: white;">
+        <content>
+           <VBox fx:id="pointOfInterestList" prefHeight="500.0" prefWidth="200.0" style="-fx-background-color: white;">
+
+           </VBox>
+        </content>
+      </ScrollPane>
+
+   </children>
+</VBox>
