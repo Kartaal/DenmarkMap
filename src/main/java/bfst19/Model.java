@@ -18,7 +18,7 @@ import static javax.xml.stream.XMLStreamConstants.*;
 
 public class Model{
 	RouteHandler routeHandler;
-	private float lonfactor = 1.0f;
+	private static float lonfactor = 1.0f;
 	private boolean colorBlindEnabled;
 	private String datasetName;
 	HashMap<Long,String> pointsOfInterest = new HashMap<>();
@@ -180,7 +180,7 @@ public class Model{
         AddressParser.getInstance(this).parseCitiesAndPostCodes(textHandler.getCities(this, getDatasetName()));
 	}
 
-	public double getLonfactor(){
+	public static double getLonfactor(){
 		return lonfactor;
 	}
 

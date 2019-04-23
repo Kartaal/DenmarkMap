@@ -10,6 +10,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.Iterator;
@@ -237,31 +238,28 @@ public class Controller {
                         currentBase = newW;
                         currentHead = newV;
                     }
-                    double xDiff = Math.abs(previousHead.getLat() - previousBase.getLat());
-                    double yDiff = Math.abs(previousHead.getLon() - previousBase.getLon());
-                    double angle = Math.atan2(yDiff, xDiff) * (180 / Math.PI);
-                    double previousAngle = angle;
-                    System.out.println(angle);
+
                     int edgesSinceLastTurn = 0;
+                    previousBase = currentBase;
+                    previousHead = currentHead;
                     while (pathIterator.hasNext()) {
                         currentEdge = pathIterator.next();
                         currentHead = currentEdge.getOtherEndNode(previousHead);
                         currentBase = currentEdge.getOtherEndNode(currentHead);
-                        xDiff = Math.abs(currentHead.getLat() - currentBase.getLat());
-                        yDiff = Math.abs(currentHead.getLon() - currentBase.getLon());
-                        angle = Math.atan2(yDiff, xDiff) * (180 / Math.PI);
+                        double angle = angleBetween2Lines(previousBase,previousHead,currentBase,currentHead);
                         edgesSinceLastTurn++;
-                        if (previousAngle - angle > 45 && previousAngle - angle < 135) {
-                            System.out.println(edgesSinceLastTurn);
-                            System.out.println(previousAngle - angle);
-                            System.out.println("turn right");
-                        }
-                        if (previousAngle - angle < -45 && previousAngle - angle > -135) {
-                            System.out.println(edgesSinceLastTurn);
-                            System.out.println(previousAngle - angle);
+                        if (45 < angle && angle < 180) {
+                            System.out.println(edgesSinceLastTurn+" "+angle);
+                            edgesSinceLastTurn = 0;
                             System.out.println("turn left");
                         }
-                        previousAngle = angle;
+                        if (180 < angle && angle < 315) {
+                            System.out.println(edgesSinceLastTurn+" "+angle);
+                            edgesSinceLastTurn = 0;
+                            System.out.println("turn right");
+                        }
+                        previousBase = currentBase;
+                        previousHead = currentHead;
                     }
 
                 }
@@ -270,6 +268,15 @@ public class Controller {
                 mapCanvas.repaint();
                 break;
         }
+    }
+
+
+    public static float angleBetween2Lines(OSMNode A1, OSMNode A2, OSMNode B1, OSMNode B2) {
+        float angle1 = (float) Math.atan2(A2.getLat() - A1.getLat(), A1.getLon() - A2.getLon());
+        float angle2 = (float) Math.atan2(B2.getLat() - B1.getLat(), B1.getLon() - B2.getLon());
+        float calculatedAngle = (float) Math.toDegrees(angle1 - angle2);
+        if (calculatedAngle < 0) calculatedAngle += 360;
+        return calculatedAngle;
     }
 
     @FXML
