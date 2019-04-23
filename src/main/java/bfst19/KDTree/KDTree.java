@@ -1,6 +1,7 @@
 package bfst19.KDTree;
 
 import bfst19.Exceptions.nothingCloseByException;
+import bfst19.Line.OSMNode;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Alert;
 
@@ -121,18 +122,16 @@ public class KDTree implements Serializable {
 			}
 
 			for(Drawable way: querySet){
-				distanceToQueryPoint = way.distanceTo(x, y);
+				distanceToQueryPoint = way.shortestDistance(x, y);
 				if(distanceToQueryPoint < closestDistance){
 					closestDistance = distanceToQueryPoint;
 					closestElement = way;
 				}
 			}
 
-			count = 0;
 			return closestElement;
 		} catch(nothingCloseByException e){
 			e.printStackTrace();
-
 			return null;
 		}
 	}

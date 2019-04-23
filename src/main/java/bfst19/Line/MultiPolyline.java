@@ -63,8 +63,17 @@ public class MultiPolyline implements Drawable, Serializable, BoundingBoxable {
 	}
 
 	@Override
-	public double distanceTo(double x, double y){
-		return Math.sqrt((getCenterY() - y) * (getCenterY() - y) + (getCenterX() - x) * (getCenterX() - x));
+	public double shortestDistance(double x, double y){
+		double lineDistance;
+		double closestDistance = Double.POSITIVE_INFINITY;
+
+		for(Polyline line: lines){
+			lineDistance = line.shortestDistance(x, y);
+			if(lineDistance < closestDistance){
+				closestDistance = lineDistance;
+			}
+		}
+		return closestDistance;
 	}
 
 	@Override

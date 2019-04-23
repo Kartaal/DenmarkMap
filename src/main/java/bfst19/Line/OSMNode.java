@@ -23,6 +23,10 @@ public class OSMNode implements LongSupplier, Serializable {
 		this.lon = lon;
 	}
 
+	public double distanceTo(double x, double y){
+		return Math.sqrt((getLat() - y) * (getLat() - y) + (getLon() - x) * (getLon() - x));
+	}
+
 	//A functional method given by the LongSupplier interface
 	public long getAsLong() {
 		return id;
