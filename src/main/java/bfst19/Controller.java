@@ -201,6 +201,7 @@ public class Controller {
             case P:
                 mapCanvas.panToPoint(14.8429560,55.0967440);
                 break;
+
             case C:
                 Iterable<Edge> path = model.routeHandler.findPath(489365650L,4048894613L, Vehicle.CAR,false);
                 Iterator<Edge> pathIterator = path.iterator();
@@ -267,6 +268,8 @@ public class Controller {
                 model.notifyPathObservers();
                 mapCanvas.repaint();
                 break;
+            case W:
+                ControllerRoutePanel.setUpInstructions();
         }
     }
 

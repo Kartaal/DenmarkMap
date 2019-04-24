@@ -53,7 +53,7 @@ public class ControllerRoutePanel {
     private void setBackBtnEffectNone() { backBtnRoutePanel.setEffect(null); }
 
     @FXML
-    private void setUpInstructions( ){
+    public static void setUpInstructions(){
         Instructions.addNewInstruction(30, "right", "road");
     }
 
