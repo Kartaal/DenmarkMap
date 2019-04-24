@@ -167,7 +167,6 @@ public class Controller {
         controllerMenuPanel.init(this);
     }
 
-
     //Initialize RoutePanel
     public void setupRoutePanel() {
         if(borderPane.getLeft() != null){
@@ -257,8 +256,6 @@ public class Controller {
     public ObservableList<HBox> getHBoxes(){
         return model.gethBoxes();
     }
-
-
 }
 
 

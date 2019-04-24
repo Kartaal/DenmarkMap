@@ -17,11 +17,8 @@ public class PointOfInterestItem extends HBox {
 
 
     private Controller controller;
-
     private Button removeBtn;
-
     private Pane pane;
-
     private ImageView imageView;
 
     private String adress;
@@ -46,7 +43,6 @@ public class PointOfInterestItem extends HBox {
 
         removeBtn.setOnAction(event -> controller.getHBoxes().remove(this));
     }
-
 
     private void makeLabel(String adress){
         pane = new Pane();

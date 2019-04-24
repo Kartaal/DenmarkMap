@@ -31,10 +31,6 @@ public class ControllerPointOfInterestPanel implements BackBtnEffect {
 
     private ListChangeListener<HBox> listener;
 
-    public ControllerPointOfInterestPanel(){
-    }
-
-
     public void init(Controller controller) {
         this.controller = controller;
         showHBoxesList();

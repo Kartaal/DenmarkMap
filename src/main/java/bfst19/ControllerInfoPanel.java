@@ -65,8 +65,6 @@ public class ControllerInfoPanel implements BackBtnEffect {
         latlon.setText("Coords: " + x + ", " + y);
     }
 
-    //TODO: Have an observable list with the point of interest the user has added, which can be removed and added from/to
-    @FXML
     public void addPointOfInterest(ActionEvent actionEvent) {
         PointOfInterestItem pointOfInterestItem = new PointOfInterestItem(AutoTextField.autoTextFieldAdress, AutoTextField.x, AutoTextField.y);
         pointOfInterestItem.init(controller);
