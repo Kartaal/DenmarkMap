@@ -112,22 +112,22 @@ public class KDTree implements Serializable {
 			double y = point.getY();
 			Double[] vals = {x, y, 0.0000000, 0.0000000};
 			BoundingBox bbox = new BoundingBox(vals[0], vals[1], vals[2], vals[3]);
-			HashSet<OSMNode> querySet = (HashSet<OSMNode>) nodeRangeQuery(bbox);
+			ArrayList<OSMNode> queryList = (ArrayList<OSMNode>) nodeRangeQuery(bbox);
 
 
-			while(querySet.isEmpty()){
+			while(queryList.isEmpty()){
 				count++;
 				if(count >= 5000){
 					throw new nothingCloseByException();
 				}
-				querySet = growBoundingBox(vals);
+				queryList = growBoundingBox(vals);
 			}
 
-			for(OSMNode way: querySet){
-				distanceToQueryPoint = way.distanceTo(x, y);
+			for(OSMNode checkNode: queryList){
+				distanceToQueryPoint = checkNode.distanceTo(x, y);
 				if(distanceToQueryPoint < closestDistance){
 					closestDistance = distanceToQueryPoint;
-					closestElement = way;
+					closestElement = checkNode;
 				}
 			}
 
@@ -138,28 +138,28 @@ public class KDTree implements Serializable {
 		}
 	}
 
-	private HashSet<OSMNode> growBoundingBox(Double[] vals) {
+	private ArrayList<OSMNode> growBoundingBox(Double[] vals) {
 		BoundingBox bbox;
-		HashSet<OSMNode> querySet;
-		vals[0] -= 0.0000001;
-		vals[1] -= 0.0000001;
-		vals[2] += 0.0000001;
-		vals[3] += 0.0000001;
+		ArrayList<OSMNode> querySet;
+		vals[0] -= 0.00001;
+		vals[1] -= 0.00001;
+		vals[2] += 0.00002;
+		vals[3] += 0.00002;
 
 		bbox = new BoundingBox(vals[0], vals[1], vals[2], vals[3]);
-		querySet = (HashSet<OSMNode>) nodeRangeQuery(bbox);
+		querySet = (ArrayList<OSMNode>) nodeRangeQuery(bbox);
 		return querySet;
 	}
 
 	//Method for finding elements in the KDTree that intersects a BoundingBox
 	public Iterable<Drawable> rangeQuery(BoundingBox bbox) {
-		Set<Drawable> returnElements = new HashSet<>();
+		List<Drawable> returnElements = new ArrayList<>();
 		rangeQuery(bbox, root, returnElements);
 		return returnElements;
 	}
 
 	//Recursive checks down through the KDTree
-	private Set<Drawable> rangeQuery(BoundingBox queryBB, KDNode node, Set<Drawable> returnElements) {
+	private List<Drawable> rangeQuery(BoundingBox queryBB, KDNode node, List<Drawable> returnElements) {
 		//Return null if current node is null to stop endless recursion
 		if(node == null) return null;
 
@@ -176,27 +176,22 @@ public class KDTree implements Serializable {
 
 		//Make temporary list to keep elements, so null returns don't cause problems
 		//Check the left subtree for elements intersecting BoundingBox
-		Set<Drawable> tempList = rangeQuery(queryBB, node.nodeL, returnElements);
-		if(tempList != null) {
-			returnElements.addAll(tempList);
-		}
+		rangeQuery(queryBB, node.nodeL, returnElements);
+
 
 		//Check the right subtree for elements intersecting BoundingBox
-		tempList = rangeQuery(queryBB, node.nodeR, returnElements);
-		if(tempList != null) {
-			returnElements.addAll(tempList);
-		}
+		rangeQuery(queryBB, node.nodeR, returnElements);
 
 		return returnElements;
 	}
 
 	public Iterable<OSMNode> nodeRangeQuery(BoundingBox bbox) {
-		Set<OSMNode> returnElements = new HashSet<>();
+		List<OSMNode> returnElements = new ArrayList<>();
 		nodeRangeQuery(bbox, root, returnElements);
 		return returnElements;
 	}
 
-	private Set<OSMNode> nodeRangeQuery(BoundingBox queryBB, KDNode node, Set<OSMNode> returnElements) {
+	private List<OSMNode> nodeRangeQuery(BoundingBox queryBB, KDNode node, List<OSMNode> returnElements) {
 		//Return null if current node is null to stop endless recursion
 		if(node == null) return null;
 
@@ -213,16 +208,10 @@ public class KDTree implements Serializable {
 
 		//Make temporary list to keep elements, so null returns don't cause problems
 		//Check the left subtree for elements intersecting BoundingBox
-		Set<OSMNode> tempList = nodeRangeQuery(queryBB, node.nodeL, returnElements);
-		if(tempList != null) {
-			returnElements.addAll(tempList);
-		}
+		nodeRangeQuery(queryBB, node.nodeL, returnElements);
 
 		//Check the right subtree for elements intersecting BoundingBox
-		tempList = nodeRangeQuery(queryBB, node.nodeR, returnElements);
-		if(tempList != null) {
-			returnElements.addAll(tempList);
-		}
+		nodeRangeQuery(queryBB, node.nodeR, returnElements);
 
 		return returnElements;
 	}

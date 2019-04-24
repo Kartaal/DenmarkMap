@@ -34,13 +34,14 @@ public class BoundingBox implements Serializable {
 	}
 
 
-
+	//Code from javafx.geometry.BoundingBox.java
 	public boolean intersects(BoundingBox b) {
 		if ((b == null) || b.isEmpty()) return false;
 		return intersects(b.getMinX(), b.getMinY(),
 				b.getMaxX()-b.getMinX(), b.getMaxY()-b.getMinY());
 	}
 
+	//Code from javafx.geometry.BoundingBox.java
 	public boolean intersects(double x, double y,
 							  double w, double h) {
 		if (isEmpty() || w < 0 || h < 0) return false;
@@ -50,8 +51,10 @@ public class BoundingBox implements Serializable {
 				y <= getMaxY());
 	}
 
+	//Code from javafx.geometry.BoundingBox.java
 	public boolean isEmpty() {
 
 		return getMaxX() < getMinX() || getMaxY() < getMinY();
 	}
+
 }
