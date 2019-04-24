@@ -1,6 +1,7 @@
 package bfst19;
 import bfst19.Route_parsing.Edge;
 import bfst19.Route_parsing.Vehicle;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ScrollPane;
@@ -94,11 +95,12 @@ public class Controller {
         borderPane.setLeft(vBox);
 
         ControllerPointOfInterestPanel controllerPointOfInterestPanel = fxmlLoader.getController();
+        if(controllerPointOfInterestPanel != null)
         controllerPointOfInterestPanel.init(this);
     }
 
     //Initialize InfoPanel
-    public void setUpInfoPanel(){
+    public void setUpInfoPanel(String adress, double x, double y){
             VBox vBox = null;
 
             if(borderPane.getRight() != null){
@@ -115,7 +117,7 @@ public class Controller {
             borderPane.setRight(vBox);
 
             ControllerInfoPanel controllerInfoPanel = fxmlLoader.getController();
-            controllerInfoPanel.init(this);
+            controllerInfoPanel.init(this, adress, x, y);
     }
 
     //Initialize BarPanel
@@ -248,6 +250,16 @@ public class Controller {
         x = e.getX();
         y = e.getY();
     }
+
+    public BorderPane getBorderPane(){
+        return borderPane;
+    }
+
+    public ObservableList<HBox> getHBoxes(){
+        return model.gethBoxes();
+    }
+
+
 }
 
 

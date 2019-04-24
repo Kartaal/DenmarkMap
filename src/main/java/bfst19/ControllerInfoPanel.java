@@ -32,9 +32,7 @@ public class ControllerInfoPanel implements BackBtnEffect {
     @FXML
     private javafx.scene.control.Label latlon;
 
-    private PointOfInterestItem pointOfInterestItem;
-
-    public void init(Controller controller) {
+    public void init(Controller controller, String adress, double x, double y) {
         this.controller = controller;
         setAddressCoordsLabels(AutoTextField.autoTextFieldAdress,AutoTextField.x,AutoTextField.y);
     }
@@ -59,7 +57,7 @@ public class ControllerInfoPanel implements BackBtnEffect {
 
     @FXML
     private void clearBtnAction(){
-        vBox.setVisible(false);
+        controller.getBorderPane().setRight(null);
     }
 
     private void setAddressCoordsLabels(String location, double x, double y){
@@ -70,12 +68,11 @@ public class ControllerInfoPanel implements BackBtnEffect {
     //TODO: Have an observable list with the point of interest the user has added, which can be removed and added from/to
     @FXML
     public void addPointOfInterest(ActionEvent actionEvent) {
-
-    }
-
-    @FXML
-    private void returnToBarPanel(ActionEvent actionEvent) {
-        controller.setUpBar();
+        PointOfInterestItem pointOfInterestItem = new PointOfInterestItem(AutoTextField.autoTextFieldAdress, AutoTextField.x, AutoTextField.y);
+        pointOfInterestItem.init(controller);
+        controller.getHBoxes().add(pointOfInterestItem);
+        System.out.println("PointOfInterest has been added");
+        System.out.println(controller.getHBoxes().size());
     }
 
 }

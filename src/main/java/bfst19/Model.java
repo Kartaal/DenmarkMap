@@ -7,6 +7,8 @@ import bfst19.Route_parsing.*;
 import bfst19.Line.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.layout.HBox;
+
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -28,6 +30,9 @@ public class Model{
 	List<Runnable> foundMatchesObservers = new ArrayList<>();
 	List<Runnable> pathObservers = new ArrayList<>();
 	float minlat, minlon, maxlat, maxlon;
+
+	//PointOfInterest items
+	private ObservableList<HBox> hBoxes = FXCollections.observableArrayList();
 
 	String CurrentTypeColorTxt  = "src/main/resources/config/TypeColorsNormal.txt";
 	HashMap<String,ArrayList<String[]>> wayTypeCases = new HashMap<>();
@@ -595,6 +600,9 @@ public class Model{
 		}
 		return pointsOfInterest;
 	}
+
+
+	public ObservableList<HBox> gethBoxes(){ return hBoxes; }
 
     public void addPointsOfInterest(long id,String pointOfInterest) {
 		pointsOfInterest.put(id,pointOfInterest);

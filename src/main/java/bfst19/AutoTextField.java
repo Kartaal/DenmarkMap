@@ -111,6 +111,6 @@ public class AutoTextField extends TextField {
         this.x = x;
         this.y = y;
         controller.panToPoint(x,y);
-        controller.setUpInfoPanel();
+        controller.setUpInfoPanel(autoTextFieldAdress, x, y);
     }
 }
