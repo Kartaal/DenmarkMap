@@ -14,6 +14,7 @@
 <?scenebuilder-stylesheet style.css?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.HBox?>
+<?import bfst19.Instructions?>
 <VBox alignment="CENTER" prefWidth="300.0" fx:id="outerPane" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 0);" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bfst19.ControllerRoutePanel">
    <children>
 
@@ -90,6 +91,7 @@
       <ScrollPane prefHeight="200.0" prefWidth="290.0" VBox.vgrow="ALWAYS">
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
+            <Instructions fx:id="instructions"></Instructions>
         </content>
       </ScrollPane>
    </children>
