@@ -95,13 +95,13 @@ public class KDTree implements Serializable {
 
 	//Method for finding elements in the KDTree that intersects a BoundingBox
 	public Iterable<Drawable> rangeQuery(BoundingBox bbox) {
-		Set<Drawable> returnElements = new HashSet<>();
+		List<Drawable> returnElements = new ArrayList<>();
 		rangeQuery(bbox, root, returnElements);
 		return returnElements;
 	}
 
 	//Recursive checks down through the KDTree
-	private Set<Drawable> rangeQuery(BoundingBox queryBB, KDNode node, Set<Drawable> returnElements) {
+	private List<Drawable> rangeQuery(BoundingBox queryBB, KDNode node, List<Drawable> returnElements) {
 		//Return null if current node is null to stop endless recursion
 		if(node == null) return null;
 
@@ -118,16 +118,13 @@ public class KDTree implements Serializable {
 
 		//Make temporary list to keep elements, so null returns don't cause problems
 		//Check the left subtree for elements intersecting BoundingBox
-		Set<Drawable> tempList = rangeQuery(queryBB, node.nodeL, returnElements);
-		if(tempList != null) {
-			returnElements.addAll(tempList);
-		}
+		if(node.nodeL)
+		rangeQuery(queryBB, node.nodeL, returnElements);
+
 
 		//Check the right subtree for elements intersecting BoundingBox
-		tempList = rangeQuery(queryBB, node.nodeR, returnElements);
-		if(tempList != null) {
-			returnElements.addAll(tempList);
-		}
+		rangeQuery(queryBB, node.nodeR, returnElements);
+
 
 		return returnElements;
 	}
