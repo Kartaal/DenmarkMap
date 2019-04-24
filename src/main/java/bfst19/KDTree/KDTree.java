@@ -6,6 +6,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.control.Alert;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class KDTree implements Serializable {
@@ -100,17 +101,18 @@ public class KDTree implements Serializable {
 		return currNode;
 	}
 
-	public Drawable getNearestNeighbor(Point2D point) {
+
+	public OSMNode getNearestNeighbor(Point2D point) {
 		try{
 			int count = 0;
 			double distanceToQueryPoint;
 			double closestDistance = Double.POSITIVE_INFINITY;
-			Drawable closestElement = null;
+			OSMNode closestElement = null;
 			double x = point.getX();
 			double y = point.getY();
 			Double[] vals = {x, y, 0.0000000, 0.0000000};
 			BoundingBox bbox = new BoundingBox(vals[0], vals[1], vals[2], vals[3]);
-			HashSet<Drawable> querySet = (HashSet<Drawable>) rangeQuery(bbox);
+			HashSet<OSMNode> querySet = (HashSet<OSMNode>) nodeRangeQuery(bbox);
 
 
 			while(querySet.isEmpty()){
@@ -121,8 +123,8 @@ public class KDTree implements Serializable {
 				querySet = growBoundingBox(vals);
 			}
 
-			for(Drawable way: querySet){
-				distanceToQueryPoint = way.shortestDistance(x, y);
+			for(OSMNode way: querySet){
+				distanceToQueryPoint = way.distanceTo(x, y);
 				if(distanceToQueryPoint < closestDistance){
 					closestDistance = distanceToQueryPoint;
 					closestElement = way;
@@ -136,16 +138,16 @@ public class KDTree implements Serializable {
 		}
 	}
 
-	private HashSet<Drawable> growBoundingBox(Double[] vals) {
+	private HashSet<OSMNode> growBoundingBox(Double[] vals) {
 		BoundingBox bbox;
-		HashSet<Drawable> querySet;
+		HashSet<OSMNode> querySet;
 		vals[0] -= 0.0000001;
 		vals[1] -= 0.0000001;
 		vals[2] += 0.0000001;
 		vals[3] += 0.0000001;
 
 		bbox = new BoundingBox(vals[0], vals[1], vals[2], vals[3]);
-		querySet = (HashSet<Drawable>) rangeQuery(bbox);
+		querySet = (HashSet<OSMNode>) nodeRangeQuery(bbox);
 		return querySet;
 	}
 
@@ -181,6 +183,43 @@ public class KDTree implements Serializable {
 
 		//Check the right subtree for elements intersecting BoundingBox
 		tempList = rangeQuery(queryBB, node.nodeR, returnElements);
+		if(tempList != null) {
+			returnElements.addAll(tempList);
+		}
+
+		return returnElements;
+	}
+
+	public Iterable<OSMNode> nodeRangeQuery(BoundingBox bbox) {
+		Set<OSMNode> returnElements = new HashSet<>();
+		nodeRangeQuery(bbox, root, returnElements);
+		return returnElements;
+	}
+
+	private Set<OSMNode> nodeRangeQuery(BoundingBox queryBB, KDNode node, Set<OSMNode> returnElements) {
+		//Return null if current node is null to stop endless recursion
+		if(node == null) return null;
+
+		//Ugly casting to Drawable...
+		//if we have values, check for each if its BoundingBox intersects our query BoundingBox
+		// if true, report it
+		if(node.values != null) {
+			for (BoundingBoxable value : node.values) {
+				if (queryBB.intersects(value.getBB())) {
+					returnElements.addAll(Arrays.asList(value.getNodes()));
+				}
+			}
+		}
+
+		//Make temporary list to keep elements, so null returns don't cause problems
+		//Check the left subtree for elements intersecting BoundingBox
+		Set<OSMNode> tempList = nodeRangeQuery(queryBB, node.nodeL, returnElements);
+		if(tempList != null) {
+			returnElements.addAll(tempList);
+		}
+
+		//Check the right subtree for elements intersecting BoundingBox
+		tempList = nodeRangeQuery(queryBB, node.nodeR, returnElements);
 		if(tempList != null) {
 			returnElements.addAll(tempList);
 		}

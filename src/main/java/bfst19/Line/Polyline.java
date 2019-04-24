@@ -112,4 +112,10 @@ public class Polyline implements Drawable, Serializable, BoundingBoxable {
 		}
 		return closestDistance;
 	}
+
+	@Override
+	public OSMNode[] getNodes() {
+		return nodes;
+	}
+
 }

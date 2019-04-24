@@ -8,7 +8,9 @@ import javafx.scene.canvas.GraphicsContext;
 
 import java.awt.*;
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MultiPolyline implements Drawable, Serializable, BoundingBoxable {
 	public ArrayList<Polyline> lines;
@@ -98,6 +100,17 @@ public class MultiPolyline implements Drawable, Serializable, BoundingBoxable {
 		gc.beginPath();
 		trace(gc,singlePixelLength);
 		gc.fill();
+	}
+
+	@Override
+	public OSMNode[] getNodes(){
+		ArrayList<OSMNode> nodes = new ArrayList<>();
+
+		for(Polyline line: lines){
+			ArrayList<OSMNode> tempList = new ArrayList<>(Arrays.asList(line.getNodes()));
+			nodes.addAll(tempList);
+		}
+		return nodes.toArray(new OSMNode[nodes.size()]);
 	}
 
 }

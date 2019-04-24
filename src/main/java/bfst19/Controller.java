@@ -1,6 +1,7 @@
 package bfst19;
 import bfst19.KDTree.Drawable;
 import bfst19.KDTree.KDTree;
+import bfst19.Line.OSMNode;
 import bfst19.Route_parsing.Edge;
 import bfst19.Route_parsing.EdgeWeightedGraph;
 import bfst19.Route_parsing.Vehicle;
@@ -241,9 +242,10 @@ public class Controller {
         y = e.getY();
 
         if(e.isSecondaryButtonDown()){
-            Drawable something = model.kdTreeMap.get(WayType.ROAD_RESIDENTIAL).getNearestNeighbor(mapCanvas.getModelCoords(x,y));
+            OSMNode something = model.kdTreeMap.get(WayType.ROAD_RESIDENTIAL).getNearestNeighbor(mapCanvas.getModelCoords(x,y));
             double lonfactor = model.getLonfactor();
-            System.out.println(something);
+            System.out.println(lonfactor);
+            System.out.println("Nearest OSMNode: " + something);
         }
     }
 
