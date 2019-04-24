@@ -210,7 +210,9 @@ public class Controller {
                 kdTreeBoolean = !kdTreeBoolean;
                 break;
             case C:
-                Iterable<Edge> path = model.routeHandler.findPath(4048894613L,489365650L, Vehicle.CAR, fastestBoolean);
+                OSMNode something = model.kdTreeMap.get(WayType.ROAD_RESIDENTIAL).getNearestNeighbor(mapCanvas.getModelCoords(x,y));
+                long routeID = something.getAsLong();
+                Iterable<Edge> path = model.routeHandler.findPath(33050011,routeID, Vehicle.CAR, fastestBoolean);
                 model.foundPath.clear();
                 model.foundPath.add(path);
                 model.notifyPathObservers();
