@@ -40,6 +40,9 @@ public class KDNode implements Serializable {
             }
         }
 
+        double width = maxX-minX;
+        double height = maxY-minY;
+
         bb = new BoundingBox(minX, minY, maxX-minX, maxY-minY);
     }
 
@@ -75,7 +78,9 @@ public class KDNode implements Serializable {
     }
 
     void setBB(double minX, double minY, double maxX, double maxY) {
-        bb = new BoundingBox(minX,minY,maxX-minX,maxY-minY);
+        double width = maxX-minX;
+        double height = maxY-minY;
+        bb = new BoundingBox(minX,minY,width,height);
     }
 
     //Returns the value where the node split the data
