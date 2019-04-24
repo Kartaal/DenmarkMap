@@ -51,7 +51,6 @@ public class BoundingBox implements Serializable {
 	}
 
 	public boolean isEmpty() {
-
 		return getMaxX() < getMinX() || getMaxY() < getMinY();
 	}
 }

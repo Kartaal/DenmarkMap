@@ -43,6 +43,41 @@ public class KDNode implements Serializable {
         bb = new BoundingBox(minX, minY, maxX-minX, maxY-minY);
     }
 
+    public void growToEncompassChildren() {
+        BoundingBox leftBB;
+        BoundingBox rightBB;
+
+        if(nodeL == null && nodeR == null){
+            return;
+        }
+
+        if(nodeL == null){
+            rightBB = nodeR.getBB();
+            setBB(rightBB.getMinX(), rightBB.getMinY(), rightBB.getMaxX(), rightBB.getMaxY());
+            return;
+        }
+
+        if(nodeR == null){
+            leftBB = nodeL.getBB();
+            setBB(leftBB.getMinX(), leftBB.getMinY(), leftBB.getMaxX(), leftBB.getMaxY());
+            return;
+        }
+
+        leftBB = nodeL.getBB();
+        rightBB = nodeR.getBB();
+
+        double minX = Double.min(leftBB.getMinX(),rightBB.getMinX());
+        double minY = Double.min(leftBB.getMinY(),rightBB.getMinY());
+        double maxX = Double.max(leftBB.getMaxX(),rightBB.getMaxX());
+        double maxY = Double.max(leftBB.getMaxY(),rightBB.getMaxY());
+
+        setBB(minX, minY, maxX, maxY);
+    }
+
+    void setBB(double minX, double minY, double maxX, double maxY) {
+        bb = new BoundingBox(minX,minY,maxX-minX,maxY-minY);
+    }
+
     //Returns the value where the node split the data
     // Needs vertical to figure out what exactly was split on
     public float getSplit() {
