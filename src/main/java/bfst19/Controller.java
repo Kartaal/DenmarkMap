@@ -26,6 +26,10 @@ public class Controller {
     private double factor, oldDeterminant, zoomLevel;
     private boolean fastestBoolean = false;
     private static boolean kdTreeBoolean = false;
+    private long time;
+    private long[] nodeIDs = new long[2];
+
+
 
     //This only means that .fxml can use this field despite visibility
     @FXML
@@ -44,6 +48,7 @@ public class Controller {
         //TODO: figure out init methods
         this.model = model;
         mapCanvas.init(model);
+
 
         oldDeterminant = mapCanvas.getDeterminant();
         setScalebar();
@@ -210,13 +215,18 @@ public class Controller {
                 kdTreeBoolean = !kdTreeBoolean;
                 break;
             case C:
-                OSMNode something = model.kdTreeMap.get(WayType.ROAD_RESIDENTIAL).getNearestNeighbor(mapCanvas.getModelCoords(x,y));
-                long routeID = something.getAsLong();
-                Iterable<Edge> path = model.routeHandler.findPath(33050011,routeID, Vehicle.CAR, fastestBoolean);
+
                 model.foundPath.clear();
-                model.foundPath.add(path);
                 model.notifyPathObservers();
                 mapCanvas.repaint();
+                nodeIDs[0] = 0;
+                nodeIDs[1] = 0;
+                break;
+            case S:
+
+                break;
+            case E:
+
                 break;
         }
     }
@@ -242,6 +252,35 @@ public class Controller {
     private void onMousePressed(MouseEvent e) {
         x = e.getX();
         y = e.getY();
+
+
+        long prevtime = time;
+        time = System.nanoTime();
+
+
+        //System.out.println(Math.abs((-time + prevtime) / 1e8));
+        if (Math.abs((-time + prevtime) / 1e8) <= 3){
+            OSMNode something = model.kdTreeMap.get(WayType.ROAD_RESIDENTIAL).getNearestNeighbor(mapCanvas.getModelCoords(x,y));
+            if(nodeIDs[0] == 0){
+
+                nodeIDs[0] = something.getAsLong();
+                nodeIDs[1] = 0;
+
+            } else if(nodeIDs[1] == 0){
+                nodeIDs[1] = something.getAsLong();
+                Iterable<Edge> path = model.routeHandler.findPath(nodeIDs[0],nodeIDs[1], Vehicle.CAR, fastestBoolean);
+                model.foundPath.clear();
+                model.foundPath.add(path);
+                model.notifyPathObservers();
+                mapCanvas.repaint();
+
+                nodeIDs[0] = 0;
+                nodeIDs[1] = 0;
+            }
+
+
+
+        }
 
         if(e.isSecondaryButtonDown()){
             OSMNode something = model.kdTreeMap.get(WayType.ROAD_RESIDENTIAL).getNearestNeighbor(mapCanvas.getModelCoords(x,y));
