@@ -15,7 +15,7 @@ public class AddressParser {
     private ArrayList<String> postcodes = new ArrayList<>();
     private ArrayList<String> cities = new ArrayList<>();
     //a collection of the default searching file if there is no hit for cityCheck
-    private ArrayList<String> defaults = new ArrayList<>();
+    private static String[] defaults;
 
     public static AddressParser getInstance(Model model){
         if(addressParser == null){
@@ -236,11 +236,11 @@ public class AddressParser {
     //it ignores case for compares, but returns the raw data
     public ArrayList<String[]> getMatchesFromDefault(String proposedAddress,boolean singleSearch){
         int lo = 0;
-        int hi = defaults.size()-1;
+        int hi = defaults.length-1;
         int mid;
         while(lo<=hi){
             mid = lo+(hi-lo)/2;
-            String currentDefault = defaults.get(mid).toLowerCase();
+            String currentDefault = defaults[mid].toLowerCase();
             if(currentDefault.startsWith(proposedAddress.toLowerCase())){
                 if(singleSearch){
                     ArrayList<String[]> result = new ArrayList<>();
@@ -269,28 +269,31 @@ public class AddressParser {
         ArrayList<String[]> matches = new ArrayList<>();
         int lo = mid-1;
         proposedAddress = proposedAddress.toLowerCase();
-        String currentIndexString = defaults.get(mid);
+        String currentIndexString = defaults[mid];
         //traverses up the default array until it's no longer a match
         while(currentIndexString.toLowerCase().startsWith(proposedAddress)){
             String[] matchTokens = currentIndexString.split(" QQQ ");
             matches.add(matchTokens);
-            currentIndexString = defaults.get(lo);
+            currentIndexString = defaults[lo];
             lo--;
         }
-        currentIndexString = defaults.get(mid+1);
+        currentIndexString = defaults[mid+1];
         int hi = mid + 2;
         //traverses down the default array until it's no longer a match
         while(currentIndexString.toLowerCase().startsWith(proposedAddress)){
             String[] matchTokens = currentIndexString.split(" QQQ ");
             matches.add(matchTokens);
-            currentIndexString = defaults.get(hi);
+            currentIndexString = defaults[hi];
             hi++;
         }
         return matches;
     }
 
     public void setDefaults(ArrayList<String> defaults){
-        this.defaults = defaults;
+        this.defaults = new String[defaults.size()];
+        for(int i = 0 ; i < defaults.size() ; i++ ){
+            this.defaults[i] = defaults.get(i);
+        }
     }
 
     public void parseCitiesAndPostCodes(ArrayList<String> citiesTextFile){

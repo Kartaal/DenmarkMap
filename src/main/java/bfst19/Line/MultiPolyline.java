@@ -17,7 +17,7 @@ public class MultiPolyline implements Drawable, Serializable, BoundingBoxable {
 	public MultiPolyline(OSMRelation rel) {
 		lines = new ArrayList<>();
 		for (OSMWay way : rel){
-			Polyline addingLine = new Polyline(way);
+			Polyline addingLine = new Polyline(way,false);
 			add(addingLine);
 		}
 

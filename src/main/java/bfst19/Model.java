@@ -356,19 +356,21 @@ public class Model{
 				case END_ELEMENT:
 					switch (reader.getLocalName()) {
 						case "way":
-							if (type == WayType.COASTLINE) {
-								coast.add(way);
-							} else {
-								ways.get(type).add(new Polyline(way));
-							}
 
 							//checks if the current waytype is one
 							// of the one's that should be in the nodegraph
-							if(routeHandler.isNodeGraphWay(type)) {
+							boolean isNodeGraphWay = routeHandler.isNodeGraphWay(type);
+							if(isNodeGraphWay) {
 								if(way.getAsLong()==199123707){
 									System.out.print("boop");
 								}
 								routeHandler.addWayToNodeGraph(way, type,name,speedlimit);
+							}
+
+							if (type == WayType.COASTLINE) {
+								coast.add(way);
+							} else {
+								ways.get(type).add(new Polyline(way,isNodeGraphWay));
 							}
 
 							if(b.hasFields()) {
@@ -437,7 +439,7 @@ public class Model{
 					textHandler.makeDatabase(this, addresses, getDatasetName());
 
 					for (OSMWay c : merge(coast)) {
-						ways.get(WayType.COASTLINE).add(new Polyline(c));
+						ways.get(WayType.COASTLINE).add(new Polyline(c,false));
 					}
 
 					//Make and populate KDTrees for each WayType
