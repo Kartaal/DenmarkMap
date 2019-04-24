@@ -23,7 +23,7 @@
          </graphic>
       </Button>
 
-      <ScrollPane prefHeight="550.0" prefWidth="200.0" style="-fx-background: white;">
+      <ScrollPane fx:id="scrollPane" prefHeight="550.0" prefWidth="200.0" style="-fx-background: white;">
         <content>
            <VBox fx:id="pointOfInterestList" prefHeight="500.0" prefWidth="200.0" style="-fx-background-color: white;">
            </VBox>

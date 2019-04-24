@@ -95,7 +95,6 @@ public class Controller {
         borderPane.setLeft(vBox);
 
         ControllerPointOfInterestPanel controllerPointOfInterestPanel = fxmlLoader.getController();
-        if(controllerPointOfInterestPanel != null)
         controllerPointOfInterestPanel.init(this);
     }
 

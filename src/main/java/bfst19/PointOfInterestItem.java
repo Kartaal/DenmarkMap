@@ -11,6 +11,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
+import java.util.EventListener;
+
 public class PointOfInterestItem extends HBox {
 
 
@@ -41,13 +43,8 @@ public class PointOfInterestItem extends HBox {
     public void init(Controller controller) {
         this.controller = controller;
         onActionLabel();
-        controller.getHBoxes().addListener(new ListChangeListener<HBox>() {
-            @Override
-            public void onChanged(Change<? extends HBox> c) {
-                onActionRemoveBtn();
-            }
-        });
 
+        removeBtn.setOnAction(event -> controller.getHBoxes().remove(this));
     }
 
 
@@ -77,11 +74,5 @@ public class PointOfInterestItem extends HBox {
         imageView.setFitHeight(30);
         removeBtn.setGraphic(imageView);
         this.getChildren().add(removeBtn);
-    }
-
-    private void onActionRemoveBtn(){
-        removeBtn.setOnAction(event -> {
-            controller.getHBoxes().remove(this);
-        });
     }
 }

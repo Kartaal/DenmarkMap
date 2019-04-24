@@ -4,7 +4,5 @@ public interface BackBtnEffect {
 
     private void setBackBtnEffect(){}
 
-    private void setBackBtnEffectNone(){
-
-    }
+    private void setBackBtnEffectNone(){}
 }
