@@ -3,6 +3,7 @@ package bfst19;
 
 import javafx.scene.layout.HBox;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
 
 
 public class Instruction extends HBox {
@@ -10,26 +11,33 @@ public class Instruction extends HBox {
 
     public Instruction (double speed, String direction, String road){
         super();
+        this.setStyle("-fx-min-width: 260; -fx-padding: 10; -fx-spacing: 2");
         getChildren().addAll(makeSpeedText(speed), makeDirectionText(direction), makeRoadNameText(road));
     }
 
 
-    public Label makeSpeedText(double speed){
-        Label s = new Label();
-        s.setText(String.valueOf(speed));
-        return s;
+    public Pane makeSpeedText(double speed){
+        Pane speedPane = new Pane();
+        Label speedText = new Label();
+        speedText.setText(String.valueOf(speed));
+        speedPane.getChildren().add(speedText);
+        return speedPane;
     }
 
-    public Label makeDirectionText(String direction){
+    public Pane makeDirectionText(String direction){
+        Pane directionPane = new Pane();
         Label directionText = new Label();
         directionText.setText(direction);
-        return directionText;
+        directionPane.getChildren().add(directionText);
+        return directionPane;
 
     }
-    public Label makeRoadNameText(String roadName){
+    public Pane makeRoadNameText(String roadName){
+        Pane roadNamePane = new Pane();
         Label roadNameText = new Label();
         roadNameText.setText(roadName);
-        return roadNameText;
+        roadNamePane.getChildren().add(roadNameText);
+        return roadNamePane;
     }
 
 }

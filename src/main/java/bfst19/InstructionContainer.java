@@ -3,10 +3,11 @@ package bfst19;
 import bfst19.Route_parsing.Edge;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 import java.util.Iterator;
 
-public class InstructionContainer extends HBox {
+public class InstructionContainer extends VBox {
     private static Controller controller;
 
 
@@ -32,7 +33,7 @@ public class InstructionContainer extends HBox {
 
     public void addInstructions(){
         Iterator<Edge> iterator = controller.getpathIterator();
-        if(iterator.hasNext()){
+        while (iterator.hasNext()){
            Edge e = iterator.next();
             //skal have noget cheks
             addNewInstruction(e.getLength(),"right",e.getName());
