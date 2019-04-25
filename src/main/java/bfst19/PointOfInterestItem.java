@@ -41,7 +41,7 @@ public class PointOfInterestItem extends HBox {
         this.controller = controller;
         onActionLabel();
 
-        removeBtn.setOnAction(event -> controller.getHBoxes().remove(this));
+        removeBtn.setOnAction(event -> controller.pointOfInterestList().remove(this));
     }
 
     private void makeLabel(String adress){
