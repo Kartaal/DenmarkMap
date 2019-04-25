@@ -27,11 +27,16 @@ public class KDTree implements Serializable {
 		if(root == null) {
 			//Set xComp as the first comparator
 			selectComp = KDTree.xComp;
-			//Use a modified QuickSort to ensure the lower values are in the left half
-			// and the higher values are in the right half
-			sort(list, selectComp);
+
 			//Find the middle index to find the root element
 			int splitIndex = list.size() / 2;
+
+			//Use a modified QuickSort to ensure the lower values are in the left half
+			// and the higher values are in the right half
+			//sort(list, selectComp);
+
+			//Return value not used, select is only meant to partially sort the list
+			select(list, splitIndex, 0, list.size()-1, selectComp);
 
 			//Ensure that our Drawable list is not empty
 			if(list.size() > 0) {
@@ -67,8 +72,13 @@ public class KDTree implements Serializable {
 		//Change comparator based on vertical
 		//? is a shorthand of if-else. (expression) ? (if expression true) : (if expression false)
 		selectComp = vertical ? KDTree.xComp : KDTree.yComp;
+
+
 		//Might want an overloaded version that only sorts a sublist
-		sort(list, lo, hi, selectComp);
+		//sort(list, lo, hi, selectComp);
+
+		//Return value not used, select is only meant to partially sort the list
+		select(list, splitIndex, lo, hi, selectComp);
 
 		//Figure out the splitting value based on dimension
 		float splitVal;
@@ -256,6 +266,9 @@ public class KDTree implements Serializable {
 
 	public BoundingBoxable select(List<Drawable> a, int k, int lo, int hi, Comparator<BoundingBoxable> comp)
 	{
+		if(a.isEmpty()) {
+			return null;
+		}
 
 		while (hi > lo)
 		{

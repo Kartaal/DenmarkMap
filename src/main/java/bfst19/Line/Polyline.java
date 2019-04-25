@@ -4,6 +4,7 @@ package bfst19.Line;
 import bfst19.KDTree.BoundingBox;
 import bfst19.KDTree.BoundingBoxable;
 import bfst19.KDTree.Drawable;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.io.Serializable;
@@ -30,7 +31,7 @@ public class Polyline implements Drawable, Serializable, BoundingBoxable {
 	}
 
 
-	public Polyline(OSMWay way,boolean isOSMWay) {
+	public Polyline(OSMWay way, boolean isOSMWay) {
 		//Gets a pairs of x and y coords from the given way and stores them in the coord array
 		// with lon coordinates stored at even indices and lat coordinates stored at odd indices
 
@@ -116,8 +117,8 @@ public class Polyline implements Drawable, Serializable, BoundingBoxable {
 		double nodeDistance;
 		double closestDistance = Double.POSITIVE_INFINITY;
 
-		for(OSMNode node: nodes){
-			nodeDistance = node.distanceTo(x, y);
+		for(OSMNode node : nodes) {
+			nodeDistance = node.distanceTo(new Point2D(x, y));
 			if(nodeDistance < closestDistance){
 				closestDistance = nodeDistance;
 			}
