@@ -29,7 +29,7 @@ public class ControllerRoutePanel {
     ToggleGroup toggleRouteType;
   ;
     @FXML
-    Instructions instructions;
+    InstructionContainer instructions;
 
     private Controller controller;
 
@@ -53,8 +53,8 @@ public class ControllerRoutePanel {
     private void setBackBtnEffectNone() { backBtnRoutePanel.setEffect(null); }
 
     @FXML
-    public static void setUpInstructions(){
-        Instructions.addNewInstruction(30, "right", "road");
+    public void setUpInstructions(){
+        instructions.addInstructions();
     }
 
     @FXML

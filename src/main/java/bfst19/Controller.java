@@ -41,7 +41,7 @@ public class Controller {
     public void init(Model model) {
         //TODO: figure out init methods
         this.model = model;
-        mapCanvas.init(model);
+        mapCanvas.init(model,this);
 
         oldDeterminant = mapCanvas.getDeterminant();
         setScalebar();
@@ -70,7 +70,7 @@ public class Controller {
     public Iterator<String[]> getFoundMatchesIterator(){
         return model.foundMatchesIterator();
     }
-    public Iterator<Iterable<Edge>> getpathIterator(){
+    public Iterator<Edge> getpathIterator(){
         return model.pathIterator();
     }
 
@@ -271,8 +271,7 @@ public class Controller {
                 model.notifyPathObservers();
                 mapCanvas.repaint();
                 break;
-            case W:
-                ControllerRoutePanel.setUpInstructions();
+
         }
     }
 
@@ -306,6 +305,10 @@ public class Controller {
     private void onMousePressed(MouseEvent e) {
         x = e.getX();
         y = e.getY();
+    }
+
+    public void addPathObserver(InstructionContainer instructionContainer) {
+        model.addPathObserver(instructionContainer::showInstructions);
     }
 }
 

@@ -604,8 +604,8 @@ public class Model{
 	}
 
     //// Does this contain the in
-	public Iterator<Iterable<Edge>> pathIterator(){
-    return foundPath.iterator();
+	public Iterator<Edge> pathIterator(){
+    return foundPath.iterator().next().iterator();
   }
 
 	public Iterator<String> colorIterator() {
