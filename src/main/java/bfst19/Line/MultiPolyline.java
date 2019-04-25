@@ -3,10 +3,14 @@ package bfst19.Line;
 import bfst19.KDTree.BoundingBox;
 import bfst19.KDTree.BoundingBoxable;
 import bfst19.KDTree.Drawable;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 
+import java.awt.*;
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MultiPolyline implements Drawable, Serializable, BoundingBoxable {
 	public ArrayList<Polyline> lines;
@@ -61,6 +65,20 @@ public class MultiPolyline implements Drawable, Serializable, BoundingBoxable {
 	}
 
 	@Override
+	public double shortestDistance(double x, double y){
+		double lineDistance;
+		double closestDistance = Double.POSITIVE_INFINITY;
+
+		for(Polyline line: lines){
+			lineDistance = line.shortestDistance(x, y);
+			if(lineDistance < closestDistance){
+				closestDistance = lineDistance;
+			}
+		}
+		return closestDistance;
+	}
+
+	@Override
 	public BoundingBox getBB() {
 
 		return bb;
@@ -86,6 +104,17 @@ public class MultiPolyline implements Drawable, Serializable, BoundingBoxable {
 		}
 		trace(gc,singlePixelLength);
 		gc.fill();
+	}
+
+	@Override
+	public OSMNode[] getNodes(){
+		ArrayList<OSMNode> nodes = new ArrayList<>();
+
+		for(Polyline line: lines){
+			ArrayList<OSMNode> tempList = new ArrayList<>(Arrays.asList(line.getNodes()));
+			nodes.addAll(tempList);
+		}
+		return nodes.toArray(new OSMNode[nodes.size()]);
 	}
 
 }

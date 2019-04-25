@@ -1,20 +1,28 @@
 package bfst19.KDTree;
 
+import bfst19.Exceptions.nothingCloseByException;
+import bfst19.Line.OSMNode;
+import javafx.geometry.Point2D;
+import javafx.scene.control.Alert;
+
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class KDTree implements Serializable {
-    private KDNode root;
-    private static xComparator xComp = new xComparator();
-    private static yComparator yComp = new yComparator();
-    private Comparator<BoundingBoxable> selectComp;
-    private static final int leafSize = 500;
+	private KDNode root;
+	private static xComparator xComp = new xComparator();
+	private static yComparator yComp = new yComparator();
+	private Comparator<BoundingBoxable> selectComp;
+	private static final int leafSize = 500;
 
-    public KDTree(){
-        root = null;
-    }
+	public KDTree(){
+		root = null;
+	}
 
-    //Method for creating a KDTree from a list of Drawable
+
+
+	//Method for creating a KDTree from a list of Drawable
     public void insertAll(List<Drawable> list) {
         //If tree is currently empty, do a lot of work
         if(root == null) {
@@ -96,8 +104,59 @@ public class KDTree implements Serializable {
         return currNode;
     }
 
-    //Method for finding elements in the KDTree that intersects a BoundingBox
-    public Iterable<Drawable> rangeQuery(BoundingBox bbox) {
+
+	public OSMNode getNearestNeighbor(Point2D point) {
+		try{
+			int count = 0;
+			double distanceToQueryPoint;
+			double closestDistance = Double.POSITIVE_INFINITY;
+			OSMNode closestElement = null;
+			double x = point.getX();
+			double y = point.getY();
+			Double[] vals = {x, y, 0.0000000, 0.0000000};
+			BoundingBox bbox = new BoundingBox(vals[0], vals[1], vals[2], vals[3]);
+			ArrayList<OSMNode> queryList = (ArrayList<OSMNode>) nodeRangeQuery(bbox);
+
+
+			while(queryList.isEmpty()){
+				count++;
+				if(count >= 5000){
+					throw new nothingCloseByException();
+				}
+				queryList = growBoundingBox(vals);
+			}
+
+			for(OSMNode checkNode: queryList){
+				distanceToQueryPoint = checkNode.distanceTo(x, y);
+				if(distanceToQueryPoint < closestDistance){
+					closestDistance = distanceToQueryPoint;
+					closestElement = checkNode;
+				}
+			}
+
+			return closestElement;
+		} catch(nothingCloseByException e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	private ArrayList<OSMNode> growBoundingBox(Double[] vals) {
+		BoundingBox bbox;
+		ArrayList<OSMNode> queryList;
+		vals[0] -= 0.00001;
+		vals[1] -= 0.00001;
+		vals[2] += 0.00002;
+		vals[3] += 0.00002;
+
+		bbox = new BoundingBox(vals[0], vals[1], vals[2], vals[3]);
+		queryList = (ArrayList<OSMNode>) nodeRangeQuery(bbox);
+		return queryList;
+	}
+
+
+	//Method for finding elements in the KDTree that intersects a BoundingBox
+	public Iterable<Drawable> rangeQuery(BoundingBox bbox) {
         List<Drawable> returnElements = new ArrayList<>();
         rangeQuery(bbox, root, returnElements);
         return returnElements;
@@ -141,10 +200,54 @@ public class KDTree implements Serializable {
     }
 
 
-    //For testing
-    public KDNode getRoot() {
-        return root;
+	//Method for finding elements in the KDTree that intersects a BoundingBox
+	public Iterable<OSMNode> nodeRangeQuery(BoundingBox bbox) {
+        List<OSMNode> returnElements = new ArrayList<>();
+        nodeRangeQuery(bbox, root, returnElements);
+        return returnElements;
     }
+
+    //Recursive checks down through the KDTree
+    private List<OSMNode> nodeRangeQuery(BoundingBox queryBB, KDNode node, List<OSMNode> returnElements) {
+        //Return null if current node is null to stop endless recursion
+        if (node == null) return null;
+
+        //Ugly casting to Drawable...
+        //if we have values, check for each if its BoundingBox intersects our query BoundingBox
+        // if true, report it
+        if (!node.isEmpty()) {
+            for (BoundingBoxable value : node.values) {
+                if (queryBB.intersects(value.getBB())) {
+                    returnElements.addAll(Arrays.asList(value.getNodes()));
+                }
+            }
+            return returnElements;
+        }
+
+        if (node.nodeL != null) {
+            //Check whether or not to query left subtree
+            if (node.nodeL.bb.intersects(queryBB)) {
+                //Make temporary list to keep elements, so null returns don't cause problems
+                //Check the left subtree for elements intersecting BoundingBox
+                nodeRangeQuery(queryBB, node.nodeL, returnElements);
+
+            }
+        }
+        if (node.nodeR != null) {
+            //Check whether or not to query right subtree
+            if (node.nodeR.bb.intersects(queryBB)) {
+                //Check the right subtree for elements intersecting BoundingBox
+                nodeRangeQuery(queryBB, node.nodeR, returnElements);
+            }
+        }
+
+        return returnElements;
+    }
+
+	//For testing
+	public KDNode getRoot() {
+		return root;
+	}
 
 
 	/*

@@ -33,7 +33,7 @@ public class BoundingBox implements Serializable {
 	}
 
 
-
+	//Code from javafx.geometry.BoundingBox.java
 	public boolean intersects(BoundingBox b) {
 		//if ((b == null) || b.isEmpty()) return false;
 		return intersects(b.getMinX(), b.getMinY(),
