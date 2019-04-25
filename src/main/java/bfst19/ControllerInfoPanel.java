@@ -68,7 +68,7 @@ public class ControllerInfoPanel implements BackBtnEffect {
     public void addPointOfInterest(ActionEvent actionEvent) {
         PointOfInterestItem pointOfInterestItem = new PointOfInterestItem(AutoTextField.autoTextFieldAdress, AutoTextField.x, AutoTextField.y);
         pointOfInterestItem.init(controller);
-        controller.getHBoxes().add(pointOfInterestItem);
+        controller.pointOfInterestList().add(pointOfInterestItem);
     }
 
 }

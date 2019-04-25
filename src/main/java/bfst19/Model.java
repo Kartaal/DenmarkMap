@@ -602,7 +602,7 @@ public class Model{
 	}
 
 
-	public ObservableList<HBox> gethBoxes(){ return hBoxes; }
+	public ObservableList<HBox> pointOfInterestList(){ return hBoxes; }
 
     public void addPointsOfInterest(long id,String pointOfInterest) {
 		pointsOfInterest.put(id,pointOfInterest);

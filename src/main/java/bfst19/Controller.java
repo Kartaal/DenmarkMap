@@ -253,8 +253,8 @@ public class Controller {
         return borderPane;
     }
 
-    public ObservableList<HBox> getHBoxes(){
-        return model.gethBoxes();
+    public ObservableList<HBox> pointOfInterestList(){
+        return model.pointOfInterestList();
     }
 }
 

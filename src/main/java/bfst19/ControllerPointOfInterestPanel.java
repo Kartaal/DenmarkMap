@@ -23,8 +23,6 @@ public class ControllerPointOfInterestPanel implements BackBtnEffect {
 
     private Controller controller;
 
-    @FXML
-    private VBox pointOfInterestList;
 
     @FXML
     private ScrollPane scrollPane;
@@ -37,11 +35,11 @@ public class ControllerPointOfInterestPanel implements BackBtnEffect {
 
         listener = c -> showHBoxesList();
 
-        controller.getHBoxes().addListener(listener);
+        controller.pointOfInterestList().addListener(listener);
     }
 
     private void removeListener(){
-        controller.getHBoxes().removeListener(listener);
+        controller.pointOfInterestList().removeListener(listener);
     }
 
     @FXML
@@ -61,10 +59,9 @@ public class ControllerPointOfInterestPanel implements BackBtnEffect {
 
     private void showHBoxesList() {
         VBox vBox = new VBox();
-        for (HBox item: controller.getHBoxes()) {
+        for (HBox item: controller.pointOfInterestList()) {
             vBox.getChildren().add(item);
         }
         scrollPane.setContent(vBox);
-        System.out.println("Called showHBoxesList method");
     }
 }
