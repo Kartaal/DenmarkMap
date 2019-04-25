@@ -77,6 +77,15 @@
                        </ImageView>
                    </graphic>
                </ToggleButton>
+               <ToggleButton fx:id="walking" onAction="#setRouteType" toggleGroup="$toggleRouteType" styleClass="toggle-button" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" >
+                   <graphic>
+                       <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                               <Image url="/walking.png" />
+                           </image>
+                       </ImageView>
+                   </graphic>
+               </ToggleButton>
                <padding>
                    <Insets bottom="5.0" top="5.0" right="5.0" left="0.5"/>
                </padding>

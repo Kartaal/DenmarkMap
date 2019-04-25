@@ -70,11 +70,15 @@ public class ControllerRoutePanel {
             toggleGroupValue="";
         }
         else if(toggleGroupValue.equals("car")){
-            System.out.println("bike is false");
+            System.out.println("car is true");
         }
         else if (toggleGroupValue.equals("bike")){
-            System.out.println("car is false");
+            System.out.println("bike is true");
         }
+        else if (toggleGroupValue.equals("walking")){
+            System.out.println("walking is true");
+        }
+
 
     }
 

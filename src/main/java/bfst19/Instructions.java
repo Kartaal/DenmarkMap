@@ -31,18 +31,18 @@ public class Instructions extends Pane {
 
     public  void showInstructions(){
         addInstructions();
+        /*
         if(!instructionsPane.isShowing()){
 
         }
-
+        */
     }
 
     public  void addInstructions(){
         Iterator<Iterable<Edge>> iterator = controller.getpathIterator();
         if(iterator.hasNext()){
-
-            Iterable<Edge> iteratorEdge= iterator.next();
-            for (Edge e : iteratorEdge){
+            Iterable<Edge> edgeIterable= iterator.next();
+            for (Edge e : edgeIterable){
                 addNewInstruction(e.getLength(),"right",e.getName() );
                 System.out.println("FUCK "+e.getLength()+ " right "+e.getName());
             }
