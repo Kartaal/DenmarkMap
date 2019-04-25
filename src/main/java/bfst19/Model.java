@@ -1,5 +1,6 @@
 package bfst19;
 
+import bfst19.Exceptions.nothingNearbyException;
 import bfst19.KDTree.BoundingBox;
 import bfst19.KDTree.Drawable;
 import bfst19.KDTree.KDTree;
@@ -636,17 +637,43 @@ public class Model{
 	}
 
 	OSMNode getNearestRoad(Point2D point){
-    	ArrayList<OSMNode> nodeList = new ArrayList<>();
+    	try{
+			ArrayList<OSMNode> nodeList = new ArrayList<>();
 
-    	for(WayType wayType: RouteHandler.getDrivableWayTypes()){
-    		nodeList.add(kdTreeMap.get(wayType).getNearestNeighbor(point));
+			for(WayType wayType: RouteHandler.getDrivableWayTypes()){
+				OSMNode checkNeighbor = kdTreeMap.get(wayType).getNearestNeighbor(point);
+				if(checkNeighbor != null) {
+					nodeList.add(checkNeighbor);
+				}
+			}
+
+			if(nodeList.isEmpty()){
+				throw new nothingNearbyException();
+			}
+
+			return getClosestNode(point, nodeList);
+
+    	}catch (nothingNearbyException e){
+    		e.printStackTrace();
+    		return null;
 		}
-
-		return getClosestNode(point, nodeList);
 	}
 
 	OSMNode getNearestBuilding(Point2D point){
+    	try {
+			OSMNode closestElement = kdTreeMap.get(WayType.BUILDING).getNearestNeighbor(point);
 
-		return kdTreeMap.get(WayType.BUILDING).getNearestNeighbor(point);
+			if(closestElement == null){
+				throw new nothingNearbyException();
+			}
+
+			return closestElement;
+			
+		}catch(nothingNearbyException e){
+    		e.printStackTrace();
+    		return null;
+		}
+
+
 	}
 }
