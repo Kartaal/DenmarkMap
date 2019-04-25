@@ -2,9 +2,10 @@ package bfst19.Exceptions;
 
 import javafx.scene.control.Alert;
 
-public class nothingCloseByException extends Throwable {
+public class nothingNearbyException extends Throwable {
+    //This exception should be thrown, when all KDTree.getNearestNeighbors return null after x checks.
 
-    public nothingCloseByException(){
+    public nothingNearbyException(){
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error in Nearest Neighbor Search");
         alert.setHeaderText(null);
