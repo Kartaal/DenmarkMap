@@ -78,18 +78,4 @@ public class ControllerRoutePanel {
 
     }
 
-    @FXML
-    private void addInstruction(){
-        // FXML Loader eller lave et nyt pane her
-        // prøv at lave ny Vbox
-        Pane newLoadedPane=null;
-        FXMLLoader fxmlLoader= new FXMLLoader(getClass().getResource("/resources/bfst19/Instruction.fxml"));
-        try{
-            Pane Instructions = fxmlLoader.load();
-            instructions.getChildren().add(Instructions);
-
-        }catch (IOException e){
-            System.out.println("File not found");
-        }
-    }
 }

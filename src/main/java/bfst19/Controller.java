@@ -70,6 +70,9 @@ public class Controller {
     public Iterator<String[]> getFoundMatchesIterator(){
         return model.foundMatchesIterator();
     }
+    public Iterator<Iterable<Edge>> getpathIterator(){
+        return model.pathIterator();
+    }
 
     public void parseSearchText(String searchText){
         model.parseSearch(searchText);

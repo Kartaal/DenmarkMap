@@ -603,7 +603,7 @@ public class Model{
 		pointsOfInterest.remove(id);
 	}
 
-
+    //// Does this contain the in
 	public Iterator<Iterable<Edge>> pathIterator(){
     return foundPath.iterator();
   }

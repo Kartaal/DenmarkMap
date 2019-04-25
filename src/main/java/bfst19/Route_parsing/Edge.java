@@ -45,7 +45,8 @@ public class Edge implements Serializable {
             return length;
         }
     }
-
+    //this is code dublication
+    public double getLength(){return length / speedlLimit; }
     public OSMNode getV(){
         return v;
     }
@@ -53,6 +54,8 @@ public class Edge implements Serializable {
     public OSMNode getW(){
         return w;
     }
+
+    public String getName(){return name;}
 
     //todo make these dependt on a call with a specific node
     public long either(){
