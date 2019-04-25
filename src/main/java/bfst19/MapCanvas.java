@@ -243,7 +243,6 @@ public class MapCanvas extends Canvas {
 
         singlePixelLength = Math.sqrt(Math.pow(singleXPixelLength,2)+Math.pow(singleYPixelLength,2));
         percentOfScreenArea = (singleXPixelLength*25)*singleYPixelLength*25;
-        System.out.println("2percent of screen area: "+percentOfScreenArea);
 
         repaint();
     }

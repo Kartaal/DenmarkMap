@@ -361,9 +361,6 @@ public class Model{
 							// of the one's that should be in the nodegraph
 							boolean isNodeGraphWay = routeHandler.isNodeGraphWay(type);
 							if(isNodeGraphWay) {
-								if(way.getAsLong()==199123707){
-									System.out.print("boop");
-								}
 								routeHandler.addWayToNodeGraph(way, type,name,speedlimit);
 							}
 

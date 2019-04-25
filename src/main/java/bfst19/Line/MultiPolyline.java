@@ -64,7 +64,7 @@ public class MultiPolyline implements Drawable, Serializable, BoundingBoxable {
 		return centerY;
 	}
 
-	@Override
+
 	public double shortestDistance(double x, double y){
 		double lineDistance;
 		double closestDistance = Double.POSITIVE_INFINITY;
