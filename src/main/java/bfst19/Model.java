@@ -7,6 +7,8 @@ import bfst19.Route_parsing.*;
 import bfst19.Line.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Point2D;
+
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -614,5 +616,37 @@ public class Model{
 
 	public Iterator<String[]> foundMatchesIterator() {
 		return foundMatches.iterator();
+	}
+
+	public static OSMNode getClosestNode(Point2D point, ArrayList<OSMNode> queryList) {
+    	//TODO: put into a "Calculator" class.
+		double closestDistance = Double.POSITIVE_INFINITY;
+		double distanceToQueryPoint;
+		OSMNode closestElement = null;
+
+		for(OSMNode checkNode: queryList){
+			//We check distance from node to point, and then report if its closer than our previously known closest point.
+			distanceToQueryPoint = checkNode.distanceTo(point);
+			if(distanceToQueryPoint < closestDistance){
+				closestDistance = distanceToQueryPoint;
+				closestElement = checkNode;
+			}
+		}
+		return closestElement;
+	}
+
+	OSMNode getNearestRoad(Point2D point){
+    	ArrayList<OSMNode> nodeList = new ArrayList<>();
+
+    	for(WayType wayType: RouteHandler.getDrivableWayTypes()){
+    		nodeList.add(kdTreeMap.get(wayType).getNearestNeighbor(point));
+		}
+
+		return getClosestNode(point, nodeList);
+	}
+
+	OSMNode getNearestBuilding(Point2D point){
+
+		return kdTreeMap.get(WayType.BUILDING).getNearestNeighbor(point);
 	}
 }

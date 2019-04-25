@@ -6,9 +6,7 @@ import bfst19.KDTree.Drawable;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 
-import java.awt.*;
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -65,12 +63,12 @@ public class MultiPolyline implements Drawable, Serializable, BoundingBoxable {
 	}
 
 
-	public double shortestDistance(double x, double y){
+	public double shortestDistance(Point2D point){
 		double lineDistance;
 		double closestDistance = Double.POSITIVE_INFINITY;
 
 		for(Polyline line: lines){
-			lineDistance = line.shortestDistance(x, y);
+			lineDistance = line.shortestDistance(point);
 			if(lineDistance < closestDistance){
 				closestDistance = lineDistance;
 			}

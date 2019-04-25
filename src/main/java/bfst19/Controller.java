@@ -7,6 +7,7 @@ import bfst19.Route_parsing.EdgeWeightedGraph;
 import bfst19.Route_parsing.Vehicle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Point2D;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -260,7 +261,7 @@ public class Controller {
 
         //System.out.println(Math.abs((-time + prevtime) / 1e8));
         if (Math.abs((-time + prevtime) / 1e8) <= 3){
-            OSMNode something = model.kdTreeMap.get(WayType.ROAD_RESIDENTIAL).getNearestNeighbor(mapCanvas.getModelCoords(x,y));
+            OSMNode something = model.getNearestRoad(mapCanvas.getModelCoords(x,y));
             if(nodeIDs[0] == 0){
 
                 nodeIDs[0] = something.getAsLong();
@@ -283,7 +284,7 @@ public class Controller {
         }
 
         if(e.isSecondaryButtonDown()){
-            OSMNode something = model.kdTreeMap.get(WayType.ROAD_RESIDENTIAL).getNearestNeighbor(mapCanvas.getModelCoords(x,y));
+            OSMNode something = model.getNearestRoad(mapCanvas.getModelCoords(x,y));
             double lonfactor = model.getLonfactor();
             System.out.println(lonfactor);
             System.out.println("Nearest OSMNode: " + something);

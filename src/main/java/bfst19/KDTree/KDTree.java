@@ -1,12 +1,15 @@
 package bfst19.KDTree;
 
 import bfst19.Line.OSMNode;
+import bfst19.Model;
 import javafx.geometry.Point2D;
-import javafx.scene.control.Alert;
-
 import java.io.Serializable;
-import java.lang.reflect.Array;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+
 
 public class KDTree implements Serializable {
 	private KDNode root;
@@ -18,8 +21,6 @@ public class KDTree implements Serializable {
 	public KDTree(){
 		root = null;
 	}
-
-
 
 	//Method for creating a KDTree from a list of Drawable
 	public void insertAll(List<Drawable> list) {
@@ -103,7 +104,6 @@ public class KDTree implements Serializable {
 		return currNode;
 	}
 
-
 	public OSMNode getNearestNeighbor(Point2D point) {
 		//Returns node of the nearest neighbor to a point
 		int count = 0;
@@ -127,14 +127,7 @@ public class KDTree implements Serializable {
 			queryList = growBoundingBox(vals);
 		}
 
-		for(OSMNode checkNode: queryList){
-			//We check distance from node to point, and then report if its closer than our previously known closest point.
-			distanceToQueryPoint = checkNode.distanceTo(point);
-			if(distanceToQueryPoint < closestDistance){
-				closestDistance = distanceToQueryPoint;
-				closestElement = checkNode;
-			}
-		}
+		closestElement = Model.getClosestNode(point, queryList);
 
 		return closestElement;
 
@@ -156,7 +149,6 @@ public class KDTree implements Serializable {
 		queryList = (ArrayList<OSMNode>) nodeRangeQuery(bbox);
 		return queryList;
 	}
-
 
 	//Method for finding elements in the KDTree that intersects a BoundingBox
 	public Iterable<Drawable> rangeQuery(BoundingBox bbox) {
@@ -201,7 +193,6 @@ public class KDTree implements Serializable {
 
 		return returnElements;
 	}
-
 
 	//Method for finding elements in the KDTree that intersects a BoundingBox
 	public Iterable<OSMNode> nodeRangeQuery(BoundingBox bbox) {
@@ -252,7 +243,6 @@ public class KDTree implements Serializable {
 	public KDNode getRoot() {
 		return root;
 	}
-
 
 	/*
 	//Not in use currently
