@@ -475,6 +475,14 @@ public class Model{
 		return d;
 	}
 
+	public static float angleBetween2Lines(OSMNode A1, OSMNode A2, OSMNode B1, OSMNode B2) {
+		float angle1 = (float) Math.atan2(A2.getLat() - A1.getLat(), A1.getLon() - A2.getLon());
+		float angle2 = (float) Math.atan2(B2.getLat() - B1.getLat(), B1.getLon() - B2.getLon());
+		float calculatedAngle = (float) Math.toDegrees(angle1 - angle2);
+		if (calculatedAngle < 0) calculatedAngle += 360;
+		return calculatedAngle;
+	}
+
 	public String getDelimeter() {
 		return " QQQ ";
 	}

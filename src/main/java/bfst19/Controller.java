@@ -207,81 +207,12 @@ public class Controller {
 
             case C:
                 Iterable<Edge> path = model.routeHandler.findPath(489365650L,4048894613L, Vehicle.CAR,false);
-                Iterator<Edge> pathIterator = path.iterator();
-                Edge edge = pathIterator.next();
-                Edge currentEdge = pathIterator.next();
-                //this section is to establish which ends of the two startingedges are the "head" and "base"
-                // being which direction we are going
-                OSMNode previousV = edge.getV();
-                OSMNode previousW = edge.getW();
-                OSMNode newV = currentEdge.getV();
-                OSMNode newW = currentEdge.getW();
-                if(edge!=null&&currentEdge!=null) {
-                    OSMNode previousBase;
-                    OSMNode previousHead;
-                    OSMNode currentBase;
-                    OSMNode currentHead;
-                    if (previousV.getAsLong() == newV.getAsLong()) {
-                        previousHead = previousV;
-                        previousBase = previousW;
-                        currentBase = newV;
-                        currentHead = newW;
-                    } else if (previousW.getAsLong() == newV.getAsLong()) {
-                        previousHead = previousW;
-                        previousBase = previousV;
-                        currentBase = newV;
-                        currentHead = newW;
-                    } else if (previousV.getAsLong() == newW.getAsLong()) {
-                        previousHead = previousV;
-                        previousBase = previousW;
-                        currentBase = newW;
-                        currentHead = newV;
-                    } else {
-                        previousHead = previousW;
-                        previousBase = previousV;
-                        currentBase = newW;
-                        currentHead = newV;
-                    }
-
-                    int edgesSinceLastTurn = 0;
-                    previousBase = currentBase;
-                    previousHead = currentHead;
-                    while (pathIterator.hasNext()) {
-                        currentEdge = pathIterator.next();
-                        currentHead = currentEdge.getOtherEndNode(previousHead);
-                        currentBase = currentEdge.getOtherEndNode(currentHead);
-                        double angle = angleBetween2Lines(previousBase,previousHead,currentBase,currentHead);
-                        edgesSinceLastTurn++;
-                        if (45 < angle && angle < 180) {
-                            System.out.println(edgesSinceLastTurn+" "+angle);
-                            edgesSinceLastTurn = 0;
-                            System.out.println("turn left");
-                        }
-                        if (180 < angle && angle < 315) {
-                            System.out.println(edgesSinceLastTurn+" "+angle);
-                            edgesSinceLastTurn = 0;
-                            System.out.println("turn right");
-                        }
-                        previousBase = currentBase;
-                        previousHead = currentHead;
-                    }
-
-                }
                 model.foundPath.add(path);
                 model.notifyPathObservers();
                 mapCanvas.repaint();
                 break;
 
         }
-    }
-
-
-    public static float angleBetween2Lines(OSMNode A1, OSMNode A2, OSMNode B1, OSMNode B2) {
-        float angle1 = (float) Math.atan2(A2.getLat() - A1.getLat(), A1.getLon() - A2.getLon());
-        float angle2 = (float) Math.atan2(B2.getLat() - B1.getLat(), B1.getLon() - B2.getLon());
-        float calculatedAngle = (float) Math.toDegrees(angle1 - angle2);
-        if (calculatedAngle < 0) calculatedAngle += 360;
-        return calculatedAngle;
     }
 
     @FXML

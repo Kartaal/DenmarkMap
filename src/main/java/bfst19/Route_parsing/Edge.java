@@ -37,16 +37,18 @@ public class Edge implements Serializable {
             //if the vehicle type's speed is less than the speedlimit of this edge,
             // we should use that instead
             if(type.maxSpeed<speedlLimit){
-                return length / type.maxSpeed;
+                return getLength() / type.maxSpeed;
             }else {
-                return length / speedlLimit;
+                return getLength() / speedlLimit;
             }
         }else{
-            return length;
+            return getLength();
         }
     }
+
     //this is code dublication
-    public double getLength(){return length / speedlLimit; }
+    public double getLength(){return length; }
+
     public OSMNode getV(){
         return v;
     }
