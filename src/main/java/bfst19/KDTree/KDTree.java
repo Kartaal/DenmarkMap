@@ -254,12 +254,9 @@ public class KDTree implements Serializable {
 	}
 
 
-	/*
-	//Not in use currently
-	public BoundingBoxable select(List<Drawable> a, int k, Comparator<BoundingBoxable> comp)
+	public BoundingBoxable select(List<Drawable> a, int k, int lo, int hi, Comparator<BoundingBoxable> comp)
 	{
-		shuffle(a);
-		int lo = 0, hi = a.size() - 1;
+
 		while (hi > lo)
 		{
 			int j = partition(a, lo, hi, comp);
@@ -269,7 +266,6 @@ public class KDTree implements Serializable {
 		}
 		return (BoundingBoxable) a.get(k);
 	}
-	*/
 
 	//Everything below this line is a modified version of code from Algs4
 
@@ -291,7 +287,11 @@ public class KDTree implements Serializable {
 	private int partition(List<Drawable> a, int lo, int hi, Comparator<BoundingBoxable> comp)
 	{ // Partition into a[lo..i-1], a[i], a[i+1..hi].
 		int i = lo, j = hi+1; // left and right scan indices
-		Drawable v = a.get(lo); // partitioning item
+		Random rand = new Random();
+		int diff = lo < hi ? hi - lo : lo - hi;
+		int pIndex = lo + rand.nextInt(diff);
+		Drawable v = a.get(pIndex);
+		//Drawable v = a.get(lo); // partitioning item
 		while (true)
 		{ // Scan right, scan left, check for scan complete, and exchange.
 			while (comp.compare((BoundingBoxable) a.get(++i), (BoundingBoxable) v) > 0) if (i == hi) break;
