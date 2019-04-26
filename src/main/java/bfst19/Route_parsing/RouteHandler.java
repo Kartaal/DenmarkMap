@@ -15,6 +15,7 @@ public class RouteHandler{
     private HashMap<Integer,Long> indexToId;
     private HashMap<WayType,HashMap<String, ArrayList<String[]>>> drivableCases;
     private HashMap<WayType,HashMap<Vehicle, Integer>> drivabillty;
+    private HashMap<WayType,HashMap<Vehicle, Integer>> defaultDrivabillty;
     HashMap<String,Integer> speedDefaults;
 
     public RouteHandler(Model model, EdgeWeightedGraph G){
@@ -40,6 +41,7 @@ public class RouteHandler{
                 drivabillty.get(wayType).put(vehicleType,defaultDrivable);
             }
         }
+        defaultDrivabillty = drivabillty;
 
     }
 
@@ -95,11 +97,10 @@ public class RouteHandler{
         for(WayType waytype : drivableCases.keySet()){
             for(String vehicletypeAndDrivable : drivableCases.get(waytype).keySet()){
                 ArrayList<String[]> vehicleCases = drivableCases.get(waytype).get(vehicletypeAndDrivable);
-
-                Vehicle vehicletype = Vehicle.valueOf(vehicletypeAndDrivable.split(" ")[0]);
                 for(int i = 0 ; i<vehicleCases.size() ; i++){
                     String[] caseTokens = vehicleCases.get(i);
                     if(k.equals(caseTokens[0])&&v.equals(caseTokens[1])){
+                        Vehicle vehicletype = Vehicle.valueOf(vehicletypeAndDrivable.split(" ")[0]);
                         drivabillty.get(waytype).put(vehicletype,Integer.valueOf(caseTokens[2]));
                     }
                 }
@@ -151,16 +152,7 @@ public class RouteHandler{
     }
 
     private void resetDrivabillty(){
-        for(WayType waytype : drivableCases.keySet()){
-            HashMap<Vehicle,Integer> resetDefaults = new HashMap<>();
-            for(String vehicleTypeAndDrivable : drivableCases.get(waytype).keySet()){
-                String[] tokens = vehicleTypeAndDrivable.split(" ");
-                Vehicle vehicleType = Vehicle.valueOf(tokens[0]);
-                int drivable = Integer.valueOf(tokens[1]);
-                resetDefaults.put(vehicleType,drivable);
-            }
-            drivabillty.put(waytype,resetDefaults);
-        }
+        drivabillty = defaultDrivabillty;
     }
 
     public Iterable<Edge> getAdj(long id, Vehicle type) {

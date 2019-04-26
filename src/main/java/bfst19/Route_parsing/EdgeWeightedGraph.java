@@ -11,22 +11,22 @@ public class EdgeWeightedGraph implements Serializable {
     private int V;
     private int E;
     private HashMap<Long,Integer> idToIndex;
-    private ResizingArray indexToId;
-    private ArrayList<ArrayList<Edge>> adj;
+    private ResizingArray<Long> indexToId;
+    private ResizingArray<ResizingArray<Edge>> adj;
 
     public EdgeWeightedGraph(){
         this.V = 0;
         this.E = 0;
         idToIndex = new HashMap<>();
-        indexToId = new ResizingArray();
-        adj = new ArrayList<>();
+        indexToId = new ResizingArray<>();
+        adj = new ResizingArray<>();
     }
 
     public EdgeWeightedGraph(ArrayList<Long> V) {
         if (V.size() == 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
         this.V = V.size();
         this.E = 0;
-        adj = new ArrayList<>();
+        adj = new ResizingArray<>();
     }
 
     public int V() {
@@ -61,7 +61,7 @@ public class EdgeWeightedGraph implements Serializable {
         if(!isVertex(id)) {
             idToIndex.put(id, V);
             indexToId.add(id);
-            adj.add(V, new ArrayList<>());
+            adj.add(new ResizingArray<>());
             V++;
         }
     }
@@ -71,28 +71,23 @@ public class EdgeWeightedGraph implements Serializable {
         int w = getIndexFromId(e.other());
         validateVertex(v);
         validateVertex(w);
-        adj.get(v).add(e);
-        adj.get(w).add(e);
+         adj.get(v).add(e);
+         adj.get(w).add(e);
         E++;
     }
 
     public Iterable<Edge> adj(int v,Vehicle type) {
         validateVertex(v);
-        ArrayList<Edge> adjacent = adj.get(v);
-        ArrayList<Edge> temp = new ArrayList<>();
+        ResizingArray adjacent = adj.get(v);
+        ArrayList<Edge> result = new ArrayList<>();
         long idOfV = indexToId.get(v);
-        for(Edge edge : adjacent){
+        for(int i = 0 ; i<adjacent.size() ; i++){
+            Edge edge = (Edge)adjacent.get(i);
             if(edge.isForwardAllowed(type,idOfV)){
-                temp.add(edge);
+                result.add(edge);
             }
         }
-        adjacent = temp;
-        return adjacent;
-    }
-
-    public int degree(int v) {
-        validateVertex(v);
-        return adj.get(v).size();
+        return result;
     }
 
     public Iterable<Edge> edges() {
@@ -118,8 +113,9 @@ public class EdgeWeightedGraph implements Serializable {
         s.append(V + " " + E + NEWLINE);
         for (int v = 0; v < V; v++) {
             s.append(v + ": ");
-            for (Edge e : adj.get(v)) {
-                s.append(e + "  ");
+            ResizingArray current = adj.get(v);
+            for (int i = 0 ; i<current.size() ; i++) {
+                s.append(current.get(i) + "  ");
             }
             s.append(NEWLINE);
         }

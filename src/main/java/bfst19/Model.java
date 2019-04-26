@@ -124,9 +124,9 @@ public class Model{
 	public Model(List<String> args) throws IOException, XMLStreamException, ClassNotFoundException {
 
 		//Changed from field to local variable so it can be garbage collected
-		Map<WayType, List<Drawable>> ways = new EnumMap<>(WayType.class);
+		Map<WayType, ResizingArray<Drawable>> ways = new EnumMap<>(WayType.class);
 		for (WayType type : WayType.values()) {
-			ways.put(type, new ArrayList<>());
+			ways.put(type, new ResizingArray<>());
 		}
 
 		//todo figure out how to do singleton but also include model in its constructor without needing to give model for every call of getInstance
@@ -200,9 +200,9 @@ public class Model{
 
 	private void parseOSM(InputStream osmsource) throws XMLStreamException {
 		//Changed from field to local variable so it can be garbage collected
-		Map<WayType, List<Drawable>> ways = new EnumMap<>(WayType.class);
+		Map<WayType, ResizingArray<Drawable>> ways = new EnumMap<>(WayType.class);
 		for (WayType type : WayType.values()) {
-			ways.put(type, new ArrayList<>());
+			ways.put(type, new ResizingArray<>());
 		}
 		EdgeWeightedGraph nodeGraph = new EdgeWeightedGraph();
 		//todo change to other hashmaps or do something else
@@ -440,7 +440,7 @@ public class Model{
 					}
 
 					//Make and populate KDTrees for each WayType
-					for(Map.Entry<WayType, List<Drawable>> entry : ways.entrySet()) {
+					for(Map.Entry<WayType, ResizingArray<Drawable>> entry : ways.entrySet()) {
 						KDTree typeTree = new KDTree();
 						//Add entry values to KDTree
 						typeTree.insertAll(entry.getValue());

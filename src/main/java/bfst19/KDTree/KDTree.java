@@ -1,12 +1,14 @@
 package bfst19.KDTree;
 
 import bfst19.Line.OSMNode;
+import bfst19.Route_parsing.ResizingArray;
 import javafx.geometry.Point2D;
-import javafx.scene.control.Alert;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 public class KDTree implements Serializable {
 	private KDNode root;
@@ -22,7 +24,7 @@ public class KDTree implements Serializable {
 
 
 	//Method for creating a KDTree from a list of Drawable
-	public void insertAll(List<Drawable> list) {
+	public void insertAll(ResizingArray<Drawable> list) {
 		//If tree is currently empty, do a lot of work
 		if(root == null) {
 			//Set xComp as the first comparator
@@ -54,7 +56,7 @@ public class KDTree implements Serializable {
 		}
 	}
 
-	private KDNode createTree(List<Drawable> list, KDNode parentNode, int lo, int hi) {
+	private KDNode createTree(ResizingArray<Drawable> list, KDNode parentNode, int lo, int hi) {
 		//Added to prevent errors when lo == hi (there was a WayType with 2 elements that caused this problem)
 		//TODO ensure correctness (still?)
 		if (hi < lo) return null;
@@ -274,13 +276,13 @@ public class KDTree implements Serializable {
 	//Everything below this line is a modified version of code from Algs4
 
 	//From Algs4 book, modified
-	public void sort(List<Drawable> a, Comparator<BoundingBoxable> comp) {
+	public void sort(ResizingArray<Drawable> a, Comparator<BoundingBoxable> comp) {
 		//shuffle(a);
 		sort(a, 0, a.size() - 1, comp);
 	}
 
 	// quicksort the subarray from a[lo] to a[hi]
-	private void sort(List<Drawable> a, int lo, int hi, Comparator<BoundingBoxable> comp) {
+	private void sort(ResizingArray<Drawable> a, int lo, int hi, Comparator<BoundingBoxable> comp) {
 		if (hi <= lo) return;
 		int j = partition(a, lo, hi, comp);
 		sort(a, lo, j-1, comp);
@@ -288,7 +290,7 @@ public class KDTree implements Serializable {
 	}
 
 	//From Algs4 book
-	private int partition(List<Drawable> a, int lo, int hi, Comparator<BoundingBoxable> comp)
+	private int partition(ResizingArray<Drawable> a, int lo, int hi, Comparator<BoundingBoxable> comp)
 	{ // Partition into a[lo..i-1], a[i], a[i+1..hi].
 		int i = lo, j = hi+1; // left and right scan indices
 		Drawable v = a.get(lo); // partitioning item
@@ -304,7 +306,7 @@ public class KDTree implements Serializable {
 	}
 
 	//From Algs4 book
-	private void exch(List<Drawable> a, int i, int j) {
+	private void exch(ResizingArray<Drawable> a, int i, int j) {
 		Drawable t = a.get(i);
 		a.set(i, a.get(j));
 		a.set(j, t);
