@@ -31,7 +31,6 @@ public class Model{
 
 	String CurrentTypeColorTxt  = "src/main/resources/config/TypeColorsNormal.txt";
 	HashMap<String,ArrayList<String[]>> wayTypeCases = new HashMap<>();
-	private ResizingArray<Long> ids = new ResizingArray<>();
 	ObservableList<String[]> foundMatches = FXCollections.observableArrayList();
 	ObservableList<String> typeColors = FXCollections.observableArrayList();
 	ObservableList<Iterable<Edge>> foundPath = FXCollections.observableArrayList();
@@ -43,7 +42,7 @@ public class Model{
 
     //for building addresses during parsing
 	public static class Builder {
-		private long id;
+		private int id;
 		private float lat, lon;
 		private String streetName = "Unknown", houseNumber="", postcode="", city="",municipality="";
 
@@ -176,9 +175,6 @@ public class Model{
 				output.writeObject(routeHandler.getNodeGraph());
 			}
 		}
-
-
-		routeHandler.finishNodeGraph();
         AddressParser.getInstance(this).setDefaults(textHandler.getDefault(getDatasetName()));
         AddressParser.getInstance(this).parseCitiesAndPostCodes(textHandler.getCities(this, getDatasetName()));
 	}
@@ -209,13 +205,16 @@ public class Model{
 		}
 		EdgeWeightedGraph nodeGraph = new EdgeWeightedGraph();
 		//todo change to other hashmaps or do something else
-		routeHandler = new RouteHandler(this,nodeGraph,new HashMap<>(),new HashMap<>());
+		routeHandler = new RouteHandler(this,nodeGraph);
 		XMLStreamReader reader = XMLInputFactory
 				.newInstance()
 				.createXMLStreamReader(osmsource);
 
-		LongIndex<OSMNode> idToNode = new LongIndex<>();
-		LongIndex<OSMWay> idToWay = new LongIndex<>();
+		LongIndex idToNodeIndex = new LongIndex();
+		LongIndex idToWayIndex = new LongIndex();
+
+		ResizingArray<OSMNode> tempNodes = new ResizingArray<>();
+		ResizingArray<OSMWay> tempWays = new ResizingArray<>();
 		ArrayList<Address> addresses = new ArrayList<>();
 		List<OSMWay> coast = new ArrayList<>();
 
@@ -224,7 +223,7 @@ public class Model{
 		OSMRelation rel = null;
 		WayType type = null;
 
-		double speedlimit = 0;
+		int speedlimit = 0;
 		String name = "";
 
 		//variables for addressParsing and OSMNode creation
@@ -250,24 +249,25 @@ public class Model{
 							id = Long.parseLong(reader.getAttributeValue(null, "id"));
 							lat = Float.parseFloat(reader.getAttributeValue(null, "lat"));
 							lon = Float.parseFloat(reader.getAttributeValue(null, "lon"));
-							idToNode.add(new OSMNode(id, lon*lonfactor, lat));
+							idToNodeIndex.add(id);
+							tempNodes.add(new OSMNode(tempNodes.size(), lon*lonfactor, lat));
 							break;
 						case "way":
 							id = Long.parseLong(reader.getAttributeValue(null, "id"));
 							type = WayType.UNKNOWN;
-							way = new OSMWay(id);
-
-							idToWay.add(way);
+							way = new OSMWay(tempWays.size());
+							idToWayIndex.add(id);
+							tempWays.add(way);
 							break;
 						case "nd":
 							long ref = Long.parseLong(reader.getAttributeValue(null, "ref"));
-							way.add(idToNode.get(ref));
+							way.add(tempNodes.get(idToNodeIndex.get(ref)));
 							break;
 						case "tag":
 							String k = reader.getAttributeValue(null, "k");
 							String v = reader.getAttributeValue(null, "v");
 
-              if(k.equals("addr:housenumber")) {
+              				if(k.equals("addr:housenumber")) {
 								b.houseNumber = v.trim();
 							}
 
@@ -317,7 +317,7 @@ public class Model{
 									speedlimit = 130;
 								}else if(v.equalsIgnoreCase("default")||v.equalsIgnoreCase("implicit")||v.equalsIgnoreCase("none")||v.equalsIgnoreCase("signals")||v.equalsIgnoreCase("5 knots")){
 								}else{
-									speedlimit = Double.valueOf(v);
+									speedlimit = Math.round(Float.valueOf(v));
 								}
 							}
 
@@ -340,7 +340,7 @@ public class Model{
 									break;
 								case "member":
 									ref = Long.parseLong(reader.getAttributeValue(null, "ref"));
-									OSMWay member = idToWay.get(ref);
+									OSMWay member = tempWays.get(idToWayIndex.get(ref));
 									if (member != null) rel.add(member);
 									break;
 							}
@@ -351,8 +351,11 @@ public class Model{
 							break;
 						case "member":
 							ref = Long.parseLong(reader.getAttributeValue(null, "ref"));
-							OSMWay member = idToWay.get(ref);
-							if (member != null) rel.add(member);
+							int index = idToWayIndex.get(ref);
+							if(!(index < 0)){
+								OSMWay member = tempWays.get(idToWayIndex.get(ref));
+								if (member != null) rel.add(member);
+							}
 							break;
 					}
 					break;
@@ -374,7 +377,7 @@ public class Model{
 							}
 
 							if(b.hasFields()) {
-								b.id = id;
+								b.id = tempNodes.size();
 								b.lat = lat;
 								b.lon = lon;
 								addresses.add(b.build());
@@ -388,7 +391,7 @@ public class Model{
 							break;
 						case "node":
 							if(b.hasFields()) {
-								b.id = id;
+								b.id = tempNodes.size();
 								b.lat = lat;
 								b.lon = lon;
 								addresses.add(b.build());
@@ -433,11 +436,11 @@ public class Model{
 				case SPACE: break;
 				case START_DOCUMENT: break;
 				case END_DOCUMENT:
-					//TODO Do we need this variable? IntelliJ says it is unused
-					File parseCheck = new File("data/" + getDatasetName());
-					addresses.sort(Address::compareTo);
-					textHandler.makeDatabase(this, addresses, getDatasetName());
-
+					tempNodes = null;
+					tempWays = null;
+					idToNodeIndex = null;
+					idToWayIndex = null;
+					routeHandler.finishNodeGraph();
 					for (OSMWay c : merge(coast)) {
 						ways.get(WayType.COASTLINE).add(new Polyline(c,false));
 					}
@@ -450,6 +453,10 @@ public class Model{
 						//Add KDTree to TreeMap
 						kdTreeMap.put(entry.getKey(), typeTree);
 					}
+
+					//addresses.sort(Address::compareTo);
+					//textHandler.makeDatabase(this, addresses, getDatasetName());
+
 					break;
 				case ENTITY_REFERENCE: break;
 				case ATTRIBUTE: break;
@@ -463,7 +470,7 @@ public class Model{
 	}
 
 
-	public double calculateDistanceInMeters(double startLat, double startLon, double endLat, double endLon){
+	public float calculateDistanceInMeters(double startLat, double startLon, double endLat, double endLon){
 		//Found the formula on https://www.movable-type.co.uk/scripts/latlong.html
 		//Basically the same code as is shown on the site mentioned above
 		final int R = 6371000; // CA. Earth radius in meters
@@ -475,7 +482,7 @@ public class Model{
 		double a  = Math.sin(Δφ/2)* Math.sin(Δφ/2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
 		double c  = 2*Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 		double d = R * c;
-		return d;
+		return (float)d;
 	}
 
 	public String getDelimeter() {

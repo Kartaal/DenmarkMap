@@ -40,7 +40,7 @@ public class ResizingArray<T> implements Serializable {
     }
 
     public T get(int index) {
-        if (0 > index || index > n) throw new ArrayIndexOutOfBoundsException();
+        if (0 > index || index > n) throw new ArrayIndexOutOfBoundsException("tried to acess index " + index + " out of an array with length "+a.length);
         //dont know why i have to cast to type T
         return (T)a[index];
     }

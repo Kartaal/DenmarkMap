@@ -1,20 +1,16 @@
 package bfst19.Line;
 
 import bfst19.Route_parsing.ResizingArray;
-
-import java.util.ArrayList;
-import java.util.function.LongSupplier;
-public class OSMWay implements LongSupplier {
+public class OSMWay {
 	ResizingArray<OSMNode> ways;
-	long id;
+	int id;
 
-	public OSMWay(long id) {
+	public OSMWay(int id) {
 		this.id = id;
 		ways = new ResizingArray<>();
 	}
 
-	@Override
-	public long getAsLong() {
+	public int getId() {
 		return id;
 	}
 

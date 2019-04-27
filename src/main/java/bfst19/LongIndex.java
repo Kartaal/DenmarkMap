@@ -1,15 +1,8 @@
 package bfst19;
 
-import bfst19.Route_parsing.ResizingArray;
-import javafx.beans.binding.ObjectExpression;
-
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.function.LongSupplier;
 
-//this is for storing LongSuppliers, if unsorted the array sorts itself so get() can utilize binary search
-public class LongIndex<Long>{
+public class LongIndex{
 	private long[] a;
 	private int n;
 	private boolean sorted = false;
@@ -41,24 +34,19 @@ public class LongIndex<Long>{
 
 	public int get(long ref) {
 		if (!sorted) {
+			trim();
 			Arrays.sort(a);
 			sorted = true;
 		}
-		int lo = 0;
-		int hi = n;
-		while (hi - lo > 1) {
-			int mi = lo + (hi - lo) / 2;
-			if (ref < a[mi]) {
-				hi = mi;
-			} else {
-				lo = mi;
-			}
-		}
-		long elm = a[lo];
-		if (elm == ref) {
-			return lo;
-		} else {
+		int res = Arrays.binarySearch(a,ref);
+		if (res >= 0){
+			return res;
+		}else{
 			return -1;
 		}
+	}
+
+	public void trim(){
+		resize(n);
 	}
 }

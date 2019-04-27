@@ -11,23 +11,19 @@ import java.util.HashMap;
 public class RouteHandler{
     private Model model;
     private EdgeWeightedGraph G;
-    private HashMap<Long,Integer> idToIndex;
-    private HashMap<Integer,Long> indexToId;
     private HashMap<WayType,HashMap<String, ResizingArray<String[]>>> drivableCases;
     private HashMap<WayType,HashMap<Vehicle, Integer>> drivabillty;
     private HashMap<WayType,HashMap<Vehicle, Integer>> defaultDrivabillty;
     HashMap<String,Integer> speedDefaults;
 
-    public RouteHandler(Model model, EdgeWeightedGraph G){
+    /*public RouteHandler(Model model, EdgeWeightedGraph G){
         this.model = model;
         this.G = G;
-    }
+    }*/
 
-    public RouteHandler(Model model, EdgeWeightedGraph G, HashMap<Long,Integer> idToIndex, HashMap<Integer,Long> indexToId) {
+    public RouteHandler(Model model, EdgeWeightedGraph G) {
         this.model = model;
         this.G = G;
-        this.idToIndex = idToIndex;
-        this.indexToId = indexToId;
         speedDefaults = parseSpeedDefaults("src/main/resources/config/Speed_cases.txt");
         drivableCases = parseDrivableCases("src/main/resources/config/Drivable_cases.txt");
         drivabillty = new HashMap<>();
@@ -45,9 +41,9 @@ public class RouteHandler{
 
     }
 
-    public Iterable<Edge> findPath(long startNodeId, long endNodeId,Vehicle type,boolean fastestpath){
+    public Iterable<Edge> findPath(int startNodeId, int endNodeId,Vehicle type,boolean fastestpath){
         DijkstraSP shortpath = new DijkstraSP(G,startNodeId, type,fastestpath);
-        Iterable<Edge> path = shortpath.pathTo(G.getIndexFromId(endNodeId));
+        Iterable<Edge> path = shortpath.pathTo(endNodeId);
         return path;
     }
 
@@ -118,12 +114,12 @@ public class RouteHandler{
         return isNodegraphWay;
     }
 
-    public void addWayToNodeGraph(OSMWay way, WayType type, String name, double speedlimit) {
+    public void addWayToNodeGraph(OSMWay way, WayType type, String name, int speedlimit) {
         HashMap<Vehicle,Integer> drivabilltyForWay = drivabillty.get(type);
         OSMNode previousnode = way.get(0);
 
-        long previousnodeID = previousnode.getAsLong();
-        G.addVertex(previousnodeID);
+        previousnode.setId(G.V());
+        G.addVertex(G.V());
         for(int i = 1 ; i<way.size() ; i++){
 
             OSMNode currentNode = way.get(i);
@@ -133,7 +129,7 @@ public class RouteHandler{
             double currentNodeLat = currentNode.getLat();
             double currentNodeLon = currentNode.getLon()/model.getLonfactor();
 
-            double length = model.calculateDistanceInMeters(previousNodeLat,previousNodeLon,currentNodeLat,currentNodeLon);
+            float length = model.calculateDistanceInMeters(previousNodeLat,previousNodeLon,currentNodeLat,currentNodeLon);
 
             if(speedlimit==0){
                 speedlimit = speedDefaults.get(type.toString());
@@ -141,8 +137,8 @@ public class RouteHandler{
 
             Edge edge = new Edge(length,speedlimit,previousnode,currentNode,name,drivabilltyForWay);
 
-            long currentnodeID = currentNode.getAsLong();
-            G.addVertex(currentnodeID);
+            currentNode.setId(G.V());
+            G.addVertex(G.V());
             G.addEdge(edge);
             previousnode = currentNode;
 
@@ -155,9 +151,8 @@ public class RouteHandler{
         drivabillty = defaultDrivabillty;
     }
 
-    public Iterable<Edge> getAdj(long id, Vehicle type) {
-        int index = G.getIndexFromId(id);
-        return G.adj(index,type);
+    public Iterable<Edge> getAdj(int id, Vehicle type) {
+        return G.adj(id,type);
     }
 
     public void finishNodeGraph(){

@@ -9,8 +9,8 @@ import java.util.Iterator;
 
 public class Edge implements Serializable {
     //allways set length and speedlimit as the same unit of measurement, currently km
-    private double length;
-    private double speedlLimit;
+    private float length;
+    private int speedlLimit;
     //-1 = you can't drive here
     //0 node v to node w
     //1 node w to node v
@@ -20,7 +20,7 @@ public class Edge implements Serializable {
     private OSMNode w;
     String name;
 
-    public Edge(double length, double speedlLimit, OSMNode v, OSMNode w,String name,HashMap<Vehicle, Integer> vehicleTypeToDrivable) {
+    public Edge(float length, int speedlLimit, OSMNode v, OSMNode w,String name,HashMap<Vehicle, Integer> vehicleTypeToDrivable) {
         this.length = length;
         this.speedlLimit = speedlLimit;
         this.v = v;
@@ -56,28 +56,28 @@ public class Edge implements Serializable {
         return w;
     }
 
-    public long either(){
-        return v.getAsLong();
+    public int either(){
+        return v.getId();
     }
 
-    public long other(){
-        return w.getAsLong();
+    public int other(){
+        return w.getId();
     }
 
-    public long getOtherEnd(long id){
-        if(id==w.getAsLong()){
-            return v.getAsLong();
+    public int getOtherEnd(long id){
+        if(id==w.getId()){
+            return v.getId();
         }
-        return w.getAsLong();
+        return w.getId();
     }
 
-    public boolean isForwardAllowed(Vehicle type, long id) {
+    public boolean isForwardAllowed(Vehicle type, int id) {
         int drivable = getDrivableFromVehicleType(type);
         if(drivable==2){
             return true;
-        }else if(drivable==0&&v.getAsLong()==id) {
+        }else if(drivable==0&&v.getId()==id) {
             return true;
-        }else if(drivable==1&&w.getAsLong()==id){
+        }else if(drivable==1&&w.getId()==id){
             return true;
         }
         return false;

@@ -30,7 +30,7 @@ public class AddressParser {
     }
 
     public class Builder {
-        private long id;
+        private int id;
         private float lat, lon;
         private String streetName = "Unknown", houseNumber="", postcode="", city="",floor="",side="";
         public Builder houseNumber(String _house)   { houseNumber = _house;   return this; }
