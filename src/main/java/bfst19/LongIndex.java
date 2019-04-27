@@ -1,12 +1,14 @@
 package bfst19;
 
+import bfst19.Route_parsing.ResizingArray;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.function.LongSupplier;
 
 //this is for storing LongSuppliers, if unsorted the array sorts itself so get() can utilize binary search
 public class LongIndex<T extends LongSupplier> {
-	private ArrayList<T> elms = new ArrayList<>();
+	private ResizingArray<T> elms = new ResizingArray<>();
 	private boolean sorted = false;
 
 	public void add(T elm) {

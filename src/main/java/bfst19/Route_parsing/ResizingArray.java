@@ -1,10 +1,14 @@
 package bfst19.Route_parsing;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.ConcurrentModificationException;
 
 public class ResizingArray<T> implements Serializable {
     private Object[] a;         // array of items
     private int n;            // number of elements on stack
+    private static int sorttimes = 0;
 
     public ResizingArray(){
         a = new Object[2];
@@ -48,4 +52,12 @@ public class ResizingArray<T> implements Serializable {
     public void set(int i, Object item) {
         a[i] = item;
     }
+
+    public void sort(Comparator<? super T> c) {
+        System.out.println(sorttimes);
+        Arrays.sort((T[]) a, 0, n, c);
+        sorttimes++;
+
+    }
+
 }
