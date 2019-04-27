@@ -2,23 +2,15 @@ package bfst19;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Label;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-
-import java.awt.*;
-import java.io.IOException;
 
 public class ControllerInfoPanel implements BackBtnEffect {
 
     private Controller controller;
-
-    @FXML
-    private VBox vBox;
 
     @FXML
     private ImageView clearBtn;
@@ -27,14 +19,20 @@ public class ControllerInfoPanel implements BackBtnEffect {
     private ImageView addBtn;
 
     @FXML
-    private javafx.scene.control.Label address;
+    private Label addressLabel;
 
     @FXML
-    private javafx.scene.control.Label latlon;
+    private Label latlon;
 
-    public void init(Controller controller, String adress, double x, double y) {
+    private double x, y;
+    private String address;
+
+    public void init(Controller controller, String address, double x, double y) {
         this.controller = controller;
-        setAddressCoordsLabels(AutoTextField.autoTextFieldAdress,AutoTextField.x,AutoTextField.y);
+        this.address = address;
+        this.x = x;
+        this.y = y;
+        setAddressCoordsLabels();
     }
 
     @FXML
@@ -60,15 +58,14 @@ public class ControllerInfoPanel implements BackBtnEffect {
         controller.getBorderPane().setRight(null);
     }
 
-    private void setAddressCoordsLabels(String location, double x, double y){
-        address.setText(location);
+    private void setAddressCoordsLabels(){
+        addressLabel.setText(address);
         latlon.setText("Coords: " + x + ", " + y);
     }
 
     public void addPointOfInterest(ActionEvent actionEvent) {
-        PointOfInterestItem pointOfInterestItem = new PointOfInterestItem(AutoTextField.autoTextFieldAdress, AutoTextField.x, AutoTextField.y);
+        PointOfInterestItem pointOfInterestItem = new PointOfInterestItem(address, x, y);
         pointOfInterestItem.init(controller);
-        controller.pointOfInterestList().add(pointOfInterestItem);
+        controller.addPointsOfInterestItem(pointOfInterestItem);
     }
-
 }

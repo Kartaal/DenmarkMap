@@ -1,17 +1,11 @@
 package bfst19;
 
-import javafx.collections.ListChangeListener;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.effect.BlurType;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-
-import java.util.EventListener;
 
 public class PointOfInterestItem extends HBox {
 
@@ -21,18 +15,18 @@ public class PointOfInterestItem extends HBox {
     private Pane pane;
     private ImageView imageView;
 
-    private String adress;
+    private String address;
     private double x, y;
 
-    public PointOfInterestItem(String adress, double x, double y) {
-        this.adress = adress;
+    public PointOfInterestItem(String address, double x, double y) {
+        this.address = address;
         this.x = x;
         this.y = y;
         this.setPrefHeight(50);
         this.setPrefWidth(240);
         this.setStyle("-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 0);");
         this.setPadding(new Insets(5));
-        makeLabel(adress);
+        makeLabel(address);
         makeRemoveBtn();
 
     }
@@ -41,14 +35,14 @@ public class PointOfInterestItem extends HBox {
         this.controller = controller;
         onActionLabel();
 
-        removeBtn.setOnAction(event -> controller.pointOfInterestList().remove(this));
+        removeBtn.setOnAction(event -> controller.removePointOfInterestItem(this));
     }
 
-    private void makeLabel(String adress){
+    private void makeLabel(String address){
         pane = new Pane();
         pane.setPrefHeight(50);
         pane.setMinWidth(240);
-        pane.getChildren().add(new Label(adress));
+        pane.getChildren().add(new Label(address));
         pane.getChildren().get(0).setLayoutY(15);
         pane.getChildren().get(0).setLayoutX(5);
         this.getChildren().add(pane);
@@ -58,7 +52,7 @@ public class PointOfInterestItem extends HBox {
     private void onActionLabel(){
         pane.setOnMouseClicked(event -> {
             controller.panToPoint(x, y);
-            controller.setUpInfoPanel(adress, x, y);
+            controller.setUpInfoPanel(address, x, y);
         });
     }
 
@@ -70,5 +64,10 @@ public class PointOfInterestItem extends HBox {
         imageView.setFitHeight(30);
         removeBtn.setGraphic(imageView);
         this.getChildren().add(removeBtn);
+    }
+
+    //Adresse og koordinater er skildt med et "@" for nemt at indlæse igen når det gemmes
+    public String toString(){
+        return address + "@" + x + " " + y;
     }
 }

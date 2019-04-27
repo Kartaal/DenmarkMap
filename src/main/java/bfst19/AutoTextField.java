@@ -15,9 +15,6 @@ public class AutoTextField extends TextField {
     Controller controller;
     Model model;
 
-    public static String autoTextFieldAdress;
-    public static double x, y;
-
     private ContextMenu addressDropDown;
 
     public AutoTextField(){
@@ -26,13 +23,8 @@ public class AutoTextField extends TextField {
         addressDropDown = new ContextMenu();
         addressDropDown.setStyle("-fx-max-height: 400");
 
-        this.setOnKeyPressed(event -> {
-            switch (event.getCode())  {
-                case ENTER:
-                    parseSearch();
-                    break;
-            }
-        });
+        //Skal bruge onAction istedet, men den skal ikek være i controller da den kun skal aflæse om man klikker enter når man er inde i tekstfieldet
+        setOnAction(event -> parseSearch());
     }
 
     public void init(Controller controller){
@@ -106,11 +98,10 @@ public class AutoTextField extends TextField {
         addressDropDown.getItems().clear();
     }
 
+    //this.getText() er måske mere korrekt at skrive da man siger at det er klassen extended metode istedet for bare at skrive (getText())
+    //Skal ikke være i controller da teksten fra AutoTextField skal sendes ud af denne klasse...
     private void panAddress(double x, double y){
-        autoTextFieldAdress = this.getText();
-        this.x = x;
-        this.y = y;
-        controller.panToPoint(x,y);
-        controller.setUpInfoPanel(autoTextFieldAdress, x, y);
+        controller.panToPoint(x, y);
+        controller.setUpInfoPanel(this.getText(), x, y);
     }
 }

@@ -28,7 +28,7 @@
                </VBox.margin>
             </Button>
 
-            <Label fx:id="address" minHeight="20.0" minWidth="100.0">
+            <Label fx:id="addressLabel" minHeight="20.0" minWidth="100.0">
                <VBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </VBox.margin>

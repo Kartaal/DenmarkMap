@@ -17,12 +17,10 @@ import javafx.scene.paint.Color;
 
 public class ControllerPointOfInterestPanel implements BackBtnEffect {
 
-
     @FXML
     private ImageView backBtnPointOfInterest;
 
     private Controller controller;
-
 
     @FXML
     private ScrollPane scrollPane;
@@ -59,9 +57,7 @@ public class ControllerPointOfInterestPanel implements BackBtnEffect {
 
     private void showHBoxesList() {
         VBox vBox = new VBox();
-        for (HBox item: controller.pointOfInterestList()) {
-            vBox.getChildren().add(item);
-        }
+        vBox.getChildren().addAll(controller.pointOfInterestList());
         scrollPane.setContent(vBox);
     }
 }

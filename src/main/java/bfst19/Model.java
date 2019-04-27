@@ -7,7 +7,6 @@ import bfst19.Route_parsing.*;
 import bfst19.Line.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.layout.HBox;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -32,7 +31,7 @@ public class Model{
 	float minlat, minlon, maxlat, maxlon;
 
 	//PointOfInterest items
-	private ObservableList<HBox> hBoxes = FXCollections.observableArrayList();
+	private ObservableList<PointOfInterestItem> pointOfInterestItems = FXCollections.observableArrayList();
 
 	String CurrentTypeColorTxt  = "src/main/resources/config/TypeColorsNormal.txt";
 	HashMap<String,ArrayList<String[]>> wayTypeCases = new HashMap<>();
@@ -86,6 +85,7 @@ public class Model{
 		return kdTreeMap.get(type).rangeQuery(bbox);
 	}
 	public void addPathObserver(Runnable observer){pathObservers.add(observer);}
+
 	public void addFoundMatchesObserver(Runnable observer) {
 		foundMatchesObservers.add(observer);
 	}
@@ -93,7 +93,6 @@ public class Model{
 	public void addColorObserver(Runnable observer) {
 		colorObservers.add(observer);
 	}
-
 
 	//TODO Might not be ideal solution if we need more then two autoTextFields...
 	public void clearAddFoundMatchesObservers(){
@@ -111,7 +110,6 @@ public class Model{
 			observer.run();
 		}
 	}
-
 
 	public void notifyPathObservers(){
     for(Runnable observer : pathObservers) {
@@ -201,7 +199,6 @@ public class Model{
 		}
 		ParseWayColors();
 	}
-
 
 	private void parseOSM(InputStream osmsource) throws XMLStreamException {
 		//Changed from field to local variable so it can be garbage collected
@@ -375,14 +372,12 @@ public class Model{
 								}
 								routeHandler.addWayToNodeGraph(way, type,name,speedlimit);
 							}
-
 							if(b.hasFields()) {
 								b.id = id;
 								b.lat = lat;
 								b.lon = lon;
 								addresses.add(b.build());
 							}
-
 							//resetting variables
 							way = null;
 							b.reset();
@@ -408,6 +403,8 @@ public class Model{
 									|| type == WayType.CONSTRUCTION || type == WayType.PARKING) {
 								ways.get(type).add(new MultiPolyline(rel));
 								way = null;
+
+								//TODO: Irrelevant
 							}else if(type == WayType.BUILDING){
 								ways.get(type).add(new MultiPolyline(rel));
 							}else if(type == WayType.FOREST){
@@ -464,7 +461,6 @@ public class Model{
 			}
 		}
 	}
-
 
 	public double calculateDistanceInMeters(double startLat, double startLon, double endLat, double endLon){
 		//Found the formula on https://www.movable-type.co.uk/scripts/latlong.html
@@ -601,17 +597,17 @@ public class Model{
 		return pointsOfInterest;
 	}
 
+	public ObservableList<PointOfInterestItem> pointOfInterestList(){ return pointOfInterestItems; }
 
-	public ObservableList<HBox> pointOfInterestList(){ return hBoxes; }
+	public void addPointOfInterestItem(PointOfInterestItem pointOfInterestItem){ pointOfInterestItems.add(pointOfInterestItem); }
 
-    public void addPointsOfInterest(long id,String pointOfInterest) {
-		pointsOfInterest.put(id,pointOfInterest);
-	}
+	public void removePointOfInterestItem(PointOfInterestItem pointOfInterestItem) { pointOfInterestItems.remove(pointOfInterestItem);}
+
+    public void addPointsOfInterest(long id,String pointOfInterest) { pointsOfInterest.put(id,pointOfInterest); }
 
 	public void removePointOfInterest(long id) {
 		pointsOfInterest.remove(id);
 	}
-
 
 	public Iterator<Iterable<Edge>> pathIterator(){
     return foundPath.iterator();
