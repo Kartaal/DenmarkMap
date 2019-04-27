@@ -58,7 +58,7 @@ class TextHandler {
                     allStreetsInCountryWriter.write(currentStreet + model.getDelimeter() + currentCityAndPostcode + "\n");
                 }
             }
-                addressesInStreetWriter.write(address.getId() + " " + address.getLat() + " " + address.getLon() + " " + address.getHouseNumber() + "\n");
+                addressesInStreetWriter.write(address.getLat() + " " + address.getLon() + " " + address.getHouseNumber() + "\n");
             }
 
         //closes all writers

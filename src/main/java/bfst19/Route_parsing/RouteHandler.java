@@ -13,7 +13,7 @@ public class RouteHandler{
     private EdgeWeightedGraph G;
     private HashMap<Long,Integer> idToIndex;
     private HashMap<Integer,Long> indexToId;
-    private HashMap<WayType,HashMap<String, ArrayList<String[]>>> drivableCases;
+    private HashMap<WayType,HashMap<String, ResizingArray<String[]>>> drivableCases;
     private HashMap<WayType,HashMap<Vehicle, Integer>> drivabillty;
     private HashMap<WayType,HashMap<Vehicle, Integer>> defaultDrivabillty;
     HashMap<String,Integer> speedDefaults;
@@ -52,9 +52,9 @@ public class RouteHandler{
     }
 
 
-    private HashMap<WayType,HashMap<String,ArrayList<String[]>>> parseDrivableCases(String filepath) {
+    private HashMap<WayType,HashMap<String,ResizingArray<String[]>>> parseDrivableCases(String filepath) {
         ArrayList<String> cases = model.getTextFile(filepath);
-        HashMap<WayType,HashMap<String,ArrayList<String[]>>> drivableCases = new HashMap<>();
+        HashMap<WayType,HashMap<String,ResizingArray<String[]>>> drivableCases = new HashMap<>();
 
         WayType wayType = WayType.valueOf(cases.get(0));
         drivableCases.put(wayType,new HashMap<>());
@@ -69,7 +69,7 @@ public class RouteHandler{
                 i++;
                 vehicleType = tokens[0];
                 vehicleDrivable = tokens[1];
-                drivableCases.get(wayType).put(vehicleType+" "+vehicleDrivable,new ArrayList<>());
+                drivableCases.get(wayType).put(vehicleType+" "+vehicleDrivable,new ResizingArray<>());
             }else if(line.startsWith("$")){
                 wayType = WayType.valueOf(cases.get(i+1));
                 drivableCases.put(wayType,new HashMap<>());
@@ -96,7 +96,7 @@ public class RouteHandler{
     public void checkDrivabillty(String k, String v) {
         for(WayType waytype : drivableCases.keySet()){
             for(String vehicletypeAndDrivable : drivableCases.get(waytype).keySet()){
-                ArrayList<String[]> vehicleCases = drivableCases.get(waytype).get(vehicletypeAndDrivable);
+                ResizingArray<String[]> vehicleCases = drivableCases.get(waytype).get(vehicletypeAndDrivable);
                 for(int i = 0 ; i<vehicleCases.size() ; i++){
                     String[] caseTokens = vehicleCases.get(i);
                     if(k.equals(caseTokens[0])&&v.equals(caseTokens[1])){
@@ -158,6 +158,13 @@ public class RouteHandler{
     public Iterable<Edge> getAdj(long id, Vehicle type) {
         int index = G.getIndexFromId(id);
         return G.adj(index,type);
+    }
+
+    public void finishNodeGraph(){
+        drivabillty = null;
+        defaultDrivabillty = null;
+        drivableCases = null;
+        G.trim();
     }
 
     public EdgeWeightedGraph getNodeGraph() {

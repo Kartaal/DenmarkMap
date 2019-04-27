@@ -1,6 +1,7 @@
 package bfst19.Route_parsing;
 
 import java.io.Serializable;
+import java.lang.invoke.WrongMethodTypeException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.ConcurrentModificationException;
@@ -8,7 +9,7 @@ import java.util.ConcurrentModificationException;
 public class ResizingArray<T> implements Serializable {
     private Object[] a;         // array of items
     private int n;            // number of elements on stack
-    private static int sorttimes = 0;
+    private boolean isSorted = false;
 
     public ResizingArray(){
         a = new Object[2];
@@ -47,6 +48,7 @@ public class ResizingArray<T> implements Serializable {
     public void add(Object item) {
         if (n == a.length) resize(2 * a.length);    // double size of array if necessary
         a[n++] = item;                            // add item
+        isSorted = false;
     }
 
     public void set(int i, Object item) {
@@ -54,10 +56,11 @@ public class ResizingArray<T> implements Serializable {
     }
 
     public void sort(Comparator<? super T> c) {
-        System.out.println(sorttimes);
         Arrays.sort((T[]) a, 0, n, c);
-        sorttimes++;
-
     }
 
+    //only to be used no longer has to grow/shrink
+    public void trim(){
+        resize(n+1);
+    }
 }

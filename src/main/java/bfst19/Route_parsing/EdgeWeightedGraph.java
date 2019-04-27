@@ -122,6 +122,14 @@ public class EdgeWeightedGraph implements Serializable {
         return s.toString();
     }
 
+    public void trim() {
+        for( int i = 0 ; i < adj.size() ; i++){
+            adj.get(i).trim();
+        }
+        adj.trim();
+        indexToId.trim();
+    }
+
     /*public static void main(String[] args) {
         In in = new In(args[0]);
         EdgeWeightedGraph G = new EdgeWeightedGraph(in);

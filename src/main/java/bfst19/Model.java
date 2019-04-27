@@ -31,6 +31,7 @@ public class Model{
 
 	String CurrentTypeColorTxt  = "src/main/resources/config/TypeColorsNormal.txt";
 	HashMap<String,ArrayList<String[]>> wayTypeCases = new HashMap<>();
+	private ResizingArray<Long> ids = new ResizingArray<>();
 	ObservableList<String[]> foundMatches = FXCollections.observableArrayList();
 	ObservableList<String> typeColors = FXCollections.observableArrayList();
 	ObservableList<Iterable<Edge>> foundPath = FXCollections.observableArrayList();
@@ -176,6 +177,8 @@ public class Model{
 			}
 		}
 
+
+		routeHandler.finishNodeGraph();
         AddressParser.getInstance(this).setDefaults(textHandler.getDefault(getDatasetName()));
         AddressParser.getInstance(this).parseCitiesAndPostCodes(textHandler.getCities(this, getDatasetName()));
 	}
@@ -491,7 +494,9 @@ public class Model{
 				}
 			}
 			//TODO figure out why this works and why it can't be refactored easily into OSMWay without inheritance
-			res.addAll(way);
+			for(int i = 0 ; i < way.size() ; i++){
+				res.add(way.get(i));
+			}
 			OSMWay after = pieces.remove(way.getLast());
 			if (after != null) {
 				pieces.remove(after.getLast());
@@ -546,7 +551,7 @@ public class Model{
 				String city = a.getCity();
 				String postcode = a.getPostcode();
 				for (String[] match : possibleAddresses) {
-					foundMatches.add(new String[]{street, match[3], city, postcode});
+					foundMatches.add(new String[]{street, match[2], city, postcode});
 				}
 			}
         }else{
