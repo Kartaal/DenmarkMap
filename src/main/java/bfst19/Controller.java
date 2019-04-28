@@ -217,8 +217,7 @@ public class Controller {
                 break;
             case C:
 
-                model.foundPath.clear();
-                model.notifyPathObservers();
+                model.clearPath();
                 mapCanvas.repaint();
                 nodeIDs[0] = 0;
                 nodeIDs[1] = 0;
@@ -263,16 +262,18 @@ public class Controller {
         if (Math.abs((-time + prevtime) / 1e8) <= 3){
             OSMNode something = model.getNearestRoad(mapCanvas.getModelCoords(x,y));
             if(nodeIDs[0] == 0){
-
-                nodeIDs[0] = something.getAsLong();
-                nodeIDs[1] = 0;
+                if(something!=null) {
+                    nodeIDs[0] = something.getAsLong();
+                    nodeIDs[1] = 0;
+                }
 
             } else if(nodeIDs[1] == 0){
                 nodeIDs[1] = something.getAsLong();
                 Iterable<Edge> path = model.routeHandler.findPath(nodeIDs[0],nodeIDs[1], Vehicle.CAR, fastestBoolean);
-                model.foundPath.clear();
-                model.foundPath.add(path);
-                model.notifyPathObservers();
+                if(path != null){
+                    model.clearPath();
+                    model.addPath(path);
+                }
                 mapCanvas.repaint();
 
                 nodeIDs[0] = 0;

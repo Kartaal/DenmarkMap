@@ -84,6 +84,19 @@ public class Model{
 		return kdTreeMap.get(type).rangeQuery(bbox);
 	}
 	public void addPathObserver(Runnable observer){pathObservers.add(observer);}
+
+	public void addPath(Iterable<Edge> path){
+        foundPath.add(path);
+        notifyPathObservers();
+    }
+
+    public void clearPath(){
+        if(!foundPath.isEmpty()){
+            foundPath.clear();
+            notifyPathObservers();
+        }
+    }
+
 	public void addFoundMatchesObserver(Runnable observer) {
 		foundMatchesObservers.add(observer);
 	}
