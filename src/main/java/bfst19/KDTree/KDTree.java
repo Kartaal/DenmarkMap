@@ -135,6 +135,7 @@ public class KDTree implements Serializable {
 				//Check the right subtree for elements intersecting BoundingBox
 				rangeQuery(queryBB, node.nodeR, returnElements);
 			}
+
 		}
 
 			return returnElements;

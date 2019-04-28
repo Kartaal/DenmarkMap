@@ -18,7 +18,7 @@ import static javax.xml.stream.XMLStreamConstants.*;
 
 public class Model{
 	RouteHandler routeHandler;
-	private float lonfactor = 1.0f;
+	private static float lonfactor = 1.0f;
 	private boolean colorBlindEnabled;
 	private String datasetName;
 	HashMap<Long,String> pointsOfInterest = new HashMap<>();
@@ -180,7 +180,7 @@ public class Model{
         AddressParser.getInstance(this).parseCitiesAndPostCodes(textHandler.getCities(this, getDatasetName()));
 	}
 
-	public double getLonfactor(){
+	public static double getLonfactor(){
 		return lonfactor;
 	}
 
@@ -190,8 +190,7 @@ public class Model{
 
 		if (colorBlindEnabled) {
 			CurrentTypeColorTxt = ("src/main/resources/config/TypeColorsColorblind.txt");
-		}
-		else {
+		}  else {
 			CurrentTypeColorTxt = ("src/main/resources/config/TypeColorsNormal.txt");
 		}
 		ParseWayColors();
@@ -476,6 +475,14 @@ public class Model{
 		return d;
 	}
 
+	public static float angleBetween2Lines(OSMNode A1, OSMNode A2, OSMNode B1, OSMNode B2) {
+		float angle1 = (float) Math.atan2(A2.getLat() - A1.getLat(), A1.getLon() - A2.getLon());
+		float angle2 = (float) Math.atan2(B2.getLat() - B1.getLat(), B1.getLon() - B2.getLon());
+		float calculatedAngle = (float) Math.toDegrees(angle1 - angle2);
+		if (calculatedAngle < 0) calculatedAngle += 360;
+		return calculatedAngle;
+	}
+
 	public String getDelimeter() {
 		return " QQQ ";
 	}
@@ -604,9 +611,9 @@ public class Model{
 		pointsOfInterest.remove(id);
 	}
 
-
-	public Iterator<Iterable<Edge>> pathIterator(){
-    return foundPath.iterator();
+    //// Does this contain the in
+	public Iterator<Edge> pathIterator(){
+    return foundPath.iterator().next().iterator();
   }
 
 	public Iterator<String> colorIterator() {
