@@ -17,7 +17,7 @@ public class Instruction extends HBox {
         getChildren().addAll(addImage(direction), makeLengthText(length), makeDirectionPane(direction), makeRoadNameText(road));
     }
 
-/// Code-dublication we also use this in the scalebar
+// Code-dublication we also use this in the scalebar
     public static int round(double length){
         if(length-Math.floor(length) < length-Math.ceil(length)){
             return (int) Math.floor(length);
@@ -30,7 +30,7 @@ public class Instruction extends HBox {
         int lengthRound = round(length);
         Pane lengthPane = new Pane();
         Label lengthText = new Label();
-        lengthText.setText(String.valueOf(lengthRound)+"m then ");
+        lengthText.setText((lengthRound) + "m then ");
         lengthPane.getChildren().add(lengthText);
         return lengthPane;
     }
@@ -65,7 +65,7 @@ public class Instruction extends HBox {
         Pane roadNamePane = new Pane();
         Label roadNameText = new Label();
         if(!roadName.equals("")){
-            roadNameText.setText(" at "+roadName);
+            roadNameText.setText(" onto "+roadName);
         }else{
             roadNameText.setText(roadName);
         }
@@ -76,7 +76,6 @@ public class Instruction extends HBox {
 
     public Pane addImage(String dir){
 
-        System.out.println(dir);
         ImageView imageView= new ImageView();
         Image image= new Image("/white.png", true);
         Pane pane = new Pane();
