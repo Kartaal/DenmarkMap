@@ -206,7 +206,7 @@ public class Controller {
                 break;
 
             case C:
-                Iterable<Edge> path = model.routeHandler.findPath(489365650L,4048894613L, Vehicle.CAR,false);
+                Iterable<Edge> path = model.routeHandler.findPath(413326011L,26588276L, Vehicle.CAR,true);
                 model.foundPath.add(path);
                 model.notifyPathObservers();
                 mapCanvas.repaint();
