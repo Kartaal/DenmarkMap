@@ -96,8 +96,6 @@ public class KDTree implements Serializable {
 		//Do recursion because node isn't a leaf
 		//Left subtree
 		currNode.nodeL = createTree(list, currNode, lo, splitIndex);
-
-		//Right subtree
 		currNode.nodeR = createTree(list, currNode, splitIndex+1, hi);
 		currNode.growToEncompassChildren();
 
@@ -180,7 +178,6 @@ public class KDTree implements Serializable {
 				//Make temporary list to keep elements, so null returns don't cause problems
 				//Check the left subtree for elements intersecting BoundingBox
 				rangeQuery(queryBB, node.nodeL, returnElements);
-
 			}
 		}
 		if (node.nodeR != null) {
@@ -191,7 +188,7 @@ public class KDTree implements Serializable {
 			}
 		}
 
-		return returnElements;
+			return returnElements;
 	}
 
 	//Method for finding elements in the KDTree that intersects a BoundingBox

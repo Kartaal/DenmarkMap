@@ -11,6 +11,9 @@ import javafx.geometry.Point2D;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.Iterator;
 import javafx.scene.layout.BorderPane;
@@ -48,7 +51,7 @@ public class Controller {
     public void init(Model model) {
         //TODO: figure out init methods
         this.model = model;
-        mapCanvas.init(model);
+        mapCanvas.init(model,this);
 
 
         oldDeterminant = mapCanvas.getDeterminant();
@@ -77,6 +80,9 @@ public class Controller {
 
     public Iterator<String[]> getFoundMatchesIterator(){
         return model.foundMatchesIterator();
+    }
+    public Iterator<Edge> getpathIterator(){
+        return model.pathIterator();
     }
 
     public void parseSearchText(String searchText){
@@ -228,6 +234,7 @@ public class Controller {
             case E:
 
                 break;
+
         }
     }
 
@@ -295,6 +302,10 @@ public class Controller {
 
     public static boolean KdTreeBoolean() {
         return kdTreeBoolean;
+    }
+
+    public void addPathObserver(InstructionContainer instructionContainer) {
+        model.addPathObserver(instructionContainer::showInstructions);
     }
 }
 
