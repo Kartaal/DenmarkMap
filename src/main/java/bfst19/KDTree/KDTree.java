@@ -37,9 +37,11 @@ public class KDTree implements Serializable {
 				// of indexes 0 to splitIndex for left subtree and splitIndex+1 to list.size() for the right subtree
 				root.nodeL = createTree(list, root, 0, splitIndex);
 				root.nodeR = createTree(list, root, splitIndex + 1, list.size()-1);
+				root.growToEncompassChildren();
 			} else {
 				//Arbitrary values to fill root in case the list of Drawable is empty
 				root = new KDNode(-1, true);
+				root.setBB(0,0,0,0);
 			}
 
 		}
@@ -89,47 +91,54 @@ public class KDTree implements Serializable {
 
 			//Right subtree
 			currNode.nodeR = createTree(list, currNode, splitIndex+1, hi);
+			currNode.growToEncompassChildren();
 
 		return currNode;
 	}
 
 	//Method for finding elements in the KDTree that intersects a BoundingBox
 	public Iterable<Drawable> rangeQuery(BoundingBox bbox) {
-		Set<Drawable> returnElements = new HashSet<>();
+		List<Drawable> returnElements = new ArrayList<>();
 		rangeQuery(bbox, root, returnElements);
 		return returnElements;
 	}
 
 	//Recursive checks down through the KDTree
-	private Set<Drawable> rangeQuery(BoundingBox queryBB, KDNode node, Set<Drawable> returnElements) {
+	private List<Drawable> rangeQuery(BoundingBox queryBB, KDNode node, List<Drawable> returnElements) {
 		//Return null if current node is null to stop endless recursion
-		if(node == null) return null;
+		if (node == null) return null;
 
 		//Ugly casting to Drawable...
 		//if we have values, check for each if its BoundingBox intersects our query BoundingBox
 		// if true, report it
-		if(node.values != null) {
+		if (!node.values.isEmpty()) {
 			for (BoundingBoxable value : node.values) {
 				if (queryBB.intersects(value.getBB())) {
 					returnElements.add((Drawable) value);
 				}
 			}
+			return  returnElements;
 		}
 
-		//Make temporary list to keep elements, so null returns don't cause problems
-		//Check the left subtree for elements intersecting BoundingBox
-		Set<Drawable> tempList = rangeQuery(queryBB, node.nodeL, returnElements);
-		if(tempList != null) {
-			returnElements.addAll(tempList);
+		if (node.nodeL != null) {
+			//Check whether or not to query left subtree
+			if (node.nodeL.bb.intersects(queryBB)) {
+				//Make temporary list to keep elements, so null returns don't cause problems
+				//Check the left subtree for elements intersecting BoundingBox
+				rangeQuery(queryBB, node.nodeL, returnElements);
+
+			}
+		}
+		if (node.nodeR != null) {
+			//Check whether or not to query right subtree
+			if (node.nodeR.bb.intersects(queryBB)) {
+				//Check the right subtree for elements intersecting BoundingBox
+				rangeQuery(queryBB, node.nodeR, returnElements);
+			}
+
 		}
 
-		//Check the right subtree for elements intersecting BoundingBox
-		tempList = rangeQuery(queryBB, node.nodeR, returnElements);
-		if(tempList != null) {
-			returnElements.addAll(tempList);
-		}
-
-		return returnElements;
+			return returnElements;
 	}
 
 
