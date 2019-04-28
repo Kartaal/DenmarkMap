@@ -6,7 +6,7 @@ import bfst19.Line.OSMNode;
 public class Address extends OSMNode implements Comparable{
     private String city, streetName, postcode, houseNumber, floor, side;
 
-    public Address(int id,float lat,float lon,
+    public Address(long id,float lat,float lon,
                    String streetName, String houseNumber, String postcode, String city) {
         super(id,lat,lon);
         this.streetName = streetName;
@@ -15,7 +15,7 @@ public class Address extends OSMNode implements Comparable{
         this.city = city;
     }
 
-    public Address(int id, float lat, float lon,
+    public Address(long id, float lat, float lon,
                    String streetName, String houseNumber, String postcode,
                    String city, String floor, String side) {
         this(id, lat, lon, streetName, houseNumber, postcode, city);
@@ -32,7 +32,7 @@ public class Address extends OSMNode implements Comparable{
         return streetName;
     }
 
-    public int getId(){
+    public long getId(){
         return id;
     }
 

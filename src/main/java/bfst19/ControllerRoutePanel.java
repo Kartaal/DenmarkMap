@@ -2,17 +2,13 @@ package bfst19;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 
-import java.io.IOException;
 
 
 public class ControllerRoutePanel {
@@ -27,15 +23,11 @@ public class ControllerRoutePanel {
     private ToggleButton bike;
     @FXML
     ToggleGroup toggleRouteType;
-  ;
-    @FXML
-    InstructionContainer instructions;
 
     private Controller controller;
 
     public void init(Controller controller) {
         this.controller = controller;
-        instructions.init(controller);
     }
 
     @FXML
@@ -52,10 +44,6 @@ public class ControllerRoutePanel {
     @FXML
     private void setBackBtnEffectNone() { backBtnRoutePanel.setEffect(null); }
 
-    @FXML
-    public void setUpInstructions(){
-        instructions.addInstructions();
-    }
 
     @FXML
     private void setRouteType(){
@@ -70,16 +58,11 @@ public class ControllerRoutePanel {
             toggleGroupValue="";
         }
         else if(toggleGroupValue.equals("car")){
-            System.out.println("car is true");
+            System.out.println("bike is false");
         }
         else if (toggleGroupValue.equals("bike")){
-            System.out.println("bike is true");
+            System.out.println("car is false");
         }
-        else if (toggleGroupValue.equals("walking")){
-            System.out.println("walking is true");
-        }
-
 
     }
-
 }

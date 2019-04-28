@@ -15,7 +15,7 @@ public class AddressParser {
     private ArrayList<String> postcodes = new ArrayList<>();
     private ArrayList<String> cities = new ArrayList<>();
     //a collection of the default searching file if there is no hit for cityCheck
-    private static String[] defaults;
+    private ArrayList<String> defaults = new ArrayList<>();
 
     public static AddressParser getInstance(Model model){
         if(addressParser == null){
@@ -30,7 +30,7 @@ public class AddressParser {
     }
 
     public class Builder {
-        private int id;
+        private long id;
         private float lat, lon;
         private String streetName = "Unknown", houseNumber="", postcode="", city="",floor="",side="";
         public Builder houseNumber(String _house)   { houseNumber = _house;   return this; }
@@ -112,9 +112,10 @@ public class AddressParser {
         if(!b.streetName.equals("Unknown")&&!b.city.equals("")&&!b.postcode.equals("")){
             String[] address = getAddress(country, b.city, b.postcode, b.streetName, b.houseNumber,true).get(0);
             if(!address[0].equals("")) {
-                b.lat = Float.valueOf(address[0]);
-                b.lon = Float.valueOf(address[1]);
-                b.houseNumber = address[2];
+                b.id = Long.valueOf(address[0]);
+                b.lat = Float.valueOf(address[1]);
+                b.lon = Float.valueOf(address[2]);
+                b.houseNumber = address[3];
             }
         }
         return b.build();
@@ -137,7 +138,7 @@ public class AddressParser {
             for(int i = 0 ; i <= addressesOnStreet.size()-1 ; i++){
                 address = addressesOnStreet.get(i);
                 addressFields=address.split(" ");
-                if(addressFields[2].toLowerCase().equalsIgnoreCase(houseNumber)){
+                if(addressFields[3].toLowerCase().equalsIgnoreCase(houseNumber)){
                     matches.add(addressFields);
                     return matches;
                 }
@@ -235,11 +236,11 @@ public class AddressParser {
     //it ignores case for compares, but returns the raw data
     public ArrayList<String[]> getMatchesFromDefault(String proposedAddress,boolean singleSearch){
         int lo = 0;
-        int hi = defaults.length-1;
+        int hi = defaults.size()-1;
         int mid;
         while(lo<=hi){
             mid = lo+(hi-lo)/2;
-            String currentDefault = defaults[mid].toLowerCase();
+            String currentDefault = defaults.get(mid).toLowerCase();
             if(currentDefault.startsWith(proposedAddress.toLowerCase())){
                 if(singleSearch){
                     ArrayList<String[]> result = new ArrayList<>();
@@ -268,31 +269,28 @@ public class AddressParser {
         ArrayList<String[]> matches = new ArrayList<>();
         int lo = mid-1;
         proposedAddress = proposedAddress.toLowerCase();
-        String currentIndexString = defaults[mid];
+        String currentIndexString = defaults.get(mid);
         //traverses up the default array until it's no longer a match
         while(currentIndexString.toLowerCase().startsWith(proposedAddress)){
             String[] matchTokens = currentIndexString.split(" QQQ ");
             matches.add(matchTokens);
-            currentIndexString = defaults[lo];
+            currentIndexString = defaults.get(lo);
             lo--;
         }
-        currentIndexString = defaults[mid+1];
+        currentIndexString = defaults.get(mid+1);
         int hi = mid + 2;
         //traverses down the default array until it's no longer a match
         while(currentIndexString.toLowerCase().startsWith(proposedAddress)){
             String[] matchTokens = currentIndexString.split(" QQQ ");
             matches.add(matchTokens);
-            currentIndexString = defaults[hi];
+            currentIndexString = defaults.get(hi);
             hi++;
         }
         return matches;
     }
 
     public void setDefaults(ArrayList<String> defaults){
-        this.defaults = new String[defaults.size()];
-        for(int i = 0 ; i < defaults.size() ; i++ ){
-            this.defaults[i] = defaults.get(i);
-        }
+        this.defaults = defaults;
     }
 
     public void parseCitiesAndPostCodes(ArrayList<String> citiesTextFile){

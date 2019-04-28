@@ -4,7 +4,6 @@ import bfst19.Line.OSMNode;
 import bfst19.Route_parsing.Edge;
 import bfst19.KDTree.BoundingBox;
 import bfst19.KDTree.Drawable;
-import bfst19.Route_parsing.ResizingArray;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -23,7 +22,6 @@ public class MapCanvas extends Canvas {
     //linear transformation object used to transform our data while preserving proportions between nodes
     public Affine transform = new Affine();
     Model model;
-    Controller controller;
     HashMap<WayType,Color> wayColors = new HashMap<>();
     boolean paintNonRoads = true;
     boolean hasPath = false;
@@ -31,11 +29,10 @@ public class MapCanvas extends Canvas {
 
     private boolean colorBlindEnabled = false;
     private double singlePixelLength;
-    private double percentOfScreenArea;
 
 
 
-    public void init(Model model, Controller controller) {
+    public void init(Model model) {
         this.model = model;
         //conventions in screen coords and map coords are not the same,
         // so we convert to screen convention by flipping x y
@@ -66,7 +63,7 @@ public class MapCanvas extends Canvas {
         //checks if the file contains coastlines or not, if not set background color to white
         // This assumes that the dataset contains either a fully closed coastline, or a dataset without any coastlines at all.
         // otherwise set background color to blue
-        if (model.getWaysOfType(WayType.COASTLINE, new BoundingBox(model.minlon, model.minlat, model.maxlon, model.maxlat)).size() >= 0) {
+        if (model.getWaysOfType(WayType.COASTLINE, new BoundingBox(model.minlon, model.minlat, model.maxlon, model.maxlat)).iterator().hasNext()) {
             gc.setFill(getColor(WayType.WATER));
         } else {
             gc.setFill(Color.WHITE);
@@ -76,24 +73,19 @@ public class MapCanvas extends Canvas {
         gc.setTransform(transform);
 
         //linewidth equals 1 px wide relative to the screen no matter zoom level
-        gc.setLineWidth(0.1 * (1/(2000/(getDeterminant()))));
-
+        gc.setLineWidth(1/Math.sqrt(Math.abs(getDeterminant())));
 
         gc.setFillRule(FillRule.EVEN_ODD);
 
         //color for landmasses with nothing drawn on top
         gc.setFill(Color.WHITE);
-        ResizingArray<Drawable> ways = model.getWaysOfType(WayType.COASTLINE, getExtentInModel());
-        for(int i = 0 ; i < ways.size() ; i++){
-            Drawable way = ways.get(i);
-            way.fill(gc,singlePixelLength,percentOfScreenArea);
+        for (Drawable way : model.getWaysOfType(WayType.COASTLINE, getExtentInModel())) {
+            way.fill(gc,singlePixelLength);
         }
 
         gc.setFill(getColor(WayType.WATER));
-        ways = model.getWaysOfType(WayType.WATER, getExtentInModel());
-        for(int i = 0 ; i < ways.size() ; i++){
-            Drawable way = ways.get(i);
-            way.fill(gc,singlePixelLength,percentOfScreenArea);
+        for (Drawable way : model.getWaysOfType(WayType.WATER, getExtentInModel())) {
+            way.fill(gc,singlePixelLength);
         }
 
 
@@ -103,50 +95,32 @@ public class MapCanvas extends Canvas {
             for (WayType type : WayType.values()) {
                 if (!(type.isRoadOrSimilar()) && type.levelOfDetail() < detailLevel) {
                     if(type != WayType.COASTLINE) {
-
-                        ways = model.getWaysOfType(type, getExtentInModel());
                         gc.setFill(getColor(type));
-                        for(int i = 0 ; i < ways.size() ; i++){
-                            Drawable way = ways.get(i);
-                            way.fill(gc,singlePixelLength,percentOfScreenArea);
-                        }
+                        for (Drawable way : model.getWaysOfType(type, getExtentInModel())) way.fill(gc,singlePixelLength);
                     }
                 } else if (type.isRoadOrSimilar() && type.levelOfDetail() < detailLevel) {
-
                     if (type != WayType.COASTLINE && type != WayType.UNKNOWN) {
                         gc.setStroke(getColor(type));
-                        gc.setLineWidth(0.1 * (1/(2000/(getDeterminant()))));
-                        ways = model.getWaysOfType(type, getExtentInModel());
-                        for(int i = 0 ; i < ways.size() ; i++){
-                            Drawable way = ways.get(i);
-                            way.stroke(gc,singlePixelLength);
-                        }
+                        for (Drawable way : model.getWaysOfType(type, getExtentInModel())) way.stroke(gc,singlePixelLength);
                     }
-
-
                 }
             }
 
         }else{
             for(WayType type : WayType.values()){
                 if(type.isRoadOrSimilar() && type.levelOfDetail() < detailLevel){
-                    if(type == WayType.UNKNOWN) {
-                        // The unknown WayType is ways that have not been parsed to an implemented WayType,
-                        // so it's better to exclude it.
+                    if(type == WayType.UNKNOWN){
+                    // The unknown WayType is ways that have not been parsed to an implemented WayType,
+                    // so it's better to exclude it.
                     }else{
                         gc.setStroke(getColor(type));
-                        gc.setLineWidth(0.1 * (1/(2000/(getDeterminant()))));
-                        ways = model.getWaysOfType(type, getExtentInModel());
-                        for(int i = 0 ; i < ways.size() ; i++){
-                            Drawable way = ways.get(i);
-                            way.stroke(gc,singlePixelLength);
-                        }
+                        for (Drawable way : model.getWaysOfType(type, getExtentInModel())) way.stroke(gc,singlePixelLength);
                     }
                 }
             }
         }
         if(hasPath){
-            Iterator<Edge> iterator = controller.getpathIterator();
+            Iterator<Edge> iterator = model.pathIterator().next().iterator();
             while(iterator.hasNext()){
                 Edge edge = iterator.next();
                 OSMNode first = edge.getV();
@@ -167,20 +141,14 @@ public class MapCanvas extends Canvas {
         }
     }
 
-    private BoundingBox getExtentInModel(){
-        if(!Controller.KdTreeBoolean()){
-        return getBounds(); }
-        else{
-            return getBoundsDebug();
-        }
-    }
+    private BoundingBox getExtentInModel(){ return getBounds(); }
 
     private BoundingBox getBoundsDebug() {
         Bounds localBounds = this.getBoundsInLocal();
-        float minX =(float) localBounds.getMinX() + 250;
-        float maxX =(float) localBounds.getMaxX() - 250;
-        float minY =(float) localBounds.getMinY() + 250;
-        float maxY =(float) localBounds.getMaxY() - 250;
+        double minX = localBounds.getMinX() + 200;
+        double maxX = localBounds.getMaxX() - 200;
+        double minY = localBounds.getMinY() + 200;
+        double maxY = localBounds.getMaxY() - 500;
 
         //Flip the boundingbox' y-coords, as the rendering is flipped, but the model isn't.
         Point2D minPoint = getModelCoords(minX, maxY);
@@ -195,23 +163,23 @@ public class MapCanvas extends Canvas {
         gc.lineTo(minPoint.getX(), minPoint.getY());
         gc.stroke();
 
-        return new BoundingBox((float)minPoint.getX(), (float)minPoint.getY(),
-                (float)(maxPoint.getX()-minPoint.getX()), (float)(maxPoint.getY()-minPoint.getY()));
+        return new BoundingBox(minPoint.getX(), minPoint.getY(),
+                maxPoint.getX()-minPoint.getX(), maxPoint.getY()-minPoint.getY());
     }
 
     public BoundingBox getBounds() {
         Bounds localBounds = this.getBoundsInLocal();
-        float minX = (float)localBounds.getMinX();
-        float maxX = (float)localBounds.getMaxX();
-        float minY = (float)localBounds.getMinY();
-        float maxY = (float)localBounds.getMaxY();
+        double minX = localBounds.getMinX();
+        double maxX = localBounds.getMaxX();
+        double minY = localBounds.getMinY();
+        double maxY = localBounds.getMaxY();
 
         //Flip the boundingbox' y-coords, as the rendering is flipped, but the model isn't.
         Point2D minPoint = getModelCoords(minX, maxY);
         Point2D maxPoint = getModelCoords(maxX, minY);
 
-        return new BoundingBox((float)minPoint.getX(), (float)minPoint.getY(),
-                (float)(maxPoint.getX()-minPoint.getX()), (float)(maxPoint.getY()-minPoint.getY()));
+        return new BoundingBox(minPoint.getX(), minPoint.getY(),
+                maxPoint.getX()-minPoint.getX(), maxPoint.getY()-minPoint.getY());
     }
 
     private Color getColor(WayType type) { return wayColors.get(type); }
@@ -229,7 +197,7 @@ public class MapCanvas extends Canvas {
         double centerY = getHeight()/2.0;
         x=x*model.getLonfactor();
         Point2D point = transform.transform(x,y);
-        //System.out.println("X: " + x + " Y: " + y);
+        System.out.println("X: " + x + " Y: " + y);
         Pin.currentPin = new Pin(x, y);
 
         pan(centerX-point.getX(),centerY-point.getY());
@@ -255,8 +223,7 @@ public class MapCanvas extends Canvas {
         double singleYPixelLength = minYPlus1px.getY()-minXAndY.getY();
 
         singlePixelLength = Math.sqrt(Math.pow(singleXPixelLength,2)+Math.pow(singleYPixelLength,2));
-        percentOfScreenArea = (singleXPixelLength*25)*singleYPixelLength*25;
-
+      
         repaint();
     }
 

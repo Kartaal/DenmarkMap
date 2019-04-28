@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class KDNode implements Serializable {
-    BoundingBoxable[] values;
+    List<BoundingBoxable> values = new ArrayList<>();
     float split;
     boolean vertical; //if true, splits on x
 
@@ -23,7 +23,7 @@ public class KDNode implements Serializable {
     // Runs through the values in the node to find the encompassing bounding box
     // Creates and sets the bounding box based on the values
     private void makeNodeBB() {
-        float minX = 100, maxX = 0, minY = 100, maxY = 0;
+        double minX = 100, maxX = 0, minY = 100, maxY = 0;
         for(BoundingBoxable valueBB : values) {
             BoundingBox lineBB = valueBB.getBB();
             if (lineBB.getMinX() < minX) {
@@ -40,47 +40,7 @@ public class KDNode implements Serializable {
             }
         }
 
-        float width = maxX-minX;
-        float height = maxY-minY;
-
         bb = new BoundingBox(minX, minY, maxX-minX, maxY-minY);
-    }
-
-    public void growToEncompassChildren() {
-        BoundingBox leftBB;
-        BoundingBox rightBB;
-
-        if(nodeL == null && nodeR == null){
-            return;
-        }
-
-        if(nodeL == null){
-            rightBB = nodeR.getBB();
-            setBB(rightBB.getMinX(), rightBB.getMinY(), rightBB.getMaxX(), rightBB.getMaxY());
-            return;
-        }
-
-        if(nodeR == null){
-            leftBB = nodeL.getBB();
-            setBB(leftBB.getMinX(), leftBB.getMinY(), leftBB.getMaxX(), leftBB.getMaxY());
-            return;
-        }
-
-        leftBB = nodeL.getBB();
-        rightBB = nodeR.getBB();
-
-        float minX = Float.min(leftBB.getMinX(),rightBB.getMinX());
-        float minY = Float.min(leftBB.getMinY(),rightBB.getMinY());
-        float maxX = Float.max(leftBB.getMaxX(),rightBB.getMaxX());
-        float maxY = Float.max(leftBB.getMaxY(),rightBB.getMaxY());
-
-        setBB(minX, minY, maxX, maxY);
-    }
-
-    void setBB(float minX, float minY, float maxX, float maxY) {
-        float width = maxX-minX;
-        float height = maxY-minY;
-        bb = new BoundingBox(minX,minY,width,height);
     }
 
     //Returns the value where the node split the data
@@ -105,17 +65,9 @@ public class KDNode implements Serializable {
     }
 
     public void setValues(List<BoundingBoxable> valueList) {
-        values = new BoundingBoxable[valueList.size()];
-        for(int i = 0 ; i < valueList.size() ; i++){
-            values[i] = valueList.get(i);
-        }
+        this.values = valueList;
 
         //Create BoundingBox for the KDNode
         makeNodeBB();
     }
-
-    public boolean isEmpty(){
-        return values == null;
-    }
-
 }
