@@ -1,5 +1,6 @@
 package bfst19;
 
+import bfst19.Exceptions.nothingNearbyException;
 import bfst19.KDTree.BoundingBox;
 import bfst19.KDTree.Drawable;
 import bfst19.KDTree.KDTree;
@@ -7,6 +8,8 @@ import bfst19.Route_parsing.*;
 import bfst19.Line.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Point2D;
+
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -18,7 +21,7 @@ import static javax.xml.stream.XMLStreamConstants.*;
 
 public class Model{
 	RouteHandler routeHandler;
-	private float lonfactor = 1.0f;
+	private static float lonfactor = 1.0f;
 	private boolean colorBlindEnabled;
 	private String datasetName;
 	HashMap<Long,String> pointsOfInterest = new HashMap<>();
@@ -36,11 +39,11 @@ public class Model{
 	ObservableList<Iterable<Edge>> foundPath = FXCollections.observableArrayList();
 	Map<WayType, KDTree> kdTreeMap = new TreeMap<>();
 
-    public ArrayList<String> getTextFile(String filepath) {
-        return textHandler.getTextFile(filepath);
-    }
+	public ArrayList<String> getTextFile(String filepath) {
+		return textHandler.getTextFile(filepath);
+	}
 
-    //for building addresses during parsing
+	//for building addresses during parsing
 	public static class Builder {
 		private long id;
 		private float lat, lon;
@@ -81,6 +84,19 @@ public class Model{
 		return kdTreeMap.get(type).rangeQuery(bbox);
 	}
 	public void addPathObserver(Runnable observer){pathObservers.add(observer);}
+
+	public void addPath(Iterable<Edge> path){
+		foundPath.add(path);
+		notifyPathObservers();
+	}
+
+	public void clearPath(){
+		if(!foundPath.isEmpty()){
+			foundPath.clear();
+			notifyPathObservers();
+		}
+	}
+
 	public void addFoundMatchesObserver(Runnable observer) {
 		foundMatchesObservers.add(observer);
 	}
@@ -109,10 +125,10 @@ public class Model{
 
 
 	public void notifyPathObservers(){
-    for(Runnable observer : pathObservers) {
-      observer.run();
-    }
-  }
+		for(Runnable observer : pathObservers) {
+			observer.run();
+		}
+	}
 
 	public Model(String dataset) {
 		datasetName = dataset;
@@ -176,11 +192,11 @@ public class Model{
 			}
 		}
 
-        AddressParser.getInstance(this).setDefaults(textHandler.getDefault(getDatasetName()));
-        AddressParser.getInstance(this).parseCitiesAndPostCodes(textHandler.getCities(this, getDatasetName()));
+		AddressParser.getInstance(this).setDefaults(textHandler.getDefault(getDatasetName()));
+		AddressParser.getInstance(this).parseCitiesAndPostCodes(textHandler.getCities(this, getDatasetName()));
 	}
 
-	public double getLonfactor(){
+	public static double getLonfactor(){
 		return lonfactor;
 	}
 
@@ -190,8 +206,7 @@ public class Model{
 
 		if (colorBlindEnabled) {
 			CurrentTypeColorTxt = ("src/main/resources/config/TypeColorsColorblind.txt");
-		}
-		else {
+		}  else {
 			CurrentTypeColorTxt = ("src/main/resources/config/TypeColorsNormal.txt");
 		}
 		ParseWayColors();
@@ -264,7 +279,7 @@ public class Model{
 							String k = reader.getAttributeValue(null, "k");
 							String v = reader.getAttributeValue(null, "v");
 
-              if(k.equals("addr:housenumber")) {
+							if(k.equals("addr:housenumber")) {
 								b.houseNumber = v.trim();
 							}
 
@@ -356,19 +371,18 @@ public class Model{
 				case END_ELEMENT:
 					switch (reader.getLocalName()) {
 						case "way":
-							if (type == WayType.COASTLINE) {
-								coast.add(way);
-							} else {
-								ways.get(type).add(new Polyline(way));
-							}
 
 							//checks if the current waytype is one
 							// of the one's that should be in the nodegraph
-							if(routeHandler.isNodeGraphWay(type)) {
-								if(way.getAsLong()==199123707){
-									System.out.print("boop");
-								}
+							boolean isNodeGraphWay = routeHandler.isNodeGraphWay(type);
+							if(isNodeGraphWay) {
 								routeHandler.addWayToNodeGraph(way, type,name,speedlimit);
+							}
+
+							if (type == WayType.COASTLINE) {
+								coast.add(way);
+							} else {
+								ways.get(type).add(new Polyline(way,isNodeGraphWay));
 							}
 
 							if(b.hasFields()) {
@@ -437,7 +451,7 @@ public class Model{
 					textHandler.makeDatabase(this, addresses, getDatasetName());
 
 					for (OSMWay c : merge(coast)) {
-						ways.get(WayType.COASTLINE).add(new Polyline(c));
+						ways.get(WayType.COASTLINE).add(new Polyline(c,false));
 					}
 
 					//Make and populate KDTrees for each WayType
@@ -474,6 +488,14 @@ public class Model{
 		double c  = 2*Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 		double d = R * c;
 		return d;
+	}
+
+	public static float angleBetween2Lines(OSMNode A1, OSMNode A2, OSMNode B1, OSMNode B2) {
+		float angle1 = (float) Math.atan2(A2.getLat() - A1.getLat(), A1.getLon() - A2.getLon());
+		float angle2 = (float) Math.atan2(B2.getLat() - B1.getLat(), B1.getLon() - B2.getLon());
+		float calculatedAngle = (float) Math.toDegrees(angle1 - angle2);
+		if (calculatedAngle < 0) calculatedAngle += 360;
+		return calculatedAngle;
 	}
 
 	public String getDelimeter() {
@@ -525,9 +547,9 @@ public class Model{
 	}
 
 	public void parseSearch(String proposedAddress) {
-        Address a = AddressParser.getInstance(this).singleSearch(proposedAddress, getDatasetName());
-        //if the address does not have a city or a streetname, get the string's matches from the default file and display them
-        if(a.getStreetName().equals("Unknown") || a.getCity().equals("")) {
+		Address a = AddressParser.getInstance(this).singleSearch(proposedAddress, getDatasetName());
+		//if the address does not have a city or a streetname, get the string's matches from the default file and display them
+		if(a.getStreetName().equals("Unknown") || a.getCity().equals("")) {
 			ArrayList<String[]> possibleMatches =
 					AddressParser.getInstance(this).getMatchesFromDefault(proposedAddress, false);
 
@@ -538,9 +560,9 @@ public class Model{
 					foundMatches.add(new String[]{match[0],match[1],match[2]});
 				}
 			}
-        }else if(a.getHouseNumber()==null){
-            //if the housenumber is null, bet all the addresses housenumbers from the streets file and display them
-            ArrayList<String[]> possibleAddresses = AddressParser.getInstance(this).getAddress(getDatasetName(),a.getCity(),a.getPostcode(),a.getStreetName(),"",false);
+		}else if(a.getHouseNumber()==null){
+			//if the housenumber is null, bet all the addresses housenumbers from the streets file and display them
+			ArrayList<String[]> possibleAddresses = AddressParser.getInstance(this).getAddress(getDatasetName(),a.getCity(),a.getPostcode(),a.getStreetName(),"",false);
 			if (possibleAddresses != null) {
 				foundMatches.clear();
 				String street = a.getStreetName();
@@ -550,14 +572,14 @@ public class Model{
 					foundMatches.add(new String[]{street, match[3], city, postcode});
 				}
 			}
-        }else{
-        	//if those 3 fields are filled, just put the address in the ui will handle the rest
+		}else{
+			//if those 3 fields are filled, just put the address in the ui will handle the rest
 			foundMatches.clear();
 			foundMatches.add(new String[]{String.valueOf(a.getLon()),
 					String.valueOf(a.getLat()), a.getStreetName(), a.getHouseNumber(),
 					a.getFloor(), a.getSide(), a.getCity(), a.getPostcode()});
 		}
-        notifyFoundMatchesObservers();
+		notifyFoundMatchesObservers();
 	}
 
 	public String getDatasetName() {
@@ -565,15 +587,15 @@ public class Model{
 	}
 
 	public ArrayList<String> getAddressesOnStreet(String country,String city,String postcode,String streetName){
-	    return textHandler.getTextFile("data/"+country+"/"+city+" QQQ "+postcode+"/"+streetName+".txt");
-    }
+		return textHandler.getTextFile("data/"+country+"/"+city+" QQQ "+postcode+"/"+streetName+".txt");
+	}
 
-    public void writePointsOfInterest(String datasetName) {
+	public void writePointsOfInterest(String datasetName) {
 		try {
 			BufferedWriter pointsOfInterestWriter = new BufferedWriter(
 					new OutputStreamWriter(new FileOutputStream(
 							new File("data/" + datasetName + "/pointsOfInterest.txt"))
-					,"UTF-8"));
+							,"UTF-8"));
 
 			for(Map.Entry<Long, String> entry : pointsOfInterest.entrySet()) {
 				pointsOfInterestWriter.write(entry.getKey() + getDelimeter() + entry.getValue());
@@ -584,7 +606,7 @@ public class Model{
 		}
 	}
 
-    public HashMap<Long,String> getPointsOfInterest(String datasetName){
+	public HashMap<Long,String> getPointsOfInterest(String datasetName){
 		HashMap<Long,String> pointsOfInterest = new HashMap<>();
 		ArrayList<String> pointOfInterestFile = textHandler.getTextFile("data/"+datasetName+"/pointsOfInterest.txt");
 		for(String address : pointOfInterestFile){
@@ -596,7 +618,7 @@ public class Model{
 		return pointsOfInterest;
 	}
 
-    public void addPointsOfInterest(long id,String pointOfInterest) {
+	public void addPointsOfInterest(long id,String pointOfInterest) {
 		pointsOfInterest.put(id,pointOfInterest);
 	}
 
@@ -604,10 +626,10 @@ public class Model{
 		pointsOfInterest.remove(id);
 	}
 
-
-	public Iterator<Iterable<Edge>> pathIterator(){
-    return foundPath.iterator();
-  }
+	//// Does this contain the in
+	public Iterator<Edge> pathIterator(){
+		return foundPath.iterator().next().iterator();
+	}
 
 	public Iterator<String> colorIterator() {
 		return typeColors.iterator();
@@ -615,5 +637,63 @@ public class Model{
 
 	public Iterator<String[]> foundMatchesIterator() {
 		return foundMatches.iterator();
+	}
+
+	public static OSMNode getClosestNode(Point2D point, ArrayList<OSMNode> queryList) {
+		//TODO: put into a "Calculator" class.
+		double closestDistance = Double.POSITIVE_INFINITY;
+		double distanceToQueryPoint;
+		OSMNode closestElement = null;
+
+		for(OSMNode checkNode: queryList){
+			//We check distance from node to point, and then report if its closer than our previously known closest point.
+			distanceToQueryPoint = checkNode.distanceTo(point);
+			if(distanceToQueryPoint < closestDistance){
+				closestDistance = distanceToQueryPoint;
+				closestElement = checkNode;
+			}
+		}
+		return closestElement;
+	}
+
+	OSMNode getNearestRoad(Point2D point){
+		try{
+			ArrayList<OSMNode> nodeList = new ArrayList<>();
+
+			for(WayType wayType: RouteHandler.getDrivableWayTypes()){
+				OSMNode checkNeighbor = kdTreeMap.get(wayType).getNearestNeighbor(point);
+				if(checkNeighbor != null) {
+					nodeList.add(checkNeighbor);
+				}
+			}
+
+			if(nodeList.isEmpty()){
+				throw new nothingNearbyException();
+			}
+
+			return getClosestNode(point, nodeList);
+
+		}catch (nothingNearbyException e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	OSMNode getNearestBuilding(Point2D point){
+		try {
+			OSMNode closestElement = kdTreeMap.get(WayType.BUILDING).getNearestNeighbor(point);
+
+			if(closestElement == null){
+				throw new nothingNearbyException();
+			}
+
+			return closestElement;
+
+		}catch(nothingNearbyException e){
+			e.printStackTrace();
+			return null;
+		}
+
+
 	}
 }

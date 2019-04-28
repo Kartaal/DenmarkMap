@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class KDNode implements Serializable {
-    List<BoundingBoxable> values = new ArrayList<>();
+    BoundingBoxable[] values;
     float split;
     boolean vertical; //if true, splits on x
 
@@ -40,7 +40,47 @@ public class KDNode implements Serializable {
             }
         }
 
+        double width = maxX-minX;
+        double height = maxY-minY;
+
         bb = new BoundingBox(minX, minY, maxX-minX, maxY-minY);
+    }
+
+    public void growToEncompassChildren() {
+        BoundingBox leftBB;
+        BoundingBox rightBB;
+
+        if(nodeL == null && nodeR == null){
+            return;
+        }
+
+        if(nodeL == null){
+            rightBB = nodeR.getBB();
+            setBB(rightBB.getMinX(), rightBB.getMinY(), rightBB.getMaxX(), rightBB.getMaxY());
+            return;
+        }
+
+        if(nodeR == null){
+            leftBB = nodeL.getBB();
+            setBB(leftBB.getMinX(), leftBB.getMinY(), leftBB.getMaxX(), leftBB.getMaxY());
+            return;
+        }
+
+        leftBB = nodeL.getBB();
+        rightBB = nodeR.getBB();
+
+        double minX = Double.min(leftBB.getMinX(),rightBB.getMinX());
+        double minY = Double.min(leftBB.getMinY(),rightBB.getMinY());
+        double maxX = Double.max(leftBB.getMaxX(),rightBB.getMaxX());
+        double maxY = Double.max(leftBB.getMaxY(),rightBB.getMaxY());
+
+        setBB(minX, minY, maxX, maxY);
+    }
+
+    void setBB(double minX, double minY, double maxX, double maxY) {
+        double width = maxX-minX;
+        double height = maxY-minY;
+        bb = new BoundingBox(minX,minY,width,height);
     }
 
     //Returns the value where the node split the data
@@ -65,9 +105,17 @@ public class KDNode implements Serializable {
     }
 
     public void setValues(List<BoundingBoxable> valueList) {
-        this.values = valueList;
+        values = new BoundingBoxable[valueList.size()];
+        for(int i = 0 ; i < valueList.size() ; i++){
+            values[i] = valueList.get(i);
+        }
 
         //Create BoundingBox for the KDNode
         makeNodeBB();
     }
+
+    public boolean isEmpty(){
+        return values == null;
+    }
+
 }

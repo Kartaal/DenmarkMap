@@ -11,14 +11,14 @@ public class EdgeWeightedGraph implements Serializable {
     private int V;
     private int E;
     private HashMap<Long,Integer> idToIndex;
-    private HashMap<Integer,Long> indexToId;
+    private ResizingArray indexToId;
     private ArrayList<ArrayList<Edge>> adj;
 
     public EdgeWeightedGraph(){
         this.V = 0;
         this.E = 0;
         idToIndex = new HashMap<>();
-        indexToId = new HashMap<>();
+        indexToId = new ResizingArray();
         adj = new ArrayList<>();
     }
 
@@ -53,14 +53,14 @@ public class EdgeWeightedGraph implements Serializable {
         if(idToIndex.get(id)==null){
             return false;
         }
-            return true;
+        return true;
     }
 
 
     public void addVertex(long id){
         if(!isVertex(id)) {
             idToIndex.put(id, V);
-            indexToId.put(V, id);
+            indexToId.add(id);
             adj.add(V, new ArrayList<>());
             V++;
         }
@@ -133,4 +133,3 @@ public class EdgeWeightedGraph implements Serializable {
     }*/
 
 }
-
