@@ -15,8 +15,8 @@ public class RouteHandler{
     private HashMap<Long,Integer> idToIndex;
     private HashMap<Integer,Long> indexToId;
     private HashMap<WayType,HashMap<String, ArrayList<String[]>>> drivableCases;
-    private HashMap<WayType,HashMap<Vehicle, Integer>> drivabillty;
-    private static Set<WayType> drivableWayTypes;
+    private HashMap<WayType,HashMap<Vehicle, Drivabillity>> drivabillty;
+    private static Set<WayType> drivableWaytypes;
     HashMap<String,Integer> speedDefaults;
 
     public RouteHandler(Model model, EdgeWeightedGraph G){
@@ -42,8 +42,13 @@ public class RouteHandler{
                 drivabillty.get(wayType).put(vehicleType,defaultDrivable);
             }
         }
-        drivableWayTypes = drivabillty.keySet();
 
+        drivableWaytypes = drivabillty.keySet();
+
+    }
+
+    public static Set<WayType> getDrivableWayTypes() {
+        return drivableWaytypes;
     }
 
     public Iterable<Edge> findPath(long startNodeId, long endNodeId,Vehicle type,boolean fastestpath){
@@ -166,9 +171,7 @@ public class RouteHandler{
         }
     }
 
-    public static Set<WayType> getDrivableWayTypes(){
-        return drivableWayTypes;
-    }
+
 
     public Iterable<Edge> getAdj(long id, Vehicle type) {
         int index = G.getIndexFromId(id);
