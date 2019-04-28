@@ -23,7 +23,7 @@ public class KDNode implements Serializable {
     // Runs through the values in the node to find the encompassing bounding box
     // Creates and sets the bounding box based on the values
     private void makeNodeBB() {
-        double minX = 100, maxX = 0, minY = 100, maxY = 0;
+        float minX = 100, maxX = 0, minY = 100, maxY = 0;
         for(BoundingBoxable valueBB : values) {
             BoundingBox lineBB = valueBB.getBB();
             if (lineBB.getMinX() < minX) {
@@ -40,8 +40,8 @@ public class KDNode implements Serializable {
             }
         }
 
-        double width = maxX-minX;
-        double height = maxY-minY;
+        float width = maxX-minX;
+        float height = maxY-minY;
 
         bb = new BoundingBox(minX, minY, maxX-minX, maxY-minY);
     }
@@ -69,17 +69,17 @@ public class KDNode implements Serializable {
         leftBB = nodeL.getBB();
         rightBB = nodeR.getBB();
 
-        double minX = Double.min(leftBB.getMinX(),rightBB.getMinX());
-        double minY = Double.min(leftBB.getMinY(),rightBB.getMinY());
-        double maxX = Double.max(leftBB.getMaxX(),rightBB.getMaxX());
-        double maxY = Double.max(leftBB.getMaxY(),rightBB.getMaxY());
+        float minX = Float.min(leftBB.getMinX(),rightBB.getMinX());
+        float minY = Float.min(leftBB.getMinY(),rightBB.getMinY());
+        float maxX = Float.max(leftBB.getMaxX(),rightBB.getMaxX());
+        float maxY = Float.max(leftBB.getMaxY(),rightBB.getMaxY());
 
         setBB(minX, minY, maxX, maxY);
     }
 
-    void setBB(double minX, double minY, double maxX, double maxY) {
-        double width = maxX-minX;
-        double height = maxY-minY;
+    void setBB(float minX, float minY, float maxX, float maxY) {
+        float width = maxX-minX;
+        float height = maxY-minY;
         bb = new BoundingBox(minX,minY,width,height);
     }
 

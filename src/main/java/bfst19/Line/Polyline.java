@@ -65,7 +65,7 @@ public class Polyline implements Drawable, Serializable, BoundingBoxable {
 		this.centerX = (xMin + xMax) / 2;
 		this.centerY = (yMin + yMax) / 2;
 
-		bb = new BoundingBox((double) xMin, (double) yMin, (xMax-xMin), (double) (yMax-yMin));
+		bb = new BoundingBox( xMin, yMin, (xMax-xMin), (yMax-yMin));
 	}
 
 	public void stroke(GraphicsContext gc,double singlePixelLength) {

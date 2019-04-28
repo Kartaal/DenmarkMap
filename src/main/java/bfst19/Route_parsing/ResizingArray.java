@@ -5,11 +5,11 @@ import java.lang.invoke.WrongMethodTypeException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.ConcurrentModificationException;
+import java.util.Iterator;
 
 public class ResizingArray<T> implements Serializable {
     private Object[] a;         // array of items
     private int n;            // number of elements on stack
-    private boolean isSorted = false;
 
     public ResizingArray(){
         a = new Object[2];
@@ -48,15 +48,10 @@ public class ResizingArray<T> implements Serializable {
     public void add(Object item) {
         if (n == a.length) resize(2 * a.length);    // double size of array if necessary
         a[n++] = item;                            // add item
-        isSorted = false;
     }
 
     public void set(int i, Object item) {
         a[i] = item;
-    }
-
-    public void sort(Comparator<? super T> c) {
-        Arrays.sort((T[]) a, 0, n, c);
     }
 
     //only to be used no longer has to grow/shrink

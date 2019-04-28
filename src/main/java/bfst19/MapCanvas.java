@@ -165,10 +165,10 @@ public class MapCanvas extends Canvas {
 
     private BoundingBox getBoundsDebug() {
         Bounds localBounds = this.getBoundsInLocal();
-        double minX = localBounds.getMinX() + 250;
-        double maxX = localBounds.getMaxX() - 250;
-        double minY = localBounds.getMinY() + 250;
-        double maxY = localBounds.getMaxY() - 250;
+        float minX =(float) localBounds.getMinX() + 250;
+        float maxX =(float) localBounds.getMaxX() - 250;
+        float minY =(float) localBounds.getMinY() + 250;
+        float maxY =(float) localBounds.getMaxY() - 250;
 
         //Flip the boundingbox' y-coords, as the rendering is flipped, but the model isn't.
         Point2D minPoint = getModelCoords(minX, maxY);
@@ -183,23 +183,23 @@ public class MapCanvas extends Canvas {
         gc.lineTo(minPoint.getX(), minPoint.getY());
         gc.stroke();
 
-        return new BoundingBox(minPoint.getX(), minPoint.getY(),
-                maxPoint.getX()-minPoint.getX(), maxPoint.getY()-minPoint.getY());
+        return new BoundingBox((float)minPoint.getX(), (float)minPoint.getY(),
+                (float)(maxPoint.getX()-minPoint.getX()), (float)(maxPoint.getY()-minPoint.getY()));
     }
 
     public BoundingBox getBounds() {
         Bounds localBounds = this.getBoundsInLocal();
-        double minX = localBounds.getMinX();
-        double maxX = localBounds.getMaxX();
-        double minY = localBounds.getMinY();
-        double maxY = localBounds.getMaxY();
+        float minX = (float)localBounds.getMinX();
+        float maxX = (float)localBounds.getMaxX();
+        float minY = (float)localBounds.getMinY();
+        float maxY = (float)localBounds.getMaxY();
 
         //Flip the boundingbox' y-coords, as the rendering is flipped, but the model isn't.
         Point2D minPoint = getModelCoords(minX, maxY);
         Point2D maxPoint = getModelCoords(maxX, minY);
 
-        return new BoundingBox(minPoint.getX(), minPoint.getY(),
-                maxPoint.getX()-minPoint.getX(), maxPoint.getY()-minPoint.getY());
+        return new BoundingBox((float)minPoint.getX(), (float)minPoint.getY(),
+                (float)(maxPoint.getX()-minPoint.getX()), (float)(maxPoint.getY()-minPoint.getY()));
     }
 
     private Color getColor(WayType type) { return wayColors.get(type); }

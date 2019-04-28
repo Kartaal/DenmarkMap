@@ -456,7 +456,7 @@ public class Model{
 
 					//addresses.sort(Address::compareTo);
 					//textHandler.makeDatabase(this, addresses, getDatasetName());
-
+					addresses = null;
 					break;
 				case ENTITY_REFERENCE: break;
 				case ATTRIBUTE: break;

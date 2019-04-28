@@ -28,11 +28,11 @@ public class OSMNode implements Serializable {
 		this.id = id;
 	}
 
-	public double distanceTo(Point2D point){
-		double x = getLat() - point.getY();
-		double y = getLon() - point.getX();
+	public float distanceTo(Point2D point){
+		float x = (float) (getLat() - point.getY());
+		float y = (float) (getLon() - point.getX());
 
-		return Math.sqrt( Math.pow(x,2) + Math.pow(y,2));
+		return (float)Math.sqrt( Math.pow(x,2) + Math.pow(y,2));
 	}
 
 	public int getId() {

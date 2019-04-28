@@ -109,12 +109,12 @@ public class KDTree implements Serializable {
 	public OSMNode getNearestNeighbor(Point2D point) {
 		//Returns node of the nearest neighbor to a point
 		int count = 0;
-		double distanceToQueryPoint;
-		double closestDistance = Double.POSITIVE_INFINITY;
+		float distanceToQueryPoint;
+		float closestDistance = Float.POSITIVE_INFINITY;
 		OSMNode closestElement = null;
-		double x = point.getX();
-		double y = point.getY();
-		Double[] vals = {x, y, 0.0000000, 0.0000000};
+		float x = (float)point.getX();
+		float y = (float)point.getY();
+		float[] vals = {x, y, 0.0F, 0.0F};
 		BoundingBox bbox = new BoundingBox(vals[0], vals[1], vals[2], vals[3]);
 		ArrayList<OSMNode> queryList = (ArrayList<OSMNode>) nodeRangeQuery(bbox);
 
@@ -142,7 +142,7 @@ public class KDTree implements Serializable {
 
 	}
 
-	private ArrayList<OSMNode> growBoundingBox(Double[] vals) {
+	private ArrayList<OSMNode> growBoundingBox(float[] vals) {
 		//Take the values of the bounding box, increase them slightly
 		BoundingBox bbox;
 		ArrayList<OSMNode> queryList;

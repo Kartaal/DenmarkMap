@@ -3,6 +3,7 @@ package bfst19.Line;
 import bfst19.KDTree.BoundingBox;
 import bfst19.KDTree.BoundingBoxable;
 import bfst19.KDTree.Drawable;
+import bfst19.Route_parsing.ResizingArray;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -13,13 +14,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class MultiPolyline implements Drawable, Serializable, BoundingBoxable {
-	public ArrayList<Polyline> lines;
+	public ResizingArray<Polyline> lines;
 	private float centerX;
 	private float centerY;
 	private BoundingBox bb;
 
 	public MultiPolyline(OSMRelation rel) {
-		lines = new ArrayList<>();
+		lines = new ResizingArray<>();
 		for (OSMWay way : rel){
 			Polyline addingLine = new Polyline(way,false);
 			add(addingLine);
@@ -28,9 +29,9 @@ public class MultiPolyline implements Drawable, Serializable, BoundingBoxable {
 		//Find the limits of BoundingBox
 		//Code copy pasted to KDTree
 		//Arbitrary values that should exceed the coords on Denmark
-		double minX = 100, maxX = 0, minY = 100, maxY = 0;
-		for(Polyline polyline : lines) {
-			BoundingBox lineBB = polyline.getBB();
+		float minX = 100, maxX = 0, minY = 100, maxY = 0;
+		for(int i = 0 ; i < lines.size() ; i++) {
+			BoundingBox lineBB = lines.get(i).getBB();
 			if (lineBB.getMinX() < minX) {
 				minX = lineBB.getMinX();
 			}
@@ -45,8 +46,8 @@ public class MultiPolyline implements Drawable, Serializable, BoundingBoxable {
 			}
 		}
 
-		this.centerX = (float) (minX + maxX) / 2;
-		this.centerY = (float) (minY + maxY) / 2;
+		this.centerX = (minX + maxX) / 2;
+		this.centerY = (minY + maxY) / 2;
 		bb = new BoundingBox(minX, minY, maxX-minX, maxY-minY);
 	}
 
@@ -69,8 +70,8 @@ public class MultiPolyline implements Drawable, Serializable, BoundingBoxable {
 		double lineDistance;
 		double closestDistance = Double.POSITIVE_INFINITY;
 
-		for(Polyline line: lines){
-			lineDistance = line.shortestDistance(x, y);
+		for(int i = 0 ; i < lines.size() ; i++) {
+			lineDistance = lines.get(i).shortestDistance(x, y);
 			if(lineDistance < closestDistance){
 				closestDistance = lineDistance;
 			}
@@ -92,7 +93,9 @@ public class MultiPolyline implements Drawable, Serializable, BoundingBoxable {
 	}
 
 	public void trace(GraphicsContext gc,double singlePixelLength) {
-		for (Polyline p : lines) p.trace(gc,singlePixelLength);
+		for (int i = 0; i < lines.size(); i++) {
+			lines.get(i).trace(gc, singlePixelLength);
+		}
 	}
 
 	@Override
@@ -110,8 +113,8 @@ public class MultiPolyline implements Drawable, Serializable, BoundingBoxable {
 	public OSMNode[] getNodes(){
 		ArrayList<OSMNode> nodes = new ArrayList<>();
 
-		for(Polyline line: lines){
-			ArrayList<OSMNode> tempList = new ArrayList<>(Arrays.asList(line.getNodes()));
+		for (int i = 0; i < lines.size(); i++) {
+			ArrayList<OSMNode> tempList = new ArrayList<>(Arrays.asList(lines.get(i).getNodes()));
 			nodes.addAll(tempList);
 		}
 		return nodes.toArray(new OSMNode[nodes.size()]);

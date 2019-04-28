@@ -5,12 +5,12 @@ import java.io.Serializable;
 //This class exists because JavaJX BoundingBox is not Serializable
 // and its superclass Bounds only has a 3D constructor
 public class BoundingBox implements Serializable {
-	private double minX;
-	private double minY;
-	private double maxX;
-	private double maxY;
+	private float minX;
+	private float minY;
+	private float maxX;
+	private float maxY;
 
-	public BoundingBox(double minX, double minY, double width, double height) {
+	public BoundingBox(float minX, float minY, float width, float height) {
 		this.minX = minX;
 		this.minY = minY;
 		this.maxX = minX+width;
@@ -18,17 +18,17 @@ public class BoundingBox implements Serializable {
 
 	}
 
-	public double getMinX() {
+	public float getMinX() {
 		return minX;
 	}
 
-	public double getMinY() {
+	public float getMinY() {
 		return minY;
 	}
 
-	public double getMaxX() { return maxX; }
+	public float getMaxX() { return maxX; }
 
-	public double getMaxY() {
+	public float getMaxY() {
 		return maxY;
 	}
 
@@ -40,8 +40,8 @@ public class BoundingBox implements Serializable {
 				b.getMaxX(), b.getMaxY());
 	}
 
-	public boolean intersects(double minX, double minY,
-							  double maxX, double maxY) {
+	public boolean intersects(float minX, float minY,
+							  float maxX, float maxY) {
 		//if (isEmpty() || w < 0 || h < 0) return false;
 		return (maxX>= getMinX() &&
 				maxY >= getMinY() &&

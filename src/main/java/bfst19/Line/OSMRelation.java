@@ -1,5 +1,7 @@
 package bfst19.Line;
 
+import bfst19.Route_parsing.ResizingArray;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
