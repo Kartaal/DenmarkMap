@@ -7,9 +7,7 @@ import bfst19.Route_parsing.ResizingArray;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 
-import java.awt.*;
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -66,10 +64,9 @@ public class MultiPolyline implements Drawable, Serializable, BoundingBoxable {
 	}
 
 
-	public double shortestDistance(double x, double y){
+	public double shortestDistance(Point2D point){
 		double lineDistance;
 		double closestDistance = Double.POSITIVE_INFINITY;
-
 		for(int i = 0 ; i < lines.size() ; i++) {
 			lineDistance = lines.get(i).shortestDistance(x, y);
 			if(lineDistance < closestDistance){

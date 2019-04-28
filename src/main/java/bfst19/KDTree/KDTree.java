@@ -3,7 +3,6 @@ package bfst19.KDTree;
 import bfst19.Line.OSMNode;
 import bfst19.Route_parsing.ResizingArray;
 import javafx.geometry.Point2D;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,8 +19,6 @@ public class KDTree implements Serializable {
 	public KDTree(){
 		root = null;
 	}
-
-
 
 	//Method for creating a KDTree from a list of Drawable
 	public void insertAll(ResizingArray<Drawable> list) {
@@ -97,14 +94,11 @@ public class KDTree implements Serializable {
 		//Do recursion because node isn't a leaf
 		//Left subtree
 		currNode.nodeL = createTree(list, currNode, lo, splitIndex);
-
-		//Right subtree
 		currNode.nodeR = createTree(list, currNode, splitIndex+1, hi);
 		currNode.growToEncompassChildren();
 
 		return currNode;
 	}
-
 
 	public OSMNode getNearestNeighbor(Point2D point) {
 		//Returns node of the nearest neighbor to a point
@@ -129,14 +123,7 @@ public class KDTree implements Serializable {
 			queryList = growBoundingBox(vals);
 		}
 
-		for(OSMNode checkNode: queryList){
-			//We check distance from node to point, and then report if its closer than our previously known closest point.
-			distanceToQueryPoint = checkNode.distanceTo(point);
-			if(distanceToQueryPoint < closestDistance){
-				closestDistance = distanceToQueryPoint;
-				closestElement = checkNode;
-			}
-		}
+		closestElement = Model.getClosestNode(point, queryList);
 
 		return closestElement;
 
@@ -158,7 +145,6 @@ public class KDTree implements Serializable {
 		queryList = (ArrayList<OSMNode>) nodeRangeQuery(bbox);
 		return queryList;
 	}
-
 
 	//Method for finding elements in the KDTree that intersects a BoundingBox
 	public ResizingArray<Drawable> rangeQuery(BoundingBox bbox) {
@@ -190,7 +176,6 @@ public class KDTree implements Serializable {
 				//Make temporary list to keep elements, so null returns don't cause problems
 				//Check the left subtree for elements intersecting BoundingBox
 				rangeQuery(queryBB, node.nodeL, returnElements);
-
 			}
 		}
 		if (node.nodeR != null) {
@@ -201,9 +186,8 @@ public class KDTree implements Serializable {
 			}
 		}
 
-		return returnElements;
+			return returnElements;
 	}
-
 
 	//Method for finding elements in the KDTree that intersects a BoundingBox
 	public Iterable<OSMNode> nodeRangeQuery(BoundingBox bbox) {
@@ -254,7 +238,6 @@ public class KDTree implements Serializable {
 	public KDNode getRoot() {
 		return root;
 	}
-
 
 	/*
 	//Not in use currently

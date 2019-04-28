@@ -1,5 +1,6 @@
 package bfst19;
 
+import bfst19.Exceptions.nothingNearbyException;
 import bfst19.KDTree.BoundingBox;
 import bfst19.KDTree.Drawable;
 import bfst19.KDTree.KDTree;
@@ -7,6 +8,8 @@ import bfst19.Route_parsing.*;
 import bfst19.Line.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Point2D;
+
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -18,7 +21,7 @@ import static javax.xml.stream.XMLStreamConstants.*;
 
 public class Model{
 	RouteHandler routeHandler;
-	private float lonfactor = 1.0f;
+	private static float lonfactor = 1.0f;
 	private boolean colorBlindEnabled;
 	private String datasetName;
 	HashMap<Long,String> pointsOfInterest = new HashMap<>();
@@ -81,6 +84,19 @@ public class Model{
 		return kdTreeMap.get(type).rangeQuery(bbox);
 	}
 	public void addPathObserver(Runnable observer){pathObservers.add(observer);}
+
+	public void addPath(Iterable<Edge> path){
+        foundPath.add(path);
+        notifyPathObservers();
+    }
+
+    public void clearPath(){
+        if(!foundPath.isEmpty()){
+            foundPath.clear();
+            notifyPathObservers();
+        }
+    }
+
 	public void addFoundMatchesObserver(Runnable observer) {
 		foundMatchesObservers.add(observer);
 	}
@@ -179,7 +195,7 @@ public class Model{
         AddressParser.getInstance(this).parseCitiesAndPostCodes(textHandler.getCities(this, getDatasetName()));
 	}
 
-	public double getLonfactor(){
+	public static double getLonfactor(){
 		return lonfactor;
 	}
 
@@ -189,8 +205,7 @@ public class Model{
 
 		if (colorBlindEnabled) {
 			CurrentTypeColorTxt = ("src/main/resources/config/TypeColorsColorblind.txt");
-		}
-		else {
+		}  else {
 			CurrentTypeColorTxt = ("src/main/resources/config/TypeColorsNormal.txt");
 		}
 		ParseWayColors();
@@ -485,6 +500,14 @@ public class Model{
 		return (float)d;
 	}
 
+	public static float angleBetween2Lines(OSMNode A1, OSMNode A2, OSMNode B1, OSMNode B2) {
+		float angle1 = (float) Math.atan2(A2.getLat() - A1.getLat(), A1.getLon() - A2.getLon());
+		float angle2 = (float) Math.atan2(B2.getLat() - B1.getLat(), B1.getLon() - B2.getLon());
+		float calculatedAngle = (float) Math.toDegrees(angle1 - angle2);
+		if (calculatedAngle < 0) calculatedAngle += 360;
+		return calculatedAngle;
+	}
+
 	public String getDelimeter() {
 		return " QQQ ";
 	}
@@ -615,9 +638,9 @@ public class Model{
 		pointsOfInterest.remove(id);
 	}
 
-
-	public Iterator<Iterable<Edge>> pathIterator(){
-    return foundPath.iterator();
+    //// Does this contain the in
+	public Iterator<Edge> pathIterator(){
+    return foundPath.iterator().next().iterator();
   }
 
 	public Iterator<String> colorIterator() {
@@ -626,5 +649,63 @@ public class Model{
 
 	public Iterator<String[]> foundMatchesIterator() {
 		return foundMatches.iterator();
+	}
+
+	public static OSMNode getClosestNode(Point2D point, ArrayList<OSMNode> queryList) {
+    	//TODO: put into a "Calculator" class.
+		double closestDistance = Double.POSITIVE_INFINITY;
+		double distanceToQueryPoint;
+		OSMNode closestElement = null;
+
+		for(OSMNode checkNode: queryList){
+			//We check distance from node to point, and then report if its closer than our previously known closest point.
+			distanceToQueryPoint = checkNode.distanceTo(point);
+			if(distanceToQueryPoint < closestDistance){
+				closestDistance = distanceToQueryPoint;
+				closestElement = checkNode;
+			}
+		}
+		return closestElement;
+	}
+
+	OSMNode getNearestRoad(Point2D point){
+    	try{
+			ArrayList<OSMNode> nodeList = new ArrayList<>();
+
+			for(WayType wayType: RouteHandler.getDrivableWayTypes()){
+				OSMNode checkNeighbor = kdTreeMap.get(wayType).getNearestNeighbor(point);
+				if(checkNeighbor != null) {
+					nodeList.add(checkNeighbor);
+				}
+			}
+
+			if(nodeList.isEmpty()){
+				throw new nothingNearbyException();
+			}
+
+			return getClosestNode(point, nodeList);
+
+    	}catch (nothingNearbyException e){
+    		e.printStackTrace();
+    		return null;
+		}
+	}
+
+	OSMNode getNearestBuilding(Point2D point){
+    	try {
+			OSMNode closestElement = kdTreeMap.get(WayType.BUILDING).getNearestNeighbor(point);
+
+			if(closestElement == null){
+				throw new nothingNearbyException();
+			}
+
+			return closestElement;
+			
+		}catch(nothingNearbyException e){
+    		e.printStackTrace();
+    		return null;
+		}
+
+
 	}
 }

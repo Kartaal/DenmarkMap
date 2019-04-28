@@ -113,12 +113,12 @@ public class Polyline implements Drawable, Serializable, BoundingBoxable {
 		gc.fill();
 	}
 
-	public double shortestDistance(double x, double y){
+	public double shortestDistance(Point2D point){
 		double nodeDistance;
 		double closestDistance = Double.POSITIVE_INFINITY;
 
 		for(OSMNode node: nodes){
-			nodeDistance = node.distanceTo(new Point2D(x, y));
+			nodeDistance = node.distanceTo(point);
 			if(nodeDistance < closestDistance){
 				closestDistance = nodeDistance;
 			}

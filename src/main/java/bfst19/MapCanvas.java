@@ -23,6 +23,7 @@ public class MapCanvas extends Canvas {
     //linear transformation object used to transform our data while preserving proportions between nodes
     public Affine transform = new Affine();
     Model model;
+    Controller controller;
     HashMap<WayType,Color> wayColors = new HashMap<>();
     boolean paintNonRoads = true;
     boolean hasPath = false;
@@ -34,9 +35,8 @@ public class MapCanvas extends Canvas {
 
 
 
-    public void init(Model model) {
+    public void init(Model model, Controller controller) {
         this.model = model;
-
         //conventions in screen coords and map coords are not the same,
         // so we convert to screen convention by flipping x y
         pan(-model.minlon, -model.maxlat);
@@ -146,7 +146,7 @@ public class MapCanvas extends Canvas {
             }
         }
         if(hasPath){
-            Iterator<Edge> iterator = model.pathIterator().next().iterator();
+            Iterator<Edge> iterator = controller.getpathIterator();
             while(iterator.hasNext()){
                 Edge edge = iterator.next();
                 OSMNode first = edge.getV();

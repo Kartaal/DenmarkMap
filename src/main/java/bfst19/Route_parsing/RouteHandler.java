@@ -7,6 +7,7 @@ import bfst19.WayType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 public class RouteHandler{
     private Model model;
@@ -14,6 +15,7 @@ public class RouteHandler{
     private HashMap<WayType,HashMap<String, ResizingArray<String[]>>> drivableCases;
     private HashMap<WayType,HashMap<Vehicle, Integer>> drivabillty;
     private HashMap<WayType,HashMap<Vehicle, Integer>> defaultDrivabillty;
+    private static Set<WayType> drivableWaytypes;
     HashMap<String,Integer> speedDefaults;
 
     /*public RouteHandler(Model model, EdgeWeightedGraph G){
@@ -33,12 +35,18 @@ public class RouteHandler{
             for(String vehicleTypeAndDrivable : drivableCases.get(wayType).keySet()){
                 String[] tokens = vehicleTypeAndDrivable.split(" ");
                 Vehicle vehicleType = Vehicle.valueOf(tokens[0]);
-                int defaultDrivable = Integer.valueOf(tokens[1]);
+                Drivabillity defaultDrivable = Drivabillity.valueToDrivabillity(Integer.valueOf(tokens[1]));
                 drivabillty.get(wayType).put(vehicleType,defaultDrivable);
             }
         }
         defaultDrivabillty = drivabillty;
 
+        drivableWaytypes = drivabillty.keySet();
+
+    }
+
+    public static Set<WayType> getDrivableWayTypes() {
+        return drivableWaytypes;
     }
 
     public Iterable<Edge> findPath(int startNodeId, int endNodeId,Vehicle type,boolean fastestpath){
@@ -146,10 +154,15 @@ public class RouteHandler{
             resetDrivabillty();
         }
     }
-
-    private void resetDrivabillty(){
+  
+   private void resetDrivabillty(){
         drivabillty = defaultDrivabillty;
     }
+
+
+ 
+
+
 
     public Iterable<Edge> getAdj(int id, Vehicle type) {
         return G.adj(id,type);

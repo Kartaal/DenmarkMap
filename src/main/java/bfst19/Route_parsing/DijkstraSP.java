@@ -27,8 +27,8 @@ public class DijkstraSP {
         pq.insert(s,distTo[s]);
         while (!pq.isEmpty()) {
             int v = pq.delMin();
-            for (Edge e : G.adj(v,type))
-                relax(e,v,type,fastestPath);
+            for (Edge e : G.adj(v, type))
+                relax(e, v, type, fastestPath);
         }
 
         // check optimality conditions

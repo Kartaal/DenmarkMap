@@ -1,22 +1,21 @@
 package bfst19;
-import bfst19.KDTree.Drawable;
 import bfst19.KDTree.KDTree;
 import bfst19.Line.OSMNode;
 import bfst19.Route_parsing.Edge;
-import bfst19.Route_parsing.EdgeWeightedGraph;
 import bfst19.Route_parsing.Vehicle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import java.io.IOException;
-import java.util.Iterator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+
+import java.io.IOException;
+import java.util.Iterator;
 
 public class Controller {
 
@@ -47,7 +46,7 @@ public class Controller {
     public void init(Model model) {
         //TODO: figure out init methods
         this.model = model;
-        mapCanvas.init(model);
+        mapCanvas.init(model,this);
 
 
         oldDeterminant = mapCanvas.getDeterminant();
@@ -72,6 +71,9 @@ public class Controller {
 
     public Iterator<String[]> getFoundMatchesIterator(){
         return model.foundMatchesIterator();
+    }
+    public Iterator<Edge> getpathIterator(){
+        return model.pathIterator();
     }
 
     public void parseSearchText(String searchText){
@@ -212,8 +214,7 @@ public class Controller {
                 break;
             case C:
 
-                model.foundPath.clear();
-                model.notifyPathObservers();
+                model.clearPath();
                 mapCanvas.repaint();
                 nodeIDs[0] = 0;
                 nodeIDs[1] = 0;
@@ -224,6 +225,7 @@ public class Controller {
             case E:
 
                 break;
+
         }
     }
 
@@ -256,18 +258,20 @@ public class Controller {
 
         //System.out.println(Math.abs((-time + prevtime) / 1e8));
         if (Math.abs((-time + prevtime) / 1e8) <= 3){
-            OSMNode something = model.kdTreeMap.get(WayType.ROAD_RESIDENTIAL).getNearestNeighbor(mapCanvas.getModelCoords(x,y));
+            OSMNode something = model.getNearestRoad(mapCanvas.getModelCoords(x,y));
             if(nodeIDs[0] == 0){
-
+                if(something!=null) {               
                 nodeIDs[0] = something.getId();
                 nodeIDs[1] = 0;
+                }
 
             } else if(nodeIDs[1] == 0){
                 nodeIDs[1] = something.getId();
                 Iterable<Edge> path = model.routeHandler.findPath(nodeIDs[0],nodeIDs[1], Vehicle.CAR, fastestBoolean);
-                model.foundPath.clear();
-                model.foundPath.add(path);
-                model.notifyPathObservers();
+                if(path != null){
+                    model.clearPath();
+                    model.addPath(path);
+                }
                 mapCanvas.repaint();
 
                 nodeIDs[0] = 0;
@@ -279,7 +283,7 @@ public class Controller {
         }
 
         if(e.isSecondaryButtonDown()){
-            OSMNode something = model.kdTreeMap.get(WayType.ROAD_RESIDENTIAL).getNearestNeighbor(mapCanvas.getModelCoords(x,y));
+            OSMNode something = model.getNearestRoad(mapCanvas.getModelCoords(x,y));
             double lonfactor = model.getLonfactor();
             System.out.println(lonfactor);
             System.out.println("Nearest OSMNode: " + something);
@@ -289,6 +293,10 @@ public class Controller {
 
     public static boolean KdTreeBoolean() {
         return kdTreeBoolean;
+    }
+
+    public void addPathObserver(InstructionContainer instructionContainer) {
+        model.addPathObserver(instructionContainer::showInstructions);
     }
 }
 
