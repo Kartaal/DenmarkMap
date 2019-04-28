@@ -8,9 +8,8 @@ import java.util.HashMap;
 public class Edge implements Serializable {
     //allways set length and speedlimit as the same unit of measurement, currently km
     String name;
-    private float length;
-    private int speedlLimit;
-
+    private double length;
+    private double speedlLimit;
     //-1 = you can't drive here
     //0 node v to node w
     //1 node w to node v
@@ -19,7 +18,7 @@ public class Edge implements Serializable {
     private OSMNode v;
     private OSMNode w;
 
-    public Edge(float length, int speedlLimit, OSMNode v, OSMNode w,String name,HashMap<Vehicle, Integer> vehicleTypeToDrivable) {
+    public Edge(double length, double speedlLimit, OSMNode v, OSMNode w,String name,HashMap<Vehicle, Drivabillity> vehicleTypeToDrivable) {
         this.length = length;
         this.speedlLimit = speedlLimit;
         this.v = v;
@@ -57,40 +56,44 @@ public class Edge implements Serializable {
     public OSMNode getW(){
         return w;
     }
+
+
     public String getName(){return name;}
-    public int either(){
-        return v.getId();
+
+    //todo make these dependt on a call with a specific node
+
+    public long either(){
+        return v.getAsLong();
     }
 
-    public int other(){
-        return w.getId();
+    public long other(){
+        return w.getAsLong();
     }
 
-    public int getOtherEnd(long id){
-        if(id==w.getId()){
-            return v.getId();
+    public long getOtherEnd(long id){
+        if(id==w.getAsLong()){
+            return v.getAsLong();
         }
-        return w.getId();
+        return w.getAsLong();
     }
-
 
     public OSMNode getOtherEndNode(OSMNode node){
-        if(node.getId()==w.getId()){
+        if(node.getAsLong()==w.getAsLong()){
             return v;
-        }else{
-        return w;
         }
+        return w;
+    }
 
     public boolean isForwardAllowed(Vehicle type, long id) {
         Drivabillity drivable = getDrivableFromVehicleType(type);
         if(drivable==Drivabillity.BOTHWAYS){
             return true;
-        }else if(v.getId()==id) {
+        }else if(v.getAsLong()==id) {
             if(drivable==Drivabillity.FORWARD){
                 return true;
             }
         //this will actually never happen, as the dataset never has data in such a way that it never happens
-        }else if(w.getId()==id){
+        }else if(w.getAsLong()==id){
             if(drivable==Drivabillity.BACKWARD){
                 return true;
             }

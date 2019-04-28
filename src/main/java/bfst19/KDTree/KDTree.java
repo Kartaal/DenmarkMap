@@ -1,13 +1,15 @@
 package bfst19.KDTree;
 
 import bfst19.Line.OSMNode;
-import bfst19.Route_parsing.ResizingArray;
+import bfst19.Model;
 import javafx.geometry.Point2D;
 import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+
 
 public class KDTree implements Serializable {
 	private KDNode root;
@@ -21,7 +23,7 @@ public class KDTree implements Serializable {
 	}
 
 	//Method for creating a KDTree from a list of Drawable
-	public void insertAll(ResizingArray<Drawable> list) {
+	public void insertAll(List<Drawable> list) {
 		//If tree is currently empty, do a lot of work
 		if(root == null) {
 			//Set xComp as the first comparator
@@ -53,7 +55,7 @@ public class KDTree implements Serializable {
 		}
 	}
 
-	private KDNode createTree(ResizingArray<Drawable> list, KDNode parentNode, int lo, int hi) {
+	private KDNode createTree(List<Drawable> list, KDNode parentNode, int lo, int hi) {
 		//Added to prevent errors when lo == hi (there was a WayType with 2 elements that caused this problem)
 		//TODO ensure correctness (still?)
 		if (hi < lo) return null;
@@ -103,12 +105,12 @@ public class KDTree implements Serializable {
 	public OSMNode getNearestNeighbor(Point2D point) {
 		//Returns node of the nearest neighbor to a point
 		int count = 0;
-		float distanceToQueryPoint;
-		float closestDistance = Float.POSITIVE_INFINITY;
+		double distanceToQueryPoint;
+		double closestDistance = Double.POSITIVE_INFINITY;
 		OSMNode closestElement = null;
-		float x = (float)point.getX();
-		float y = (float)point.getY();
-		float[] vals = {x, y, 0.0F, 0.0F};
+		double x = point.getX();
+		double y = point.getY();
+		Double[] vals = {x, y, 0.0000000, 0.0000000};
 		BoundingBox bbox = new BoundingBox(vals[0], vals[1], vals[2], vals[3]);
 		ArrayList<OSMNode> queryList = (ArrayList<OSMNode>) nodeRangeQuery(bbox);
 
@@ -129,7 +131,7 @@ public class KDTree implements Serializable {
 
 	}
 
-	private ArrayList<OSMNode> growBoundingBox(float[] vals) {
+	private ArrayList<OSMNode> growBoundingBox(Double[] vals) {
 		//Take the values of the bounding box, increase them slightly
 		BoundingBox bbox;
 		ArrayList<OSMNode> queryList;
@@ -147,14 +149,14 @@ public class KDTree implements Serializable {
 	}
 
 	//Method for finding elements in the KDTree that intersects a BoundingBox
-	public ResizingArray<Drawable> rangeQuery(BoundingBox bbox) {
-		ResizingArray<Drawable> returnElements = new ResizingArray<>();
+	public Iterable<Drawable> rangeQuery(BoundingBox bbox) {
+		List<Drawable> returnElements = new ArrayList<>();
 		rangeQuery(bbox, root, returnElements);
 		return returnElements;
 	}
 
 	//Recursive checks down through the KDTree
-	private ResizingArray<Drawable> rangeQuery(BoundingBox queryBB, KDNode node, ResizingArray<Drawable> returnElements) {
+	private List<Drawable> rangeQuery(BoundingBox queryBB, KDNode node, List<Drawable> returnElements) {
 		//Return null if current node is null to stop endless recursion
 		if (node == null) return null;
 
@@ -259,13 +261,13 @@ public class KDTree implements Serializable {
 	//Everything below this line is a modified version of code from Algs4
 
 	//From Algs4 book, modified
-	public void sort(ResizingArray<Drawable> a, Comparator<BoundingBoxable> comp) {
+	public void sort(List<Drawable> a, Comparator<BoundingBoxable> comp) {
 		//shuffle(a);
 		sort(a, 0, a.size() - 1, comp);
 	}
 
 	// quicksort the subarray from a[lo] to a[hi]
-	private void sort(ResizingArray<Drawable> a, int lo, int hi, Comparator<BoundingBoxable> comp) {
+	private void sort(List<Drawable> a, int lo, int hi, Comparator<BoundingBoxable> comp) {
 		if (hi <= lo) return;
 		int j = partition(a, lo, hi, comp);
 		sort(a, lo, j-1, comp);
@@ -273,7 +275,7 @@ public class KDTree implements Serializable {
 	}
 
 	//From Algs4 book
-	private int partition(ResizingArray<Drawable> a, int lo, int hi, Comparator<BoundingBoxable> comp)
+	private int partition(List<Drawable> a, int lo, int hi, Comparator<BoundingBoxable> comp)
 	{ // Partition into a[lo..i-1], a[i], a[i+1..hi].
 		int i = lo, j = hi+1; // left and right scan indices
 		Drawable v = a.get(lo); // partitioning item
@@ -289,7 +291,7 @@ public class KDTree implements Serializable {
 	}
 
 	//From Algs4 book
-	private void exch(ResizingArray<Drawable> a, int i, int j) {
+	private void exch(List<Drawable> a, int i, int j) {
 		Drawable t = a.get(i);
 		a.set(i, a.get(j));
 		a.set(j, t);

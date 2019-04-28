@@ -30,7 +30,7 @@ public class AddressParser {
     }
 
     public class Builder {
-        private int id;
+        private long id;
         private float lat, lon;
         private String streetName = "Unknown", houseNumber="", postcode="", city="",floor="",side="";
         public Builder houseNumber(String _house)   { houseNumber = _house;   return this; }
@@ -112,9 +112,10 @@ public class AddressParser {
         if(!b.streetName.equals("Unknown")&&!b.city.equals("")&&!b.postcode.equals("")){
             String[] address = getAddress(country, b.city, b.postcode, b.streetName, b.houseNumber,true).get(0);
             if(!address[0].equals("")) {
-                b.lat = Float.valueOf(address[0]);
-                b.lon = Float.valueOf(address[1]);
-                b.houseNumber = address[2];
+                b.id = Long.valueOf(address[0]);
+                b.lat = Float.valueOf(address[1]);
+                b.lon = Float.valueOf(address[2]);
+                b.houseNumber = address[3];
             }
         }
         return b.build();
@@ -137,7 +138,7 @@ public class AddressParser {
             for(int i = 0 ; i <= addressesOnStreet.size()-1 ; i++){
                 address = addressesOnStreet.get(i);
                 addressFields=address.split(" ");
-                if(addressFields[2].toLowerCase().equalsIgnoreCase(houseNumber)){
+                if(addressFields[3].toLowerCase().equalsIgnoreCase(houseNumber)){
                     matches.add(addressFields);
                     return matches;
                 }

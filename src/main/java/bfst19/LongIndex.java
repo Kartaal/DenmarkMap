@@ -1,52 +1,39 @@
 package bfst19;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.function.LongSupplier;
 
-public class LongIndex{
-	private long[] a;
-	private int n;
+//this is for storing LongSuppliers, if unsorted the array sorts itself so get() can utilize binary search
+public class LongIndex<T extends LongSupplier> {
+	private ArrayList<T> elms = new ArrayList<>();
 	private boolean sorted = false;
 
-	public LongIndex(){
-		a = new long[2];
-	}
-
-	public void add(long id) {
-		if (n == a.length) resize(2 * a.length);    // double size of array if necessary
-		a[n++] = id;                            // add item
+	public void add(T elm) {
+		elms.add(elm);
 		sorted = false;
 	}
 
-	// resize the underlying array holding the elements
-	private void resize(int capacity) {
-		assert capacity >= n;
-
-		// textbook implementation
-		long[] temp =  new long[capacity];
-		for (int i = 0; i < n; i++) {
-			temp[i] = a[i];
-		}
-		a = temp;
-
-		// alternative implementation
-		// a = java.util.Arrays.copyOf(a, capacity);
-	}
-
-	public int get(long ref) {
+	public T get(long ref) {
 		if (!sorted) {
-			trim();
-			Arrays.sort(a);
+			elms.sort(Comparator.comparing(T::getAsLong));
 			sorted = true;
 		}
-		int res = Arrays.binarySearch(a,ref);
-		if (res >= 0){
-			return res;
-		}else{
-			return -1;
+		int lo = 0;
+		int hi = elms.size();
+		while (hi - lo > 1) {
+			int mi = lo + (hi - lo) / 2;
+			if (ref < elms.get(mi).getAsLong()) {
+				hi = mi;
+			} else {
+				lo = mi;
+			}
 		}
-	}
-
-	public void trim(){
-		resize(n);
+		T elm = elms.get(lo);
+		if (elm.getAsLong() == ref) {
+			return elm;
+		} else {
+			return null;
+		}
 	}
 }

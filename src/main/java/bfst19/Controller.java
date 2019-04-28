@@ -26,7 +26,7 @@ public class Controller {
     private boolean fastestBoolean = false;
     private static boolean kdTreeBoolean = false;
     private long time;
-    private int[] nodeIDs = new int[2];
+    private long[] nodeIDs = new long[2];
 
 
 
@@ -67,6 +67,10 @@ public class Controller {
 
     public Model getModel(){
         return model;
+    }
+
+    public Double getDistanceFromModel(double startLat, double startLon, double endLat, double endLon){
+        return model.calculateDistanceInMeters(startLat,startLon,endLat,endLon);
     }
 
     public Iterator<String[]> getFoundMatchesIterator(){
@@ -260,13 +264,13 @@ public class Controller {
         if (Math.abs((-time + prevtime) / 1e8) <= 3){
             OSMNode something = model.getNearestRoad(mapCanvas.getModelCoords(x,y));
             if(nodeIDs[0] == 0){
-                if(something!=null) {               
-                nodeIDs[0] = something.getId();
-                nodeIDs[1] = 0;
+                if(something!=null) {
+                    nodeIDs[0] = something.getAsLong();
+                    nodeIDs[1] = 0;
                 }
 
             } else if(nodeIDs[1] == 0){
-                nodeIDs[1] = something.getId();
+                nodeIDs[1] = something.getAsLong();
                 Iterable<Edge> path = model.routeHandler.findPath(nodeIDs[0],nodeIDs[1], Vehicle.CAR, fastestBoolean);
                 if(path != null){
                     model.clearPath();
