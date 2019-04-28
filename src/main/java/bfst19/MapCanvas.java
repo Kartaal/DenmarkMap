@@ -4,6 +4,7 @@ import bfst19.Line.OSMNode;
 import bfst19.Route_parsing.Edge;
 import bfst19.KDTree.BoundingBox;
 import bfst19.KDTree.Drawable;
+import bfst19.Route_parsing.ResizingArray;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -65,7 +66,7 @@ public class MapCanvas extends Canvas {
         //checks if the file contains coastlines or not, if not set background color to white
         // This assumes that the dataset contains either a fully closed coastline, or a dataset without any coastlines at all.
         // otherwise set background color to blue
-        if (model.getWaysOfType(WayType.COASTLINE, new BoundingBox(model.minlon, model.minlat, model.maxlon, model.maxlat)).iterator().hasNext()) {
+        if (model.getWaysOfType(WayType.COASTLINE, new BoundingBox(model.minlon, model.minlat, model.maxlon, model.maxlat)).size() >= 0) {
             gc.setFill(getColor(WayType.WATER));
         } else {
             gc.setFill(Color.WHITE);
@@ -82,12 +83,16 @@ public class MapCanvas extends Canvas {
 
         //color for landmasses with nothing drawn on top
         gc.setFill(Color.WHITE);
-        for (Drawable way : model.getWaysOfType(WayType.COASTLINE, getExtentInModel())) {
+        ResizingArray<Drawable> ways = model.getWaysOfType(WayType.COASTLINE, getExtentInModel());
+        for(int i = 0 ; i < ways.size() ; i++){
+            Drawable way = ways.get(i);
             way.fill(gc,singlePixelLength,percentOfScreenArea);
         }
 
         gc.setFill(getColor(WayType.WATER));
-        for (Drawable way : model.getWaysOfType(WayType.WATER, getExtentInModel())) {
+        ways = model.getWaysOfType(WayType.WATER, getExtentInModel());
+        for(int i = 0 ; i < ways.size() ; i++){
+            Drawable way = ways.get(i);
             way.fill(gc,singlePixelLength,percentOfScreenArea);
         }
 
@@ -98,18 +103,23 @@ public class MapCanvas extends Canvas {
             for (WayType type : WayType.values()) {
                 if (!(type.isRoadOrSimilar()) && type.levelOfDetail() < detailLevel) {
                     if(type != WayType.COASTLINE) {
+
+                        ways = model.getWaysOfType(type, getExtentInModel());
                         gc.setFill(getColor(type));
-                        for (Drawable way : model.getWaysOfType(type, getExtentInModel())) way.fill(gc,singlePixelLength,percentOfScreenArea);
+                        for(int i = 0 ; i < ways.size() ; i++){
+                            Drawable way = ways.get(i);
+                            way.fill(gc,singlePixelLength,percentOfScreenArea);
+                        }
                     }
                 } else if (type.isRoadOrSimilar() && type.levelOfDetail() < detailLevel) {
 
                     if (type != WayType.COASTLINE && type != WayType.UNKNOWN) {
                         gc.setStroke(getColor(type));
                         gc.setLineWidth(0.1 * (1/(2000/(getDeterminant()))));
-                        for (Drawable way : model.getWaysOfType(type, getExtentInModel())){
-
+                        ways = model.getWaysOfType(type, getExtentInModel());
+                        for(int i = 0 ; i < ways.size() ; i++){
+                            Drawable way = ways.get(i);
                             way.stroke(gc,singlePixelLength);
-
                         }
                     }
 
@@ -126,7 +136,9 @@ public class MapCanvas extends Canvas {
                     }else{
                         gc.setStroke(getColor(type));
                         gc.setLineWidth(0.1 * (1/(2000/(getDeterminant()))));
-                        for (Drawable way : model.getWaysOfType(type, getExtentInModel())){
+                        ways = model.getWaysOfType(type, getExtentInModel());
+                        for(int i = 0 ; i < ways.size() ; i++){
+                            Drawable way = ways.get(i);
                             way.stroke(gc,singlePixelLength);
                         }
                     }

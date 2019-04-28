@@ -161,14 +161,14 @@ public class KDTree implements Serializable {
 
 
 	//Method for finding elements in the KDTree that intersects a BoundingBox
-	public Iterable<Drawable> rangeQuery(BoundingBox bbox) {
-		List<Drawable> returnElements = new ArrayList<>();
+	public ResizingArray<Drawable> rangeQuery(BoundingBox bbox) {
+		ResizingArray<Drawable> returnElements = new ResizingArray<>();
 		rangeQuery(bbox, root, returnElements);
 		return returnElements;
 	}
 
 	//Recursive checks down through the KDTree
-	private List<Drawable> rangeQuery(BoundingBox queryBB, KDNode node, List<Drawable> returnElements) {
+	private ResizingArray<Drawable> rangeQuery(BoundingBox queryBB, KDNode node, ResizingArray<Drawable> returnElements) {
 		//Return null if current node is null to stop endless recursion
 		if (node == null) return null;
 

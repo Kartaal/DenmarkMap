@@ -76,8 +76,8 @@ public class Model{
 		}
 	}
 
-	//TODO filthy disgusting typecasting
-	public Iterable<Drawable> getWaysOfType(WayType type, BoundingBox bbox) {
+
+	public ResizingArray<Drawable> getWaysOfType(WayType type, BoundingBox bbox) {
 		return kdTreeMap.get(type).rangeQuery(bbox);
 	}
 	public void addPathObserver(Runnable observer){pathObservers.add(observer);}
