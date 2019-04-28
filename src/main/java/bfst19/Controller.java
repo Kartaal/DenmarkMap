@@ -262,11 +262,13 @@ public class Controller {
             if(nodeIDs[0] == 0){
                 if(something!=null) {               
                 nodeIDs[0] = something.getId();
+                System.out.println(something.getId());
                 nodeIDs[1] = 0;
                 }
 
             } else if(nodeIDs[1] == 0){
                 nodeIDs[1] = something.getId();
+                System.out.println(something.getId());
                 Iterable<Edge> path = model.routeHandler.findPath(nodeIDs[0],nodeIDs[1], Vehicle.CAR, fastestBoolean);
                 if(path != null){
                     model.clearPath();

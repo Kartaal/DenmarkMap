@@ -19,7 +19,7 @@ public class Edge implements Serializable {
     private OSMNode v;
     private OSMNode w;
 
-    public Edge(float length, int speedlLimit, OSMNode v, OSMNode w,String name,HashMap<Vehicle, Integer> vehicleTypeToDrivable) {
+    public Edge(float length, int speedlLimit, OSMNode v, OSMNode w,String name,HashMap<Vehicle, Drivabillity> vehicleTypeToDrivable) {
         this.length = length;
         this.speedlLimit = speedlLimit;
         this.v = v;
@@ -74,12 +74,13 @@ public class Edge implements Serializable {
     }
 
 
-    public OSMNode getOtherEndNode(OSMNode node){
-        if(node.getId()==w.getId()){
+    public OSMNode getOtherEndNode(OSMNode node) {
+        if (node.getId() == w.getId()) {
             return v;
-        }else{
-        return w;
+        } else {
+            return w;
         }
+    }
 
     public boolean isForwardAllowed(Vehicle type, long id) {
         Drivabillity drivable = getDrivableFromVehicleType(type);
@@ -121,3 +122,4 @@ public class Edge implements Serializable {
         return "name: "+name +" Length: "+length+"m "+" bike: "+getDrivableFromVehicleType(Vehicle.BIKE)+" Car: "+getDrivableFromVehicleType(Vehicle.CAR)+" walking: "+getDrivableFromVehicleType(Vehicle.WALKING)+" "+speedlLimit+" Node v:" + v.toString() + " Node W:" + w.toString();
     }
 }
+

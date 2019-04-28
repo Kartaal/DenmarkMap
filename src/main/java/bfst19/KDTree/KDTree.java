@@ -1,6 +1,7 @@
 package bfst19.KDTree;
 
 import bfst19.Line.OSMNode;
+import bfst19.Model;
 import bfst19.Route_parsing.ResizingArray;
 import javafx.geometry.Point2D;
 import java.io.Serializable;

@@ -13,8 +13,8 @@ public class RouteHandler{
     private Model model;
     private EdgeWeightedGraph G;
     private HashMap<WayType,HashMap<String, ResizingArray<String[]>>> drivableCases;
-    private HashMap<WayType,HashMap<Vehicle, Integer>> drivabillty;
-    private HashMap<WayType,HashMap<Vehicle, Integer>> defaultDrivabillty;
+    private HashMap<WayType,HashMap<Vehicle, Drivabillity>> drivabillty;
+    private HashMap<WayType,HashMap<Vehicle, Drivabillity>> defaultDrivabillty;
     private static Set<WayType> drivableWaytypes;
     HashMap<String,Integer> speedDefaults;
 
@@ -40,7 +40,6 @@ public class RouteHandler{
             }
         }
         defaultDrivabillty = drivabillty;
-
         drivableWaytypes = drivabillty.keySet();
 
     }
@@ -105,7 +104,7 @@ public class RouteHandler{
                     String[] caseTokens = vehicleCases.get(i);
                     if(k.equals(caseTokens[0])&&v.equals(caseTokens[1])){
                         Vehicle vehicletype = Vehicle.valueOf(vehicletypeAndDrivable.split(" ")[0]);
-                        drivabillty.get(waytype).put(vehicletype,Integer.valueOf(caseTokens[2]));
+                        drivabillty.get(waytype).put(vehicletype,Drivabillity.valueToDrivabillity(Integer.valueOf(caseTokens[2])));
                     }
                 }
             }
@@ -123,7 +122,7 @@ public class RouteHandler{
     }
 
     public void addWayToNodeGraph(OSMWay way, WayType type, String name, int speedlimit) {
-        HashMap<Vehicle,Integer> drivabilltyForWay = drivabillty.get(type);
+        HashMap<Vehicle,Drivabillity> drivabilltyForWay = drivabillty.get(type);
         OSMNode previousnode = way.get(0);
 
         previousnode.setId(G.V());
@@ -154,15 +153,10 @@ public class RouteHandler{
             resetDrivabillty();
         }
     }
-  
-   private void resetDrivabillty(){
+
+    private void resetDrivabillty(){
         drivabillty = defaultDrivabillty;
     }
-
-
- 
-
-
 
     public Iterable<Edge> getAdj(int id, Vehicle type) {
         return G.adj(id,type);

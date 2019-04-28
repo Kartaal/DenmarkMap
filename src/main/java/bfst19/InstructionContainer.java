@@ -48,17 +48,17 @@ public class InstructionContainer extends VBox {
             OSMNode previousHead;
             OSMNode currentBase;
             OSMNode currentHead;
-            if (previousV.getAsLong() == newV.getAsLong()) {
+            if (previousV.getId() == newV.getId()) {
                 previousHead = previousV;
                 previousBase = previousW;
                 currentBase = newV;
                 currentHead = newW;
-            } else if (previousW.getAsLong() == newV.getAsLong()) {
+            } else if (previousW.getId() == newV.getId()) {
                 previousHead = previousW;
                 previousBase = previousV;
                 currentBase = newV;
                 currentHead = newW;
-            } else if (previousV.getAsLong() == newW.getAsLong()) {
+            } else if (previousV.getId() == newW.getId()) {
                 previousHead = previousV;
                 previousBase = previousW;
                 currentBase = newW;

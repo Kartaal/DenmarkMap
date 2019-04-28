@@ -64,7 +64,7 @@ public class MultiPolyline implements Drawable, Serializable, BoundingBoxable {
 	}
 
 
-	public double shortestDistance(Point2D point){
+	/*public double shortestDistance(Point2D point){
 		double lineDistance;
 		double closestDistance = Double.POSITIVE_INFINITY;
 		for(int i = 0 ; i < lines.size() ; i++) {
@@ -74,7 +74,7 @@ public class MultiPolyline implements Drawable, Serializable, BoundingBoxable {
 			}
 		}
 		return closestDistance;
-	}
+	}*/
 
 	@Override
 	public BoundingBox getBB() {
