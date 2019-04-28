@@ -4,6 +4,7 @@ import bfst19.Line.OSMNode;
 import bfst19.Route_parsing.Edge;
 import bfst19.KDTree.BoundingBox;
 import bfst19.KDTree.Drawable;
+import bfst19.Route_parsing.ResizingArray;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -36,7 +37,6 @@ public class MapCanvas extends Canvas {
 
     public void init(Model model, Controller controller) {
         this.model = model;
-        this.controller=controller;
         //conventions in screen coords and map coords are not the same,
         // so we convert to screen convention by flipping x y
         pan(-model.minlon, -model.maxlat);
@@ -66,7 +66,7 @@ public class MapCanvas extends Canvas {
         //checks if the file contains coastlines or not, if not set background color to white
         // This assumes that the dataset contains either a fully closed coastline, or a dataset without any coastlines at all.
         // otherwise set background color to blue
-        if (model.getWaysOfType(WayType.COASTLINE, new BoundingBox(model.minlon, model.minlat, model.maxlon, model.maxlat)).iterator().hasNext()) {
+        if (model.getWaysOfType(WayType.COASTLINE, new BoundingBox(model.minlon, model.minlat, model.maxlon, model.maxlat)).size() >= 0) {
             gc.setFill(getColor(WayType.WATER));
         } else {
             gc.setFill(Color.WHITE);
@@ -83,12 +83,16 @@ public class MapCanvas extends Canvas {
 
         //color for landmasses with nothing drawn on top
         gc.setFill(Color.WHITE);
-        for (Drawable way : model.getWaysOfType(WayType.COASTLINE, getExtentInModel())) {
+        ResizingArray<Drawable> ways = model.getWaysOfType(WayType.COASTLINE, getExtentInModel());
+        for(int i = 0 ; i < ways.size() ; i++){
+            Drawable way = ways.get(i);
             way.fill(gc,singlePixelLength,percentOfScreenArea);
         }
 
         gc.setFill(getColor(WayType.WATER));
-        for (Drawable way : model.getWaysOfType(WayType.WATER, getExtentInModel())) {
+        ways = model.getWaysOfType(WayType.WATER, getExtentInModel());
+        for(int i = 0 ; i < ways.size() ; i++){
+            Drawable way = ways.get(i);
             way.fill(gc,singlePixelLength,percentOfScreenArea);
         }
 
@@ -99,18 +103,23 @@ public class MapCanvas extends Canvas {
             for (WayType type : WayType.values()) {
                 if (!(type.isRoadOrSimilar()) && type.levelOfDetail() < detailLevel) {
                     if(type != WayType.COASTLINE) {
+
+                        ways = model.getWaysOfType(type, getExtentInModel());
                         gc.setFill(getColor(type));
-                        for (Drawable way : model.getWaysOfType(type, getExtentInModel())) way.fill(gc,singlePixelLength,percentOfScreenArea);
+                        for(int i = 0 ; i < ways.size() ; i++){
+                            Drawable way = ways.get(i);
+                            way.fill(gc,singlePixelLength,percentOfScreenArea);
+                        }
                     }
                 } else if (type.isRoadOrSimilar() && type.levelOfDetail() < detailLevel) {
 
                     if (type != WayType.COASTLINE && type != WayType.UNKNOWN) {
                         gc.setStroke(getColor(type));
                         gc.setLineWidth(0.1 * (1/(2000/(getDeterminant()))));
-                        for (Drawable way : model.getWaysOfType(type, getExtentInModel())){
-
+                        ways = model.getWaysOfType(type, getExtentInModel());
+                        for(int i = 0 ; i < ways.size() ; i++){
+                            Drawable way = ways.get(i);
                             way.stroke(gc,singlePixelLength);
-
                         }
                     }
 
@@ -127,7 +136,9 @@ public class MapCanvas extends Canvas {
                     }else{
                         gc.setStroke(getColor(type));
                         gc.setLineWidth(0.1 * (1/(2000/(getDeterminant()))));
-                        for (Drawable way : model.getWaysOfType(type, getExtentInModel())){
+                        ways = model.getWaysOfType(type, getExtentInModel());
+                        for(int i = 0 ; i < ways.size() ; i++){
+                            Drawable way = ways.get(i);
                             way.stroke(gc,singlePixelLength);
                         }
                     }
@@ -166,10 +177,10 @@ public class MapCanvas extends Canvas {
 
     private BoundingBox getBoundsDebug() {
         Bounds localBounds = this.getBoundsInLocal();
-        double minX = localBounds.getMinX() + 250;
-        double maxX = localBounds.getMaxX() - 250;
-        double minY = localBounds.getMinY() + 250;
-        double maxY = localBounds.getMaxY() - 250;
+        float minX =(float) localBounds.getMinX() + 250;
+        float maxX =(float) localBounds.getMaxX() - 250;
+        float minY =(float) localBounds.getMinY() + 250;
+        float maxY =(float) localBounds.getMaxY() - 250;
 
         //Flip the boundingbox' y-coords, as the rendering is flipped, but the model isn't.
         Point2D minPoint = getModelCoords(minX, maxY);
@@ -184,23 +195,23 @@ public class MapCanvas extends Canvas {
         gc.lineTo(minPoint.getX(), minPoint.getY());
         gc.stroke();
 
-        return new BoundingBox(minPoint.getX(), minPoint.getY(),
-                maxPoint.getX()-minPoint.getX(), maxPoint.getY()-minPoint.getY());
+        return new BoundingBox((float)minPoint.getX(), (float)minPoint.getY(),
+                (float)(maxPoint.getX()-minPoint.getX()), (float)(maxPoint.getY()-minPoint.getY()));
     }
 
     public BoundingBox getBounds() {
         Bounds localBounds = this.getBoundsInLocal();
-        double minX = localBounds.getMinX();
-        double maxX = localBounds.getMaxX();
-        double minY = localBounds.getMinY();
-        double maxY = localBounds.getMaxY();
+        float minX = (float)localBounds.getMinX();
+        float maxX = (float)localBounds.getMaxX();
+        float minY = (float)localBounds.getMinY();
+        float maxY = (float)localBounds.getMaxY();
 
         //Flip the boundingbox' y-coords, as the rendering is flipped, but the model isn't.
         Point2D minPoint = getModelCoords(minX, maxY);
         Point2D maxPoint = getModelCoords(maxX, minY);
 
-        return new BoundingBox(minPoint.getX(), minPoint.getY(),
-                maxPoint.getX()-minPoint.getX(), maxPoint.getY()-minPoint.getY());
+        return new BoundingBox((float)minPoint.getX(), (float)minPoint.getY(),
+                (float)(maxPoint.getX()-minPoint.getX()), (float)(maxPoint.getY()-minPoint.getY()));
     }
 
     private Color getColor(WayType type) { return wayColors.get(type); }
