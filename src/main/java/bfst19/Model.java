@@ -1,5 +1,6 @@
 package bfst19;
 
+import bfst19.Exceptions.nothingNearbyException;
 import bfst19.KDTree.BoundingBox;
 import bfst19.KDTree.Drawable;
 import bfst19.KDTree.KDTree;
@@ -7,6 +8,8 @@ import bfst19.Route_parsing.*;
 import bfst19.Line.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Point2D;
+
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -18,7 +21,7 @@ import static javax.xml.stream.XMLStreamConstants.*;
 
 public class Model{
 	RouteHandler routeHandler;
-	private float lonfactor = 1.0f;
+	private static float lonfactor = 1.0f;
 	private boolean colorBlindEnabled;
 	private String datasetName;
 	HashMap<Long,String> pointsOfInterest = new HashMap<>();
@@ -42,7 +45,7 @@ public class Model{
 
     //for building addresses during parsing
 	public static class Builder {
-		private long id;
+		private int id;
 		private float lat, lon;
 		private String streetName = "Unknown", houseNumber="", postcode="", city="",municipality="";
 
@@ -76,11 +79,24 @@ public class Model{
 		}
 	}
 
-	//TODO filthy disgusting typecasting
-	public Iterable<Drawable> getWaysOfType(WayType type, BoundingBox bbox) {
+
+	public ResizingArray<Drawable> getWaysOfType(WayType type, BoundingBox bbox) {
 		return kdTreeMap.get(type).rangeQuery(bbox);
 	}
 	public void addPathObserver(Runnable observer){pathObservers.add(observer);}
+
+	public void addPath(Iterable<Edge> path){
+        foundPath.add(path);
+        notifyPathObservers();
+    }
+
+    public void clearPath(){
+        if(!foundPath.isEmpty()){
+            foundPath.clear();
+            notifyPathObservers();
+        }
+    }
+
 	public void addFoundMatchesObserver(Runnable observer) {
 		foundMatchesObservers.add(observer);
 	}
@@ -124,9 +140,9 @@ public class Model{
 	public Model(List<String> args) throws IOException, XMLStreamException, ClassNotFoundException {
 
 		//Changed from field to local variable so it can be garbage collected
-		Map<WayType, List<Drawable>> ways = new EnumMap<>(WayType.class);
+		Map<WayType, ResizingArray<Drawable>> ways = new EnumMap<>(WayType.class);
 		for (WayType type : WayType.values()) {
-			ways.put(type, new ArrayList<>());
+			ways.put(type, new ResizingArray<>());
 		}
 
 		//todo figure out how to do singleton but also include model in its constructor without needing to give model for every call of getInstance
@@ -175,12 +191,11 @@ public class Model{
 				output.writeObject(routeHandler.getNodeGraph());
 			}
 		}
-
         AddressParser.getInstance(this).setDefaults(textHandler.getDefault(getDatasetName()));
         AddressParser.getInstance(this).parseCitiesAndPostCodes(textHandler.getCities(this, getDatasetName()));
 	}
 
-	public double getLonfactor(){
+	public static double getLonfactor(){
 		return lonfactor;
 	}
 
@@ -190,8 +205,7 @@ public class Model{
 
 		if (colorBlindEnabled) {
 			CurrentTypeColorTxt = ("src/main/resources/config/TypeColorsColorblind.txt");
-		}
-		else {
+		}  else {
 			CurrentTypeColorTxt = ("src/main/resources/config/TypeColorsNormal.txt");
 		}
 		ParseWayColors();
@@ -200,19 +214,22 @@ public class Model{
 
 	private void parseOSM(InputStream osmsource) throws XMLStreamException {
 		//Changed from field to local variable so it can be garbage collected
-		Map<WayType, List<Drawable>> ways = new EnumMap<>(WayType.class);
+		Map<WayType, ResizingArray<Drawable>> ways = new EnumMap<>(WayType.class);
 		for (WayType type : WayType.values()) {
-			ways.put(type, new ArrayList<>());
+			ways.put(type, new ResizingArray<>());
 		}
 		EdgeWeightedGraph nodeGraph = new EdgeWeightedGraph();
 		//todo change to other hashmaps or do something else
-		routeHandler = new RouteHandler(this,nodeGraph,new HashMap<>(),new HashMap<>());
+		routeHandler = new RouteHandler(this,nodeGraph);
 		XMLStreamReader reader = XMLInputFactory
 				.newInstance()
 				.createXMLStreamReader(osmsource);
 
-		LongIndex<OSMNode> idToNode = new LongIndex<>();
-		LongIndex<OSMWay> idToWay = new LongIndex<>();
+		LongIndex idToNodeIndex = new LongIndex();
+		LongIndex idToWayIndex = new LongIndex();
+
+		ResizingArray<OSMNode> tempNodes = new ResizingArray<>();
+		ResizingArray<OSMWay> tempWays = new ResizingArray<>();
 		ArrayList<Address> addresses = new ArrayList<>();
 		List<OSMWay> coast = new ArrayList<>();
 
@@ -221,7 +238,7 @@ public class Model{
 		OSMRelation rel = null;
 		WayType type = null;
 
-		double speedlimit = 0;
+		int speedlimit = 0;
 		String name = "";
 
 		//variables for addressParsing and OSMNode creation
@@ -247,24 +264,25 @@ public class Model{
 							id = Long.parseLong(reader.getAttributeValue(null, "id"));
 							lat = Float.parseFloat(reader.getAttributeValue(null, "lat"));
 							lon = Float.parseFloat(reader.getAttributeValue(null, "lon"));
-							idToNode.add(new OSMNode(id, lon*lonfactor, lat));
+							idToNodeIndex.add(id);
+							tempNodes.add(new OSMNode(tempNodes.size(), lon*lonfactor, lat));
 							break;
 						case "way":
 							id = Long.parseLong(reader.getAttributeValue(null, "id"));
 							type = WayType.UNKNOWN;
-							way = new OSMWay(id);
-
-							idToWay.add(way);
+							way = new OSMWay(tempWays.size());
+							idToWayIndex.add(id);
+							tempWays.add(way);
 							break;
 						case "nd":
 							long ref = Long.parseLong(reader.getAttributeValue(null, "ref"));
-							way.add(idToNode.get(ref));
+							way.add(tempNodes.get(idToNodeIndex.get(ref)));
 							break;
 						case "tag":
 							String k = reader.getAttributeValue(null, "k");
 							String v = reader.getAttributeValue(null, "v");
 
-              if(k.equals("addr:housenumber")) {
+              				if(k.equals("addr:housenumber")) {
 								b.houseNumber = v.trim();
 							}
 
@@ -314,7 +332,7 @@ public class Model{
 									speedlimit = 130;
 								}else if(v.equalsIgnoreCase("default")||v.equalsIgnoreCase("implicit")||v.equalsIgnoreCase("none")||v.equalsIgnoreCase("signals")||v.equalsIgnoreCase("5 knots")){
 								}else{
-									speedlimit = Double.valueOf(v);
+									speedlimit = Math.round(Float.valueOf(v));
 								}
 							}
 
@@ -337,7 +355,7 @@ public class Model{
 									break;
 								case "member":
 									ref = Long.parseLong(reader.getAttributeValue(null, "ref"));
-									OSMWay member = idToWay.get(ref);
+									OSMWay member = tempWays.get(idToWayIndex.get(ref));
 									if (member != null) rel.add(member);
 									break;
 							}
@@ -348,31 +366,33 @@ public class Model{
 							break;
 						case "member":
 							ref = Long.parseLong(reader.getAttributeValue(null, "ref"));
-							OSMWay member = idToWay.get(ref);
-							if (member != null) rel.add(member);
+							int index = idToWayIndex.get(ref);
+							if(!(index < 0)){
+								OSMWay member = tempWays.get(idToWayIndex.get(ref));
+								if (member != null) rel.add(member);
+							}
 							break;
 					}
 					break;
 				case END_ELEMENT:
 					switch (reader.getLocalName()) {
 						case "way":
-							if (type == WayType.COASTLINE) {
-								coast.add(way);
-							} else {
-								ways.get(type).add(new Polyline(way));
-							}
 
 							//checks if the current waytype is one
 							// of the one's that should be in the nodegraph
-							if(routeHandler.isNodeGraphWay(type)) {
-								if(way.getAsLong()==199123707){
-									System.out.print("boop");
-								}
+							boolean isNodeGraphWay = routeHandler.isNodeGraphWay(type);
+							if(isNodeGraphWay) {
 								routeHandler.addWayToNodeGraph(way, type,name,speedlimit);
 							}
 
+							if (type == WayType.COASTLINE) {
+								coast.add(way);
+							} else {
+								ways.get(type).add(new Polyline(way,isNodeGraphWay));
+							}
+
 							if(b.hasFields()) {
-								b.id = id;
+								b.id = tempNodes.size();
 								b.lat = lat;
 								b.lon = lon;
 								addresses.add(b.build());
@@ -386,7 +406,7 @@ public class Model{
 							break;
 						case "node":
 							if(b.hasFields()) {
-								b.id = id;
+								b.id = tempNodes.size();
 								b.lat = lat;
 								b.lon = lon;
 								addresses.add(b.build());
@@ -431,23 +451,27 @@ public class Model{
 				case SPACE: break;
 				case START_DOCUMENT: break;
 				case END_DOCUMENT:
-					//TODO Do we need this variable? IntelliJ says it is unused
-					File parseCheck = new File("data/" + getDatasetName());
-					addresses.sort(Address::compareTo);
-					textHandler.makeDatabase(this, addresses, getDatasetName());
-
+					tempNodes = null;
+					tempWays = null;
+					idToNodeIndex = null;
+					idToWayIndex = null;
+					routeHandler.finishNodeGraph();
 					for (OSMWay c : merge(coast)) {
-						ways.get(WayType.COASTLINE).add(new Polyline(c));
+						ways.get(WayType.COASTLINE).add(new Polyline(c,false));
 					}
 
 					//Make and populate KDTrees for each WayType
-					for(Map.Entry<WayType, List<Drawable>> entry : ways.entrySet()) {
+					for(Map.Entry<WayType, ResizingArray<Drawable>> entry : ways.entrySet()) {
 						KDTree typeTree = new KDTree();
 						//Add entry values to KDTree
 						typeTree.insertAll(entry.getValue());
 						//Add KDTree to TreeMap
 						kdTreeMap.put(entry.getKey(), typeTree);
 					}
+
+					//addresses.sort(Address::compareTo);
+					//textHandler.makeDatabase(this, addresses, getDatasetName());
+					addresses = null;
 					break;
 				case ENTITY_REFERENCE: break;
 				case ATTRIBUTE: break;
@@ -461,7 +485,7 @@ public class Model{
 	}
 
 
-	public double calculateDistanceInMeters(double startLat, double startLon, double endLat, double endLon){
+	public float calculateDistanceInMeters(double startLat, double startLon, double endLat, double endLon){
 		//Found the formula on https://www.movable-type.co.uk/scripts/latlong.html
 		//Basically the same code as is shown on the site mentioned above
 		final int R = 6371000; // CA. Earth radius in meters
@@ -473,7 +497,15 @@ public class Model{
 		double a  = Math.sin(Δφ/2)* Math.sin(Δφ/2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
 		double c  = 2*Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 		double d = R * c;
-		return d;
+		return (float)d;
+	}
+
+	public static float angleBetween2Lines(OSMNode A1, OSMNode A2, OSMNode B1, OSMNode B2) {
+		float angle1 = (float) Math.atan2(A2.getLat() - A1.getLat(), A1.getLon() - A2.getLon());
+		float angle2 = (float) Math.atan2(B2.getLat() - B1.getLat(), B1.getLon() - B2.getLon());
+		float calculatedAngle = (float) Math.toDegrees(angle1 - angle2);
+		if (calculatedAngle < 0) calculatedAngle += 360;
+		return calculatedAngle;
 	}
 
 	public String getDelimeter() {
@@ -492,7 +524,9 @@ public class Model{
 				}
 			}
 			//TODO figure out why this works and why it can't be refactored easily into OSMWay without inheritance
-			res.addAll(way);
+			for(int i = 0 ; i < way.size() ; i++){
+				res.add(way.get(i));
+			}
 			OSMWay after = pieces.remove(way.getLast());
 			if (after != null) {
 				pieces.remove(after.getLast());
@@ -547,7 +581,7 @@ public class Model{
 				String city = a.getCity();
 				String postcode = a.getPostcode();
 				for (String[] match : possibleAddresses) {
-					foundMatches.add(new String[]{street, match[3], city, postcode});
+					foundMatches.add(new String[]{street, match[2], city, postcode});
 				}
 			}
         }else{
@@ -604,9 +638,9 @@ public class Model{
 		pointsOfInterest.remove(id);
 	}
 
-
-	public Iterator<Iterable<Edge>> pathIterator(){
-    return foundPath.iterator();
+    //// Does this contain the in
+	public Iterator<Edge> pathIterator(){
+    return foundPath.iterator().next().iterator();
   }
 
 	public Iterator<String> colorIterator() {
@@ -615,5 +649,63 @@ public class Model{
 
 	public Iterator<String[]> foundMatchesIterator() {
 		return foundMatches.iterator();
+	}
+
+	public static OSMNode getClosestNode(Point2D point, ArrayList<OSMNode> queryList) {
+    	//TODO: put into a "Calculator" class.
+		double closestDistance = Double.POSITIVE_INFINITY;
+		double distanceToQueryPoint;
+		OSMNode closestElement = null;
+
+		for(OSMNode checkNode: queryList){
+			//We check distance from node to point, and then report if its closer than our previously known closest point.
+			distanceToQueryPoint = checkNode.distanceTo(point);
+			if(distanceToQueryPoint < closestDistance){
+				closestDistance = distanceToQueryPoint;
+				closestElement = checkNode;
+			}
+		}
+		return closestElement;
+	}
+
+	OSMNode getNearestRoad(Point2D point){
+    	try{
+			ArrayList<OSMNode> nodeList = new ArrayList<>();
+
+			for(WayType wayType: RouteHandler.getDrivableWayTypes()){
+				OSMNode checkNeighbor = kdTreeMap.get(wayType).getNearestNeighbor(point);
+				if(checkNeighbor != null) {
+					nodeList.add(checkNeighbor);
+				}
+			}
+
+			if(nodeList.isEmpty()){
+				throw new nothingNearbyException();
+			}
+
+			return getClosestNode(point, nodeList);
+
+    	}catch (nothingNearbyException e){
+    		e.printStackTrace();
+    		return null;
+		}
+	}
+
+	OSMNode getNearestBuilding(Point2D point){
+    	try {
+			OSMNode closestElement = kdTreeMap.get(WayType.BUILDING).getNearestNeighbor(point);
+
+			if(closestElement == null){
+				throw new nothingNearbyException();
+			}
+
+			return closestElement;
+			
+		}catch(nothingNearbyException e){
+    		e.printStackTrace();
+    		return null;
+		}
+
+
 	}
 }
