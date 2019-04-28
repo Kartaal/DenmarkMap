@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class KDNode implements Serializable {
-    List<BoundingBoxable> values = new ArrayList<>();
+    BoundingBoxable[] values;
     float split;
     boolean vertical; //if true, splits on x
 
@@ -105,9 +105,17 @@ public class KDNode implements Serializable {
     }
 
     public void setValues(List<BoundingBoxable> valueList) {
-        this.values = valueList;
+        values = new BoundingBoxable[valueList.size()];
+        for(int i = 0 ; i < valueList.size() ; i++){
+            values[i] = valueList.get(i);
+        }
 
         //Create BoundingBox for the KDNode
         makeNodeBB();
     }
+
+    public boolean isEmpty(){
+        return values == null;
+    }
+
 }

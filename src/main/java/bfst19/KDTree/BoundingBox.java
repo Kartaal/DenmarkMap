@@ -14,10 +14,9 @@ public class BoundingBox implements Serializable {
 		this.minX = minX;
 		this.minY = minY;
 		this.maxX = minX+width;
-        this.maxY = minY+height;
-
-    }
-
+		this.maxY = minY+height;
+	}
+  
 	public double getMinX() {
 		return minX;
 	}
@@ -33,7 +32,7 @@ public class BoundingBox implements Serializable {
 	}
 
 
-
+	//Code from javafx.geometry.BoundingBox.java
 	public boolean intersects(BoundingBox b) {
 		//if ((b == null) || b.isEmpty()) return false;
 		return intersects(b.getMinX(), b.getMinY(),
@@ -52,4 +51,6 @@ public class BoundingBox implements Serializable {
 	/*public boolean isEmpty() {
 		return getMaxX() < getMinX() || getMaxY() < getMinY();
 	}*/
+
 }
+

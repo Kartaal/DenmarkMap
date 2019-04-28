@@ -57,9 +57,11 @@ public class Edge implements Serializable {
         return w;
     }
 
+
     public String getName(){return name;}
 
     //todo make these dependt on a call with a specific node
+
     public long either(){
         return v.getAsLong();
     }

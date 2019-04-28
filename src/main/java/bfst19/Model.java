@@ -1,5 +1,6 @@
 package bfst19;
 
+import bfst19.Exceptions.nothingNearbyException;
 import bfst19.KDTree.BoundingBox;
 import bfst19.KDTree.Drawable;
 import bfst19.KDTree.KDTree;
@@ -7,6 +8,8 @@ import bfst19.Route_parsing.*;
 import bfst19.Line.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Point2D;
+
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -81,6 +84,19 @@ public class Model{
 		return kdTreeMap.get(type).rangeQuery(bbox);
 	}
 	public void addPathObserver(Runnable observer){pathObservers.add(observer);}
+
+	public void addPath(Iterable<Edge> path){
+        foundPath.add(path);
+        notifyPathObservers();
+    }
+
+    public void clearPath(){
+        if(!foundPath.isEmpty()){
+            foundPath.clear();
+            notifyPathObservers();
+        }
+    }
+
 	public void addFoundMatchesObserver(Runnable observer) {
 		foundMatchesObservers.add(observer);
 	}
@@ -355,19 +371,18 @@ public class Model{
 				case END_ELEMENT:
 					switch (reader.getLocalName()) {
 						case "way":
-							if (type == WayType.COASTLINE) {
-								coast.add(way);
-							} else {
-								ways.get(type).add(new Polyline(way));
-							}
 
 							//checks if the current waytype is one
 							// of the one's that should be in the nodegraph
-							if(routeHandler.isNodeGraphWay(type)) {
-								if(way.getAsLong()==199123707){
-									System.out.print("boop");
-								}
+							boolean isNodeGraphWay = routeHandler.isNodeGraphWay(type);
+							if(isNodeGraphWay) {
 								routeHandler.addWayToNodeGraph(way, type,name,speedlimit);
+							}
+
+							if (type == WayType.COASTLINE) {
+								coast.add(way);
+							} else {
+								ways.get(type).add(new Polyline(way,isNodeGraphWay));
 							}
 
 							if(b.hasFields()) {
@@ -436,7 +451,7 @@ public class Model{
 					textHandler.makeDatabase(this, addresses, getDatasetName());
 
 					for (OSMWay c : merge(coast)) {
-						ways.get(WayType.COASTLINE).add(new Polyline(c));
+						ways.get(WayType.COASTLINE).add(new Polyline(c,false));
 					}
 
 					//Make and populate KDTrees for each WayType
@@ -622,5 +637,63 @@ public class Model{
 
 	public Iterator<String[]> foundMatchesIterator() {
 		return foundMatches.iterator();
+	}
+
+	public static OSMNode getClosestNode(Point2D point, ArrayList<OSMNode> queryList) {
+    	//TODO: put into a "Calculator" class.
+		double closestDistance = Double.POSITIVE_INFINITY;
+		double distanceToQueryPoint;
+		OSMNode closestElement = null;
+
+		for(OSMNode checkNode: queryList){
+			//We check distance from node to point, and then report if its closer than our previously known closest point.
+			distanceToQueryPoint = checkNode.distanceTo(point);
+			if(distanceToQueryPoint < closestDistance){
+				closestDistance = distanceToQueryPoint;
+				closestElement = checkNode;
+			}
+		}
+		return closestElement;
+	}
+
+	OSMNode getNearestRoad(Point2D point){
+    	try{
+			ArrayList<OSMNode> nodeList = new ArrayList<>();
+
+			for(WayType wayType: RouteHandler.getDrivableWayTypes()){
+				OSMNode checkNeighbor = kdTreeMap.get(wayType).getNearestNeighbor(point);
+				if(checkNeighbor != null) {
+					nodeList.add(checkNeighbor);
+				}
+			}
+
+			if(nodeList.isEmpty()){
+				throw new nothingNearbyException();
+			}
+
+			return getClosestNode(point, nodeList);
+
+    	}catch (nothingNearbyException e){
+    		e.printStackTrace();
+    		return null;
+		}
+	}
+
+	OSMNode getNearestBuilding(Point2D point){
+    	try {
+			OSMNode closestElement = kdTreeMap.get(WayType.BUILDING).getNearestNeighbor(point);
+
+			if(closestElement == null){
+				throw new nothingNearbyException();
+			}
+
+			return closestElement;
+			
+		}catch(nothingNearbyException e){
+    		e.printStackTrace();
+    		return null;
+		}
+
+
 	}
 }

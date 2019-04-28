@@ -7,6 +7,7 @@ import bfst19.WayType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 public class RouteHandler{
     private Model model;
@@ -14,7 +15,8 @@ public class RouteHandler{
     private HashMap<Long,Integer> idToIndex;
     private HashMap<Integer,Long> indexToId;
     private HashMap<WayType,HashMap<String, ArrayList<String[]>>> drivableCases;
-    private HashMap<WayType,HashMap<Vehicle, Drivabillity>> drivabillty;
+    private HashMap<WayType,HashMap<Vehicle, Integer>> drivabillty;
+    private static Set<WayType> drivableWayTypes;
     HashMap<String,Integer> speedDefaults;
 
     public RouteHandler(Model model, EdgeWeightedGraph G){
@@ -40,6 +42,7 @@ public class RouteHandler{
                 drivabillty.get(wayType).put(vehicleType,defaultDrivable);
             }
         }
+        drivableWayTypes = drivabillty.keySet();
 
     }
 
@@ -161,6 +164,10 @@ public class RouteHandler{
             }
             drivabillty.put(waytype,resetDefaults);
         }
+    }
+
+    public static Set<WayType> getDrivableWayTypes(){
+        return drivableWayTypes;
     }
 
     public Iterable<Edge> getAdj(long id, Vehicle type) {

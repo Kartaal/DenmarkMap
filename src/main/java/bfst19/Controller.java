@@ -1,11 +1,13 @@
 package bfst19;
 import bfst19.KDTree.Drawable;
+import bfst19.KDTree.KDTree;
 import bfst19.Line.OSMNode;
 import bfst19.Route_parsing.Edge;
 import bfst19.Route_parsing.EdgeWeightedGraph;
 import bfst19.Route_parsing.Vehicle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Point2D;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -21,9 +23,17 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 public class Controller {
+
     private Model model;
+    private KDTree kdTree;
     double x, y;
     private double factor, oldDeterminant, zoomLevel;
+    private boolean fastestBoolean = false;
+    private static boolean kdTreeBoolean = false;
+    private long time;
+    private long[] nodeIDs = new long[2];
+
+
 
     //This only means that .fxml can use this field despite visibility
     @FXML
@@ -42,6 +52,7 @@ public class Controller {
         //TODO: figure out init methods
         this.model = model;
         mapCanvas.init(model,this);
+
 
         oldDeterminant = mapCanvas.getDeterminant();
         setScalebar();
@@ -204,12 +215,24 @@ public class Controller {
             case P:
                 mapCanvas.panToPoint(14.8429560,55.0967440);
                 break;
-
+            case H:
+                fastestBoolean = !fastestBoolean;
+                break;
+            case K:
+                kdTreeBoolean = !kdTreeBoolean;
+                break;
             case C:
-                Iterable<Edge> path = model.routeHandler.findPath(413326011L,26588276L, Vehicle.CAR,true);
-                model.foundPath.add(path);
-                model.notifyPathObservers();
+
+                model.clearPath();
                 mapCanvas.repaint();
+                nodeIDs[0] = 0;
+                nodeIDs[1] = 0;
+                break;
+            case S:
+
+                break;
+            case E:
+
                 break;
 
         }
@@ -236,6 +259,49 @@ public class Controller {
     private void onMousePressed(MouseEvent e) {
         x = e.getX();
         y = e.getY();
+
+
+        long prevtime = time;
+        time = System.nanoTime();
+
+
+        //System.out.println(Math.abs((-time + prevtime) / 1e8));
+        if (Math.abs((-time + prevtime) / 1e8) <= 3){
+            OSMNode something = model.getNearestRoad(mapCanvas.getModelCoords(x,y));
+            if(nodeIDs[0] == 0){
+                if(something!=null) {
+                    nodeIDs[0] = something.getAsLong();
+                    nodeIDs[1] = 0;
+                }
+
+            } else if(nodeIDs[1] == 0){
+                nodeIDs[1] = something.getAsLong();
+                Iterable<Edge> path = model.routeHandler.findPath(nodeIDs[0],nodeIDs[1], Vehicle.CAR, fastestBoolean);
+                if(path != null){
+                    model.clearPath();
+                    model.addPath(path);
+                }
+                mapCanvas.repaint();
+
+                nodeIDs[0] = 0;
+                nodeIDs[1] = 0;
+            }
+
+
+
+        }
+
+        if(e.isSecondaryButtonDown()){
+            OSMNode something = model.getNearestRoad(mapCanvas.getModelCoords(x,y));
+            double lonfactor = model.getLonfactor();
+            System.out.println(lonfactor);
+            System.out.println("Nearest OSMNode: " + something);
+        }
+    }
+
+
+    public static boolean KdTreeBoolean() {
+        return kdTreeBoolean;
     }
 
     public void addPathObserver(InstructionContainer instructionContainer) {
