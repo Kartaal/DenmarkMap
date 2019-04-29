@@ -58,12 +58,14 @@ public class ControllerInfoPanel implements BackBtnEffect {
         controller.getBorderPane().setRight(null);
     }
 
+
     private void setAddressCoordsLabels(){
         addressLabel.setText(address);
         latlon.setText("Coords: " + x + ", " + y);
     }
 
-    public void addPointOfInterest(ActionEvent actionEvent) {
+    @FXML
+    private void addPointOfInterest(ActionEvent actionEvent) {
         PointOfInterestItem pointOfInterestItem = new PointOfInterestItem(address, x, y);
         pointOfInterestItem.init(controller);
         controller.addPointsOfInterestItem(pointOfInterestItem);
