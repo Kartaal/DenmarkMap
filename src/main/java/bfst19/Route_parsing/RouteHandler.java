@@ -33,13 +33,15 @@ public class RouteHandler{
         for(WayType wayType : drivableCases.keySet()){
             drivabillty.put(wayType,new HashMap<>());
             for(String vehicleTypeAndDrivable : drivableCases.get(wayType).keySet()){
+
                 String[] tokens = vehicleTypeAndDrivable.split(" ");
                 Vehicle vehicleType = Vehicle.valueOf(tokens[0]);
                 Drivabillity defaultDrivable = Drivabillity.valueToDrivabillity(Integer.valueOf(tokens[1]));
                 drivabillty.get(wayType).put(vehicleType,defaultDrivable);
             }
         }
-        defaultDrivabillty = drivabillty;
+        defaultDrivabillty = (HashMap<WayType, HashMap<Vehicle, Drivabillity>>)drivabillty.clone();
+        drivabillty.clone();
         drivableWaytypes = drivabillty.keySet();
 
     }
@@ -100,7 +102,7 @@ public class RouteHandler{
         for(WayType waytype : drivableCases.keySet()){
             for(String vehicletypeAndDrivable : drivableCases.get(waytype).keySet()){
                 ResizingArray<String[]> vehicleCases = drivableCases.get(waytype).get(vehicletypeAndDrivable);
-                for(int i = 0 ; i<vehicleCases.size() ; i++){
+                for(int i = 0 ; i < vehicleCases.size() ; i++){
                     String[] caseTokens = vehicleCases.get(i);
                     if(k.equals(caseTokens[0])&&v.equals(caseTokens[1])){
                         Vehicle vehicletype = Vehicle.valueOf(vehicletypeAndDrivable.split(" ")[0]);
@@ -148,13 +150,27 @@ public class RouteHandler{
             previousnode = currentNode;
 
             //resets the drivabillity for the waytype by gettting the values from the default
+
         }
         resetDrivabillty();
     }
 
     private void resetDrivabillty(){
-        drivabillty = defaultDrivabillty;
+        for(WayType waytype : drivableCases.keySet()){
+            HashMap<Vehicle,Drivabillity> resetDefaults = new HashMap<>();
+            for(String vehicleTypeAndDrivable : drivableCases.get(waytype).keySet()){
+                String[] tokens = vehicleTypeAndDrivable.split(" ");
+                Vehicle vehicleType = Vehicle.valueOf(tokens[0]);
+                Drivabillity drivable = Drivabillity.valueToDrivabillity(Integer.valueOf(tokens[1]));
+                resetDefaults.put(vehicleType,drivable);
+            }
+            drivabillty.put(waytype,resetDefaults);
+        }
     }
+
+    /*private void resetDrivabillty(){
+        drivabillty =(HashMap<WayType, HashMap<Vehicle, Drivabillity>>) defaultDrivabillty.clone();
+    }*/
 
     public Iterable<Edge> getAdj(int id, Vehicle type) {
         return G.adj(id,type);

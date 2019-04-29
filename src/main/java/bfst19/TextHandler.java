@@ -6,11 +6,15 @@ import java.util.ArrayList;
 class TextHandler {
 
     void makeDatabase(Model model, ArrayList<Address> addresses, String datasetName){
-        File countryDir = new File("data/"+datasetName);
-        countryDir.mkdir();
-        String currentCityAndPostcode = "";
-        String currentStreet = "";
-        try {
+        try{
+            File countryDir = new File("data/"+datasetName);
+            if(countryDir.isDirectory()){
+                deleteDirectoryRecursion(new File("data/" + datasetName));
+            }
+            countryDir.mkdir();
+
+            String currentCityAndPostcode = "";
+            String currentStreet = "";
             //this first step looks ugly and is perhaps unnecessary
             BufferedWriter allStreetsInCountryWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("data/"+datasetName+"/streets.txt")),"UTF-8"));
             BufferedWriter streetsInCityWriter =  new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("data/"+datasetName+"/"+currentCityAndPostcode+"/streets.txt")),"UTF-8"));
@@ -70,6 +74,21 @@ class TextHandler {
             e.printStackTrace();
         }
     }
+
+    void deleteDirectoryRecursion(File file) throws IOException {
+        if (file.isDirectory()) {
+            File[] entries = file.listFiles();
+            if (entries != null) {
+                for (File entry : entries) {
+                    deleteDirectoryRecursion(entry);
+                }
+            }
+        }
+        if (!file.delete()) {
+            throw new IOException("Failed to delete " + file);
+        }
+    }
+
 
     ArrayList<String> getCities(Model model, String country){
         return model.textHandler.getTextFile("data/"+country+"/cities.txt");
