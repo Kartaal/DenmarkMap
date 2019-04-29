@@ -9,7 +9,7 @@ public class DijkstraSP {
     private IndexMinPQ<Double> pq;    // priority queue of vertices    // priority queue of vertices
     private EdgeWeightedGraph G;
 
-    public DijkstraSP(EdgeWeightedGraph G, long s, Vehicle type, boolean fastestPath) {
+    public DijkstraSP(EdgeWeightedGraph G, int s, Vehicle type, boolean fastestPath) {
         /*for (Edge e : G.edges()) {
             if (e.getWeight() < 0)
                 throw new IllegalArgumentException("edge " + e + " has negative weight");
@@ -19,13 +19,12 @@ public class DijkstraSP {
         edgeTo = new Edge[G.V()];
         for (int v = 0; v < G.V(); v++)
             distTo[v] = Double.POSITIVE_INFINITY;
-        int indexOfS = G.getIndexFromId(s);
-        distTo[indexOfS] = 0.0;
+        distTo[s] = 0.0;
         this.G = G;
-        validateVertex(indexOfS);
+        validateVertex(s);
         // relax vertices in order of distance from s
         pq = new IndexMinPQ<>(G.V());
-        pq.insert(indexOfS,distTo[indexOfS]);
+        pq.insert(s,distTo[s]);
         while (!pq.isEmpty()) {
             int v = pq.delMin();
             for (Edge e : G.adj(v, type))
@@ -33,7 +32,7 @@ public class DijkstraSP {
         }
 
         // check optimality conditions
-        assert check(G,indexOfS,type,fastestPath);
+        assert check(G,s,type,fastestPath);
     }
 
     // relax edge e and update pq if changed
@@ -41,7 +40,7 @@ public class DijkstraSP {
         //the intent is to get both ends of the edge so we use e.getOtherEnd to do so,
         // tho we do first need to get the v's corresponding id, then get the other end on that id,
         // and then convert the id we get back to it's corresponding index
-        int v = vertexV, w = G.getIndexFromId(e.getOtherEnd(G.getIdFromIndex(v)));
+        int v = vertexV, w = e.getOtherEnd(v);
         double distToW = distTo[w];
         double distToV = distTo[v];
         double weight = e.getWeight(type,fastestPath);
@@ -67,10 +66,9 @@ public class DijkstraSP {
     public Iterable<Edge> pathTo(int v) {
         validateVertex(v);
         if (!hasPathTo(v)) return null;
-        int indexOfV = v;
         Stack<Edge> path = new Stack<>();
-        for (Edge e = edgeTo[v]; e != null; e = edgeTo[indexOfV]) {
-            indexOfV = G.getIndexFromId(e.getOtherEnd(G.getIdFromIndex(indexOfV)));
+        for (Edge e = edgeTo[v]; e != null; e = edgeTo[v]) {
+            v = e.getOtherEnd(v);
             path.push(e);
         }
         return path;
@@ -106,7 +104,7 @@ public class DijkstraSP {
         // check that all edges e = v->w satisfy distTo[w] <= distTo[v] + e.weight()
         for (int v = 0; v < G.V(); v++) {
             for (Edge e : G.adj(v,type)) {
-                int w = G.getIndexFromId(e.getOtherEnd(G.getIdFromIndex(v)));
+                int w = e.getOtherEnd(v);
                 if (distTo[v] + e.getWeight(type,fastestPath) < distTo[w]) {
                     System.err.println("edge " + e + " not relaxed");
                     return false;
@@ -118,7 +116,7 @@ public class DijkstraSP {
         for (int w = 0; w < G.V(); w++) {
             if (edgeTo[w] == null) continue;
             Edge e = edgeTo[w];
-            int v = G.getIndexFromId(e.getOtherEnd(G.getIdFromIndex(w)));
+            int v = e.getOtherEnd(w);
             if (w != e.other()) return false;
             if (distTo[v] + e.getWeight(type,fastestPath) != distTo[w]) {
                 System.err.println("edge " + e + " on shortest path not tight");
@@ -140,11 +138,8 @@ public class DijkstraSP {
         In in = new In(args[0]);
         EdgeWeightedDigraph G = new EdgeWeightedDigraph(in);
         int s = Integer.parseInt(args[1]);
-
         // compute shortest paths
         DijkstraSP sp = new DijkstraSP(G, s);
-
-
         // print shortest path
         for (int t = 0; t < G.V(); t++) {
             if (sp.hasPathTo(t)) {

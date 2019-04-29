@@ -18,7 +18,8 @@ public class Edge implements Serializable {
     private OSMNode v;
     private OSMNode w;
 
-    public Edge(double length, double speedlLimit, OSMNode v, OSMNode w,String name,HashMap<Vehicle, Drivabillity> vehicleTypeToDrivable) {
+
+    public Edge(float length, int speedlLimit, OSMNode v, OSMNode w,String name,HashMap<Vehicle, Drivabillity> vehicleTypeToDrivable) {
         this.length = length;
         this.speedlLimit = speedlLimit;
         this.v = v;
@@ -62,38 +63,39 @@ public class Edge implements Serializable {
 
     //todo make these dependt on a call with a specific node
 
-    public long either(){
-        return v.getAsLong();
+    public int either(){
+        return v.getId();
     }
 
-    public long other(){
-        return w.getAsLong();
+    public int other(){
+        return w.getId();
     }
 
-    public long getOtherEnd(long id){
-        if(id==w.getAsLong()){
-            return v.getAsLong();
+    public int getOtherEnd(long id){
+        if(id==w.getId()){
+            return v.getId();
         }
-        return w.getAsLong();
+        return w.getId();
     }
 
-    public OSMNode getOtherEndNode(OSMNode node){
-        if(node.getAsLong()==w.getAsLong()){
+    public OSMNode getOtherEndNode(OSMNode node) {
+        if (node.getId() == w.getId()) {
             return v;
+        } else {
+            return w;
         }
-        return w;
     }
 
     public boolean isForwardAllowed(Vehicle type, long id) {
         Drivabillity drivable = getDrivableFromVehicleType(type);
         if(drivable==Drivabillity.BOTHWAYS){
             return true;
-        }else if(v.getAsLong()==id) {
+        }else if(v.getId()==id) {
             if(drivable==Drivabillity.FORWARD){
                 return true;
             }
         //this will actually never happen, as the dataset never has data in such a way that it never happens
-        }else if(w.getAsLong()==id){
+        }else if(w.getId()==id){
             if(drivable==Drivabillity.BACKWARD){
                 return true;
             }
@@ -124,3 +126,4 @@ public class Edge implements Serializable {
         return "name: "+name +" Length: "+length+"m "+" bike: "+getDrivableFromVehicleType(Vehicle.BIKE)+" Car: "+getDrivableFromVehicleType(Vehicle.CAR)+" walking: "+getDrivableFromVehicleType(Vehicle.WALKING)+" "+speedlLimit+" Node v:" + v.toString() + " Node W:" + w.toString();
     }
 }
+
