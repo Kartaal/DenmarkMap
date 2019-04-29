@@ -153,7 +153,7 @@ public class MapCanvas extends Canvas {
                 OSMNode first = edge.getV();
                 OSMNode second = edge.getW();
 
-                //gc.setLineWidth(2);
+                gc.setLineWidth(0.1 * (1/(100/(getDeterminant()))));
                 gc.setStroke(Color.RED);
                 gc.beginPath();
                 gc.moveTo(first.getLon(),first.getLat());

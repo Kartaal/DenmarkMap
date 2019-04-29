@@ -110,7 +110,13 @@ public class AddressParser {
         //after all other things have been done, we find the latitude, longitude
         // and Id of the node that this address belongs to in the streetname file
         if(!b.streetName.equals("Unknown")&&!b.city.equals("")&&!b.postcode.equals("")){
-            String[] address = getAddress(country, b.city, b.postcode, b.streetName, b.houseNumber,true).get(0);
+            String city = b.city;
+            String postcode = b.postcode;
+            String streetname = b.streetName;
+            String houseNumber = b.houseNumber;
+            ArrayList<String[]> something = getAddress(country,city,postcode,streetname,houseNumber,true);
+
+            String[] address = something.get(0);
             for(String string : address){
                 System.out.println(string);
             }

@@ -469,8 +469,8 @@ public class Model{
 						kdTreeMap.put(entry.getKey(), typeTree);
 					}
 
-					//addresses.sort(Address::compareTo);
-					//textHandler.makeDatabase(this, addresses, getDatasetName());
+					addresses.sort(Address::compareTo);
+					textHandler.makeDatabase(this, addresses, getDatasetName());
 					addresses = null;
 					break;
 				case ENTITY_REFERENCE: break;
@@ -581,7 +581,7 @@ public class Model{
 				String city = a.getCity();
 				String postcode = a.getPostcode();
 				for (String[] match : possibleAddresses) {
-					foundMatches.add(new String[]{street, match[3], city, postcode});
+					foundMatches.add(new String[]{street, match[2], city, postcode});
 				}
 			}
         }else{
