@@ -16,11 +16,12 @@ public class RouteHandler{
     private HashMap<Integer,Long> indexToId;
     private HashMap<WayType,HashMap<String, ArrayList<String[]>>> drivableCases;
     private HashMap<WayType,HashMap<Vehicle, Drivabillity>> drivabillty;
-    private static Set<WayType> drivableWaytypes;
+    private static ArrayList<WayType> drivableWaytypes;
     HashMap<String,Integer> speedDefaults;
 
-    public RouteHandler(Model model, EdgeWeightedGraph G){
+    public RouteHandler(Model model,ArrayList<WayType> drivableWaytypes, EdgeWeightedGraph G){
         this.model = model;
+        this.drivableWaytypes = drivableWaytypes;
         this.G = G;
     }
 
@@ -42,12 +43,14 @@ public class RouteHandler{
                 drivabillty.get(wayType).put(vehicleType,defaultDrivable);
             }
         }
-
-        drivableWaytypes = drivabillty.keySet();
-
+        ArrayList<WayType> drivableWaytypes = new ArrayList<>();
+        drivableWaytypes.addAll(drivabillty.keySet());
+        this.drivableWaytypes = drivableWaytypes;
     }
 
-    public static Set<WayType> getDrivableWayTypes() {
+
+
+    public static ArrayList<WayType> getDrivableWayTypes() {
         return drivableWaytypes;
     }
 

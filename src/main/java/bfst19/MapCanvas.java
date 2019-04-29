@@ -126,7 +126,7 @@ public class MapCanvas extends Canvas {
                         // so it's better to exclude it.
                     }else{
                         gc.setStroke(getColor(type));
-                        gc.setLineWidth(0.1 * (1/(2000/(getDeterminant()))));
+                        gc.setLineWidth(0.3 * (1/(2000/(getDeterminant()))));
                         for (Drawable way : model.getWaysOfType(type, getExtentInModel())){
                             way.stroke(gc,singlePixelLength);
                         }

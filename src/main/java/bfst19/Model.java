@@ -162,7 +162,9 @@ public class Model{
 				minlon = input.readFloat();
 				maxlat = input.readFloat();
 				maxlon = input.readFloat();
-				routeHandler = new RouteHandler(this,(EdgeWeightedGraph)input.readObject());
+				ArrayList<WayType> drivableWaytypes = (ArrayList<WayType>) input.readObject();
+				EdgeWeightedGraph G = (EdgeWeightedGraph)input.readObject();
+				routeHandler = new RouteHandler(this,drivableWaytypes,G);
 			}
 			time += System.nanoTime();
 			System.out.printf("Load time: %.1fs\n", time / 1e9);
@@ -188,6 +190,7 @@ public class Model{
 				output.writeFloat(minlon);
 				output.writeFloat(maxlat);
 				output.writeFloat(maxlon);
+				output.writeObject(RouteHandler.getDrivableWayTypes());
 				output.writeObject(routeHandler.getNodeGraph());
 			}
 		}
