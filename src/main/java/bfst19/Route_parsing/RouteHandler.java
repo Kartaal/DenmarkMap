@@ -125,8 +125,7 @@ public class RouteHandler{
         HashMap<Vehicle,Drivabillity> drivabilltyForWay = drivabillty.get(type);
         OSMNode previousnode = way.get(0);
 
-        previousnode.setId(G.V());
-        G.addVertex(G.V());
+        G.addVertex(previousnode);
         for(int i = 1 ; i<way.size() ; i++){
 
             OSMNode currentNode = way.get(i);
@@ -144,14 +143,13 @@ public class RouteHandler{
 
             Edge edge = new Edge(length,speedlimit,previousnode,currentNode,name,drivabilltyForWay);
 
-            currentNode.setId(G.V());
-            G.addVertex(G.V());
+            G.addVertex(currentNode);
             G.addEdge(edge);
             previousnode = currentNode;
 
             //resets the drivabillity for the waytype by gettting the values from the default
-            resetDrivabillty();
         }
+        resetDrivabillty();
     }
 
     private void resetDrivabillty(){

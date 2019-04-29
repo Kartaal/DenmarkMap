@@ -1,5 +1,7 @@
 package bfst19.Route_parsing;
 
+import bfst19.Line.OSMNode;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -36,9 +38,16 @@ public class EdgeWeightedGraph implements Serializable {
         return false;
     }
 
-
     public void addVertex(int id){
         if(!isVertex(id)) {
+            adj.add(new ResizingArray<>());
+            V++;
+        }
+    }
+
+    public void addVertex(OSMNode node){
+        if(!isVertex(node.getId())) {
+            node.setId(V);
             adj.add(new ResizingArray<>());
             V++;
         }

@@ -265,12 +265,12 @@ public class Model{
 							lat = Float.parseFloat(reader.getAttributeValue(null, "lat"));
 							lon = Float.parseFloat(reader.getAttributeValue(null, "lon"));
 							idToNodeIndex.add(id);
-							tempNodes.add(new OSMNode(tempNodes.size(), lon*lonfactor, lat));
+							tempNodes.add(new OSMNode(0, lon*lonfactor, lat));
 							break;
 						case "way":
 							id = Long.parseLong(reader.getAttributeValue(null, "id"));
 							type = WayType.UNKNOWN;
-							way = new OSMWay(tempWays.size());
+							way = new OSMWay(0);
 							idToWayIndex.add(id);
 							tempWays.add(way);
 							break;
@@ -581,7 +581,7 @@ public class Model{
 				String city = a.getCity();
 				String postcode = a.getPostcode();
 				for (String[] match : possibleAddresses) {
-					foundMatches.add(new String[]{street, match[2], city, postcode});
+					foundMatches.add(new String[]{street, match[3], city, postcode});
 				}
 			}
         }else{

@@ -20,7 +20,6 @@ import java.util.Iterator;
 public class Controller {
 
     private Model model;
-    private KDTree kdTree;
     double x, y;
     private double factor, oldDeterminant, zoomLevel;
     private boolean fastestBoolean = false;

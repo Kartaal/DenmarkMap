@@ -37,6 +37,7 @@ public class MapCanvas extends Canvas {
 
     public void init(Model model, Controller controller) {
         this.model = model;
+        this.controller = controller;
         //conventions in screen coords and map coords are not the same,
         // so we convert to screen convention by flipping x y
         pan(-model.minlon, -model.maxlat);

@@ -111,6 +111,9 @@ public class AddressParser {
         // and Id of the node that this address belongs to in the streetname file
         if(!b.streetName.equals("Unknown")&&!b.city.equals("")&&!b.postcode.equals("")){
             String[] address = getAddress(country, b.city, b.postcode, b.streetName, b.houseNumber,true).get(0);
+            for(String string : address){
+                System.out.println(string);
+            }
             if(!address[0].equals("")) {
                 b.lat = Float.valueOf(address[0]);
                 b.lon = Float.valueOf(address[1]);
