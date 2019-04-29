@@ -17,7 +17,7 @@ public class Instruction extends HBox {
         getChildren().addAll(addImage(direction), makeLengthText(length), makeDirectionPane(direction), makeRoadNameText(road));
     }
 
-// Code-dublication we also use this in the scalebar
+    // Code-dublication we also use this in the scalebar
     public static int round(double length){
         if(length-Math.floor(length) < length-Math.ceil(length)){
             return (int) Math.floor(length);
@@ -52,8 +52,10 @@ public class Instruction extends HBox {
             dir= "turn "+direction;
         }else if(direction.equals("keep right")){
             dir= direction;
-        }else if(direction.equals("keep left")){
-            dir= direction;
+        }else if(direction.equals("keep left")) {
+            dir = direction;
+        }else if(direction.equals("u-turn")){
+            dir = "make a u-turn";
         } else if (direction.equals("")){
             // should be changed
             dir= "drive straight";
@@ -81,15 +83,15 @@ public class Instruction extends HBox {
         Pane pane = new Pane();
 
         if (dir.equals("right")){
-           image= new Image("/right.png", true);
+            image= new Image("/right.png", true);
         } else if (dir.equals("left")){
-             image= new Image("/left.png", true);
+            image= new Image("/left.png", true);
         } else if(dir.equals("keep right")){
             image= new Image("/slight right.png", true);
         }else if(dir.equals("keep left")){
             image= new Image("/slight left.png", true);
         } else if (dir.equals("u-turn")){
-             image= new Image("/Utrun.png", true);
+            image= new Image("/Uturn.png", true);
         } else if (dir.equals("")) {
             image = new Image("/straight.png", true);
         }

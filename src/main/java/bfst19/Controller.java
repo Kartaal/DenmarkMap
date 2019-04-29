@@ -266,15 +266,19 @@ public class Controller {
             if(nodeIDs[0] == 0){
                 if(something!=null) {
                     nodeIDs[0] = something.getAsLong();
+                    System.out.println(something.getAsLong());
                     nodeIDs[1] = 0;
                 }
 
             } else if(nodeIDs[1] == 0){
                 nodeIDs[1] = something.getAsLong();
+                System.out.println(something.getAsLong());
                 Iterable<Edge> path = model.routeHandler.findPath(nodeIDs[0],nodeIDs[1], Vehicle.CAR, fastestBoolean);
                 if(path != null){
                     model.clearPath();
                     model.addPath(path);
+                }else{
+                    System.out.println("no path found");
                 }
                 mapCanvas.repaint();
 

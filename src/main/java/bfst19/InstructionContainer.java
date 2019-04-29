@@ -98,16 +98,18 @@ public class InstructionContainer extends VBox {
                 String direction = "";
                 if(15 < angle && 45 > angle){
                     direction = "keep left";
-                }else if (45 < angle && angle < 180) {
+                }else if (45 < angle && angle < 120) {
                     direction = "left";
                 }else if(345 > angle && angle > 315){
                     direction = "keep right";
-                }else if (180 < angle && angle < 315) {
+                }else if (240 < angle && angle < 315) {
                     direction = "right";
+                }else if(120<angle&&angle<240){
+                    direction = "u-turn";
                 }
                 if(currentLength>1.0) {
                     String currentName = currentEdge.getName();
-                    if (direction.equals("left") || direction.equals("right") || !name.equals(currentName)) {
+                    if (direction.equals("u-turn") || direction.equals("left") || direction.equals("right") || !name.equals(currentName)) {
                         addNewInstruction(length, direction, currentName);
                         length = 0.0;
                         name = currentName;
