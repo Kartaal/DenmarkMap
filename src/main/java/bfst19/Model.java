@@ -9,6 +9,7 @@ import bfst19.Line.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
+
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -32,6 +33,7 @@ public class Model{
     private float maxlat;
     private float maxlon;
 
+    private ObservableList<PointOfInterestItem> pointOfInterestItems = FXCollections.observableArrayList();
     private String currentTypeColorTxt = "src/main/resources/config/TypeColorsNormal.txt";
     private HashMap<WayType,ResizingArray<String[]>> wayTypeCases = new HashMap<>();
     private ObservableList<String[]> foundMatches = FXCollections.observableArrayList();
@@ -171,6 +173,12 @@ public class Model{
     public Iterator<String[]> foundMatchesIterator() {
         return foundMatches.iterator();
     }
+
+    public ObservableList<PointOfInterestItem> pointOfInterestList(){ return pointOfInterestItems; }
+
+    public void addPointOfInterestItem(PointOfInterestItem pointOfInterestItem){ pointOfInterestItems.add(pointOfInterestItem); }
+
+    public void removePointOfInterestItem(PointOfInterestItem pointOfInterestItem) { pointOfInterestItems.remove(pointOfInterestItem);}
 
 
 

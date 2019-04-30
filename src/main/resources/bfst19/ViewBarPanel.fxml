@@ -55,6 +55,19 @@
          </graphic>
       </Button>
 
+      <Button fx:id="pointButton" mnemonicParsing="false" onAction="#openPointOfInterest" style="-fx-background-color: white;  -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);">
+      <HBox.margin>
+         <Insets left="5.0" />
+      </HBox.margin>
+      <graphic>
+         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+               <Image url="/point1.png" />
+            </image>
+         </ImageView>
+      </graphic>
+      </Button>
+
    </children>
 
    <padding>
