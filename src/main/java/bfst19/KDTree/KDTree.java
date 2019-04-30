@@ -5,10 +5,7 @@ import bfst19.Model;
 import bfst19.Route_parsing.ResizingArray;
 import javafx.geometry.Point2D;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class KDTree implements Serializable {
     private KDNode root;
@@ -25,16 +22,17 @@ public class KDTree implements Serializable {
     public void insertAll(ResizingArray<Drawable> list) {
         //If tree is currently empty, do a lot of work
         if(root == null) {
-            //Set xComp as the first comparator
-            selectComp = KDTree.xComp;
-            //Use a modified QuickSort to ensure the lower values are in the left half
-            // and the higher values are in the right half
-            sort(list, selectComp);
-            //Find the middle index to find the root element
-            int splitIndex = list.size() / 2;
+			//Set xComp as the first comparator
+			selectComp = KDTree.xComp;
 
-            //Ensure that our Drawable list is not empty
-            if(list.size() > 0) {
+			//Find the middle index to find the root element
+			int splitIndex = list.size() / 2;
+
+			//Return value not used, select is only meant to partially sort the list
+			select(list, splitIndex, 0, list.size()-1, selectComp);
+
+			//Ensure that our Drawable list is not empty
+			if(list.size() > 0) {
                 //TODO figure out something about all these typecasts
                 //Find the comparator correct value of the middle element (Root so X value)
                 float splitValue = ((BoundingBoxable) list.get(splitIndex)).getCenterX();
@@ -59,19 +57,20 @@ public class KDTree implements Serializable {
         //TODO ensure correctness (still?)
         if (hi < lo) return null;
 
-        //Get the index to split at
-        int splitIndex = lo + (hi-lo) / 2;
-        //Flip the dimension to handle 2D data
-        boolean vertical = !parentNode.vertical;
+		//Get the index to split at
+		int splitIndex = lo + (hi-lo) / 2;
+		//Flip the dimension to handle 2D data
+		boolean vertical = !parentNode.vertical;
 
-        //Change comparator based on vertical
-        //? is a shorthand of if-else. (expression) ? (if expression true) : (if expression false)
-        selectComp = vertical ? KDTree.xComp : KDTree.yComp;
-        //Might want an overloaded version that only sorts a sublist
-        sort(list, lo, hi, selectComp);
+		//Change comparator based on vertical
+		//? is a shorthand of if-else. (expression) ? (if expression true) : (if expression false)
+		selectComp = vertical ? KDTree.xComp : KDTree.yComp;
 
-        //Figure out the splitting value based on dimension
-        float splitVal;
+		//Return value not used, select is only meant to partially sort the list
+		select(list, splitIndex, lo, hi, selectComp);
+
+		//Figure out the splitting value based on dimension
+		float splitVal;
         if(vertical) {
             splitVal = ((BoundingBoxable) list.get(splitIndex)).getCenterX();
         } else {
@@ -240,12 +239,12 @@ public class KDTree implements Serializable {
         return root;
     }
 
-	/*
-	//Not in use currently
-	public BoundingBoxable select(List<Drawable> a, int k, Comparator<BoundingBoxable> comp)
+	public BoundingBoxable select(ResizingArray<Drawable> a, int k, int lo, int hi, Comparator<BoundingBoxable> comp)
 	{
-		shuffle(a);
-		int lo = 0, hi = a.size() - 1;
+		if(a.isEmpty()) {
+			return null;
+		}
+
 		while (hi > lo)
 		{
 			int j = partition(a, lo, hi, comp);
@@ -255,44 +254,32 @@ public class KDTree implements Serializable {
 		}
 		return (BoundingBoxable) a.get(k);
 	}
-	*/
 
-    //Everything below this line is a modified version of code from Algs4
+	//Everything below this line is a modified version of code from Algs4
+	//From Algs4 book
+	private int partition(ResizingArray<Drawable> a, int lo, int hi, Comparator<BoundingBoxable> comp)
+	{ // Partition into a[lo..i-1], a[i], a[i+1..hi].
+		int i = lo, j = hi+1; // left and right scan indices
+		Random rand = new Random();
+		int diff = lo < hi ? hi - lo : lo - hi;
+		int pIndex = lo + rand.nextInt(diff);
+		Drawable v = a.get(pIndex);
+		//Drawable v = a.get(lo); // partitioning item
+		while (true)
+		{ // Scan right, scan left, check for scan complete, and exchange.
+			while (comp.compare((BoundingBoxable) a.get(++i), (BoundingBoxable) v) > 0) if (i == hi) break;
+			while (comp.compare((BoundingBoxable) v, (BoundingBoxable)  a.get(--j)) < 0) if (j == lo) break;
+			if (i >= j) break;
+			exch(a, i, j);
+		}
+		exch(a, lo, j); // Put v = a[j] into position
+		return j; // with a[lo..j-1] <= a[j] <= a[j+1..hi].
+	}
 
-    //From Algs4 book, modified
-    public void sort(ResizingArray<Drawable> a, Comparator<BoundingBoxable> comp) {
-        //shuffle(a);
-        sort(a, 0, a.size() - 1, comp);
-    }
-
-    // quicksort the subarray from a[lo] to a[hi]
-    private void sort(ResizingArray<Drawable> a, int lo, int hi, Comparator<BoundingBoxable> comp) {
-        if (hi <= lo) return;
-        int j = partition(a, lo, hi, comp);
-        sort(a, lo, j-1, comp);
-        sort(a, j+1, hi, comp);
-    }
-
-    //From Algs4 book
-    private int partition(ResizingArray<Drawable> a, int lo, int hi, Comparator<BoundingBoxable> comp)
-    { // Partition into a[lo..i-1], a[i], a[i+1..hi].
-        int i = lo, j = hi+1; // left and right scan indices
-        Drawable v = a.get(lo); // partitioning item
-        while (true)
-        { // Scan right, scan left, check for scan complete, and exchange.
-            while (comp.compare((BoundingBoxable) a.get(++i), (BoundingBoxable) v) > 0) if (i == hi) break;
-            while (comp.compare((BoundingBoxable) v, (BoundingBoxable)  a.get(--j)) < 0) if (j == lo) break;
-            if (i >= j) break;
-            exch(a, i, j);
-        }
-        exch(a, lo, j); // Put v = a[j] into position
-        return j; // with a[lo..j-1] <= a[j] <= a[j+1..hi].
-    }
-
-    //From Algs4 book
-    private void exch(ResizingArray<Drawable> a, int i, int j) {
-        Drawable t = a.get(i);
-        a.set(i, a.get(j));
-        a.set(j, t);
-    }
+	//From Algs4 book
+	private void exch(ResizingArray<Drawable> a, int i, int j) {
+		Drawable t = a.get(i);
+		a.set(i, a.get(j));
+		a.set(j, t);
+	}
 }

@@ -63,5 +63,5 @@ tasks.withType(JavaCompile) {
 }
 
 run {
-    args = ['data/denmark.zip']
+    args = ['data/bornholm.zip']
 }

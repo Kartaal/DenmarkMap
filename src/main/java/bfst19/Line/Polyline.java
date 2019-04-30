@@ -31,7 +31,7 @@ public class Polyline implements Drawable, Serializable, BoundingBoxable {
 	}
 
 
-	public Polyline(OSMWay way,boolean isOSMWay) {
+	public Polyline(OSMWay way, boolean isOSMWay) {
 		//Gets a pairs of x and y coords from the given way and stores them in the coord array
 		// with lon coordinates stored at even indices and lat coordinates stored at odd indices
 
@@ -119,6 +119,7 @@ public class Polyline implements Drawable, Serializable, BoundingBoxable {
 
 		for(OSMNode node: nodes){
 			nodeDistance = node.distanceTo(point);
+
 			if(nodeDistance < closestDistance){
 				closestDistance = nodeDistance;
 			}
