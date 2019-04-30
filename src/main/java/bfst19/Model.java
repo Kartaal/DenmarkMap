@@ -388,6 +388,7 @@ public class Model{
                             }
 
                             routeHandler.checkDrivabillty(k,v);
+                            //boop
 
                             switch (k){
                                 case "relation":
