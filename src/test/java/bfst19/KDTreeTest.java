@@ -72,7 +72,6 @@ public class KDTreeTest {
 		idToNode.add(5852227209L);
 		nodes.add(node);
 
-
 		//Add a whole bunch of ways
 		way = new OSMWay(619269638);
 		type = WayType.SERVICE;

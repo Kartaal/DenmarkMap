@@ -57,10 +57,10 @@ public class KDTree implements Serializable {
         //TODO ensure correctness (still?)
         if (hi < lo) return null;
 
-        //Get the index to split at
-        int splitIndex = lo + (hi-lo) / 2;
-        //Flip the dimension to handle 2D data
-        boolean vertical = !parentNode.vertical;
+		//Get the index to split at
+		int splitIndex = lo + (hi-lo) / 2;
+		//Flip the dimension to handle 2D data
+		boolean vertical = !parentNode.vertical;
 
         //Change comparator based on vertical
         //? is a shorthand of if-else. (expression) ? (if expression true) : (if expression false)
@@ -69,8 +69,8 @@ public class KDTree implements Serializable {
         //Return value not used, select is only meant to partially sort the list
         select(list, splitIndex, lo, hi, selectComp);
 
-        //Figure out the splitting value based on dimension
-        float splitVal;
+		//Figure out the splitting value based on dimension
+		float splitVal;
         if(vertical) {
             splitVal = ((BoundingBoxable) list.get(splitIndex)).getCenterX();
         } else {
@@ -238,7 +238,6 @@ public class KDTree implements Serializable {
     public KDNode getRoot() {
         return root;
     }
-
     public BoundingBoxable select(ResizingArray<Drawable> a, int k, int lo, int hi, Comparator<BoundingBoxable> comp)
     {
         if(a.isEmpty()) {
@@ -276,10 +275,10 @@ public class KDTree implements Serializable {
         return j; // with a[lo..j-1] <= a[j] <= a[j+1..hi].
     }
 
-    //From Algs4 book
-    private void exch(ResizingArray<Drawable> a, int i, int j) {
-        Drawable t = a.get(i);
-        a.set(i, a.get(j));
-        a.set(j, t);
-    }
+	//From Algs4 book
+	private void exch(ResizingArray<Drawable> a, int i, int j) {
+		Drawable t = a.get(i);
+		a.set(i, a.get(j));
+		a.set(j, t);
+	}
 }
