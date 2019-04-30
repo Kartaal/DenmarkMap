@@ -267,7 +267,7 @@ public class MapCanvas extends Canvas {
     }
 
     //TODO Burde crashe?
-    public Point2D getModelCoords(double x, double y) {
+    public Point2D getModelCoords(float x, float y) {
         try{
             return transform.inverseTransform(x,y);
         }catch (NonInvertibleTransformException e) {

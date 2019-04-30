@@ -134,10 +134,10 @@ public class RouteHandler{
 
             OSMNode currentNode = way.get(i);
 
-            double previousNodeLat = previousnode.getLat();
-            double previousNodeLon = previousnode.getLon()/model.getLonfactor();
-            double currentNodeLat = currentNode.getLat();
-            double currentNodeLon = currentNode.getLon()/model.getLonfactor();
+            float previousNodeLat = previousnode.getLat();
+            float previousNodeLon = (float) (previousnode.getLon()/model.getLonfactor());
+            float currentNodeLat = currentNode.getLat();
+            float currentNodeLon = (float) (currentNode.getLon()/model.getLonfactor());
 
             float length = Calculator.calculateDistanceInMeters(previousNodeLat,previousNodeLon,currentNodeLat,currentNodeLon);
 
