@@ -1,5 +1,4 @@
 package bfst19;
-import bfst19.KDTree.KDTree;
 import bfst19.Line.OSMNode;
 import bfst19.Route_parsing.Edge;
 import bfst19.Route_parsing.Vehicle;
@@ -18,14 +17,11 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
-import java.io.IOException;
-import java.util.Iterator;
-
 public class Controller {
 
     private Model model;
     double x, y;
-    private double factor, oldDeterminant, zoomLevel;
+    private double factor, oldDeterminant;
     private boolean fastestBoolean = false;
     private static boolean kdTreeBoolean = false;
     private long time;
@@ -72,9 +68,11 @@ public class Controller {
         return model;
     }
 
+    /*
     public Double getDistanceFromModel(double startLat, double startLon, double endLat, double endLon){
         return model.calculateDistanceInMeters(startLat,startLon,endLat,endLon);
     }
+    */
 
     public Iterator<String[]> getFoundMatchesIterator(){
         return model.foundMatchesIterator();
