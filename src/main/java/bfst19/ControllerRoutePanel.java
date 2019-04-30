@@ -1,11 +1,13 @@
 package bfst19;
 
+import bfst19.Route_parsing.Vehicle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -17,6 +19,7 @@ import java.io.IOException;
 
 public class ControllerRoutePanel {
 
+    static Vehicle vehicleToggle;
     @FXML
     private ImageView backBtnRoutePanel;
 
@@ -27,7 +30,7 @@ public class ControllerRoutePanel {
     private ToggleButton bike;
     @FXML
     ToggleGroup toggleRouteType;
-  ;
+
     @FXML
     InstructionContainer instructions;
 
@@ -58,25 +61,26 @@ public class ControllerRoutePanel {
     }
 
     @FXML
-    private void setRouteType(){
+    private void setRouteType(MouseEvent e){
         String toggleGroupValue;
         //TODO: Find out what to do if none is selected what to do
 
         ToggleButton selectedToggleButton = (ToggleButton) toggleRouteType.getSelectedToggle();
         toggleGroupValue = selectedToggleButton.getId();
 
-        if(selectedToggleButton ==null && toggleGroupValue==null) {
+        if(selectedToggleButton ==null || toggleGroupValue==null) {
             toggleRouteType.selectToggle(car);
-            toggleGroupValue="";
+            vehicleToggle=Vehicle.CAR;
         }
         else if(toggleGroupValue.equals("car")){
             System.out.println("car is true");
+            vehicleToggle=Vehicle.CAR;
         }
         else if (toggleGroupValue.equals("bike")){
-            System.out.println("bike is true");
+            vehicleToggle=Vehicle.BIKE;
         }
         else if (toggleGroupValue.equals("walking")){
-            System.out.println("walking is true");
+            vehicleToggle=Vehicle.WALKING;
         }
 
 

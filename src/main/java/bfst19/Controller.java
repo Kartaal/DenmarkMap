@@ -1,5 +1,4 @@
 package bfst19;
-import bfst19.KDTree.KDTree;
 import bfst19.Line.OSMNode;
 import bfst19.Route_parsing.Edge;
 import bfst19.Route_parsing.Vehicle;
@@ -27,7 +26,7 @@ public class Controller {
     private long time;
     private int[] nodeIDs = new int[2];
 
-
+    ControllerRoutePanel controllerRoutePanel;
 
     //This only means that .fxml can use this field despite visibility
     @FXML
@@ -245,8 +244,9 @@ public class Controller {
         y = e.getY();
     }
 
+
     @FXML
-    private void onMousePressed(MouseEvent e) {
+    void onMousePressed(MouseEvent e ) {
         x = e.getX();
         y = e.getY();
 
@@ -268,7 +268,7 @@ public class Controller {
             } else if(nodeIDs[1] == 0){
                 nodeIDs[1] = something.getId();
                 System.out.println(something.getId());
-                Iterable<Edge> path = model.findPath(nodeIDs[0],nodeIDs[1], Vehicle.CAR, fastestBoolean);
+                Iterable<Edge> path = model.findPath(nodeIDs[0],nodeIDs[1], ControllerRoutePanel.vehicleToggle, fastestBoolean);
                 if(path != null){
                     model.clearPath();
                     model.addPath(path);
