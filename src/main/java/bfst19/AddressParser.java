@@ -30,7 +30,7 @@ public class AddressParser {
     }
 
     public class Builder {
-        private long id;
+        private int id;
         private float lat, lon;
         private String streetName = "Unknown", houseNumber="", postcode="", city="",floor="",side="";
         public Builder houseNumber(String _house)   { houseNumber = _house;   return this; }
@@ -110,12 +110,20 @@ public class AddressParser {
         //after all other things have been done, we find the latitude, longitude
         // and Id of the node that this address belongs to in the streetname file
         if(!b.streetName.equals("Unknown")&&!b.city.equals("")&&!b.postcode.equals("")){
-            String[] address = getAddress(country, b.city, b.postcode, b.streetName, b.houseNumber,true).get(0);
+            String city = b.city;
+            String postcode = b.postcode;
+            String streetname = b.streetName;
+            String houseNumber = b.houseNumber;
+            ArrayList<String[]> something = getAddress(country,city,postcode,streetname,houseNumber,true);
+
+            String[] address = something.get(0);
+            for(String string : address){
+                System.out.println(string);
+            }
             if(!address[0].equals("")) {
-                b.id = Long.valueOf(address[0]);
-                b.lat = Float.valueOf(address[1]);
-                b.lon = Float.valueOf(address[2]);
-                b.houseNumber = address[3];
+                b.lat = Float.valueOf(address[0]);
+                b.lon = Float.valueOf(address[1]);
+                b.houseNumber = address[2];
             }
         }
         return b.build();
@@ -138,7 +146,7 @@ public class AddressParser {
             for(int i = 0 ; i <= addressesOnStreet.size()-1 ; i++){
                 address = addressesOnStreet.get(i);
                 addressFields=address.split(" ");
-                if(addressFields[3].toLowerCase().equalsIgnoreCase(houseNumber)){
+                if(addressFields[2].toLowerCase().equalsIgnoreCase(houseNumber)){
                     matches.add(addressFields);
                     return matches;
                 }

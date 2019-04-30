@@ -15,9 +15,8 @@ public class BoundingBox implements Serializable {
 		this.minY = minY;
 		this.maxX = minX+width;
 		this.maxY = minY+height;
-
 	}
-
+  
 	public double getMinX() {
 		return minX;
 	}
@@ -52,4 +51,6 @@ public class BoundingBox implements Serializable {
 	/*public boolean isEmpty() {
 		return getMaxX() < getMinX() || getMaxY() < getMinY();
 	}*/
+
 }
+

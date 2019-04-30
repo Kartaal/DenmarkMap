@@ -6,10 +6,10 @@ import java.io.Serializable;
 import java.util.function.LongSupplier;
 
 //TODO make BoundingBoxable for addresses and such on map? Handled through addressParsing?
-public class OSMNode implements LongSupplier, Serializable {
+public class OSMNode implements Serializable {
 
 	protected float lat, lon;
-	protected long id;
+	protected int id;
 
 	public float getLat() {
 		return lat;
@@ -19,7 +19,7 @@ public class OSMNode implements LongSupplier, Serializable {
 		return lon;
 	}
 
-	public OSMNode(long id, float lon, float lat) {
+	public OSMNode(int id, float lon, float lat) {
 		this.id = id;
 		this.lat = lat;
 		this.lon = lon;
@@ -33,8 +33,12 @@ public class OSMNode implements LongSupplier, Serializable {
 	}
 
 	//A functional method given by the LongSupplier interface
-	public long getAsLong() {
+	public int getId() {
 		return id;
+	}
+
+	public void setId(int id){
+		this.id = id;
 	}
 
 	public String toString(){
