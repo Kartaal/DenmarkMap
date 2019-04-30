@@ -1,7 +1,10 @@
 package bfst19;
 
+import bfst19.Route_parsing.ResizingArray;
+
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 class TextHandler {
 
@@ -91,11 +94,11 @@ class TextHandler {
 
 
     ArrayList<String> getCities(Model model, String country){
-        return model.textHandler.getTextFile("data/"+country+"/cities.txt");
+        return model.getTextHandler().getTextFile("data/"+country+"/cities.txt");
     }
 
     ArrayList<String> getStreetsInCity(String country, String city, String postcode, Model model){
-        return model.textHandler.getTextFile("data/"+country+"/"+city+" QQQ "+postcode+"/streets.txt");
+        return model.getTextHandler().getTextFile("data/"+country+"/"+city+" QQQ "+postcode+"/streets.txt");
     }
 
     //generalized getCities and getStreets to getTextFile, might not be final.
@@ -122,39 +125,36 @@ class TextHandler {
 
 
     void ParseWayColors(Model model){
-        ArrayList<String> cases = getTextFile(model.CurrentTypeColorTxt);
-        model.typeColors.clear();
+        ArrayList<String> cases = getTextFile(model.getCurrentTypeColorTxt());
+        model.clearColors();
         int m = Integer.parseInt(cases.get(0));
         for (int i = 1; i < m; i++) {
             String[] strArr = cases.get(i).split(" ");
-            model.typeColors.add(strArr[0]);
-            model.typeColors.add(strArr[1]);
+            model.addTypeColors(strArr);
         }
         model.notifyColorObservers();
     }
 
-    void parseWayTypeCases(String pathToCasesFile, Model model){
-        try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(
-                    new FileInputStream(pathToCasesFile),"UTF-8"));
-            int n = Integer.parseInt(in.readLine().trim());
-            for(int i = 0; i < n ; i++) {
-                String wayType = in.readLine();
-                String wayCase = in.readLine();
 
-                while((wayCase != null) && !(wayCase.startsWith("$"))){
+    //todo rewrite this
+    HashMap<WayType,ResizingArray<String[]>> parseWayTypeCases(String pathToCasesFile){
+        HashMap<WayType,ResizingArray<String[]>>  wayTypeCases = new HashMap<>();
+        ArrayList<String> cases = getTextFile(pathToCasesFile);
+        String wayCase = "";
+        WayType wayType = null;
+        for(int i = 0; i < cases.size() ; i++) {
+                wayCase = cases.get(i);
+                if(wayCase.startsWith("$")) {
+                    wayType = WayType.valueOf(cases.get(i+1));
+                    i++;
+                }else{
                     String[] tokens = wayCase.split(" ");
-                    if(model.wayTypeCases.get(wayType)==null){
-                        model.wayTypeCases.put(wayType,new ArrayList<>());
+                    if(wayTypeCases.get(wayType)==null){
+                        wayTypeCases.put(wayType,new ResizingArray<>());
                     }
-                    model.wayTypeCases.get(wayType).add(new String[]{tokens[0],tokens[1]});
-                    wayCase = in.readLine();
+                    wayTypeCases.get(wayType).add(new String[]{tokens[0],tokens[1]});
                 }
             }
-        } catch (UnsupportedEncodingException | FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            return wayTypeCases;
     }
 }

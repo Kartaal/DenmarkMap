@@ -1,30 +1,43 @@
 package bfst19.Line;
 
+import bfst19.Route_parsing.ResizingArray;
+
 import java.util.ArrayList;
 import java.util.function.LongSupplier;
-public class OSMWay extends ArrayList<OSMNode> implements LongSupplier {
-	ArrayList<OSMNode> ways;
-	long id;
+public class OSMWay {
+	ResizingArray<OSMNode> ways;
+	int id;
 
-	public OSMWay(long id) {
+	public OSMWay(int id) {
 		this.id = id;
-		ways = new ArrayList<>();
+		ways = new ResizingArray<>();
 	}
 
-	@Override
-	public long getAsLong() {
+	public long getId() {
 		return id;
 	}
+
+	public OSMNode get(int index){
+	    return ways.get(index);
+    }
 
 	public OSMNode getFirst() {
 		return get(0);
 	}
 
 	public OSMNode getLast() {
-		return get(size()-1);
+		return get(ways.size()-1);
 	}
 
-	//TODO All of this refactoring headache, right now it's very tightly connected to ArrayList
+    public int size() {
+    return ways.size();
+	}
+
+    public void add(OSMNode osmNode) {
+	    ways.add(osmNode);
+    }
+
+    //TODO All of this refactoring headache, right now it's very tightly connected to ArrayList
 	//Refactoring the ArrayList out of inheritance
 	// following methods needed for the rest of the code to work
 	/*

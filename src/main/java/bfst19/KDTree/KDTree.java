@@ -5,10 +5,7 @@ import bfst19.Model;
 import bfst19.Route_parsing.ResizingArray;
 import javafx.geometry.Point2D;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class KDTree implements Serializable {
     private KDNode root;
@@ -27,11 +24,12 @@ public class KDTree implements Serializable {
         if(root == null) {
             //Set xComp as the first comparator
             selectComp = KDTree.xComp;
-            //Use a modified QuickSort to ensure the lower values are in the left half
-            // and the higher values are in the right half
-            sort(list, selectComp);
+
             //Find the middle index to find the root element
             int splitIndex = list.size() / 2;
+
+            //Return value not used, select is only meant to partially sort the list
+            select(list, splitIndex, 0, list.size()-1, selectComp);
 
             //Ensure that our Drawable list is not empty
             if(list.size() > 0) {
@@ -67,8 +65,9 @@ public class KDTree implements Serializable {
         //Change comparator based on vertical
         //? is a shorthand of if-else. (expression) ? (if expression true) : (if expression false)
         selectComp = vertical ? KDTree.xComp : KDTree.yComp;
-        //Might want an overloaded version that only sorts a sublist
-        sort(list, lo, hi, selectComp);
+
+        //Return value not used, select is only meant to partially sort the list
+        select(list, splitIndex, lo, hi, selectComp);
 
         //Figure out the splitting value based on dimension
         float splitVal;
@@ -240,44 +239,32 @@ public class KDTree implements Serializable {
         return root;
     }
 
-	/*
-	//Not in use currently
-	public BoundingBoxable select(List<Drawable> a, int k, Comparator<BoundingBoxable> comp)
-	{
-		shuffle(a);
-		int lo = 0, hi = a.size() - 1;
-		while (hi > lo)
-		{
-			int j = partition(a, lo, hi, comp);
-			if (j == k) return (BoundingBoxable) a.get(k);
-			else if (j > k) hi = j - 1;
-			else if (j < k) lo = j + 1;
-		}
-		return (BoundingBoxable) a.get(k);
-	}
-	*/
+    public BoundingBoxable select(ResizingArray<Drawable> a, int k, int lo, int hi, Comparator<BoundingBoxable> comp)
+    {
+        if(a.isEmpty()) {
+            return null;
+        }
+
+        while (hi > lo)
+        {
+            int j = partition(a, lo, hi, comp);
+            if (j == k) return (BoundingBoxable) a.get(k);
+            else if (j > k) hi = j - 1;
+            else if (j < k) lo = j + 1;
+        }
+        return (BoundingBoxable) a.get(k);
+    }
 
     //Everything below this line is a modified version of code from Algs4
-
-    //From Algs4 book, modified
-    public void sort(ResizingArray<Drawable> a, Comparator<BoundingBoxable> comp) {
-        //shuffle(a);
-        sort(a, 0, a.size() - 1, comp);
-    }
-
-    // quicksort the subarray from a[lo] to a[hi]
-    private void sort(ResizingArray<Drawable> a, int lo, int hi, Comparator<BoundingBoxable> comp) {
-        if (hi <= lo) return;
-        int j = partition(a, lo, hi, comp);
-        sort(a, lo, j-1, comp);
-        sort(a, j+1, hi, comp);
-    }
-
     //From Algs4 book
     private int partition(ResizingArray<Drawable> a, int lo, int hi, Comparator<BoundingBoxable> comp)
     { // Partition into a[lo..i-1], a[i], a[i+1..hi].
         int i = lo, j = hi+1; // left and right scan indices
-        Drawable v = a.get(lo); // partitioning item
+        Random rand = new Random();
+        int diff = lo < hi ? hi - lo : lo - hi;
+        int pIndex = lo + rand.nextInt(diff);
+        Drawable v = a.get(pIndex);
+        //Drawable v = a.get(lo); // partitioning item
         while (true)
         { // Scan right, scan left, check for scan complete, and exchange.
             while (comp.compare((BoundingBoxable) a.get(++i), (BoundingBoxable) v) > 0) if (i == hi) break;

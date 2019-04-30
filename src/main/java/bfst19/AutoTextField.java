@@ -39,7 +39,7 @@ public class AutoTextField extends TextField {
         this.controller = controller;
         this.model = controller.getModel();
         //Making sure to clear the old observer which should no longer be a living object.
-        model.clearAddFoundMatchesObservers();
+        model.clearFoundMatchesObservers();
         model.addFoundMatchesObserver(this::showResults);
     }
 

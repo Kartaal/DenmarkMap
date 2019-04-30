@@ -7,7 +7,7 @@ import java.util.Comparator;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 
-public class ResizingArray<T> implements Serializable {
+public class ResizingArray<T> implements Serializable  {
     private Object[] a;         // array of items
     private int n;            // number of elements on stack
 

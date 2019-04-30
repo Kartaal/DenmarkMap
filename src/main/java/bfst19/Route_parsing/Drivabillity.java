@@ -15,7 +15,7 @@ public enum Drivabillity {
         return value;
     }
 
-    public static Drivabillity valueToDrivabillity(int value) {
+    public static Drivabillity intToDrivabillity(int value) {
 
         if (NOWAY.getValue() == value) {
             return NOWAY;

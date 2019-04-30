@@ -27,11 +27,9 @@ public class LongIndex{
 			temp[i] = a[i];
 		}
 		a = temp;
-
-		// alternative implementation
-		// a = java.util.Arrays.copyOf(a, capacity);
 	}
 
+	//uses binary search, and sorts if unsorted
 	public int get(long ref) {
 		if (!sorted) {
 			trim();

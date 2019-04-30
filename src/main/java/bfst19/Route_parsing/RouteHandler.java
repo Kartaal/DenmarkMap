@@ -36,7 +36,7 @@ public class RouteHandler{
 
                 String[] tokens = vehicleTypeAndDrivable.split(" ");
                 Vehicle vehicleType = Vehicle.valueOf(tokens[0]);
-                Drivabillity defaultDrivable = Drivabillity.valueToDrivabillity(Integer.valueOf(tokens[1]));
+                Drivabillity defaultDrivable = Drivabillity.intToDrivabillity(Integer.valueOf(tokens[1]));
                 drivabillty.get(wayType).put(vehicleType,defaultDrivable);
             }
         }
@@ -106,7 +106,8 @@ public class RouteHandler{
                     String[] caseTokens = vehicleCases.get(i);
                     if(k.equals(caseTokens[0])&&v.equals(caseTokens[1])){
                         Vehicle vehicletype = Vehicle.valueOf(vehicletypeAndDrivable.split(" ")[0]);
-                        drivabillty.get(waytype).put(vehicletype,Drivabillity.valueToDrivabillity(Integer.valueOf(caseTokens[2])));
+                        int drivableValue = Integer.valueOf(caseTokens[2]);
+                        drivabillty.get(waytype).put(vehicletype,Drivabillity.intToDrivabillity(drivableValue));
                     }
                 }
             }
@@ -149,19 +150,18 @@ public class RouteHandler{
             G.addEdge(edge);
             previousnode = currentNode;
 
-            //resets the drivabillity for the waytype by gettting the values from the default
-
         }
+        //resets the drivabillity for the waytype by gettting the values from the default
         resetDrivabillty();
     }
 
-    private void resetDrivabillty(){
+    public void resetDrivabillty(){
         for(WayType waytype : drivableCases.keySet()){
             HashMap<Vehicle,Drivabillity> resetDefaults = new HashMap<>();
             for(String vehicleTypeAndDrivable : drivableCases.get(waytype).keySet()){
                 String[] tokens = vehicleTypeAndDrivable.split(" ");
                 Vehicle vehicleType = Vehicle.valueOf(tokens[0]);
-                Drivabillity drivable = Drivabillity.valueToDrivabillity(Integer.valueOf(tokens[1]));
+                Drivabillity drivable = Drivabillity.intToDrivabillity(Integer.valueOf(tokens[1]));
                 resetDefaults.put(vehicleType,drivable);
             }
             drivabillty.put(waytype,resetDefaults);

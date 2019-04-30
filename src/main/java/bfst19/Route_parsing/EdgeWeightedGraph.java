@@ -46,13 +46,6 @@ public class EdgeWeightedGraph implements Serializable {
         return false;
     }
 
-    public void addVertex(int id){
-        if(!isVertex(id)) {
-            adj.add(new ResizingArray<>());
-            V++;
-        }
-    }
-
     public void addVertex(OSMNode node){
         if(!isVertex(node.getId())) {
             node.setId(V);

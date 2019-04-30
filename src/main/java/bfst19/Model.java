@@ -9,7 +9,6 @@ import bfst19.Line.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
-
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -20,116 +19,28 @@ import java.util.zip.ZipInputStream;
 import static javax.xml.stream.XMLStreamConstants.*;
 
 public class Model{
-    RouteHandler routeHandler;
+    private RouteHandler routeHandler;
     private static float lonfactor = 1.0f;
-    private boolean colorBlindEnabled;
     private String datasetName;
-    HashMap<Long,String> pointsOfInterest = new HashMap<>();
-    TextHandler textHandler = new TextHandler();
+    private TextHandler textHandler = new TextHandler();
 
-    List<Runnable> colorObservers = new ArrayList<>();
-    List<Runnable> foundMatchesObservers = new ArrayList<>();
-    List<Runnable> pathObservers = new ArrayList<>();
-    float minlat, minlon, maxlat, maxlon;
+    private List<Runnable> colorObservers = new ArrayList<>();
+    private List<Runnable> foundMatchesObservers = new ArrayList<>();
+    private List<Runnable> pathObservers = new ArrayList<>();
+    private float minlat;
+    private float minlon;
+    private float maxlat;
+    private float maxlon;
 
-    String CurrentTypeColorTxt  = "src/main/resources/config/TypeColorsNormal.txt";
-    HashMap<String,ArrayList<String[]>> wayTypeCases = new HashMap<>();
-    ObservableList<String[]> foundMatches = FXCollections.observableArrayList();
-    ObservableList<String> typeColors = FXCollections.observableArrayList();
-    ObservableList<Iterable<Edge>> foundPath = FXCollections.observableArrayList();
-    Map<WayType, KDTree> kdTreeMap = new TreeMap<>();
+    private String currentTypeColorTxt = "src/main/resources/config/TypeColorsNormal.txt";
+    private HashMap<WayType,ResizingArray<String[]>> wayTypeCases = new HashMap<>();
+    private ObservableList<String[]> foundMatches = FXCollections.observableArrayList();
+    private ObservableList<String[]> typeColors = FXCollections.observableArrayList();
+    private ObservableList<Iterable<Edge>> foundPath = FXCollections.observableArrayList();
+    //todo change to other hashmaps or do something else
+    private Map<WayType, KDTree> kdTreeMap = new TreeMap<>();
 
-    public ArrayList<String> getTextFile(String filepath) {
-        return textHandler.getTextFile(filepath);
-    }
-
-    //for building addresses during parsing
-    public static class Builder {
-        private int id;
-        private float lat, lon;
-        private String streetName = "Unknown", houseNumber="", postcode="", city="",municipality="";
-
-        public void reset(){
-            id = 0;
-            lat = 0;
-            lon = 0;
-            streetName = "Unknown";
-            houseNumber = "";
-            postcode = "";
-            city = "";
-        }
-
-        public boolean hasFields(){
-            if(!streetName.equals("Unknown") && !houseNumber.equals("") && !postcode.equals("") &&
-                    (!city.equals("") || !municipality.equals(""))) {
-                return true;
-            }
-            return false;
-        }
-
-        public Address build() {
-            if(streetName.contains("/")) {
-                streetName = streetName.replaceAll("/","");
-            }
-            if(city.equals("")) {
-                city = municipality;
-            }
-
-            return new Address(id, lat, lon, streetName, houseNumber, postcode, city);
-        }
-    }
-
-
-    public ResizingArray<Drawable> getWaysOfType(WayType type, BoundingBox bbox) {
-        return kdTreeMap.get(type).rangeQuery(bbox);
-    }
-    public void addPathObserver(Runnable observer){pathObservers.add(observer);}
-
-    public void addPath(Iterable<Edge> path){
-        foundPath.add(path);
-        notifyPathObservers();
-    }
-
-    public void clearPath(){
-        if(!foundPath.isEmpty()){
-            foundPath.clear();
-            notifyPathObservers();
-        }
-    }
-
-    public void addFoundMatchesObserver(Runnable observer) {
-        foundMatchesObservers.add(observer);
-    }
-
-    public void addColorObserver(Runnable observer) {
-        colorObservers.add(observer);
-    }
-
-
-    //TODO Might not be ideal solution if we need more then two autoTextFields...
-    public void clearAddFoundMatchesObservers(){
-        foundMatchesObservers = new ArrayList<>();
-    }
-
-    public void notifyFoundMatchesObservers() {
-        for (Runnable observer : foundMatchesObservers) {
-            observer.run();
-        }
-    }
-
-    public void notifyColorObservers() {
-        for (Runnable observer : colorObservers) {
-            observer.run();
-        }
-    }
-
-
-    public void notifyPathObservers(){
-        for(Runnable observer : pathObservers) {
-            observer.run();
-        }
-    }
-
+    //used for addresstesting
     public Model(String dataset) {
         datasetName = dataset;
         //this keeps the cities and the default streets files in memory, it's about 1mb for Zealand of memory
@@ -146,7 +57,7 @@ public class Model{
         }
 
         //todo figure out how to do singleton but also include model in its constructor without needing to give model for every call of getInstance
-        textHandler.parseWayTypeCases("src/main/resources/config/WayTypeCases.txt", this);
+        wayTypeCases = textHandler.parseWayTypeCases("src/main/resources/config/WayTypeCases.txt");
         textHandler.ParseWayColors(this);
 
         String filename = args.get(0);
@@ -195,6 +106,125 @@ public class Model{
         AddressParser.getInstance(this).parseCitiesAndPostCodes(textHandler.getCities(this, getDatasetName()));
     }
 
+
+
+    public void addFoundMatchesObserver(Runnable observer) {
+        foundMatchesObservers.add(observer);
+    }
+
+    public void addColorObserver(Runnable observer) {
+        colorObservers.add(observer);
+    }
+
+    public void addPathObserver(Runnable observer){pathObservers.add(observer);}
+
+    public void addPath(Iterable<Edge> path){
+        foundPath.add(path);
+        notifyPathObservers();
+    }
+
+    public void clearPath(){
+        if(!foundPath.isEmpty()){
+            foundPath.clear();
+            notifyPathObservers();
+        }
+    }
+
+    public void clearColors(){
+        if(!typeColors.isEmpty()){
+            typeColors.clear();
+        }
+    }
+
+    public void clearFoundMatchesObservers(){
+        foundMatchesObservers = new ArrayList<>();
+    }
+
+    //notify observer methods run through each array of observers and calls their run() method which they themselves have defined
+    public void notifyFoundMatchesObservers() {
+        for (Runnable observer : foundMatchesObservers) {
+            observer.run();
+        }
+    }
+
+    public void notifyColorObservers() {
+        for (Runnable observer : colorObservers) {
+            observer.run();
+        }
+    }
+
+    public void notifyPathObservers(){
+        for(Runnable observer : pathObservers) {
+            observer.run();
+        }
+    }
+
+    // Does this contain the in
+    public Iterator<Edge> pathIterator(){
+        return foundPath.iterator().next().iterator();
+    }
+
+    public Iterator<String[]> colorIterator() {
+        return typeColors.iterator();
+    }
+
+    public Iterator<String[]> foundMatchesIterator() {
+        return foundMatches.iterator();
+    }
+
+
+
+    public String getCurrentTypeColorTxt(){
+        return currentTypeColorTxt;
+    }
+
+    public void addTypeColors(String[] color){
+        typeColors.add(color);
+    }
+
+    public float getMinlon(){
+        return minlon;
+    }
+
+    public float getMinlat() {
+        return minlat;
+    }
+
+    public float getMaxlat() {
+        return maxlat;
+    }
+
+    public float getMaxlon() {
+        return maxlon;
+    }
+
+    public TextHandler getTextHandler(){
+        return textHandler;
+    }
+
+    public ArrayList<String> getAddressesOnStreet(String country,String city,String postcode,String streetName){
+        return textHandler.getTextFile("data/"+country+"/"+city+" QQQ "+postcode+"/"+streetName+".txt");
+    }
+
+    public ArrayList<String> getTextFile(String filepath) {
+        return textHandler.getTextFile(filepath);
+    }
+
+
+    public String getDelimeter() {
+        return " QQQ ";
+    }
+
+    public String getDatasetName() {
+        return datasetName;
+    }
+
+
+    //returns the ways of the given type within the given boundingbox
+    public ResizingArray<Drawable> getWaysOfType(WayType type, BoundingBox bbox) {
+        return kdTreeMap.get(type).rangeQuery(bbox);
+    }
+
     public static double getLonfactor(){
         return lonfactor;
     }
@@ -204,11 +234,11 @@ public class Model{
         System.out.println("Colorblind mode enabled: " + colorBlindEnabled);
 
         if (colorBlindEnabled) {
-            CurrentTypeColorTxt = ("src/main/resources/config/TypeColorsColorblind.txt");
+            currentTypeColorTxt = ("src/main/resources/config/TypeColorsColorblind.txt");
         }  else {
-            CurrentTypeColorTxt = ("src/main/resources/config/TypeColorsNormal.txt");
+            currentTypeColorTxt = ("src/main/resources/config/TypeColorsNormal.txt");
         }
-        ParseWayColors();
+        textHandler.ParseWayColors(this);
     }
 
 
@@ -219,7 +249,6 @@ public class Model{
             ways.put(type, new ResizingArray<>());
         }
         EdgeWeightedGraph nodeGraph = new EdgeWeightedGraph();
-        //todo change to other hashmaps or do something else
         routeHandler = new RouteHandler(this,nodeGraph);
         XMLStreamReader reader = XMLInputFactory
                 .newInstance()
@@ -231,6 +260,7 @@ public class Model{
         ResizingArray<OSMNode> tempNodes = new ResizingArray<>();
         ResizingArray<OSMWay> tempWays = new ResizingArray<>();
         ArrayList<Address> addresses = new ArrayList<>();
+        //todo implement addall in resizingarray
         List<OSMWay> coast = new ArrayList<>();
 
         //variables to make OSMWay/OSMRelation
@@ -238,11 +268,13 @@ public class Model{
         OSMRelation rel = null;
         WayType type = null;
 
+        //used for building the nodegraph specifically edges
         int speedlimit = 0;
-        String name = "";
+        String edgeName = "";
 
         //variables for addressParsing and OSMNode creation
         Builder b = new Builder();
+        //maybe eliminate fields (put in builder?)
         long id = 0;
         float lat = 0;
         float lon = 0;
@@ -256,6 +288,8 @@ public class Model{
                             minlon = Float.parseFloat(reader.getAttributeValue(null, "minlon"));
                             maxlat = Float.parseFloat(reader.getAttributeValue(null, "maxlat"));
                             maxlon = Float.parseFloat(reader.getAttributeValue(null, "maxlon"));
+                            //needs to calculate a "lonfactor" so that we can project points on a sphere to points on a 2D map
+                            //mercator projection
                             lonfactor = (float) Math.cos((maxlat+minlat)/2*Math.PI/180);
                             minlon *= lonfactor;
                             maxlon *= lonfactor;
@@ -265,16 +299,20 @@ public class Model{
                             lat = Float.parseFloat(reader.getAttributeValue(null, "lat"));
                             lon = Float.parseFloat(reader.getAttributeValue(null, "lon"));
                             idToNodeIndex.add(id);
+                            //0 default id is 0 and is assigned later in the nodegraph, if it's part of a way that is in the nodegraph
                             tempNodes.add(new OSMNode(0, lon*lonfactor, lat));
                             break;
                         case "way":
                             id = Long.parseLong(reader.getAttributeValue(null, "id"));
+                            //unknown waytype is default
                             type = WayType.UNKNOWN;
+                            //id is also 0 as the default for the same reason
                             way = new OSMWay(0);
                             idToWayIndex.add(id);
                             tempWays.add(way);
                             break;
                         case "nd":
+                            //the reference is the same as the id given to a specific node
                             long ref = Long.parseLong(reader.getAttributeValue(null, "ref"));
                             way.add(tempNodes.get(idToNodeIndex.get(ref)));
                             break;
@@ -303,6 +341,7 @@ public class Model{
                                 b.municipality = v.trim();
                             }
 
+                            //Todo streamline to reduce, this is a little excessive
                             if(k.equals("source:maxspeed")){
                                 if(v.equalsIgnoreCase("DK:urban")||v.equalsIgnoreCase("DK:urabn")||v.equalsIgnoreCase("DK:city")||v.equalsIgnoreCase("DK:zone50")||v.equalsIgnoreCase("dk:urban-")||v.equalsIgnoreCase("DK:uban")||v.equalsIgnoreCase("DK.urban")||v.equalsIgnoreCase("dk:urban;sign")||v.equalsIgnoreCase("urban")) {
                                     speedlimit = 50;
@@ -320,7 +359,7 @@ public class Model{
                             }
 
                             if(k.equals("name")){
-                                name = v;
+                                edgeName = v;
                             }
 
                             if(k.equals("maxspeed")){
@@ -337,18 +376,17 @@ public class Model{
                             }
 
                             //string[0]=waytype's name, strings[1] = k for the case, strings = v for the case.
-                            for(Map.Entry<String,ArrayList<String[]>> wayType : wayTypeCases.entrySet()){
-                                String wayTypeString = wayType.getKey();
-                                for(String[] waycase : wayType.getValue()) {
+                            for(Map.Entry<WayType,ResizingArray<String[]>> wayTypeEntry : wayTypeCases.entrySet()){
+                                WayType wayType = wayTypeEntry.getKey();
+                                ResizingArray<String[]> tempWay = wayTypeEntry.getValue();
+                                for(int i = 0 ; i < tempWay.size() ; i++) {
+                                    String[] waycase = tempWay.get(i);
                                     if(k.equals(waycase[0])&&v.equals(waycase[1])) {
-                                        type = WayType.valueOf(wayTypeString);
+                                        type = wayType;
                                     }
                                 }
                             }
 
-                            if(id == 2861552){
-                                System.out.println("boop");
-                            }
                             routeHandler.checkDrivabillty(k,v);
 
                             switch (k){
@@ -358,9 +396,12 @@ public class Model{
                                     break;
                                 case "member":
                                     ref = Long.parseLong(reader.getAttributeValue(null, "ref"));
-                                    OSMWay member = tempWays.get(idToWayIndex.get(ref));
-                                    if (member != null) rel.add(member);
-                                    break;
+                                    int index = idToWayIndex.get(ref);
+                                    OSMWay member;
+                                    if(!(index == -1)) {
+                                        member = tempWays.get(idToWayIndex.get(ref));
+                                        if (member != null) rel.add(member);
+                                    }        break;
                             }
                             break;
                         case "relation":
@@ -370,10 +411,12 @@ public class Model{
                         case "member":
                             ref = Long.parseLong(reader.getAttributeValue(null, "ref"));
                             int index = idToWayIndex.get(ref);
-                            if(!(index < 0)){
-                                OSMWay member = tempWays.get(idToWayIndex.get(ref));
+                            OSMWay member;
+                            if(!(index == -1)) {
+                                member = tempWays.get(idToWayIndex.get(ref));
                                 if (member != null) rel.add(member);
                             }
+                            //can acutally be null, because relations are given in their entirety despite getting cut off by the dataset
                             break;
                     }
                     break;
@@ -385,7 +428,7 @@ public class Model{
                             // of the one's that should be in the nodegraph
                             boolean isNodeGraphWay = routeHandler.isNodeGraphWay(type);
                             if(isNodeGraphWay) {
-                                routeHandler.addWayToNodeGraph(way, type,name,speedlimit);
+                                routeHandler.addWayToNodeGraph(way, type,edgeName,speedlimit);
                             }
 
                             if (type == WayType.COASTLINE) {
@@ -405,9 +448,11 @@ public class Model{
                             way = null;
                             b.reset();
                             speedlimit = 0;
-                            name = "";
+                            edgeName = "";
+                            routeHandler.resetDrivabillty();
                             break;
                         case "node":
+                            //todo fix code dup with previous
                             if(b.hasFields()) {
                                 b.id = tempNodes.size();
                                 b.lat = lat;
@@ -426,24 +471,6 @@ public class Model{
                                     || type == WayType.CONSTRUCTION || type == WayType.PARKING) {
                                 ways.get(type).add(new MultiPolyline(rel));
                                 way = null;
-                            }else if(type == WayType.BUILDING){
-                                ways.get(type).add(new MultiPolyline(rel));
-                            }else if(type == WayType.FOREST){
-                                ways.get(type).add(new MultiPolyline(rel));
-                            }else if(type == WayType.FARMLAND){
-                                ways.get(type).add(new MultiPolyline(rel));
-                            }else if(type == WayType.PARK){
-                                ways.get(type).add(new MultiPolyline(rel));
-                            }else if(type == WayType.RECREATION){
-                                ways.get(type).add(new MultiPolyline(rel));
-                            }else if(type == WayType.BOUNDARY_ADMINISTRATIVE){
-                                ways.get(type).add(new MultiPolyline(rel));
-                            }else if(type == WayType.RAILWAY_PLATFORM){
-                                ways.get(type).add(new MultiPolyline(rel));
-                            }else if(type == WayType.CONSTRUCTION){
-                                ways.get(type).add(new MultiPolyline(rel));
-                            }else if(type == WayType.PARKING){
-                                ways.get(type).add(new MultiPolyline(rel));
                             }
                             break;
                     }
@@ -471,7 +498,7 @@ public class Model{
                         //Add KDTree to TreeMap
                         kdTreeMap.put(entry.getKey(), typeTree);
                     }
-
+                    //todo implement sort
                     addresses.sort(Address::compareTo);
                     textHandler.makeDatabase(this, addresses, getDatasetName());
                     addresses = null;
@@ -488,6 +515,7 @@ public class Model{
     }
 
 
+    //todo move to calculator
     public float calculateDistanceInMeters(double startLat, double startLon, double endLat, double endLon){
         //Found the formula on https://www.movable-type.co.uk/scripts/latlong.html
         //Basically the same code as is shown on the site mentioned above
@@ -502,17 +530,13 @@ public class Model{
         double d = R * c;
         return (float)d;
     }
-
+    //todo move to calculator
     public static float angleBetween2Lines(OSMNode A1, OSMNode A2, OSMNode B1, OSMNode B2) {
         float angle1 = (float) Math.atan2(A2.getLat() - A1.getLat(), A1.getLon() - A2.getLon());
         float angle2 = (float) Math.atan2(B2.getLat() - B1.getLat(), B1.getLon() - B2.getLon());
         float calculatedAngle = (float) Math.toDegrees(angle1 - angle2);
         if (calculatedAngle < 0) calculatedAngle += 360;
         return calculatedAngle;
-    }
-
-    public String getDelimeter() {
-        return " QQQ ";
     }
 
     private Iterable<OSMWay> merge(List<OSMWay> coast) {
@@ -526,7 +550,6 @@ public class Model{
                     res.add(before.get(i));
                 }
             }
-            //TODO figure out why this works and why it can't be refactored easily into OSMWay without inheritance
             for(int i = 0 ; i < way.size() ; i++){
                 res.add(way.get(i));
             }
@@ -543,24 +566,11 @@ public class Model{
         return pieces.values();
     }
 
-    public void ParseWayColors() {
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(CurrentTypeColorTxt));
-            int m = Integer.parseInt(br.readLine());
-
-            for (int i = 0 ; i < m ; i++) {
-                String[] strArr = br.readLine().split(" ");
-                typeColors.add(strArr[0]);
-                typeColors.add(strArr[1]);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Couldn't create a file reader from color scheme file (" + CurrentTypeColorTxt + ") or failed to read from it.");
-        }
-
-        notifyColorObservers();
+    public Iterable<Edge> findPath(int startId , int endId , Vehicle type , boolean fastestPath){
+        return routeHandler.findPath(startId,endId,type,fastestPath);
     }
 
+    //todo move to addressparser
     public void parseSearch(String proposedAddress) {
         Address a = AddressParser.getInstance(this).singleSearch(proposedAddress, getDatasetName());
         //if the address does not have a city or a streetname, get the string's matches from the default file and display them
@@ -597,15 +607,7 @@ public class Model{
         notifyFoundMatchesObservers();
     }
 
-    public String getDatasetName() {
-        return datasetName;
-    }
-
-    public ArrayList<String> getAddressesOnStreet(String country,String city,String postcode,String streetName){
-        return textHandler.getTextFile("data/"+country+"/"+city+" QQQ "+postcode+"/"+streetName+".txt");
-    }
-
-    public void writePointsOfInterest(String datasetName) {
+    /*public void writePointsOfInterest(String datasetName) {
         try {
             BufferedWriter pointsOfInterestWriter = new BufferedWriter(
                     new OutputStreamWriter(new FileOutputStream(
@@ -632,28 +634,7 @@ public class Model{
         }
         return pointsOfInterest;
     }
-
-    public void addPointsOfInterest(long id,String pointOfInterest) {
-        pointsOfInterest.put(id,pointOfInterest);
-    }
-
-    public void removePointOfInterest(long id) {
-        pointsOfInterest.remove(id);
-    }
-
-    //// Does this contain the in
-    public Iterator<Edge> pathIterator(){
-        return foundPath.iterator().next().iterator();
-    }
-
-    public Iterator<String> colorIterator() {
-        return typeColors.iterator();
-    }
-
-    public Iterator<String[]> foundMatchesIterator() {
-        return foundMatches.iterator();
-    }
-
+*/
     public static OSMNode getClosestNode(Point2D point, ArrayList<OSMNode> queryList) {
         //TODO: put into a "Calculator" class.
         double closestDistance = Double.POSITIVE_INFINITY;
@@ -710,5 +691,38 @@ public class Model{
         }
 
 
+    }
+    //for building addresses during parsing
+    private static class Builder {
+        private int id;
+        private float lat, lon;
+        private String streetName = "Unknown", houseNumber="", postcode="", city="",municipality="";
+
+        void reset(){
+            id = 0;
+            lat = 0;
+            lon = 0;
+            streetName = "Unknown";
+            houseNumber = "";
+            postcode = "";
+            city = "";
+        }
+
+        boolean hasFields(){
+            return !streetName.equals("Unknown") && !houseNumber.equals("") && !postcode.equals("") &&
+                    (!city.equals("") || !municipality.equals(""));
+        }
+
+        Address build() {
+            //some streets have forwardslash in them, we need to replace them to avoi io-exceptions in writing their files
+            if(streetName.contains("/")) {
+                streetName = streetName.replaceAll("/","");
+            }
+            if(city.equals("")) {
+                city = municipality;
+            }
+
+            return new Address(id, lat, lon, streetName, houseNumber, postcode, city);
+        }
     }
 }

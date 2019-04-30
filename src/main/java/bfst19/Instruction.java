@@ -17,7 +17,7 @@ public class Instruction extends HBox {
         getChildren().addAll(addImage(direction), makeLengthText(length), makeDirectionPane(direction), makeRoadNameText(road));
     }
 
-    // Code-dublication we also use this in the scalebar
+    // TODO Code-dublication we also use this in the scalebar, put in calculator class
     public static int round(double length){
         if(length-Math.floor(length) < length-Math.ceil(length)){
             return (int) Math.floor(length);

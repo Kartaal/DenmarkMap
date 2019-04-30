@@ -7,6 +7,7 @@ import bfst19.KDTree.KDTree;
 import bfst19.Line.OSMNode;
 import bfst19.Line.OSMWay;
 import bfst19.Line.Polyline;
+import bfst19.Route_parsing.ResizingArray;
 import javafx.geometry.Point2D;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
@@ -18,95 +19,103 @@ import static org.junit.Assert.*;
 
 public class KDTreeTest {
 	Map<WayType, KDTree> kdTreeMap = new TreeMap<>();
-	Set<Drawable> midSet = new HashSet<>();
-	Set<Drawable> fullSet = new HashSet<>();
+	List<Drawable> midList = new ArrayList<>();
+	List<Drawable> fullList = new ArrayList<>();
 
 	Affine transform = new Affine();
 
 	@Before
 	public void initialize() {
-		Map<WayType, List<Drawable>> ways = new EnumMap<>(WayType.class);
-		LongIndex<OSMNode> idToNode = new LongIndex<>();
+		Map<WayType, ResizingArray<Drawable>> ways = new EnumMap<>(WayType.class);
+		ResizingArray<OSMNode> nodes = new ResizingArray<>();
+		LongIndex idToNode = new LongIndex();
 		//LongIndex<OSMWay> idToWay = new LongIndex<OSMWay>();			for relations
 		OSMWay way;
 		WayType type;
 		//Fill map with empty arraylists as setup
 		for (WayType wtype : WayType.values()) {
-			ways.put(wtype, new ArrayList<>());
+			ways.put(wtype, new ResizingArray<>());
 		}
 
 		//Setup transform
 		transform.prependScale(1,-1, 0, 0);
 
 		//Set up a bunch of nodes for putting in ways
-		OSMNode node = new OSMNode(5852189410L, 14.7999881f, 55.2672338f);
-		idToNode.add(node);
-		node = new OSMNode(5852189412L, 14.8003713f, 55.2673134f);
-		idToNode.add(node);
-		node = new OSMNode(5852189411L, 14.7997896f, 55.2672766f);
-		idToNode.add(node);
-		node = new OSMNode(5852189413L, 14.8001919f, 55.2675585f);
-		idToNode.add(node);
-		node = new OSMNode(5852189414L, 14.8002576f, 55.2675671f);
-		idToNode.add(node);
-		node = new OSMNode(5852195004L, 14.8493998f, 55.2433121f);
-		idToNode.add(node);
-		node = new OSMNode(5852195005L, 14.8496784f, 55.2434415f);
-		idToNode.add(node);
-		node = new OSMNode(5852195007L, 14.8497670f, 55.2434826f);
-		idToNode.add(node);
-		node = new OSMNode(5852227208L, 14.7818229f, 55.1828097f);
-		idToNode.add(node);
-		node = new OSMNode(5852227209L, 14.7821364f, 55.1828254f);
-		idToNode.add(node);
-
+		OSMNode node = new OSMNode(0, 14.7999881f, 55.2672338f);
+		idToNode.add(5852189410L);
+		nodes.add(node);
+		node = new OSMNode(1, 14.8003713f, 55.2673134f);
+		idToNode.add(5852189412L);
+		nodes.add(node);
+		node = new OSMNode(2, 14.7997896f, 55.2672766f);
+		idToNode.add(5852189411L);
+		nodes.add(node);
+		node = new OSMNode(3, 14.8001919f, 55.2675585f);
+		idToNode.add(5852189413L);
+		nodes.add(node);
+		node = new OSMNode(4, 14.8002576f, 55.2675671f);
+		idToNode.add(5852189414L);
+		nodes.add(node);
+		node = new OSMNode(5, 14.8493998f, 55.2433121f);
+		idToNode.add(5852195004L);
+		nodes.add(node);
+		node = new OSMNode(6, 14.8496784f, 55.2434415f);
+		idToNode.add(5852195005L);
+		nodes.add(node);
+		node = new OSMNode(7, 14.8497670f, 55.2434826f);
+		idToNode.add(5852195007L);
+		nodes.add(node);
+		node = new OSMNode(8, 14.7818229f, 55.1828097f);
+		idToNode.add(5852227208L);
+		nodes.add(node);
+		node = new OSMNode(9, 14.7821364f, 55.1828254f);
+		idToNode.add(5852227209L);
+		nodes.add(node);
 
 
 		//Add a whole bunch of ways
 		way = new OSMWay(619269638);
 		type = WayType.SERVICE;
-		way.add(idToNode.get(5852189411L));
-		way.add(idToNode.get(5852189413L));
-		way.add(idToNode.get(5852189414L));
-		Polyline line = new Polyline(way);
+		way.add(nodes.get(idToNode.get(5852189411L)));
+		way.add(nodes.get(idToNode.get(5852189413L)));
+		way.add(nodes.get(idToNode.get(5852189414L)));
+		Polyline line = new Polyline(way, true);
 		ways.get(type).add(line);
 
-		midSet.add(line);
-		fullSet.add(line);
-
+		midList.add(line);
+		fullList.add(line);
 
 		way = new OSMWay(619269637);
 		type = WayType.SERVICE;
-		way.add(idToNode.get(5852189410L));
-		way.add(idToNode.get(5852189412L));
-		line = new Polyline(way);
+		way.add(nodes.get(idToNode.get(5852189410L)));
+		way.add(nodes.get(idToNode.get(5852189412L)));
+		line = new Polyline(way, true);
 		ways.get(type).add(line);
 
-		midSet.add(line);
-		fullSet.add(line);
+		midList.add(line);
+		fullList.add(line);
 
 		way = new OSMWay(619270946);
 		type = WayType.SERVICE;
-		way.add(idToNode.get(5852195004L));
-		way.add(idToNode.get(5852195005L));
-		way.add(idToNode.get(5852195007L));
-		line = new Polyline(way);
+		way.add(nodes.get(idToNode.get(5852195004L)));
+		way.add(nodes.get(idToNode.get(5852195005L)));
+		way.add(nodes.get(idToNode.get(5852195007L)));
+		line = new Polyline(way, true);
 		ways.get(type).add(line);
 
-		fullSet.add(line);
+		fullList.add(line);
 
 		way = new OSMWay(619274513);
 		type = WayType.SERVICE;
-		way.add(idToNode.get(5852227208L));
-		way.add(idToNode.get(5852227209L));
-		line = new Polyline(way);
+		way.add(nodes.get(idToNode.get(5852227208L)));
+		way.add(nodes.get(idToNode.get(5852227209L)));
+		line = new Polyline(way, true);
 		ways.get(type).add(line);
 
-		fullSet.add(line);
+		fullList.add(line);
 
-		//Stolen from Model
 		//Make and populate KDTrees for each WayType
-		for(Map.Entry<WayType, List<Drawable>> entry : ways.entrySet()) {
+		for(Map.Entry<WayType, ResizingArray<Drawable>> entry : ways.entrySet()) {
 			KDTree typeTree = new KDTree();
 			//Add entry values to KDTree
 			typeTree.insertAll(entry.getValue());
@@ -147,8 +156,13 @@ public class KDTreeTest {
 		BoundingBox bb = new BoundingBox(minPoint.getX(), minPoint.getY(),
 				maxPoint.getX()-minPoint.getX(), maxPoint.getY()-minPoint.getY());
 
-		Set<Drawable> set = ((Set<Drawable>) kdTreeMap.get(WayType.SERVICE).rangeQuery(bb));
-		assertEquals(fullSet, set);
+		List<Drawable> list = ((List<Drawable>) kdTreeMap.get(WayType.SERVICE).rangeQuery(bb));
+
+		//Convert lists to set to disregard the order of the elements
+		Set<Drawable> fullSet = new HashSet<>(fullList);
+		Set<Drawable> returnSet = new HashSet<>(list);
+
+		assertEquals(fullSet, returnSet);
 	}
 
 
@@ -166,9 +180,9 @@ public class KDTreeTest {
 				maxPoint.getX()-minPoint.getX(), maxPoint.getY()-minPoint.getY());
 
 
-		Set<Drawable> set = ((Set<Drawable>) kdTreeMap.get(WayType.SERVICE).rangeQuery(bb));
+		List<Drawable> list = ((List<Drawable>) kdTreeMap.get(WayType.SERVICE).rangeQuery(bb));
 
-		assertEquals(midSet, set);
+		assertEquals(midList, list);
 	}
 
 
@@ -185,9 +199,9 @@ public class KDTreeTest {
 		BoundingBox bb = new BoundingBox(minPoint.getX(), minPoint.getY(),
 				maxPoint.getX()-minPoint.getX(), maxPoint.getY()-minPoint.getY());
 
-		Set<Drawable> emptySet = new HashSet<>();
+		List<Drawable> emptyList = new ArrayList<>();
 
-		assertEquals(emptySet, kdTreeMap.get(WayType.SERVICE).rangeQuery(bb));
+		assertEquals(emptyList, kdTreeMap.get(WayType.SERVICE).rangeQuery(bb));
 	}
 
 

@@ -40,8 +40,6 @@ public class KDNode implements Serializable {
             }
         }
 
-        double width = maxX-minX;
-        double height = maxY-minY;
 
         bb = new BoundingBox(minX, minY, maxX-minX, maxY-minY);
     }

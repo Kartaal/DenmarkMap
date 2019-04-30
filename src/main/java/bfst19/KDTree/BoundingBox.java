@@ -9,7 +9,7 @@ public class BoundingBox implements Serializable {
 	private double minY;
 	private double maxX;
 	private double maxY;
-
+	//todo add isEmpty check in constructor
 	public BoundingBox(double minX, double minY, double width, double height) {
 		this.minX = minX;
 		this.minY = minY;

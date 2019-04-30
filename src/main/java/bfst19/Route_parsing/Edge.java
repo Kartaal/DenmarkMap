@@ -86,7 +86,7 @@ public class Edge implements Serializable {
         }
     }
 
-    public boolean isForwardAllowed(Vehicle type, long id) {
+    public boolean isForwardAllowed(Vehicle type, int id) {
         Drivabillity drivable = getDrivableFromVehicleType(type);
         if(drivable==Drivabillity.BOTHWAYS){
             return true;

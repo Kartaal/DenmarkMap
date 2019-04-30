@@ -40,12 +40,12 @@ public class MapCanvas extends Canvas {
         this.controller = controller;
         //conventions in screen coords and map coords are not the same,
         // so we convert to screen convention by flipping x y
-        pan(-model.minlon, -model.maxlat);
+        pan(-model.getMinlon(), -model.getMaxlat());
         //TODO #soup type colors method
         setTypeColors();
         //sets an initial zoom level, 800 for now because it works
         transform.prependScale(1,-1, 0, 0);
-        zoom(800/(model.maxlon-model.minlon), 0,0);
+        zoom(800/(model.getMaxlon() - model.getMinlon()), 0,0);
 
         //model.addObserver(this::repaint);
         model.addPathObserver(this::setHasPath);
@@ -67,7 +67,7 @@ public class MapCanvas extends Canvas {
         //checks if the file contains coastlines or not, if not set background color to white
         // This assumes that the dataset contains either a fully closed coastline, or a dataset without any coastlines at all.
         // otherwise set background color to blue
-        if (model.getWaysOfType(WayType.COASTLINE, new BoundingBox(model.minlon, model.minlat, model.maxlon, model.maxlat)).size() >= 0) {
+        if (model.getWaysOfType(WayType.COASTLINE, new BoundingBox(model.getMinlon(), model.getMinlat(), model.getMaxlon(), model.getMaxlat())).size() >= 0) {
             gc.setFill(getColor(WayType.WATER));
         } else {
             gc.setFill(Color.WHITE);
@@ -218,9 +218,10 @@ public class MapCanvas extends Canvas {
     private Color getColor(WayType type) { return wayColors.get(type); }
 
     private void setTypeColors(){
-        Iterator<String> iterator = model.colorIterator();
+        Iterator<String[]> iterator = model.colorIterator();
         while(iterator.hasNext()){
-            wayColors.put(WayType.valueOf(iterator.next()),Color.valueOf(iterator.next()));
+            String[] tokens = iterator.next();
+            wayColors.put(WayType.valueOf(tokens[0]),Color.valueOf(tokens[1]));
         }
         repaint();
     }
