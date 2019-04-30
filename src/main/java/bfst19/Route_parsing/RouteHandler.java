@@ -1,5 +1,6 @@
 package bfst19.Route_parsing;
 
+import bfst19.Calculator;
 import bfst19.Line.OSMNode;
 import bfst19.Line.OSMWay;
 import bfst19.Model;
@@ -138,7 +139,7 @@ public class RouteHandler{
             double currentNodeLat = currentNode.getLat();
             double currentNodeLon = currentNode.getLon()/model.getLonfactor();
 
-            float length = model.calculateDistanceInMeters(previousNodeLat,previousNodeLon,currentNodeLat,currentNodeLon);
+            float length = Calculator.calculateDistanceInMeters(previousNodeLat,previousNodeLon,currentNodeLat,currentNodeLon);
 
             if(speedlimit==0){
                 speedlimit = speedDefaults.get(type.toString());
