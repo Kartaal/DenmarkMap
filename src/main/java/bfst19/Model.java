@@ -22,6 +22,7 @@ public class Model{
     private RouteHandler routeHandler;
     private static float lonfactor = 1.0f;
     private String datasetName;
+    private static String dirPath;
     private TextHandler textHandler = new TextHandler();
 
     private List<Runnable> colorObservers = new ArrayList<>();
@@ -41,11 +42,11 @@ public class Model{
     private Map<WayType, KDTree> kdTreeMap = new TreeMap<>();
 
     //used for addresstesting
-    public Model(String dataset) {
-        datasetName = dataset;
+    public Model(String dirPath) {
+        this.dirPath = dirPath;
         //this keeps the cities and the default streets files in memory, it's about 1mb for Zealand of memory
-        AddressParser.getInstance(this).setDefaults(textHandler.getDefault(getDatasetName()));
-        AddressParser.getInstance(this).parseCitiesAndPostCodes(textHandler.getCities(this, getDatasetName()));
+        AddressParser.getInstance().setDefaults();
+        AddressParser.getInstance().setCities();
     }
 
     public Model(List<String> args) throws IOException, XMLStreamException, ClassNotFoundException {
@@ -64,6 +65,7 @@ public class Model{
         //this might not be optimal
         String[] arr = filename.split("\\.");
         datasetName = arr[0].replace("data/","") + " Database";
+        dirPath = "data/"+datasetName;
         InputStream OSMSource;
         if (filename.endsWith(".obj")) {
             long time = -System.nanoTime();
@@ -103,8 +105,8 @@ public class Model{
                 output.writeObject(routeHandler.getNodeGraph());
             }
         }
-        AddressParser.getInstance(this).setDefaults(textHandler.getDefault(getDatasetName()));
-        AddressParser.getInstance(this).parseCitiesAndPostCodes(textHandler.getCities(this, getDatasetName()));
+        AddressParser.getInstance().setDefaults();
+        AddressParser.getInstance().setCities();
     }
 
 
@@ -223,16 +225,13 @@ public class Model{
         return textHandler;
     }
 
-    public ArrayList<String> getAddressesOnStreet(String country,String city,String postcode,String streetName){
-        return textHandler.getTextFile("data/"+country+"/"+city+" QQQ "+postcode+"/"+streetName+".txt");
-    }
 
     public ArrayList<String> getTextFile(String filepath) {
         return textHandler.getTextFile(filepath);
     }
 
 
-    public String getDelimeter() {
+    public static String getDelimeter() {
         return " QQQ ";
     }
 
@@ -248,6 +247,10 @@ public class Model{
 
     public static double getLonfactor(){
         return lonfactor;
+    }
+
+    public static String getDirPath(){
+        return dirPath;
     }
 
     public void switchColorScheme(boolean colorBlindEnabled) {
@@ -268,11 +271,11 @@ public class Model{
 
     //todo move to addressparser
     public void parseSearch(String proposedAddress) {
-        Address a = AddressParser.getInstance(this).singleSearch(proposedAddress, getDatasetName());
+        Address a = AddressParser.getInstance().singleSearch(proposedAddress);
         //if the address does not have a city or a streetname, get the string's matches from the default file and display them
         if(a.getStreetName().equals("Unknown") || a.getCity().equals("")) {
             ArrayList<String[]> possibleMatches =
-                    AddressParser.getInstance(this).getMatchesFromDefault(proposedAddress, false);
+                    AddressParser.getInstance().getMatchesFromDefault(proposedAddress, false);
 
             if (possibleMatches != null) {
                 foundMatches.clear();
@@ -283,7 +286,7 @@ public class Model{
             }
         }else if(a.getHouseNumber()==null){
             //if the housenumber is null, bet all the addresses housenumbers from the streets file and display them
-            ArrayList<String[]> possibleAddresses = AddressParser.getInstance(this).getAddress(getDatasetName(),a.getCity(),a.getPostcode(),a.getStreetName(),"",false);
+            ArrayList<String[]> possibleAddresses = AddressParser.getInstance().getAddress(a.getCity(),a.getPostcode(),a.getStreetName(),"",false);
             if (possibleAddresses != null) {
                 foundMatches.clear();
                 String street = a.getStreetName();
@@ -371,5 +374,13 @@ public class Model{
         }
 
 
+    }
+
+    public HashMap<String, Integer> parseSpeedDefaults(String s) {
+        return textHandler.parseSpeedDefaults(s);
+    }
+
+    public HashMap<WayType, HashMap<String, ResizingArray<String[]>>> parseDrivableCases(String s) {
+        return textHandler.parseDrivableCases(s);
     }
 }

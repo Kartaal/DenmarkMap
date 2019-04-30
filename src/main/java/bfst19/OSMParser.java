@@ -73,10 +73,10 @@ public class OSMParser {
                             id = Long.parseLong(reader.getAttributeValue(null, "id"));
                             lat = Float.parseFloat(reader.getAttributeValue(null, "lat"));
                             lon = Float.parseFloat(reader.getAttributeValue(null, "lon"));
-                            lon *= Model.getLonfactor();
+
                             idToNodeIndex.add(id);
                             //0 default id is 0 and is assigned later in the nodegraph, if it's part of a way that is in the nodegraph
-                            tempNodes.add(new OSMNode(0, lon, lat));
+                            tempNodes.add(new OSMNode(0, (float)(lon*Model.getLonfactor()), lat));
                             break;
                         case "way":
                             id = Long.parseLong(reader.getAttributeValue(null, "id"));
@@ -277,7 +277,7 @@ public class OSMParser {
                     model.setKdTrees(kdTreeMap);
                     //todo implement sort
                     addresses.sort(Address::compareTo);
-                    textHandler.makeDatabase(model, addresses, model.getDatasetName());
+                    textHandler.makeDatabase(addresses,Model.getDirPath(),model.getDelimeter());
                     addresses = null;
                     break;
                 case ENTITY_REFERENCE: break;
