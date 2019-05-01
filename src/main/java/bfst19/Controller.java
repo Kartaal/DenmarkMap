@@ -1,27 +1,27 @@
 package bfst19;
-import bfst19.KDTree.KDTree;
 import bfst19.Line.OSMNode;
 import bfst19.Route_parsing.Edge;
 import bfst19.Route_parsing.Vehicle;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+
+import java.io.IOException;
+import java.util.Iterator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
-import java.io.IOException;
-import java.util.Iterator;
-
 public class Controller {
 
     private Model model;
-    float x, y;
-    private double factor, oldDeterminant, zoomLevel;
+    double x, y;
+    private double factor, oldDeterminant;
     private boolean fastestBoolean = false;
     private static boolean kdTreeBoolean = false;
     private long time;
@@ -68,6 +68,12 @@ public class Controller {
         return model;
     }
 
+    /*
+    public Double getDistanceFromModel(double startLat, double startLon, double endLat, double endLon){
+        return model.calculateDistanceInMeters(startLat,startLon,endLat,endLon);
+    }
+    */
+
     public Iterator<String[]> getFoundMatchesIterator(){
         return model.foundMatchesIterator();
     }
@@ -87,11 +93,11 @@ public class Controller {
     }
 
     //Initialize PointOfInterestPanel
-    public void setUpPointOfInterestPanel(){
+    public void setUpPointOfInterestPanel() {
         VBox vBox = null;
 
         if(borderPane.getLeft() != null){
-            borderPane.setRight(null);
+            borderPane.setLeft(null);
         }
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("PointOfInterestPanel.fxml"));
@@ -101,13 +107,31 @@ public class Controller {
             e.printStackTrace();
         }
 
-        vBox.setLayoutX(-200);
-        vBox.setLayoutY(200);
-
-        borderPane.setRight(vBox);
+        borderPane.setLeft(vBox);
 
         ControllerPointOfInterestPanel controllerPointOfInterestPanel = fxmlLoader.getController();
         controllerPointOfInterestPanel.init(this);
+    }
+
+    //Initialize InfoPanel
+    public void setUpInfoPanel(String adress, double x, double y){
+            VBox vBox = null;
+
+            if(borderPane.getRight() != null){
+                borderPane.setRight(null);
+            }
+
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("InfoPanel.fxml"));
+            try {
+                vBox = fxmlLoader.load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            borderPane.setRight(vBox);
+
+            ControllerInfoPanel controllerInfoPanel = fxmlLoader.getController();
+            controllerInfoPanel.init(this, adress, x, y);
     }
 
     //Initialize BarPanel
@@ -173,7 +197,7 @@ public class Controller {
             VBox = fxmlLoader.load();
         } catch (IOException event) {
             event.printStackTrace();
-            System.out.println("Failed to load from FXMLLoader associated with ViewRoutePanel.fxml");
+			System.out.println("Failed to load from FXMLLoader associated with ViewRoutePanel.fxml");
         }
 
         borderPane.setLeft(VBox);
@@ -299,4 +323,16 @@ public class Controller {
     public void addPathObserver(InstructionContainer instructionContainer) {
         model.addPathObserver(instructionContainer::showInstructions);
     }
+
+    public BorderPane getBorderPane(){
+        return borderPane;
+    }
+
+    public ObservableList<PointOfInterestItem> pointOfInterestList(){
+        return model.pointOfInterestList();
+    }
+
+    public void addPointsOfInterestItem(PointOfInterestItem pointOfInterestItem) { model.addPointOfInterestItem(pointOfInterestItem);}
+
+    public void removePointOfInterestItem(PointOfInterestItem pointOfInterestItem){ model.removePointOfInterestItem(pointOfInterestItem);}
 }

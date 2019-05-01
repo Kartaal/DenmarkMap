@@ -22,6 +22,5 @@ public class Pin {
         double width = 0.8 * image.getWidth() / scale;
         double count = Math.max(0.00005, width);
         gc.drawImage(image, lon  - width / 2, lat, count, count);
-        System.out.println("DRAW: X: " + lon + " Y: " + lat);
     }
 }
