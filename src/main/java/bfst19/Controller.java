@@ -20,7 +20,7 @@ import javafx.scene.text.Text;
 public class Controller {
 
     private Model model;
-    double x, y;
+    float x, y;
     private double factor, oldDeterminant;
     private boolean fastestBoolean = false;
     private static boolean kdTreeBoolean = false;
@@ -114,7 +114,7 @@ public class Controller {
     }
 
     //Initialize InfoPanel
-    public void setUpInfoPanel(String adress, double x, double y){
+    public void setUpInfoPanel(String adress, float x, float y){
             VBox vBox = null;
 
             if(borderPane.getRight() != null){
@@ -335,4 +335,6 @@ public class Controller {
     public void addPointsOfInterestItem(PointOfInterestItem pointOfInterestItem) { model.addPointOfInterestItem(pointOfInterestItem);}
 
     public void removePointOfInterestItem(PointOfInterestItem pointOfInterestItem){ model.removePointOfInterestItem(pointOfInterestItem);}
+
+
 }

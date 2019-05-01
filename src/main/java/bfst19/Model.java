@@ -106,6 +106,7 @@ public class Model{
                 output.writeObject(routeHandler.getNodeGraph());
             }
         }
+        setPointsOfInterest();
         AddressParser.getInstance().setDefaults();
         AddressParser.getInstance().setCities();
     }
@@ -190,7 +191,16 @@ public class Model{
 
     public void removePointOfInterestItem(PointOfInterestItem pointOfInterestItem) { pointOfInterestItems.remove(pointOfInterestItem);}
 
+    private void setPointsOfInterest(){
+        List<PointOfInterestItem> list = TextHandler.getInstance().getPointsOfInterest(dirPath);
+        for(PointOfInterestItem item : list){
+            pointOfInterestItems.add(item);
+        }
+    }
 
+    public void writePointsOfInterest(){
+        TextHandler.getInstance().writePointsOfInterest(dirPath,pointOfInterestItems);
+    }
 
     public String getCurrentTypeColorTxt(){
         return currentTypeColorTxt;
@@ -234,15 +244,6 @@ public class Model{
 
     public float getMaxlon() {
         return maxlon;
-    }
-
-    public TextHandler getTextHandler(){
-        return textHandler;
-    }
-
-
-    public ArrayList<String> getTextFile(String filepath) {
-        return textHandler.getTextFile(filepath);
     }
 
 

@@ -5,6 +5,8 @@ import bfst19.Route_parsing.ResizingArray;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 class TextHandler {
     private static TextHandler textHandler;
@@ -254,33 +256,41 @@ class TextHandler {
         return citiesAndPostcodes;
     }
 
-       /*public void writePointsOfInterest(String datasetName) {
+       public void writePointsOfInterest(String dirPath, List<PointOfInterestItem> pointsOfInterest) {
         try {
-            BufferedWriter pointsOfInterestWriter = new BufferedWriter(
-                    new OutputStreamWriter(new FileOutputStream(
-                            new File("data/" + datasetName + "/pointsOfInterest.txt"))
-                            ,"UTF-8"));
-
-            for(Map.Entry<Long, String> entry : pointsOfInterest.entrySet()) {
-                pointsOfInterestWriter.write(entry.getKey() + getDelimeter() + entry.getValue());
+            File pointsOfInterestFile = new File(dirPath+ "/pointsOfInterest.txt");
+            if(pointsOfInterestFile.isFile()){
+                pointsOfInterestFile.delete();
             }
+            BufferedWriter pointsOfInterestWriter = newBufferWriter(dirPath+ "/pointsOfInterest.txt");
+
+            for(PointOfInterestItem pointOfInterest : pointsOfInterest){
+                pointsOfInterestWriter.write(pointOfInterest.toString());
+            }
+
+            pointsOfInterestWriter.close();
+
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Couldn't create an OutputStream for points of interests or failed to write to it.");
+            System.err.println("Couldn't create an OutputStream for points of interests or failed to write to it.");
         }
     }
 
-    public HashMap<Long,String> getPointsOfInterest(String datasetName){
-        HashMap<Long,String> pointsOfInterest = new HashMap<>();
-        ArrayList<String> pointOfInterestFile = textHandler.getTextFile("data/"+datasetName+"/pointsOfInterest.txt");
-        for(String address : pointOfInterestFile){
-            String[] addressFields = address.split(getDelimeter());
-            long id = Long.valueOf(addressFields[0]);
-            String addressString = addressFields[1]+getDelimeter()+addressFields[2]+getDelimeter()+addressFields[3]+getDelimeter()+addressFields[4]+getDelimeter()+getDelimeter()+addressFields[5];
-            pointsOfInterest.put(id,addressString);
+    public List<PointOfInterestItem> getPointsOfInterest(String dirPath){
+        File databaseDir = new File(dirPath + "/pointsOfInterest.txt");
+        ArrayList<PointOfInterestItem> pointsOfInterest = new ArrayList<>();
+        if(databaseDir.isFile()) {
+            ArrayList<String> pointOfInterestFile = textHandler.getTextFile(dirPath + "/pointsOfInterest.txt");
+            for (String pointOfInterest : pointOfInterestFile) {
+                String[] pointOFInterestFields = pointOfInterest.split(Model.getDelimeter());
+                String address = pointOFInterestFields[0];
+                float x = Float.valueOf(pointOFInterestFields[1]);
+                float y = Float.valueOf(pointOFInterestFields[2]);
+                pointsOfInterest.add(new PointOfInterestItem(address,x,y));
+            }
         }
         return pointsOfInterest;
     }
-*/
+
 
 }

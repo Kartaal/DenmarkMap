@@ -16,9 +16,9 @@ public class PointOfInterestItem extends HBox {
     private ImageView imageView;
 
     private String address;
-    private double x, y;
+    private float x, y;
 
-    public PointOfInterestItem(String address, double x, double y) {
+    public PointOfInterestItem(String address, float x, float y) {
         this.address = address;
         this.x = x;
         this.y = y;
@@ -68,6 +68,6 @@ public class PointOfInterestItem extends HBox {
 
     //Adresse og koordinater er skildt med et "@" for nemt at indlæse igen når det gemmes
     public String toString(){
-        return address + "@" + x + " " + y;
+        return address + Model.getDelimeter() + x + Model.getDelimeter() + y;
     }
 }

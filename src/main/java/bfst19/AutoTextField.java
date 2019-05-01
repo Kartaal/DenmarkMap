@@ -57,7 +57,7 @@ public class AutoTextField extends TextField {
             String[] firstMatch = iterator.next();
             //this means that the match is a complete address
             if (firstMatch.length == 8) {
-                panAddress(Double.valueOf(firstMatch[0]), Double.valueOf(firstMatch[1]));
+                panAddress(Float.valueOf(firstMatch[0]), Float.valueOf(firstMatch[1]));
                 return;
                 //and the rest of the address is passed of to some other part of the UI.
             } else if (firstMatch.length == 4) {
@@ -100,7 +100,7 @@ public class AutoTextField extends TextField {
 
     //this.getText() er måske mere korrekt at skrive da man siger at det er klassen extended metode istedet for bare at skrive (getText())
     //Skal ikke være i controller da teksten fra AutoTextField skal sendes ud af denne klasse...
-    private void panAddress(double x, double y){
+    private void panAddress(float x, float y){
         controller.panToPoint(x, y);
         controller.setUpInfoPanel(this.getText(), x, y);
     }

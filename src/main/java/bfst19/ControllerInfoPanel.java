@@ -24,10 +24,10 @@ public class ControllerInfoPanel implements BackBtnEffect {
     @FXML
     private Label latlon;
 
-    private double x, y;
+    private float x, y;
     private String address;
 
-    public void init(Controller controller, String address, double x, double y) {
+    public void init(Controller controller, String address, float x, float y) {
         this.controller = controller;
         this.address = address;
         this.x = x;
