@@ -209,9 +209,9 @@ public class Controller {
     public void setScalebar() {
         // TODO findout and resolve getY so it can be getX, since it the te x-coor we want
         //todo fix using model to calculate distance
-        double minX = mapCanvas.getModelCoords(0, 0).getY();
-        double maxX = mapCanvas.getModelCoords(0, mapCanvas.getHeight()).getY();
-        double y = mapCanvas.getModelCoords(0, 0).getX()/model.getLonfactor();
+        float minX = (float)mapCanvas.getModelCoords(0, 0).getY();
+        float maxX = (float)mapCanvas.getModelCoords(0, (float)mapCanvas.getHeight()).getY();
+        float y = (float) (mapCanvas.getModelCoords(0, 0).getX()/model.getLonfactor());
         scaleText.setText(ScaleBar.getScaleText(minX, y, maxX, y, mapCanvas.getWidth()));
     }
 
@@ -265,14 +265,14 @@ public class Controller {
     private void onMouseDragged(MouseEvent e) {
         //pans based on difference between mousePressed event and current mouse coords
         if (e.isPrimaryButtonDown()) mapCanvas.pan(e.getX() - x, e.getY() - y);
-        x = e.getX();
-        y = e.getY();
+        x =(float) e.getX();
+        y =(float) e.getY();
     }
 
     @FXML
     private void onMousePressed(MouseEvent e) {
-        x = e.getX();
-        y = e.getY();
+        x =(float) e.getX();
+        y =(float) e.getY();
 
 
         long prevtime = time;
