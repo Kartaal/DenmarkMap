@@ -70,4 +70,12 @@ public class PointOfInterestItem extends HBox {
     public String toString(){
         return address + Model.getDelimeter() + x + Model.getDelimeter() + y;
     }
+
+    public boolean equals(PointOfInterestItem item){
+        boolean isItem = false;
+        if(item.address == address && item.x == x && item.y == y){
+            isItem = true;
+        }
+        return isItem;
+    }
 }

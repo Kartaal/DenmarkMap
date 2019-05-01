@@ -76,6 +76,7 @@ public class Model{
                 minlon = input.readFloat();
                 maxlat = input.readFloat();
                 maxlon = input.readFloat();
+                lonfactor = input.readFloat();
                 routeHandler = new RouteHandler(this,(EdgeWeightedGraph)input.readObject());
             }
             time += System.nanoTime();
@@ -103,6 +104,7 @@ public class Model{
                 output.writeFloat(minlon);
                 output.writeFloat(maxlat);
                 output.writeFloat(maxlon);
+                output.writeFloat(lonfactor);
                 output.writeObject(routeHandler.getNodeGraph());
             }
         }
@@ -187,7 +189,14 @@ public class Model{
 
     public ObservableList<PointOfInterestItem> pointOfInterestList(){ return pointOfInterestItems; }
 
-    public void addPointOfInterestItem(PointOfInterestItem pointOfInterestItem){ pointOfInterestItems.add(pointOfInterestItem); }
+    public void addPointOfInterestItem(PointOfInterestItem pointOfInterestItem){
+        for(PointOfInterestItem item : pointOfInterestItems){
+            if(pointOfInterestItem.equals(item)){
+                return;
+            }
+        }
+        pointOfInterestItems.add(pointOfInterestItem);
+    }
 
     public void removePointOfInterestItem(PointOfInterestItem pointOfInterestItem) { pointOfInterestItems.remove(pointOfInterestItem);}
 

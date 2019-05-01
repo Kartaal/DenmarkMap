@@ -265,7 +265,7 @@ class TextHandler {
             BufferedWriter pointsOfInterestWriter = newBufferWriter(dirPath+ "/pointsOfInterest.txt");
 
             for(PointOfInterestItem pointOfInterest : pointsOfInterest){
-                pointsOfInterestWriter.write(pointOfInterest.toString());
+                pointsOfInterestWriter.write(pointOfInterest.toString()+"\n");
             }
 
             pointsOfInterestWriter.close();
@@ -284,7 +284,7 @@ class TextHandler {
             for (String pointOfInterest : pointOfInterestFile) {
                 String[] pointOFInterestFields = pointOfInterest.split(Model.getDelimeter());
                 String address = pointOFInterestFields[0];
-                float x = Float.valueOf(pointOFInterestFields[1]);
+                float x =(float) (Float.valueOf(pointOFInterestFields[1])*Model.getLonfactor());
                 float y = Float.valueOf(pointOFInterestFields[2]);
                 pointsOfInterest.add(new PointOfInterestItem(address,x,y));
             }
