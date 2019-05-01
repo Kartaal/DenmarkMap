@@ -14,7 +14,7 @@ public class AddressTest {
 
     @Test
     public void testGetAddressFromDefault(){
-        ArrayList<String[]> matches = AddressParser.getInstance(model).getMatchesFromDefault("Haveforeningen Havebyen Mozart",false);
+        ArrayList<String[]> matches = AddressParser.getInstance().getMatchesFromDefault("Haveforeningen Havebyen Mozart",false);
         String[] match1 = matches.get(0);
         String[] expectedMatch1 = new String[]{"Haveforeningen Havebyen Mozart", "København SV", "2450"};
         assertArrayEquals(expectedMatch1, match1);
@@ -22,7 +22,7 @@ public class AddressTest {
 
     @Test
     public void testGetAddressesFromDefault1(){
-        ArrayList<String[]> matches = AddressParser.getInstance(model).getMatchesFromDefault("Terrasserne",false);
+        ArrayList<String[]> matches = AddressParser.getInstance().getMatchesFromDefault("Terrasserne",false);
         String[] match1 = matches.get(0);
         String[] expectedMatch1 = new String[]{"Terrasserne", "Brønshøj", "2700"};
         String[] match2 = matches.get(1);
@@ -34,7 +34,7 @@ public class AddressTest {
     //TODO Are two of these really necessary?
     @Test
     public void testGetAddressesFromDefault2(){
-        ArrayList<String[]> matches = AddressParser.getInstance(model).getMatchesFromDefault("Rued Langgaards Vej",false);
+        ArrayList<String[]> matches = AddressParser.getInstance().getMatchesFromDefault("Rued Langgaards Vej",false);
         String[] match1 = matches.get(0);
         String[] expectedMatch1 = new String[]{"Rued Langgaards Vej", "København S", "2300"};
         String[] match2 = matches.get(1);
@@ -45,7 +45,7 @@ public class AddressTest {
 
     @Test
     public void testGetAddressesFromDefaultWithDanLetters(){
-        ArrayList<String[]> matches = AddressParser.getInstance(model).getMatchesFromDefault("Højderyggen",false);
+        ArrayList<String[]> matches = AddressParser.getInstance().getMatchesFromDefault("Højderyggen",false);
         String[] match1 = matches.get(0);
         String[] expectedMatch1 = new String[]{"Højderyggen","Vejle Øst","7120"};
         String[] match2 = matches.get(1);
@@ -57,7 +57,7 @@ public class AddressTest {
 
     @Test
     public void testAddressWithStreetHousenumberPostCodeAndCity(){
-        Address address = AddressParser.getInstance(model).singleSearch("Tommelise 48,7500 Holstebro", datasetName);
+        Address address = AddressParser.getInstance().singleSearch("Tommelise 48,7500 Holstebro");
         assertEquals("Tommelise", address.getStreetName().trim());
         assertEquals("48", address.getHouseNumber().trim());
         assertEquals("7500", address.getPostcode().trim());
@@ -66,7 +66,7 @@ public class AddressTest {
 
     @Test
     public void testAddressWithLettersInHouseNumberWithDanLetters(){
-        Address address = AddressParser.getInstance(model).singleSearch("Sauntevænget 5B,3100 Hornbæk", datasetName);
+        Address address = AddressParser.getInstance().singleSearch("Sauntevænget 5B,3100 Hornbæk");
         assertEquals("Sauntevænget", address.getStreetName().trim());
         assertEquals("5B", address.getHouseNumber().trim());
         assertEquals("3100", address.getPostcode().trim());
@@ -75,7 +75,7 @@ public class AddressTest {
 
     @Test
     public void testAddressWithStreetFloorAndCityWithDanLetters(){
-        Address address = AddressParser.getInstance(model).singleSearch("Månen 13, 1, 8850 Bjerringbro", datasetName);
+        Address address = AddressParser.getInstance().singleSearch("Månen 13, 1, 8850 Bjerringbro");
         assertEquals("Månen", address.getStreetName().trim());
         assertEquals("13", address.getHouseNumber().trim());
         assertEquals("1", address.getFloor().trim());
@@ -86,7 +86,7 @@ public class AddressTest {
 
     @Test
     public void testAddressWithStreetFloorSideAndCity(){
-        Address address = AddressParser.getInstance(model).singleSearch("Valby Maskinfabriksvej 1, 1, TH. 2500 Valby ", datasetName);
+        Address address = AddressParser.getInstance().singleSearch("Valby Maskinfabriksvej 1, 1, TH. 2500 Valby ");
             assertEquals("Valby Maskinfabriksvej", address.getStreetName().trim());
         assertEquals("1", address.getHouseNumber().trim());
         assertEquals("1", address.getFloor().trim());
@@ -97,7 +97,7 @@ public class AddressTest {
 
     @Test
     public void testAddressWithStreetAndPostcodeNoCity(){
-        Address address = AddressParser.getInstance(model).singleSearch("Pingels Alle 47 3700", datasetName);
+        Address address = AddressParser.getInstance().singleSearch("Pingels Alle 47 3700");
         assertEquals("Pingels Alle", address.getStreetName().trim());
         assertEquals("47", address.getHouseNumber().trim());
         assertEquals("3700", address.getPostcode().trim());
@@ -107,7 +107,7 @@ public class AddressTest {
 
     @Test
     public void testAddressWithStreetAndPostcodeMismatchingCity(){
-        Address address = AddressParser.getInstance(model).singleSearch("Solskiftevej 8 2300 København", datasetName);
+        Address address = AddressParser.getInstance().singleSearch("Solskiftevej 8 2300 København");
         assertEquals("Solskiftevej", address.getStreetName().trim());
         assertEquals("8", address.getHouseNumber().trim());
         assertEquals("2300", address.getPostcode().trim());

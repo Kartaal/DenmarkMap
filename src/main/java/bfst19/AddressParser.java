@@ -28,47 +28,40 @@ public class AddressParser {
         addressParser = this;
     }
 
-    public class Builder {
-        private int id;
-        private float lat, lon;
-        private String streetName = "Unknown", houseNumber="", postcode="", city="",floor="",side="";
-        public Builder houseNumber(String _house)   { houseNumber = _house;   return this; }
-        public Builder floor(String _floor)   { floor = _floor;   return this; }
-        public Builder side(String _side)   { side = _side;   return this; }
-        public Address build() {
-            return new Address(id,lat,lon,streetName, houseNumber, postcode, city,floor,side);
+    public void parseSearch(String proposedAddress, Model model) {
+        Address a = AddressParser.getInstance().singleSearch(proposedAddress);
+        //if the address does not have a city or a streetname, get the string's matches from the default file and display them
+        if(a.getStreetName().equals("Unknown") || a.getCity().equals("")) {
+            ArrayList<String[]> possibleMatches =
+                    AddressParser.getInstance().getMatchesFromDefault(proposedAddress, false);
+
+            if (possibleMatches != null) {
+                model.clearMatches();
+                System.out.println(possibleMatches.size());
+                for (String[] match : possibleMatches) {
+                    model.addFoundMatch(new String[]{match[0],match[1],match[2]});
+                }
+            }
+        }else if(a.getHouseNumber()==null){
+            //if the housenumber is null, bet all the addresses housenumbers from the streets file and display them
+            ArrayList<String[]> possibleAddresses = AddressParser.getInstance().getAddress(a.getCity(),a.getPostcode(),a.getStreetName(),"",false);
+            if (possibleAddresses != null) {
+                model.clearMatches();
+                String street = a.getStreetName();
+                String city = a.getCity();
+                String postcode = a.getPostcode();
+                for (String[] match : possibleAddresses) {
+                    model.addFoundMatch(new String[]{street, match[2], city, postcode});
+                }
+            }
+        }else{
+            //if those 3 fields are filled, just put the address in the ui will handle the rest
+            model.clearMatches();
+            model.addFoundMatch(new String[]{String.valueOf(a.getLon()),
+                    String.valueOf(a.getLat()), a.getStreetName(), a.getHouseNumber(),
+                    a.getFloor(), a.getSide(), a.getCity(), a.getPostcode()});
         }
-    }
-
-    final String houseRegex = "(?<house>([0-9]{1,3} ?[a-zA-Z]?))?";
-    final String floorRegex = "(?<floor>([1-9]{1,3}\\.?)|(1st\\.)|(st\\.))?";
-    final String sideRegex = "(?<side>th\\.?|tv\\.?|mf\\.?|md\\.?|([0-9]{1,3}\\.?))?";
-
-    //This only checks the remainder of the string at the end for house number, floor and side for the address.
-    final String[] regex = {
-            "^"+houseRegex+",? ?"+floorRegex+",? ?"+sideRegex+",?$"
-    };
-
-    /* Pattern:A regular expression, specified as a string, must first be compiled into an instance of this class
-     * Arrays.stream:Returns a sequential Stream with the specified array as its source
-     * Stream.map: Returns a stream consisting of the results of applying the given function to the elements of this stream.
-     * Pattern. compile: Compiles the given regular expression into a pattern.
-     */
-    final Pattern[] patterns =
-            Arrays.stream(regex).map(Pattern::compile).toArray(Pattern[]::new);
-
-    /* Matcher:An engine that performs match operations on a character sequence by interpreting a Pattern.
-     * Consumer<String>: Represents an operation that accepts a single input argument and returns no result
-     * m. group: Returns the input subsequence captured by the given named-capturing group during the previous match operation.
-     * if the match was successful but the group specified failed to match any part of the input sequence, then null is returned.
-     */
-
-    private void tryExtract(Matcher m, String group, Consumer<String> c) {
-        try {
-            c.accept(m.group(group));
-        } catch (IllegalArgumentException e) {
-            throw new RegexGroupNonexistentException(group);
-        }
+        model.notifyFoundMatchesObservers();
     }
 
     public Address singleSearch(String proposedAddress){
@@ -311,6 +304,49 @@ public class AddressParser {
             String[] tokens =citiesAndPostcodes.get(i);
             cities[i] = tokens[0];
             postcodes[i] = tokens[1];
+        }
+    }
+
+    public class Builder {
+        private int id;
+        private float lat, lon;
+        private String streetName = "Unknown", houseNumber="", postcode="", city="",floor="",side="";
+        public Builder houseNumber(String _house)   { houseNumber = _house;   return this; }
+        public Builder floor(String _floor)   { floor = _floor;   return this; }
+        public Builder side(String _side)   { side = _side;   return this; }
+        public Address build() {
+            return new Address(id,lat,lon,streetName, houseNumber, postcode, city,floor,side);
+        }
+    }
+
+    final String houseRegex = "(?<house>([0-9]{1,3} ?[a-zA-Z]?))?";
+    final String floorRegex = "(?<floor>([1-9]{1,3}\\.?)|(1st\\.)|(st\\.))?";
+    final String sideRegex = "(?<side>th\\.?|tv\\.?|mf\\.?|md\\.?|([0-9]{1,3}\\.?))?";
+
+    //This only checks the remainder of the string at the end for house number, floor and side for the address.
+    final String[] regex = {
+            "^"+houseRegex+",? ?"+floorRegex+",? ?"+sideRegex+",?$"
+    };
+
+    /* Pattern:A regular expression, specified as a string, must first be compiled into an instance of this class
+     * Arrays.stream:Returns a sequential Stream with the specified array as its source
+     * Stream.map: Returns a stream consisting of the results of applying the given function to the elements of this stream.
+     * Pattern. compile: Compiles the given regular expression into a pattern.
+     */
+    final Pattern[] patterns =
+            Arrays.stream(regex).map(Pattern::compile).toArray(Pattern[]::new);
+
+    /* Matcher:An engine that performs match operations on a character sequence by interpreting a Pattern.
+     * Consumer<String>: Represents an operation that accepts a single input argument and returns no result
+     * m. group: Returns the input subsequence captured by the given named-capturing group during the previous match operation.
+     * if the match was successful but the group specified failed to match any part of the input sequence, then null is returned.
+     */
+
+    private void tryExtract(Matcher m, String group, Consumer<String> c) {
+        try {
+            c.accept(m.group(group));
+        } catch (IllegalArgumentException e) {
+            throw new RegexGroupNonexistentException(group);
         }
     }
 

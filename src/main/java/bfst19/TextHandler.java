@@ -253,4 +253,34 @@ class TextHandler {
         }
         return citiesAndPostcodes;
     }
+
+       /*public void writePointsOfInterest(String datasetName) {
+        try {
+            BufferedWriter pointsOfInterestWriter = new BufferedWriter(
+                    new OutputStreamWriter(new FileOutputStream(
+                            new File("data/" + datasetName + "/pointsOfInterest.txt"))
+                            ,"UTF-8"));
+
+            for(Map.Entry<Long, String> entry : pointsOfInterest.entrySet()) {
+                pointsOfInterestWriter.write(entry.getKey() + getDelimeter() + entry.getValue());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Couldn't create an OutputStream for points of interests or failed to write to it.");
+        }
+    }
+
+    public HashMap<Long,String> getPointsOfInterest(String datasetName){
+        HashMap<Long,String> pointsOfInterest = new HashMap<>();
+        ArrayList<String> pointOfInterestFile = textHandler.getTextFile("data/"+datasetName+"/pointsOfInterest.txt");
+        for(String address : pointOfInterestFile){
+            String[] addressFields = address.split(getDelimeter());
+            long id = Long.valueOf(addressFields[0]);
+            String addressString = addressFields[1]+getDelimeter()+addressFields[2]+getDelimeter()+addressFields[3]+getDelimeter()+addressFields[4]+getDelimeter()+getDelimeter()+addressFields[5];
+            pointsOfInterest.put(id,addressString);
+        }
+        return pointsOfInterest;
+    }
+*/
+
 }

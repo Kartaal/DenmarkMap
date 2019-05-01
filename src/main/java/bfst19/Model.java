@@ -57,7 +57,6 @@ public class Model{
             ways.put(type, new ResizingArray<>());
         }
 
-        //todo figure out how to do singleton but also include model in its constructor without needing to give model for every call of getInstance
         wayTypeCases = textHandler.parseWayTypeCases("src/main/resources/config/WayTypeCases.txt");
         textHandler.ParseWayColors(this);
 
@@ -131,6 +130,14 @@ public class Model{
             foundPath.clear();
             notifyPathObservers();
         }
+    }
+
+    public void addFoundMatch(String[] match){
+        foundMatches.add(match);
+    }
+
+    public void clearMatches(){
+        foundMatches.clear();
     }
 
     public void clearColors(){
@@ -269,71 +276,10 @@ public class Model{
         return routeHandler.findPath(startId,endId,type,fastestPath);
     }
 
-    //todo move to addressparser
-    public void parseSearch(String proposedAddress) {
-        Address a = AddressParser.getInstance().singleSearch(proposedAddress);
-        //if the address does not have a city or a streetname, get the string's matches from the default file and display them
-        if(a.getStreetName().equals("Unknown") || a.getCity().equals("")) {
-            ArrayList<String[]> possibleMatches =
-                    AddressParser.getInstance().getMatchesFromDefault(proposedAddress, false);
-
-            if (possibleMatches != null) {
-                foundMatches.clear();
-                System.out.println(possibleMatches.size());
-                for (String[] match : possibleMatches) {
-                    foundMatches.add(new String[]{match[0],match[1],match[2]});
-                }
-            }
-        }else if(a.getHouseNumber()==null){
-            //if the housenumber is null, bet all the addresses housenumbers from the streets file and display them
-            ArrayList<String[]> possibleAddresses = AddressParser.getInstance().getAddress(a.getCity(),a.getPostcode(),a.getStreetName(),"",false);
-            if (possibleAddresses != null) {
-                foundMatches.clear();
-                String street = a.getStreetName();
-                String city = a.getCity();
-                String postcode = a.getPostcode();
-                for (String[] match : possibleAddresses) {
-                    foundMatches.add(new String[]{street, match[2], city, postcode});
-                }
-            }
-        }else{
-            //if those 3 fields are filled, just put the address in the ui will handle the rest
-            foundMatches.clear();
-            foundMatches.add(new String[]{String.valueOf(a.getLon()),
-                    String.valueOf(a.getLat()), a.getStreetName(), a.getHouseNumber(),
-                    a.getFloor(), a.getSide(), a.getCity(), a.getPostcode()});
-        }
-        notifyFoundMatchesObservers();
+    public void parseSearch(String proposedAddress){
+        AddressParser.getInstance().parseSearch(proposedAddress,this);
     }
 
-    /*public void writePointsOfInterest(String datasetName) {
-        try {
-            BufferedWriter pointsOfInterestWriter = new BufferedWriter(
-                    new OutputStreamWriter(new FileOutputStream(
-                            new File("data/" + datasetName + "/pointsOfInterest.txt"))
-                            ,"UTF-8"));
-
-            for(Map.Entry<Long, String> entry : pointsOfInterest.entrySet()) {
-                pointsOfInterestWriter.write(entry.getKey() + getDelimeter() + entry.getValue());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Couldn't create an OutputStream for points of interests or failed to write to it.");
-        }
-    }
-
-    public HashMap<Long,String> getPointsOfInterest(String datasetName){
-        HashMap<Long,String> pointsOfInterest = new HashMap<>();
-        ArrayList<String> pointOfInterestFile = textHandler.getTextFile("data/"+datasetName+"/pointsOfInterest.txt");
-        for(String address : pointOfInterestFile){
-            String[] addressFields = address.split(getDelimeter());
-            long id = Long.valueOf(addressFields[0]);
-            String addressString = addressFields[1]+getDelimeter()+addressFields[2]+getDelimeter()+addressFields[3]+getDelimeter()+addressFields[4]+getDelimeter()+getDelimeter()+addressFields[5];
-            pointsOfInterest.put(id,addressString);
-        }
-        return pointsOfInterest;
-    }
-*/
 
     OSMNode getNearestRoad(Point2D point){
         try{
