@@ -42,7 +42,7 @@ public class ResizingArray<T> implements Serializable  {
     public T get(int index) {
         if (0 > index || index > n) throw new ArrayIndexOutOfBoundsException("tried to acess index " + index + " out of an array with length "+a.length);
         //dont know why i have to cast to type T
-        return (T)a[index];
+        return (T) a[index];
     }
 
     public void add(Object item) {
@@ -57,5 +57,11 @@ public class ResizingArray<T> implements Serializable  {
     //only to be used no longer has to grow/shrink
     public void trim(){
         resize(n+1);
+    }
+
+    public void addAll(Object[] arr){
+        for (Object o : arr){
+            add(o);
+        }
     }
 }

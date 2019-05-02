@@ -127,5 +127,9 @@ public class EdgeWeightedGraph implements Serializable {
         StdOut.println(G);
     }*/
 
+    public ResizingArray<Edge> getAdjacentEdges(int id) {
+        return adj.get(id);
+    }
+
 }
 

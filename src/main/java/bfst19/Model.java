@@ -20,6 +20,8 @@ import java.util.zip.ZipInputStream;
 import static javax.xml.stream.XMLStreamConstants.*;
 
 public class Model{
+
+
     private RouteHandler routeHandler;
     private static float lonfactor = 1.0f;
     private String datasetName;
@@ -301,7 +303,7 @@ public class Model{
 
     OSMNode getNearestRoad(Point2D point){
         try{
-            ArrayList<OSMNode> nodeList = new ArrayList<>();
+            ResizingArray<OSMNode> nodeList = new ResizingArray<>();
 
             for(WayType wayType: RouteHandler.getDrivableWayTypes()){
                 OSMNode checkNeighbor = kdTreeMap.get(wayType).getNearestNeighbor(point);
@@ -346,5 +348,9 @@ public class Model{
 
     public HashMap<WayType, HashMap<String, ResizingArray<String[]>>> parseDrivableCases(String s) {
         return textHandler.parseDrivableCases(s);
+    }
+
+    public RouteHandler getRouteHandler() {
+        return routeHandler;
     }
 }

@@ -1,6 +1,7 @@
 package bfst19;
 
 import bfst19.Line.OSMNode;
+import bfst19.Route_parsing.ResizingArray;
 import javafx.geometry.Point2D;
 
 import java.util.ArrayList;
@@ -51,17 +52,17 @@ public class Calculator {
         return Math.pow(Math.sin(val / 2), 2);
     }
 
-    public static OSMNode getClosestNode(Point2D point, ArrayList<OSMNode> queryList) {
+    public static OSMNode getClosestNode(Point2D point, ResizingArray<OSMNode> queryList) {
         double closestDistance = Double.POSITIVE_INFINITY;
         double distanceToQueryPoint;
         OSMNode closestElement = null;
 
-        for(OSMNode checkNode: queryList){
+        for(int i = 0; i < queryList.size(); i++){
             //We check distance from node to point, and then report if its closer than our previously known closest point.
-            distanceToQueryPoint = checkNode.distanceTo(point);
+            distanceToQueryPoint = queryList.get(i).distanceTo(point);
             if(distanceToQueryPoint < closestDistance){
                 closestDistance = distanceToQueryPoint;
-                closestElement = checkNode;
+                closestElement = queryList.get(i);
             }
         }
         return closestElement;

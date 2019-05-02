@@ -2,7 +2,6 @@ package bfst19.KDTree;
 
 import bfst19.Calculator;
 import bfst19.Line.OSMNode;
-import bfst19.Model;
 import bfst19.Route_parsing.ResizingArray;
 import javafx.geometry.Point2D;
 import java.io.Serializable;
@@ -104,14 +103,12 @@ public class KDTree implements Serializable {
     public OSMNode getNearestNeighbor(Point2D point) {
         //Returns node of the nearest neighbor to a point
         int count = 0;
-        float distanceToQueryPoint;
-        float closestDistance = Float.POSITIVE_INFINITY;
-        OSMNode closestElement = null;
+        OSMNode closestElement;
         float x = (float)point.getX();
         float y = (float)point.getY();
-        float[] vals = {x, y, 0.0F, 0.0F};
-        BoundingBox bbox = new BoundingBox(vals[0], vals[1], vals[2], vals[3]);
-        ArrayList<OSMNode> queryList = (ArrayList<OSMNode>) nodeRangeQuery(bbox);
+        float[] vals = {x, y, 0.0F, 0.0F};  //infinitesimal values to make a square rangequery call
+        BoundingBox bbox = new BoundingBox(vals[0], vals[1], vals[2], vals[3]); //generate boundingbox with aforementioned values
+        ResizingArray<OSMNode> queryList = nodeRangeQuery(bbox);
 
 
         while(queryList.isEmpty()){
@@ -130,10 +127,10 @@ public class KDTree implements Serializable {
 
     }
 
-    private ArrayList<OSMNode> growBoundingBox(float[] vals) {
+    private ResizingArray<OSMNode> growBoundingBox(float[] vals) {
         //Take the values of the bounding box, increase them slightly
         BoundingBox bbox;
-        ArrayList<OSMNode> queryList;
+        ResizingArray<OSMNode> queryList;
         //A bounding box is created from a x,y point, and with a width,height from that point.
         //When we decrease the x,y point, we have to add twice that value to width,height to insure it grows by a square
         //TODO: check if it even grows like a square. It might not currently.
@@ -143,7 +140,7 @@ public class KDTree implements Serializable {
         vals[3] += 0.00002;
 
         bbox = new BoundingBox(vals[0], vals[1], vals[2], vals[3]);
-        queryList = (ArrayList<OSMNode>) nodeRangeQuery(bbox);
+        queryList = nodeRangeQuery(bbox);
         return queryList;
     }
 
@@ -165,7 +162,7 @@ public class KDTree implements Serializable {
         if (!node.isEmpty()) {
             for (BoundingBoxable value : node.values) {
                 if (queryBB.intersects(value.getBB())) {
-                    returnElements.add((Drawable) value);
+                    returnElements.add(value);
                 }
             }
             return  returnElements;
@@ -191,15 +188,15 @@ public class KDTree implements Serializable {
     }
 
     //Method for finding elements in the KDTree that intersects a BoundingBox
-    public Iterable<OSMNode> nodeRangeQuery(BoundingBox bbox) {
-        List<OSMNode> returnElements = new ArrayList<>();
+    public ResizingArray<OSMNode> nodeRangeQuery(BoundingBox bbox) {
+        ResizingArray<OSMNode> returnElements = new ResizingArray<>();
         nodeRangeQuery(bbox, root, returnElements);
         return returnElements;
     }
 
     //Recursive checks down through the KDTree
     //Almost equal to rangeQuery(), however this returns a node instead, with a different structure.
-    private List<OSMNode> nodeRangeQuery(BoundingBox queryBB, KDNode node, List<OSMNode> returnElements) {
+    private ResizingArray<OSMNode> nodeRangeQuery(BoundingBox queryBB, KDNode node, ResizingArray<OSMNode> returnElements) {
         //Return null if current node is null to stop endless recursion
         if (node == null) return null;
 
@@ -209,7 +206,7 @@ public class KDTree implements Serializable {
         if (!node.isEmpty()) {
             for (BoundingBoxable value : node.values) {
                 if (queryBB.intersects(value.getBB())) {
-                    returnElements.addAll(Arrays.asList(value.getNodes()));
+                    returnElements.addAll(value.getNodes());
                 }
             }
             return returnElements;

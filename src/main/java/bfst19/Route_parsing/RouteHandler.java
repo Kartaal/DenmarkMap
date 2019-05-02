@@ -145,4 +145,9 @@ public class RouteHandler{
     public EdgeWeightedGraph getNodeGraph() {
         return G;
     }
+
+    public ResizingArray<Edge> getAdjacentEdges(int id){
+        return G.getAdjacentEdges(id);
+    }
+
 }
