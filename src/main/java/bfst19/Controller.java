@@ -294,12 +294,17 @@ public class Controller {
                 System.out.println(something.getId());
                 double time = System.nanoTime();
                 Iterable<Edge> path = model.findPath(nodeIDs[0],nodeIDs[1], Vehicle.CAR, fastestBoolean);
-                System.out.println(time-System.nanoTime());
+                System.out.println(System.nanoTime()-time);
                 if(path != null){
                     model.clearPath();
                     model.addPath(path);
                 }
                 mapCanvas.repaint();
+                //enable to debug pathfinding
+                /*Iterable<Iterable<Edge>> paths = model.previousPath.paths();
+                for(Iterable<Edge> somepath : paths){
+                    mapCanvas.drawPath(somepath.iterator());
+                }*/
 
                 nodeIDs[0] = null;
                 nodeIDs[1] = null;

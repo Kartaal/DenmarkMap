@@ -25,6 +25,7 @@ public class Model{
     private String datasetName;
     private static String dirPath;
     private TextHandler textHandler = new TextHandler();
+    public DijkstraSP previousPath;
 
     private List<Runnable> colorObservers = new ArrayList<>();
     private List<Runnable> foundMatchesObservers = new ArrayList<>();

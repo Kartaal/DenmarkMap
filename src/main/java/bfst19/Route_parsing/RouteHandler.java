@@ -53,6 +53,7 @@ public class RouteHandler{
 
     public Iterable<Edge> findPath(OSMNode startNode, OSMNode endNode,Vehicle type,boolean fastestpath){
         DijkstraSP shortpath = new DijkstraSP(G,startNode,endNode, type,fastestpath);
+        model.previousPath = shortpath;
         Iterable<Edge> path = shortpath.pathTo(endNode.getId());
         return path;
     }

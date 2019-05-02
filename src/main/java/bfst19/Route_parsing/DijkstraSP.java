@@ -77,6 +77,16 @@ public class DijkstraSP {
         return path;
     }
 
+    public Iterable<Iterable<Edge>> paths(){
+        ResizingArray<Iterable<Edge>> paths = new ResizingArray<>();
+        for(int i = 0 ; i < G.V() ; i++){
+            if(hasPathTo(i)) {
+                paths.add(pathTo(i));
+            }
+        }
+        return paths;
+    }
+
 
     // check optimality conditions:
     // (i) for all edges e:            distTo[e.to()] <= distTo[e.from()] + e.weight()
