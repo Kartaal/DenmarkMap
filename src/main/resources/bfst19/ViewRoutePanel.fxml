@@ -98,10 +98,15 @@
        </Pane>
 
 
-      <ScrollPane prefHeight="200.0" prefWidth="290.0" VBox.vgrow="ALWAYS">
+      <ScrollPane fx:id="scrollInstructions" prefHeight="200.0" prefWidth="290.0" VBox.vgrow="ALWAYS">
         <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
-            <InstructionContainer fx:id="instructions"></InstructionContainer>
+            <VBox fx:id="vboxInstructions" minHeight="200" prefWidth="200">
+                <children>
+                    <InstructionContainer fx:id="instructions"></InstructionContainer>
+                </children>
+
+            </VBox>
+
         </content>
       </ScrollPane>
    </children>

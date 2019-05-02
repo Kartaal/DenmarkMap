@@ -41,6 +41,8 @@ public class Controller {
     @FXML
     private StackPane stackPane;
 
+
+
     public void init(Model model) {
         //TODO: figure out init methods
         this.model = model;
@@ -268,7 +270,8 @@ public class Controller {
             } else if(nodeIDs[1] == 0){
                 nodeIDs[1] = something.getId();
                 System.out.println(something.getId());
-                Iterable<Edge> path = model.findPath(nodeIDs[0],nodeIDs[1], ControllerRoutePanel.vehicleToggle, fastestBoolean);
+                Iterable<Edge> path = model.findPath(nodeIDs[0],nodeIDs[1], ControllerRoutePanel.vehicleToggle, true);
+                System.out.println(ControllerRoutePanel.vehicleToggle);
                 if(path != null){
                     model.clearPath();
                     model.addPath(path);
@@ -278,8 +281,6 @@ public class Controller {
                 nodeIDs[0] = 0;
                 nodeIDs[1] = 0;
             }
-
-
 
         }
 
