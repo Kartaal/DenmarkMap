@@ -25,8 +25,8 @@
                            </image>
                        </ImageView>
                    </graphic>
-                   <toggleGroup >
-                       <ToggleGroup fx:id="toggleRouteType" />
+                   <toggleGroup fx:id="toggleRouteType" >
+                       <ToggleGroup/>
                    </toggleGroup>
                </ToggleButton>
                <padding>

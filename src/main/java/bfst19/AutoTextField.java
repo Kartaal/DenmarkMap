@@ -23,7 +23,7 @@ public class AutoTextField extends TextField {
         addressDropDown = new ContextMenu();
         addressDropDown.setStyle("-fx-max-height: 400");
 
-        //Skal bruge onAction istedet, men den skal ikek være i controller da den kun skal aflæse om man klikker enter når man er inde i tekstfieldet
+        //Skal bruge onAction istedet, men den skal ikke være i controller da den kun skal aflæse om man klikker enter når man er inde i tekstfieldet
         setOnAction(event -> parseSearch());
     }
 

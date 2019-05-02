@@ -3,25 +3,27 @@ package bfst19;
 import bfst19.Route_parsing.Vehicle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 
-import java.io.IOException;
 
 
 public class ControllerRoutePanel {
 
 
     static Vehicle vehicleToggle= Vehicle.CAR;
+
+    static String textTo;
+
+    static String textFrom;
+
+
     @FXML
     private ImageView backBtnRoutePanel;
 
@@ -29,23 +31,19 @@ public class ControllerRoutePanel {
     private ToggleButton car;
 
     @FXML
-    ToggleGroup toggleRouteType;
+    private ToggleGroup toggleRouteType;
 
     @FXML
-    InstructionContainer instructions;
+    private InstructionContainer instructions;
 
     @FXML
-    ScrollPane scrollInstructions;
+    private VBox vboxInstructions;
 
     @FXML
-    VBox vboxInstructions;
+    private AutoTextField textFieldTo;
 
     @FXML
-    AutoTextField textFieldTo;
-
-    @FXML
-    AutoTextField textFieldFrom;
-
+    private AutoTextField textFieldFrom;
 
     private Controller controller;
 
@@ -54,7 +52,9 @@ public class ControllerRoutePanel {
         instructions.init(controller);
         controller.getModel().addPathObserver(this::setRouteType);
         textFieldTo.init(controller);
+        textTo = textFieldTo.getText();
         textFieldFrom.init(controller);
+        textFrom = textFieldFrom.getText();
         car.setSelected(true);
 
     }
