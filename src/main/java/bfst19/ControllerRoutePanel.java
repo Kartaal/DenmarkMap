@@ -27,7 +27,7 @@ public class ControllerRoutePanel {
     private ToggleButton bike;
     @FXML
     ToggleGroup toggleRouteType;
-  ;
+
     @FXML
     InstructionContainer instructions;
 
