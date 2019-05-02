@@ -1,5 +1,7 @@
 package bfst19.Route_parsing;
 
+import bfst19.Line.OSMNode;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -9,48 +11,49 @@ public class DijkstraSP {
     private IndexMinPQ<Double> pq;    // priority queue of vertices    // priority queue of vertices
     private EdgeWeightedGraph G;
 
-    public DijkstraSP(EdgeWeightedGraph G, int s, Vehicle type, boolean fastestPath) {
+    public DijkstraSP(EdgeWeightedGraph G, OSMNode startNode, OSMNode endNode, Vehicle type, boolean fastestPath) {
         /*for (Edge e : G.edges()) {
             if (e.getWeight() < 0)
                 throw new IllegalArgumentException("edge " + e + " has negative weight");
         }*/
+        int start = startNode.getId();
+        int end = endNode.getId();
 
         distTo = new double[G.V()];
         edgeTo = new Edge[G.V()];
         for (int v = 0; v < G.V(); v++)
             distTo[v] = Double.POSITIVE_INFINITY;
-        distTo[s] = 0.0;
+        distTo[start] = 0;
         this.G = G;
-        validateVertex(s);
+        validateVertex(start);
         // relax vertices in order of distance from s
         pq = new IndexMinPQ<>(G.V());
-        pq.insert(s,distTo[s]);
+        pq.insert(start,distTo[start]);
         while (!pq.isEmpty()) {
             int v = pq.delMin();
-            for (Edge e : G.adj(v, type))
-                relax(e, v, type, fastestPath);
+            for (Edge e : G.adj(v)) {
+                relax(e, v, type, fastestPath,endNode);
+                if (e.getOtherEnd(v) == end) return;
+            }
         }
 
         // check optimality conditions
-        assert check(G,s,type,fastestPath);
+        assert check(G,start,type,fastestPath);
     }
 
     // relax edge e and update pq if changed
-    private void relax(Edge e,int vertexV ,Vehicle type, boolean fastestPath) {
-        //the intent is to get both ends of the edge so we use e.getOtherEnd to do so,
-        // tho we do first need to get the v's corresponding id, then get the other end on that id,
-        // and then convert the id we get back to it's corresponding index
-        int v = vertexV, w = e.getOtherEnd(v);
-        double distToW = distTo[w];
-        double distToV = distTo[v];
-        double weight = e.getWeight(type,fastestPath);
-        if (distToW > distToV + weight) {
-            distTo[w] = distToV + weight;
-            edgeTo[w] = e;
-            if (pq.contains(w)) pq.decreaseKey(w, distToW);
-            else                pq.insert(w, distToW);
+    private void relax(Edge e,int vertexV ,Vehicle type, boolean fastestPath, OSMNode endNode) {
+        //the intent is to get both ends of the edge so we use e.getOtherEnd to do so
+            int v = vertexV, w = e.getOtherEnd(v);
+            if (distTo[w] > distTo[v] + e.getWeight(type, fastestPath)) {
+                distTo[w] = distTo[v] + e.getWeight(type, fastestPath);
+                edgeTo[w] = e;
+                OSMNode toNode = e.getThisEndNode(w);
+                double heuristic = AStar.Heuristic(type,fastestPath,toNode.getLat(),toNode.getLon(),endNode.getLat(),endNode.getLon());
+                if (pq.contains(w)) pq.decreaseKey(w, distTo[w]+heuristic);
+                else                pq.insert(w, distTo[w]+heuristic);
+            }
         }
-    }
 
     public double distTo(int v) {
         validateVertex(v);
@@ -72,6 +75,16 @@ public class DijkstraSP {
             path.push(e);
         }
         return path;
+    }
+
+    public Iterable<Iterable<Edge>> paths(){
+        ResizingArray<Iterable<Edge>> paths = new ResizingArray<>();
+        for(int i = 0 ; i < G.V() ; i++){
+            if(hasPathTo(i)) {
+                paths.add(pathTo(i));
+            }
+        }
+        return paths;
     }
 
 
@@ -103,7 +116,7 @@ public class DijkstraSP {
 
         // check that all edges e = v->w satisfy distTo[w] <= distTo[v] + e.weight()
         for (int v = 0; v < G.V(); v++) {
-            for (Edge e : G.adj(v,type)) {
+            for (Edge e : G.adj(v)) {
                 int w = e.getOtherEnd(v);
                 if (distTo[v] + e.getWeight(type,fastestPath) < distTo[w]) {
                     System.err.println("edge " + e + " not relaxed");

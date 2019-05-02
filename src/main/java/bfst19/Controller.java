@@ -25,7 +25,7 @@ public class Controller {
     private boolean fastestBoolean = false;
     private static boolean kdTreeBoolean = false;
     private long time;
-    private int[] nodeIDs = new int[2];
+    private OSMNode[] nodeIDs = new OSMNode[2];
 
 
 
@@ -239,8 +239,8 @@ public class Controller {
 
                 model.clearPath();
                 mapCanvas.repaint();
-                nodeIDs[0] = 0;
-                nodeIDs[1] = 0;
+                nodeIDs[0] = null;
+                nodeIDs[1] = null;
                 break;
             case S:
 
@@ -282,25 +282,32 @@ public class Controller {
         //System.out.println(Math.abs((-time + prevtime) / 1e8));
         if (Math.abs((-time + prevtime) / 1e8) <= 3){
             OSMNode something = model.getNearestRoad(mapCanvas.getModelCoords(x,y));
-            if(nodeIDs[0] == 0){
+            if(nodeIDs[0] == null){
                 if(something!=null) {
-                    nodeIDs[0] = something.getId();
+                    nodeIDs[0] = something;
                     System.out.println(something.getId());
-                    nodeIDs[1] = 0;
+                    nodeIDs[1] = null;
                 }
 
-            } else if(nodeIDs[1] == 0){
-                nodeIDs[1] = something.getId();
+            } else if(nodeIDs[1] == null){
+                nodeIDs[1] = something;
                 System.out.println(something.getId());
+                double time = System.nanoTime();
                 Iterable<Edge> path = model.findPath(nodeIDs[0],nodeIDs[1], Vehicle.CAR, fastestBoolean);
+                System.out.println(System.nanoTime()-time);
                 if(path != null){
                     model.clearPath();
                     model.addPath(path);
                 }
                 mapCanvas.repaint();
+                //enable to debug pathfinding
+                /*Iterable<Iterable<Edge>> paths = model.previousPath.paths();
+                for(Iterable<Edge> somepath : paths){
+                    mapCanvas.drawPath(somepath.iterator());
+                }*/
 
-                nodeIDs[0] = 0;
-                nodeIDs[1] = 0;
+                nodeIDs[0] = null;
+                nodeIDs[1] = null;
             }
 
 

@@ -25,6 +25,7 @@ public class Model{
     private String datasetName;
     private static String dirPath;
     private TextHandler textHandler = new TextHandler();
+    public DijkstraSP previousPath;
 
     private List<Runnable> colorObservers = new ArrayList<>();
     private List<Runnable> foundMatchesObservers = new ArrayList<>();
@@ -106,6 +107,7 @@ public class Model{
                 output.writeFloat(maxlon);
                 output.writeFloat(lonfactor);
                 output.writeObject(routeHandler.getNodeGraph());
+
             }
         }
         setPointsOfInterest();
@@ -290,8 +292,8 @@ public class Model{
         textHandler.ParseWayColors(this);
     }
 
-    public Iterable<Edge> findPath(int startId , int endId , Vehicle type , boolean fastestPath){
-        return routeHandler.findPath(startId,endId,type,fastestPath);
+    public Iterable<Edge> findPath(OSMNode startNode , OSMNode endNode , Vehicle type , boolean fastestPath){
+        return routeHandler.findPath(startNode,endNode,type,fastestPath);
     }
 
     public void parseSearch(String proposedAddress){

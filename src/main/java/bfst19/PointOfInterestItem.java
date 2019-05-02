@@ -20,6 +20,7 @@ public class PointOfInterestItem extends HBox {
 
     public PointOfInterestItem(String address, float x, float y) {
         this.address = address;
+        //boop
         this.x = x;
         this.y = y;
         this.setPrefHeight(50);
