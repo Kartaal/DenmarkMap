@@ -35,9 +35,9 @@
 
 
 
-      <AutoTextField fx:id="textFieldFrom" promptText="From ">
+      <AutoTextField fx:id="textFieldFrom" promptText="From " >
           <VBox.margin>
-              <Insets bottom="5.0" />
+              <Insets bottom="20.0" />
           </VBox.margin>
       </AutoTextField>
 
@@ -50,12 +50,15 @@
             </ImageView>
          </graphic>
       </Button>
+        <Pane>
+            <AutoTextField fx:id="textFieldTo" promptText="To ">
+                <VBox.margin>
+                    <Insets bottom="5.0" />
+                </VBox.margin>
+            </AutoTextField>
+        </Pane>
 
-       <AutoTextField fx:id="textFieldTo" promptText="To ">
-           <VBox.margin>
-               <Insets bottom="5.0" />
-           </VBox.margin>
-       </AutoTextField>
+
 
        <Pane style="-fx-background-color: #0c74ff">
            <HBox alignment="CENTER">
