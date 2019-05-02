@@ -344,7 +344,6 @@ public class Model{
         return textHandler.parseSpeedDefaults(s);
     }
 
-    public HashMap<WayType, HashMap<String, ResizingArray<String[]>>> parseDrivableCases(String s) {
-        return textHandler.parseDrivableCases(s);
-    }
+    public HashMap<WayType, HashMap<String, ResizingArray<String[]>>> parseDrivableCases(String s) { return textHandler.parseDrivableCases(s); }
+
 }

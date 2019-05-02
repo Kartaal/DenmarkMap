@@ -3,7 +3,6 @@ package bfst19;
 import bfst19.Route_parsing.Vehicle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
@@ -12,16 +11,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 
-
-
 public class ControllerRoutePanel {
 
 
     static Vehicle vehicleToggle= Vehicle.CAR;
 
-    static String textTo;
+    static int pointTo;
 
-    static String textFrom;
+    static int pointFrom;
 
 
     @FXML
@@ -52,10 +49,9 @@ public class ControllerRoutePanel {
         instructions.init(controller);
         controller.getModel().addPathObserver(this::setRouteType);
         textFieldTo.init(controller);
-        textTo = textFieldTo.getText();
         textFieldFrom.init(controller);
-        textFrom = textFieldFrom.getText();
         car.setSelected(true);
+        setPointsID();
 
     }
 
@@ -104,4 +100,8 @@ public class ControllerRoutePanel {
         vboxInstructions.getChildren().remove(instructions);
     }
 
+    public void setPointsID(){
+        pointTo = controller.getNearestRoad(textFieldTo.returnCoords()).getId();
+        pointFrom = controller.getNearestRoad(textFieldFrom.returnCoords()).getId();
+    }
 }

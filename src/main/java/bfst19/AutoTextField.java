@@ -1,5 +1,6 @@
 package bfst19;
 
+import javafx.geometry.Point2D;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
@@ -14,6 +15,8 @@ public class AutoTextField extends TextField {
 
     Controller controller;
     Model model;
+
+    private Point2D coords;
 
     private ContextMenu addressDropDown;
 
@@ -102,6 +105,9 @@ public class AutoTextField extends TextField {
     //Skal ikke være i controller da teksten fra AutoTextField skal sendes ud af denne klasse...
     private void panAddress(float x, float y){
         controller.panToPoint(x, y);
+        coords = new Point2D(x, y);
         controller.setUpInfoPanel(this.getText(), x, y);
     }
+
+    public Point2D returnCoords(){ return coords; }
 }

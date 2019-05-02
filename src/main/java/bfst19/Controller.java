@@ -1,11 +1,10 @@
 package bfst19;
-import bfst19.KDTree.KDTree;
 import bfst19.Line.OSMNode;
 import bfst19.Route_parsing.Edge;
-import bfst19.Route_parsing.Vehicle;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Point2D;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -27,8 +26,6 @@ public class Controller {
     private static boolean kdTreeBoolean = false;
     private long time;
     private int[] nodeIDs = new int[2];
-
-    ControllerRoutePanel controllerRoutePanel;
 
     //This only means that .fxml can use this field despite visibility
     @FXML
@@ -293,7 +290,7 @@ public class Controller {
             } else if(nodeIDs[1] == 0){
                 nodeIDs[1] = something.getId();
                 System.out.println(something.getId());
-                Iterable<Edge> path = model.findPath(nodeIDs[0],nodeIDs[1], ControllerRoutePanel.vehicleToggle, true);
+                Iterable<Edge> path = model.findPath(ControllerRoutePanel.pointFrom,ControllerRoutePanel.pointTo, ControllerRoutePanel.vehicleToggle, true);
                 System.out.println(ControllerRoutePanel.vehicleToggle);
                 if(path != null){
                     model.clearPath();
@@ -305,8 +302,6 @@ public class Controller {
                 nodeIDs[1] = 0;
             }
 
-
-
         }
 
         if(e.isSecondaryButtonDown()){
@@ -316,7 +311,6 @@ public class Controller {
             System.out.println("Nearest OSMNode: " + something);
         }
     }
-
 
     public static boolean KdTreeBoolean() {
         return kdTreeBoolean;
@@ -338,5 +332,6 @@ public class Controller {
 
     public void removePointOfInterestItem(PointOfInterestItem pointOfInterestItem){ model.removePointOfInterestItem(pointOfInterestItem);}
 
+    public OSMNode getNearestRoad(Point2D point2D){ return model.getNearestRoad(point2D); }
 
 }
