@@ -29,8 +29,6 @@ public class ControllerRoutePanel {
     private ToggleButton car;
 
     @FXML
-    private ToggleButton bike;
-    @FXML
     ToggleGroup toggleRouteType;
 
     @FXML
@@ -42,6 +40,11 @@ public class ControllerRoutePanel {
     @FXML
     VBox vboxInstructions;
 
+    @FXML
+    AutoTextField textFieldTo;
+
+    @FXML
+    AutoTextField textFieldFrom;
 
 
     private Controller controller;
@@ -50,6 +53,10 @@ public class ControllerRoutePanel {
         this.controller = controller;
         instructions.init(controller);
         controller.getModel().addPathObserver(this::setRouteType);
+        textFieldTo.init(controller);
+        textFieldFrom.init(controller);
+        car.setSelected(true);
+
     }
 
     @FXML
@@ -80,13 +87,7 @@ public class ControllerRoutePanel {
         ToggleButton selectedToggleButton = (ToggleButton) toggleRouteType.getSelectedToggle();
         toggleGroupValue = selectedToggleButton.getId();
 
-        if(toggleGroupValue==null) {
-            toggleRouteType.selectToggle(car);
-            vehicleToggle=Vehicle.CAR;
-        }
-        else if(toggleGroupValue.equals("car")){
-            System.out.println("car is true");
-            //remove
+        if(toggleGroupValue.equals("car")){
             vehicleToggle=Vehicle.CAR;
         }
         else if (toggleGroupValue.equals("bike")){

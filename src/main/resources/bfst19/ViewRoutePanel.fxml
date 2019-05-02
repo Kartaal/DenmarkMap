@@ -16,6 +16,7 @@
 <?import javafx.scene.layout.HBox?>
 
 <?import bfst19.InstructionContainer?>
+<?import bfst19.AutoTextField?>
 <VBox alignment="CENTER" prefWidth="300.0" fx:id="outerPane" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 0);" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bfst19.ControllerRoutePanel">
    <children>
 
@@ -34,10 +35,12 @@
 
 
 
-      <TextField fx:id="textFieldFra" promptText="From ">
-         <VBox.margin>
-            <Insets bottom="5.0" />
-         </VBox.margin></TextField>
+      <AutoTextField fx:id="textFieldFrom" promptText="From ">
+          <VBox.margin>
+              <Insets bottom="5.0" />
+          </VBox.margin>
+      </AutoTextField>
+
       <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="27.0" prefWidth="80.0" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);">
          <graphic>
             <ImageView fx:id="switchBtn" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
@@ -47,10 +50,12 @@
             </ImageView>
          </graphic>
       </Button>
-      <TextField fx:id="textFieldTil" promptText="To ">
-         <VBox.margin>
-             <Insets bottom="5.0" top="5.0" right="5.0" left="5.0"/>
-         </VBox.margin></TextField>
+
+       <AutoTextField fx:id="textFieldTo" promptText="To ">
+           <VBox.margin>
+               <Insets bottom="5.0" />
+           </VBox.margin>
+       </AutoTextField>
 
        <Pane style="-fx-background-color: #0c74ff">
            <HBox alignment="CENTER">
