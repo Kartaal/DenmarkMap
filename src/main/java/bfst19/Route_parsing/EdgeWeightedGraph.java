@@ -64,17 +64,10 @@ public class EdgeWeightedGraph implements Serializable {
         E++;
     }
 
-    public Iterable<Edge> adj(int v,Vehicle type) {
+    public Iterable<Edge> adj(int v) {
         validateVertex(v);
         ResizingArray adjacent = adj.get(v);
-        ArrayList<Edge> result = new ArrayList<>();
-        for(int i = 0 ; i<adjacent.size() ; i++){
-            Edge edge = (Edge)adjacent.get(i);
-            if(edge.isForwardAllowed(type,v)){
-                result.add(edge);
-            }
-        }
-        return result;
+        return adjacent;
     }
 
     public int degree(int v) {
@@ -86,7 +79,7 @@ public class EdgeWeightedGraph implements Serializable {
         ArrayList list = new ArrayList();
         for (int v = 0; v < V; v++) {
             int selfLoops = 0;
-            for (Edge e : adj(v,Vehicle.BIKE)) {
+            for (Edge e : adj(v)) {
                 if (e.other() > v) {
                     list.add(e);
                 }

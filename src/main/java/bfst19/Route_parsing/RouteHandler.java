@@ -51,9 +51,9 @@ public class RouteHandler{
         return drivableWaytypes;
     }
 
-    public Iterable<Edge> findPath(int startNodeId, int endNodeId,Vehicle type,boolean fastestpath){
-        DijkstraSP shortpath = new DijkstraSP(G,startNodeId, type,fastestpath);
-        Iterable<Edge> path = shortpath.pathTo(endNodeId);
+    public Iterable<Edge> findPath(OSMNode startNode, OSMNode endNode,Vehicle type,boolean fastestpath){
+        DijkstraSP shortpath = new DijkstraSP(G,startNode,endNode, type,fastestpath);
+        Iterable<Edge> path = shortpath.pathTo(endNode.getId());
         return path;
     }
 
@@ -132,10 +132,12 @@ public class RouteHandler{
     }*/
 
     public Iterable<Edge> getAdj(int id, Vehicle type) {
-        return G.adj(id,type);
+        return G.adj(id);
     }
 
     public void finishNodeGraph(){
+        System.out.println(G.E());
+        System.out.println(G.V());
         drivabillty = null;
         defaultDrivabillty = null;
         drivableCases = null;
