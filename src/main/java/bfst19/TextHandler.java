@@ -21,9 +21,9 @@ class TextHandler {
     public void makeDatabase(ArrayList<Address> addresses, String dirPath, String delimiter){
         try{
             File countryDir = new File(dirPath);
-            if(countryDir.isDirectory()){
-                deleteDirectoryRecursion(new File(dirPath));
-            }
+//            if(countryDir.isDirectory()){
+//                deleteDirectoryRecursion(new File(dirPath));
+//            }
             countryDir.mkdir();
 
             String currentCityAndPostcode = "";
@@ -147,6 +147,28 @@ class TextHandler {
 
         } catch (IOException e) {
             e.printStackTrace();
+            System.err.println("Failed to read from file at " + filepath);
+        }
+        return null;
+    }
+
+    //Return ArrayList of colors
+    public ArrayList<String> parseWayColors(String filepath){
+        //TODO Shitty duplicate code :\
+        try {
+            filepath = getClass().getClassLoader().getResource(filepath).getFile();
+            BufferedReader reader= new BufferedReader(new InputStreamReader(
+                    new FileInputStream(filepath),"UTF-8"));
+            ArrayList<String> textFile = new ArrayList<>();
+            String line;
+            while((line = reader.readLine()) != null){
+                textFile.add(line);
+            }
+            return textFile;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Failed to read color cases from " + filepath);
         }
         return null;
     }
@@ -171,8 +193,8 @@ class TextHandler {
 
 
 
-    public void ParseWayColors(Model model){
-        ArrayList<String> cases = getTextFile(model.getCurrentTypeColorTxt());
+    public void parseWayColors(Model model){
+        ArrayList<String> cases = parseWayColors(model.getCurrentTypeColorTxt());
         model.clearColors();
         int m = Integer.parseInt(cases.get(0));
         for (int i = 1; i < m; i++) {
@@ -182,7 +204,8 @@ class TextHandler {
         model.notifyColorObservers();
     }
 
-    public HashMap<WayType,HashMap<String,ResizingArray<String[]>>> parseDrivableCases(String filepath) {
+    public HashMap<WayType,HashMap<String,ResizingArray<String[]>>> parseDrivableCases() {
+        String filepath = getClass().getClassLoader().getResource("config/Drivable_cases.txt").getFile();
         ArrayList<String> cases = getTextFile(filepath);
         HashMap<WayType,HashMap<String,ResizingArray<String[]>>> drivableCases = new HashMap<>();
 
@@ -212,7 +235,8 @@ class TextHandler {
         return drivableCases;
     }
 
-    public HashMap<String,Integer> parseSpeedDefaults(String filepath){
+    public HashMap<String,Integer> parseSpeedDefaults(){
+        String filepath = getClass().getClassLoader().getResource("config/Speed_cases.txt").getFile();
         ArrayList<String> cases = getTextFile(filepath);
         HashMap<String,Integer> speedDefaults = new HashMap<>();
         for(int i = 0 ; i<cases.size() ; i++){
@@ -224,8 +248,10 @@ class TextHandler {
     }
 
 
-    public HashMap<WayType,ResizingArray<String[]>> parseWayTypeCases(String pathToCasesFile){
+    public HashMap<WayType,ResizingArray<String[]>> parseWayTypeCases(){
         HashMap<WayType,ResizingArray<String[]>>  wayTypeCases = new HashMap<>();
+
+        String pathToCasesFile = getClass().getClassLoader().getResource("config/WayTypeCases.txt").getFile();
         ArrayList<String> cases = getTextFile(pathToCasesFile);
         String wayCase = "";
         WayType wayType = null;

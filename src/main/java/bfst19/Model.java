@@ -10,14 +10,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
 
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import java.io.*;
 import java.util.*;
 import java.util.zip.ZipInputStream;
-
-import static javax.xml.stream.XMLStreamConstants.*;
 
 public class Model{
     private RouteHandler routeHandler;
@@ -35,7 +31,7 @@ public class Model{
     private float maxlon;
 
     private ObservableList<PointOfInterestItem> pointOfInterestItems = FXCollections.observableArrayList();
-    private String currentTypeColorTxt = "src/main/resources/config/TypeColorsNormal.txt";
+    private String currentTypeColorTxt = "config/TypeColorsNormal.txt";
     private HashMap<WayType,ResizingArray<String[]>> wayTypeCases = new HashMap<>();
     private ObservableList<String[]> foundMatches = FXCollections.observableArrayList();
     private ObservableList<String[]> typeColors = FXCollections.observableArrayList();
@@ -59,8 +55,8 @@ public class Model{
             ways.put(type, new ResizingArray<>());
         }
 
-        wayTypeCases = textHandler.parseWayTypeCases("src/main/resources/config/WayTypeCases.txt");
-        textHandler.ParseWayColors(this);
+        wayTypeCases = textHandler.parseWayTypeCases();
+        textHandler.parseWayColors(this);
 
         String filename = args.get(0);
         //this might not be optimal
@@ -279,15 +275,12 @@ public class Model{
     }
 
     public void switchColorScheme(boolean colorBlindEnabled) {
-        //TODO Remember to remove debug println
-        System.out.println("Colorblind mode enabled: " + colorBlindEnabled);
-
         if (colorBlindEnabled) {
-            currentTypeColorTxt = ("src/main/resources/config/TypeColorsColorblind.txt");
+            currentTypeColorTxt = ("config/TypeColorsColorblind.txt");
         }  else {
-            currentTypeColorTxt = ("src/main/resources/config/TypeColorsNormal.txt");
+            currentTypeColorTxt = ("config/TypeColorsNormal.txt");
         }
-        textHandler.ParseWayColors(this);
+        textHandler.parseWayColors(this);
     }
 
     public Iterable<Edge> findPath(int startId , int endId , Vehicle type , boolean fastestPath){
@@ -340,11 +333,15 @@ public class Model{
 
     }
 
-    public HashMap<String, Integer> parseSpeedDefaults(String s) {
-        return textHandler.parseSpeedDefaults(s);
+    public HashMap<String, Integer> parseSpeedDefaults() {
+        return textHandler.parseSpeedDefaults();
     }
 
-    public HashMap<WayType, HashMap<String, ResizingArray<String[]>>> parseDrivableCases(String s) {
-        return textHandler.parseDrivableCases(s);
+    public HashMap<WayType, HashMap<String, ResizingArray<String[]>>> parseDrivableCases() {
+        return textHandler.parseDrivableCases();
+    }
+
+    public ArrayList<String> parseColorCases(String s){
+        return textHandler.parseWayColors(s);
     }
 }

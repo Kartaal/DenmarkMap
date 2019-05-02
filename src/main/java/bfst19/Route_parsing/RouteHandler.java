@@ -27,8 +27,8 @@ public class RouteHandler{
     public RouteHandler(Model model, EdgeWeightedGraph G) {
         this.model = model;
         this.G = G;
-        speedDefaults = model.parseSpeedDefaults("src/main/resources/config/Speed_cases.txt");
-        drivableCases = model.parseDrivableCases("src/main/resources/config/Drivable_cases.txt");
+        speedDefaults = model.parseSpeedDefaults();
+        drivableCases = model.parseDrivableCases();
         drivabillty = new HashMap<>();
 
         for(WayType wayType : drivableCases.keySet()){
