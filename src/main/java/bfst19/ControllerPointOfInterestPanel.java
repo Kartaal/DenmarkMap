@@ -1,76 +1,63 @@
 package bfst19;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-import java.awt.*;
 
 public class ControllerPointOfInterestPanel implements BackBtnEffect {
+
+    @FXML
+    private ImageView backBtnPointOfInterest;
 
     private Controller controller;
 
     @FXML
-    private VBox vBox;
+    private ScrollPane scrollPane;
 
-    @FXML
-    private ImageView clearBtn;
-
-    @FXML
-    private ImageView addBtn;
-
-    @FXML
-    private javafx.scene.control.Label address;
-
-    @FXML
-    private javafx.scene.control.Label latlon;
-
+    private ListChangeListener<HBox> listener;
 
     public void init(Controller controller) {
         this.controller = controller;
+        showHBoxesList();
 
-        String[] inputArray = AutoTextField.autoTextFieldInput.split("&");
-        String adress = inputArray[0];
-        String x = inputArray[1];
-        String y = inputArray[2];
+        listener = c -> showHBoxesList();
 
-        setAddressCoordsLabels(adress,x,y);}
+        controller.pointOfInterestList().addListener(listener);
+    }
 
-    @FXML
-    private void setBackBtnEffect(){
-        DropShadow dropShadow = new DropShadow(BlurType.ONE_PASS_BOX, Color.rgb(0,0,0,0.3), 10, 0, 0, 0);
-        clearBtn.setEffect(dropShadow);
+    private void removeListener(){
+        controller.pointOfInterestList().removeListener(listener);
     }
 
     @FXML
-    private void setBackBtnEffectNone(){ clearBtn.setEffect(null);}
-
-    @FXML
-    private void setAddBtnEffect(){
-        DropShadow dropShadow = new DropShadow(BlurType.ONE_PASS_BOX, Color.rgb(0,0,0,0.3), 10, 0, 0, 0);
-        addBtn.setEffect(dropShadow);
+    private void setBackBtnEffect() {
+        DropShadow dropShadow = new DropShadow(BlurType.ONE_PASS_BOX, Color.rgb(0,0,0,0.4), 10, 0, 0, 0);
+        backBtnPointOfInterest.setEffect(dropShadow);
     }
 
     @FXML
-    private void setAddBtnEffectNone(){ addBtn.setEffect(null);}
+    private void setBackBtnEffectNone() { backBtnPointOfInterest.setEffect(null); }
 
     @FXML
-    private void clearBtnAction(){
-        vBox.setVisible(false);
+    public void returnToBarPanel(ActionEvent actionEvent) {
+        removeListener();
+        controller.setUpBar();
     }
 
-    private void setAddressCoordsLabels(String location, String x, String y){
-        address.setText(location);
-        latlon.setText("Coords: " + x + ", " + y);
-    }
-
-    //TODO: Have an observable list with the point of interest the user has added, which can be removed and added from/to
-    @FXML
-    public void addPointOfInterest(ActionEvent actionEvent) {
-
+    private void showHBoxesList() {
+        VBox vBox = new VBox();
+        vBox.getChildren().addAll(controller.pointOfInterestList());
+        scrollPane.setContent(vBox);
     }
 }

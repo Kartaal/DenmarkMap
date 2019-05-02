@@ -28,7 +28,7 @@ public class ControllerBarPanel {
     }
 
     //Sets up MenuPanel when MenuButton is pressed
-    public void setMenuButton(){
+    private void setMenuButton(){
         menuButton.setOnAction(e -> controller.setupMenuPanel());
     }
 
@@ -39,11 +39,16 @@ public class ControllerBarPanel {
     }
 
     //When SearchButton is pressed it runs AutoTextField's showResults method
-    public void setSearchButton(){
+    private void setSearchButton(){
         searchButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 autoTextField.showResults();
             }
         });
+    }
+
+    @FXML
+    private void openPointOfInterest(ActionEvent actionEvent) {
+        controller.setUpPointOfInterestPanel();
     }
 }

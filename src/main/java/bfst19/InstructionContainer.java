@@ -71,7 +71,7 @@ public class InstructionContainer extends VBox {
                     currentHead = newV;
                 }
 
-                double angle = Model.angleBetween2Lines(previousBase, previousHead, currentBase, currentHead);
+            double angle = Calculator.angleBetween2Lines(previousBase, previousHead, currentBase, currentHead);
 
                 if (45 < angle && angle < 180) {
                     System.out.println("turn left");
@@ -95,28 +95,28 @@ public class InstructionContainer extends VBox {
                     currentBase = currentEdge.getOtherEndNode(currentHead);
                     currentLength = currentEdge.getLength();
 
-                    angle = Model.angleBetween2Lines(previousBase, previousHead, currentBase, currentHead);
-                    String direction = "";
-                    if (15 < angle && 45 > angle) {
-                        direction = "keep left";
-                    } else if (45 < angle && angle < 120) {
-                        direction = "left";
-                    } else if (345 > angle && angle > 315) {
-                        direction = "keep right";
-                    } else if (240 < angle && angle < 315) {
-                        direction = "right";
-                    } else if (120 < angle && angle < 240) {
-                        direction = "u-turn";
+                angle = Calculator.angleBetween2Lines(previousBase, previousHead, currentBase, currentHead);
+                String direction = "";
+                if(15 < angle && 45 > angle){
+                    direction = "keep left";
+                }else if (45 < angle && angle < 120) {
+                    direction = "left";
+                }else if(345 > angle && angle > 315){
+                    direction = "keep right";
+                }else if (240 < angle && angle < 315) {
+                    direction = "right";
+                }else if(120<angle&&angle<240){
+                    direction = "u-turn";
+                }
+                if(currentLength>1.0) {
+                    String currentName = currentEdge.getName();
+                    if (direction.equals("u-turn") || direction.equals("left") || direction.equals("right") || !name.equals(currentName)) {
+                        addNewInstruction(length, direction, currentName);
+                        length = 0.0;
+                        name = currentName;
+                        direction = "";
                     }
-                    if (currentLength > 1.0) {
-                        String currentName = currentEdge.getName();
-                        if (direction.equals("u-turn") || direction.equals("left") || direction.equals("right") || !name.equals(currentName)) {
-                            addNewInstruction(length, direction, currentName);
-                            length = 0.0;
-                            name = currentName;
-                            direction = "";
-                        }
-                    }
+                }
 
                     length += currentLength;
                     previousBase = currentBase;
@@ -124,6 +124,7 @@ public class InstructionContainer extends VBox {
                 }
             }
         }
+
     }
 
     public void addNewInstruction(double speed, String direction, String road){

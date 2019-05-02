@@ -1,5 +1,6 @@
 package bfst19.Route_parsing;
 
+import bfst19.Calculator;
 import bfst19.Line.OSMNode;
 import bfst19.Line.OSMWay;
 import bfst19.Model;
@@ -26,8 +27,8 @@ public class RouteHandler{
     public RouteHandler(Model model, EdgeWeightedGraph G) {
         this.model = model;
         this.G = G;
-        speedDefaults = parseSpeedDefaults("src/main/resources/config/Speed_cases.txt");
-        drivableCases = parseDrivableCases("src/main/resources/config/Drivable_cases.txt");
+        speedDefaults = model.parseSpeedDefaults("src/main/resources/config/Speed_cases.txt");
+        drivableCases = model.parseDrivableCases("src/main/resources/config/Drivable_cases.txt");
         drivabillty = new HashMap<>();
 
         for(WayType wayType : drivableCases.keySet()){
@@ -54,48 +55,6 @@ public class RouteHandler{
         DijkstraSP shortpath = new DijkstraSP(G,startNodeId, type,fastestpath);
         Iterable<Edge> path = shortpath.pathTo(endNodeId);
         return path;
-    }
-
-
-    private HashMap<WayType,HashMap<String,ResizingArray<String[]>>> parseDrivableCases(String filepath) {
-        ArrayList<String> cases = model.getTextFile(filepath);
-        HashMap<WayType,HashMap<String,ResizingArray<String[]>>> drivableCases = new HashMap<>();
-
-        WayType wayType = WayType.valueOf(cases.get(0));
-        drivableCases.put(wayType,new HashMap<>());
-        String[] tokens;
-        String vehicleType = "";
-        String vehicleDrivable = "";
-
-        for(int i = 1 ; i<cases.size() ; i++){
-            String line = cases.get(i);
-            if(line.startsWith("%")){
-                tokens = cases.get(i+1).split(" ");
-                i++;
-                vehicleType = tokens[0];
-                vehicleDrivable = tokens[1];
-                drivableCases.get(wayType).put(vehicleType+" "+vehicleDrivable,new ResizingArray<>());
-            }else if(line.startsWith("$")){
-                wayType = WayType.valueOf(cases.get(i+1));
-                drivableCases.put(wayType,new HashMap<>());
-                i++;
-            }else{
-                String[] lineTokens = line.split(" ");
-                drivableCases.get(wayType).get(vehicleType+" "+vehicleDrivable).add(lineTokens);
-            }
-        }
-        return drivableCases;
-    }
-
-    private HashMap<String,Integer> parseSpeedDefaults(String filepath){
-        ArrayList<String> cases = model.getTextFile(filepath);
-        HashMap<String,Integer> speedDefaults = new HashMap<>();
-        for(int i = 0 ; i<cases.size() ; i++){
-            String line = cases.get(i);
-            String[] tokens = line.split(" ");
-            speedDefaults.put(tokens[0],Integer.valueOf(tokens[1]));
-        }
-        return speedDefaults;
     }
 
     public void checkDrivabillty(String k, String v) {
@@ -133,12 +92,12 @@ public class RouteHandler{
 
             OSMNode currentNode = way.get(i);
 
-            double previousNodeLat = previousnode.getLat();
-            double previousNodeLon = previousnode.getLon()/model.getLonfactor();
-            double currentNodeLat = currentNode.getLat();
-            double currentNodeLon = currentNode.getLon()/model.getLonfactor();
+            float previousNodeLat = previousnode.getLat();
+            float previousNodeLon = (float) (previousnode.getLon()/model.getLonfactor());
+            float currentNodeLat = currentNode.getLat();
+            float currentNodeLon = (float) (currentNode.getLon()/model.getLonfactor());
 
-            float length = model.calculateDistanceInMeters(previousNodeLat,previousNodeLon,currentNodeLat,currentNodeLon);
+            float length = Calculator.calculateDistanceInMeters(previousNodeLat,previousNodeLon,currentNodeLat,currentNodeLon);
 
             if(speedlimit==0){
                 speedlimit = speedDefaults.get(type.toString());

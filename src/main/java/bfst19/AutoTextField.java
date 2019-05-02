@@ -15,8 +15,6 @@ public class AutoTextField extends TextField {
     Controller controller;
     Model model;
 
-    public static String autoTextFieldInput;
-
     private ContextMenu addressDropDown;
 
     public AutoTextField(){
@@ -25,13 +23,8 @@ public class AutoTextField extends TextField {
         addressDropDown = new ContextMenu();
         addressDropDown.setStyle("-fx-max-height: 400");
 
-        this.setOnKeyPressed(event -> {
-            switch (event.getCode())  {
-                case ENTER:
-                    parseSearch();
-                    break;
-            }
-        });
+        //Skal bruge onAction istedet, men den skal ikek være i controller da den kun skal aflæse om man klikker enter når man er inde i tekstfieldet
+        setOnAction(event -> parseSearch());
     }
 
     public void init(Controller controller){
@@ -64,7 +57,7 @@ public class AutoTextField extends TextField {
             String[] firstMatch = iterator.next();
             //this means that the match is a complete address
             if (firstMatch.length == 8) {
-                panAddress(Double.valueOf(firstMatch[0]), Double.valueOf(firstMatch[1]));
+                panAddress(Float.valueOf(firstMatch[0]), Float.valueOf(firstMatch[1]));
                 return;
                 //and the rest of the address is passed of to some other part of the UI.
             } else if (firstMatch.length == 4) {
@@ -105,9 +98,10 @@ public class AutoTextField extends TextField {
         addressDropDown.getItems().clear();
     }
 
-    private void panAddress(double x, double y){
-        autoTextFieldInput = this.getText()+"&"+x+"&"+y;
-        controller.panToPoint(x,y);
-        controller.setUpPointOfInterestPanel();
+    //this.getText() er måske mere korrekt at skrive da man siger at det er klassen extended metode istedet for bare at skrive (getText())
+    //Skal ikke være i controller da teksten fra AutoTextField skal sendes ud af denne klasse...
+    private void panAddress(float x, float y){
+        controller.panToPoint(x, y);
+        controller.setUpInfoPanel(this.getText(), x, y);
     }
 }

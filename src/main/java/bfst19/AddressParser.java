@@ -12,67 +12,59 @@ public class AddressParser {
 
     private static AddressParser addressParser = null;
     private static Model model = null;
-    private ArrayList<String> postcodes = new ArrayList<>();
-    private ArrayList<String> cities = new ArrayList<>();
+    private String[] postcodes;
+    private String[] cities;
     //a collection of the default searching file if there is no hit for cityCheck
     private static String[] defaults;
 
-    public static AddressParser getInstance(Model model){
+    public static AddressParser getInstance(){
         if(addressParser == null){
-            return new AddressParser(model);
+            return new AddressParser();
         }
         return addressParser;
     }
 
-    public AddressParser(Model model){
+    public AddressParser(){
         addressParser = this;
-        this.model = model;
     }
 
-    public class Builder {
-        private int id;
-        private float lat, lon;
-        private String streetName = "Unknown", houseNumber="", postcode="", city="",floor="",side="";
-        public Builder houseNumber(String _house)   { houseNumber = _house;   return this; }
-        public Builder floor(String _floor)   { floor = _floor;   return this; }
-        public Builder side(String _side)   { side = _side;   return this; }
-        public Address build() {
-            return new Address(id,lat,lon,streetName, houseNumber, postcode, city,floor,side);
+    public void parseSearch(String proposedAddress, Model model) {
+        Address a = AddressParser.getInstance().singleSearch(proposedAddress);
+        //if the address does not have a city or a streetname, get the string's matches from the default file and display them
+        if(a.getStreetName().equals("Unknown") || a.getCity().equals("")) {
+            ArrayList<String[]> possibleMatches =
+                    AddressParser.getInstance().getMatchesFromDefault(proposedAddress, false);
+
+            if (possibleMatches != null) {
+                model.clearMatches();
+                System.out.println(possibleMatches.size());
+                for (String[] match : possibleMatches) {
+                    model.addFoundMatch(new String[]{match[0],match[1],match[2]});
+                }
+            }
+        }else if(a.getHouseNumber()==null){
+            //if the housenumber is null, bet all the addresses housenumbers from the streets file and display them
+            ArrayList<String[]> possibleAddresses = AddressParser.getInstance().getAddress(a.getCity(),a.getPostcode(),a.getStreetName(),"",false);
+            if (possibleAddresses != null) {
+                model.clearMatches();
+                String street = a.getStreetName();
+                String city = a.getCity();
+                String postcode = a.getPostcode();
+                for (String[] match : possibleAddresses) {
+                    model.addFoundMatch(new String[]{street, match[2], city, postcode});
+                }
+            }
+        }else{
+            //if those 3 fields are filled, just put the address in the ui will handle the rest
+            model.clearMatches();
+            model.addFoundMatch(new String[]{String.valueOf(a.getLon()),
+                    String.valueOf(a.getLat()), a.getStreetName(), a.getHouseNumber(),
+                    a.getFloor(), a.getSide(), a.getCity(), a.getPostcode()});
         }
+        model.notifyFoundMatchesObservers();
     }
 
-    final String houseRegex = "(?<house>([0-9]{1,3} ?[a-zA-Z]?))?";
-    final String floorRegex = "(?<floor>([1-9]{1,3}\\.?)|(1st\\.)|(st\\.))?";
-    final String sideRegex = "(?<side>th\\.?|tv\\.?|mf\\.?|md\\.?|([0-9]{1,3}\\.?))?";
-
-    //This only checks the remainder of the string at the end for house number, floor and side for the address.
-    final String[] regex = {
-            "^"+houseRegex+",? ?"+floorRegex+",? ?"+sideRegex+",?$"
-    };
-
-    /* Pattern:A regular expression, specified as a string, must first be compiled into an instance of this class
-     * Arrays.stream:Returns a sequential Stream with the specified array as its source
-     * Stream.map: Returns a stream consisting of the results of applying the given function to the elements of this stream.
-     * Pattern. compile: Compiles the given regular expression into a pattern.
-     */
-    final Pattern[] patterns =
-            Arrays.stream(regex).map(Pattern::compile).toArray(Pattern[]::new);
-
-    /* Matcher:An engine that performs match operations on a character sequence by interpreting a Pattern.
-     * Consumer<String>: Represents an operation that accepts a single input argument and returns no result
-     * m. group: Returns the input subsequence captured by the given named-capturing group during the previous match operation.
-     * if the match was successful but the group specified failed to match any part of the input sequence, then null is returned.
-     */
-
-    private void tryExtract(Matcher m, String group, Consumer<String> c) {
-        try {
-            c.accept(m.group(group));
-        } catch (IllegalArgumentException e) {
-            throw new RegexGroupNonexistentException(group);
-        }
-    }
-
-    public Address singleSearch(String proposedAddress, String country){
+    public Address singleSearch(String proposedAddress){
         Builder b = new Builder();
         proposedAddress = proposedAddress.toLowerCase().trim();
         String[] cityMatch = CityCheck(proposedAddress);
@@ -83,7 +75,7 @@ public class AddressParser {
             b.postcode = cityMatch[2];
         }
 
-        String streetMatch = checkStreet(proposedAddress,country,cityMatch);
+        String streetMatch = checkStreet(proposedAddress,cityMatch);
         //if a city is found, we try to find a street in that cities streets.txt file that matches the proposed address
         if(!streetMatch.equals("")){
             proposedAddress = proposedAddress.replaceAll(streetMatch.toLowerCase(),"");
@@ -114,7 +106,7 @@ public class AddressParser {
             String postcode = b.postcode;
             String streetname = b.streetName;
             String houseNumber = b.houseNumber;
-            ArrayList<String[]> something = getAddress(country,city,postcode,streetname,houseNumber,true);
+            ArrayList<String[]> something = getAddress(city,postcode,streetname,houseNumber,true);
 
             String[] address = something.get(0);
             for(String string : address){
@@ -131,10 +123,10 @@ public class AddressParser {
 
     //this method gets an address' remaining information from the streetname text file,
     // this information is called addressfields in this method, but is perhaps not the best name
-    public ArrayList<String[]> getAddress(String country, String city,
+    public ArrayList<String[]> getAddress( String city,
                                           String postcode, String streetName,
                                           String houseNumber, boolean singleSearch){
-        ArrayList<String> addressesOnStreet = model.getAddressesOnStreet(country,city,postcode,streetName);
+        ArrayList<String> addressesOnStreet = TextHandler.getInstance().getAddressesOnStreet(city,postcode,streetName);
         ArrayList<String[]> matches = new ArrayList<>();
         String[] addressFields;
         String address;
@@ -165,11 +157,11 @@ public class AddressParser {
     //Checks if the start of the address matches any the streets in the street names file
     // if a match is found, the builders street field is set to the match
     // which is returned to be removed from the address.
-    public String checkStreet(String address,String country,String[] cityMatch) {
+    public String checkStreet(String address,String[] cityMatch) {
         if (cityMatch[0].equals("")) {
             return "";
         } else {
-            ArrayList<String> streetsInCity = model.getTextHandler().getStreetsInCity(country, cityMatch[1], cityMatch[2], model);
+            ArrayList<String> streetsInCity = TextHandler.getInstance().getStreetsInCity(cityMatch[1], cityMatch[2]);
             String mostCompleteMatch = "";
             for (int i = 0; i < streetsInCity.size(); i++) {
                 String line = streetsInCity.get(i);
@@ -188,9 +180,9 @@ public class AddressParser {
                 bestPostCodeMatch = "", bestCityMatch = "";
         String[] match = new String[]{"","",""};
 
-        for(int i = 0 ; i < cities.size() ; i++){
-            currentCity = cities.get(i);
-            currentPostcode = postcodes.get(i);
+        for(int i = 0 ; i < cities.length ; i++){
+            currentCity = cities[i];
+            currentPostcode = postcodes[i];
 
             //this was motivated by using the postcode as the most significant part of a city and postcode,
             // so that if you write a postcode, it will use that postcodes matching city
@@ -297,21 +289,66 @@ public class AddressParser {
         return matches;
     }
 
-    public void setDefaults(ArrayList<String> defaults){
+    public void setDefaults(){
+        ArrayList<String> defaults = TextHandler.getInstance().getDefault(Model.getDirPath());
         this.defaults = new String[defaults.size()];
         for(int i = 0 ; i < defaults.size() ; i++ ){
             this.defaults[i] = defaults.get(i);
         }
     }
-
-    public void parseCitiesAndPostCodes(ArrayList<String> citiesTextFile){
-        for(int i = 0 ; i<citiesTextFile.size()-1 ; i++){
-            String line = citiesTextFile.get(i);
-            String[] tokens = line.split(" QQQ ");
-            cities.add(tokens[0]);
-            String postcode = tokens[1].replace(" QQQ ","");
-            postcodes.add(postcode);
+    public void setCities(){
+        ArrayList<String[]> citiesAndPostcodes = TextHandler.getInstance().parseCitiesAndPostcodes(Model.getDirPath());
+        this.cities = new String[citiesAndPostcodes.size()];
+        this.postcodes = new String[citiesAndPostcodes.size()];
+        for(int i = 0 ; i < citiesAndPostcodes.size() ; i++){
+            String[] tokens =citiesAndPostcodes.get(i);
+            cities[i] = tokens[0];
+            postcodes[i] = tokens[1];
         }
     }
+
+    public class Builder {
+        private int id;
+        private float lat, lon;
+        private String streetName = "Unknown", houseNumber="", postcode="", city="",floor="",side="";
+        public Builder houseNumber(String _house)   { houseNumber = _house;   return this; }
+        public Builder floor(String _floor)   { floor = _floor;   return this; }
+        public Builder side(String _side)   { side = _side;   return this; }
+        public Address build() {
+            return new Address(id,lat,lon,streetName, houseNumber, postcode, city,floor,side);
+        }
+    }
+
+    final String houseRegex = "(?<house>([0-9]{1,3} ?[a-zA-Z]?))?";
+    final String floorRegex = "(?<floor>([1-9]{1,3}\\.?)|(1st\\.)|(st\\.))?";
+    final String sideRegex = "(?<side>th\\.?|tv\\.?|mf\\.?|md\\.?|([0-9]{1,3}\\.?))?";
+
+    //This only checks the remainder of the string at the end for house number, floor and side for the address.
+    final String[] regex = {
+            "^"+houseRegex+",? ?"+floorRegex+",? ?"+sideRegex+",?$"
+    };
+
+    /* Pattern:A regular expression, specified as a string, must first be compiled into an instance of this class
+     * Arrays.stream:Returns a sequential Stream with the specified array as its source
+     * Stream.map: Returns a stream consisting of the results of applying the given function to the elements of this stream.
+     * Pattern. compile: Compiles the given regular expression into a pattern.
+     */
+    final Pattern[] patterns =
+            Arrays.stream(regex).map(Pattern::compile).toArray(Pattern[]::new);
+
+    /* Matcher:An engine that performs match operations on a character sequence by interpreting a Pattern.
+     * Consumer<String>: Represents an operation that accepts a single input argument and returns no result
+     * m. group: Returns the input subsequence captured by the given named-capturing group during the previous match operation.
+     * if the match was successful but the group specified failed to match any part of the input sequence, then null is returned.
+     */
+
+    private void tryExtract(Matcher m, String group, Consumer<String> c) {
+        try {
+            c.accept(m.group(group));
+        } catch (IllegalArgumentException e) {
+            throw new RegexGroupNonexistentException(group);
+        }
+    }
+
 
 }
