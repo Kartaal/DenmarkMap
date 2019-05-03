@@ -291,12 +291,9 @@ public class Controller {
             } else if(nodeIDs[1] == 0){
                 nodeIDs[1] = something.getId();
                 System.out.println(something.getId());
-                Iterable<Edge> path = model.findPath(nodeIDs[0],nodeIDs[1], ControllerRoutePanel.vehicleToggle, true);
+                Iterable<Edge> path = getPath(nodeIDs[0],nodeIDs[1], ControllerRoutePanel.vehicleToggle, true);
                 System.out.println(ControllerRoutePanel.vehicleToggle);
-                if(path != null){
-                    model.clearPath();
-                    model.addPath(path);
-                }
+                addPath(path);
                 mapCanvas.repaint();
 
                 nodeIDs[0] = 0;
@@ -311,6 +308,18 @@ public class Controller {
             System.out.println(lonfactor);
             System.out.println("Nearest OSMNode: " + something);
         }
+    }
+
+    public void addPath(Iterable<Edge> path) {
+        if(path != null){
+            model.clearPath();
+            model.addPath(path);
+        }
+        mapCanvas.repaint();
+    }
+
+    public Iterable<Edge> getPath(int startNode, int endNode, Vehicle type, boolean b) {
+        return model.findPath(startNode,endNode, type,b);
     }
 
     public static boolean KdTreeBoolean() {

@@ -112,6 +112,6 @@ public class AutoTextField extends TextField {
         controller.panToPoint(x, y);
         controller.setUpInfoPanel(this.getText(), x, y);
 
-        if(listener != null) listener.getResponse(new Point2D(x, y));
+        if(listener != null) listener.getResponse(new Point2D(x*Model.getLonfactor(), y));
     }
 }

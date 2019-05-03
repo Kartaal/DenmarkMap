@@ -1,5 +1,6 @@
 package bfst19;
 
+import bfst19.Route_parsing.Edge;
 import bfst19.Route_parsing.Vehicle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -136,7 +137,14 @@ public class ControllerRoutePanel {
             System.out.println(toPoint + " " + fromPoint);
             toId = controller.getNearestRoad(toPoint).getId();
             fromId = controller.getNearestRoad(fromPoint).getId();
-            //TODO Insert pathfinding code here. fromId == start vertex id, toId == end vertex id.
+            Iterable<Edge> path = controller.getPath(fromId,toId,vehicleToggle,false);
+            //TODO Insert pathfinding code here. fromId == start vertex id, toId ==
+
+            controller.addPath(path);
+
+            toPoint = null;
+            fromPoint = null;
+
 
         }
     }
