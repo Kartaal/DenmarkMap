@@ -3,6 +3,7 @@ package bfst19;
 import bfst19.Route_parsing.Vehicle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Point2D;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
@@ -16,9 +17,8 @@ public class ControllerRoutePanel {
 
     static Vehicle vehicleToggle= Vehicle.CAR;
 
-    static int pointTo;
-
-    static int pointFrom;
+    Point2D fromPoint, toPoint;
+    int fromId, toId;
 
 
     @FXML
@@ -48,8 +48,20 @@ public class ControllerRoutePanel {
         this.controller = controller;
         instructions.init(controller);
         controller.getModel().addPathObserver(this::setRouteType);
-        textFieldTo.init(controller);
+
         textFieldFrom.init(controller);
+        textFieldFrom.setOnResponseListener(response -> {
+            fromPoint = response;
+            tryToFindPath();
+        });
+
+        textFieldTo.init(controller);
+        textFieldTo.setOnResponseListener(response -> {
+            toPoint = response;
+            tryToFindPath();
+        });
+
+        setupToggle();
         car.setSelected(true);
 
     }
@@ -73,6 +85,13 @@ public class ControllerRoutePanel {
         instructions.addInstructions();
     }
 
+    private void setupToggle(){
+        toggleRouteType.selectedToggleProperty().addListener(((observable, oldValue, newValue) -> {
+            if(newValue == null)
+                oldValue.setSelected(true);
+        }));
+    }
+
     @FXML
     private void setRouteType(){
         removeInstructions();
@@ -82,25 +101,43 @@ public class ControllerRoutePanel {
         ToggleButton selectedToggleButton = (ToggleButton) toggleRouteType.getSelectedToggle();
         toggleGroupValue = selectedToggleButton.getId();
 
-        if(toggleGroupValue.equals("car")){
-            vehicleToggle=Vehicle.CAR;
-        }
-        else if (toggleGroupValue.equals("bike")){
-            vehicleToggle=Vehicle.BIKE;
-        }
-        else if (toggleGroupValue.equals("walking")){
-            vehicleToggle=Vehicle.WALKING;
-        }
-        setUpInstructions();
+        boolean changed = false;
 
+        if(toggleGroupValue.equals("car") && vehicleToggle != Vehicle.CAR){
+            vehicleToggle = Vehicle.CAR;
+            changed = true;
+        }
+        else if (toggleGroupValue.equals("bike")  && vehicleToggle != Vehicle.BIKE){
+            vehicleToggle = Vehicle.BIKE;
+            changed = true;
+        }
+        else if (toggleGroupValue.equals("walking")  && vehicleToggle != Vehicle.WALKING){
+            vehicleToggle = Vehicle.WALKING;
+            changed = true;
+        }
+
+        if(changed) {
+            System.out.println(vehicleToggle.toString());
+
+            //TODO: Should be enabled when the problem is fixed
+            //setUpInstructions()
+
+        }
     }
 
     public void removeInstructions(){
         vboxInstructions.getChildren().remove(instructions);
     }
 
-    public void setPointsID(){
-        pointTo = controller.getNearestRoad(textFieldTo.returnCoords()).getId();
-        pointFrom = controller.getNearestRoad(textFieldFrom.returnCoords()).getId();
+
+    private void tryToFindPath(){
+        if(toPoint != fromPoint && toPoint != null && fromPoint != null) {
+            System.out.println("PATHFINDING");
+            System.out.println(toPoint + " " + fromPoint);
+            toId = controller.getNearestRoad(toPoint).getId();
+            fromId = controller.getNearestRoad(fromPoint).getId();
+            //TODO Insert pathfinding code here. fromId == start vertex id, toId == end vertex id.
+
+        }
     }
 }

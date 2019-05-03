@@ -16,7 +16,7 @@ public class AutoTextField extends TextField {
     Controller controller;
     Model model;
 
-    private Point2D coords;
+    private OnResponseListener<Point2D> listener;
 
     private ContextMenu addressDropDown;
 
@@ -30,41 +30,33 @@ public class AutoTextField extends TextField {
         setOnAction(event -> parseSearch());
     }
 
+    public void setOnResponseListener(OnResponseListener<Point2D> listener){
+        this.listener = listener;
+    }
+
     public void init(Controller controller){
         this.setStyle("-fx-min-width: 300; -fx-min-height: 40");
         this.controller = controller;
         this.model = controller.getModel();
-        //Making sure to clear the old observer which should no longer be a living object.
-        model.clearFoundMatchesObservers();
-        model.addFoundMatchesObserver(this::showResults);
     }
 
     public void parseSearch(){
+        //Observer is added when it is needed and removed after a response has been given
+        model.addFoundMatchesObserver(this::showResults);
         controller.parseSearchText(getText());
     }
 
     public void showResults(){
+        model.clearFoundMatchesObservers();
         addAddressesToDropDown();
-        if(!addressDropDown.isShowing()){
-            addressDropDown.show(AutoTextField.this, Side.BOTTOM,0,0);
+        if (!addressDropDown.isShowing()) {
+            addressDropDown.show(this, Side.BOTTOM, 0, 0);
         }
-    }
 
-    private boolean isSelected(){
-        System.out.println(this.focusedProperty());
-         String[] arr = this.focusedProperty().toString().split(" ");
-         for(int i =0; i < arr.length; i++){
-             System.out.println(i+" "+arr[i]);
-         }
-        if(arr[8].contains("true")){
-            return true;
-        }
-        return false;
     }
 
     //TODO: Add ScrollPane and limit height
     private void addAddressesToDropDown() {
-        if(isSelected()){
             List<CustomMenuItem> menuItems = new LinkedList<>();
             ArrayList<Label> addressLabels = new ArrayList<>();
             Iterator<String[]> iterator = controller.getFoundMatchesIterator();
@@ -107,7 +99,6 @@ public class AutoTextField extends TextField {
 
             addressDropDown.getItems().clear();
             addressDropDown.getItems().addAll(menuItems);
-        }
 
     }
 
@@ -119,9 +110,8 @@ public class AutoTextField extends TextField {
     //Skal ikke være i controller da teksten fra AutoTextField skal sendes ud af denne klasse...
     private void panAddress(float x, float y){
         controller.panToPoint(x, y);
-        coords = new Point2D(x, y);
         controller.setUpInfoPanel(this.getText(), x, y);
-    }
 
-    public Point2D returnCoords(){ return coords; }
+        if(listener != null) listener.getResponse(new Point2D(x, y));
+    }
 }
