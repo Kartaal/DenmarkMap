@@ -48,6 +48,9 @@ public class Model{
 	}
 
 	public Model(List<String> args) throws IOException, XMLStreamException, ClassNotFoundException {
+		//Setup so TextHandler deals with bloody default database in jar file
+		boolean hasInputFile = !args.isEmpty();
+		textHandler.setHasInputFile(hasInputFile);
 
 		//Changed from field to local variable so it can be garbage collected
 		Map<WayType, ResizingArray<Drawable>> ways = new EnumMap<>(WayType.class);
@@ -60,7 +63,6 @@ public class Model{
 
 		//Check if program is run with input argument, if not use default file (binary bornholm)
 		String filename = null;
-		boolean hasInputFile = !args.isEmpty();
 		if(hasInputFile) {
 			filename = args.get(0);
 		} else {
@@ -124,7 +126,7 @@ public class Model{
 				initFieldsFromObjFile(input);
 			}
 		} else {
-			try (ObjectInputStream input = (ObjectInputStream) getClass().getClassLoader().getResourceAsStream(filename)) {
+			try (ObjectInputStream input = new ObjectInputStream(new BufferedInputStream(getClass().getClassLoader().getResourceAsStream(filename)))) {
 				initFieldsFromObjFile(input);
 			}
 		}
@@ -235,7 +237,8 @@ public class Model{
 	}
 
 	public void writePointsOfInterest(){
-		TextHandler.getInstance().writePointsOfInterest(dirPath,pointOfInterestItems);
+		Model.dirPath = "data/" + datasetName;
+		TextHandler.getInstance().writePointsOfInterest(dirPath, pointOfInterestItems);
 	}
 
 	public String getCurrentTypeColorTxt(){
