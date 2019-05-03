@@ -51,7 +51,6 @@ public class ControllerRoutePanel {
         textFieldTo.init(controller);
         textFieldFrom.init(controller);
         car.setSelected(true);
-        setPointsID();
 
     }
 
