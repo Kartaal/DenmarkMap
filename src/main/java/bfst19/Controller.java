@@ -1,6 +1,7 @@
 package bfst19;
 import bfst19.Line.OSMNode;
 import bfst19.Route_parsing.Edge;
+import bfst19.Route_parsing.Vehicle;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -290,7 +291,7 @@ public class Controller {
             } else if(nodeIDs[1] == 0){
                 nodeIDs[1] = something.getId();
                 System.out.println(something.getId());
-                Iterable<Edge> path = model.findPath(ControllerRoutePanel.pointFrom,ControllerRoutePanel.pointTo, ControllerRoutePanel.vehicleToggle, true);
+                Iterable<Edge> path = model.findPath(nodeIDs[0],nodeIDs[1], Vehicle.CAR, true);
                 System.out.println(ControllerRoutePanel.vehicleToggle);
                 if(path != null){
                     model.clearPath();
