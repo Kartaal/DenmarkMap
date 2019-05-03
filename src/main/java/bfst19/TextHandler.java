@@ -3,6 +3,7 @@ package bfst19;
 import bfst19.Route_parsing.ResizingArray;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -99,17 +100,18 @@ class TextHandler {
     }
 
     //<----------- Helper methods for makeDatabase ----------------------------------->
-    private BufferedWriter newAddressesInStreetWriter(String currentStreet, String currentCityAndPostcode, String dirPath) throws FileNotFoundException, UnsupportedEncodingException {
+    private BufferedWriter newAddressesInStreetWriter(String currentStreet, String currentCityAndPostcode, String dirPath) throws FileNotFoundException {
         return newBufferWriter(dirPath + "/" + currentCityAndPostcode + "/" + currentStreet + ".txt");
     }
 
-    private BufferedWriter newStreetsInCityWriter(String currentCityAndPostcode, String dirPath) throws FileNotFoundException, UnsupportedEncodingException {
+    private BufferedWriter newStreetsInCityWriter(String currentCityAndPostcode, String dirPath) throws FileNotFoundException {
         return newBufferWriter(dirPath+"/"+currentCityAndPostcode+"/streets.txt");
     }
 
-    private BufferedWriter newBufferWriter(String dirPath) throws FileNotFoundException, UnsupportedEncodingException {
+    private BufferedWriter newBufferWriter(String dirPath) throws FileNotFoundException {
         File file = new File(dirPath);
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file,true),"UTF-8"));
+        BufferedWriter writer = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(file,true), StandardCharsets.UTF_8));
         return writer;
     }
 
@@ -133,11 +135,20 @@ class TextHandler {
     }
     //<----------------------------------------------------------------------------->
 
-    //getting a generic textfile from a given path
+    //getting a generic text file from a given path
     public ArrayList<String> getTextFile(String filepath){
         try {
-            BufferedReader reader= new BufferedReader(new InputStreamReader(
-                    new FileInputStream(filepath),"UTF-8"));
+            //Handling whether filepath is for a config or a database file
+            BufferedReader reader;
+            if(filepath.startsWith("config/")) {
+                InputStream fileStream = getClass().getClassLoader().getResourceAsStream(filepath);
+                reader = new BufferedReader(new InputStreamReader(
+                        fileStream, StandardCharsets.UTF_8));
+            } else {
+                reader = new BufferedReader(new InputStreamReader(
+                        new FileInputStream(filepath), StandardCharsets.UTF_8));
+            }
+
             ArrayList<String> textFile = new ArrayList<>();
             String line;
             while((line = reader.readLine()) != null){
@@ -156,9 +167,9 @@ class TextHandler {
     public ArrayList<String> parseWayColors(String filepath){
         //TODO Shitty duplicate code :\
         try {
-            filepath = getClass().getClassLoader().getResource(filepath).getFile();
+            InputStream fileStream = getClass().getClassLoader().getResourceAsStream(filepath);
             BufferedReader reader= new BufferedReader(new InputStreamReader(
-                    new FileInputStream(filepath),"UTF-8"));
+                    fileStream, StandardCharsets.UTF_8));
             ArrayList<String> textFile = new ArrayList<>();
             String line;
             while((line = reader.readLine()) != null){
@@ -173,17 +184,19 @@ class TextHandler {
         return null;
     }
 
-    //<--------Helper methods for getting specific kinds of textfiles--------------->
+    //<--------Helper methods for getting specific kinds of text files--------------->
     public ArrayList<String> getCities( String dirPath){
         return getTextFile(dirPath + "/cities.txt");
     }
 
     public ArrayList<String> getStreetsInCity( String city, String postcode){
-        return getTextFile(Model.getDirPath() + "/" + city + Model.getDelimeter() + postcode + "/streets.txt");
+        return getTextFile(Model.getDirPath() + "/" +
+                city + Model.getDelimeter() + postcode + "/streets.txt");
     }
 
     public ArrayList<String> getAddressesOnStreet(String city,String postcode,String streetName){
-        return getTextFile(Model.getDirPath() + "/" + city + Model.getDelimeter() + postcode + "/" + streetName + ".txt");
+        return getTextFile(Model.getDirPath() + "/" +
+                city + Model.getDelimeter() + postcode + "/" + streetName + ".txt");
     }
 
     public ArrayList<String> getDefault(String dirPath) {
@@ -204,13 +217,12 @@ class TextHandler {
         model.notifyColorObservers();
     }
 
-    public HashMap<WayType,HashMap<String,ResizingArray<String[]>>> parseDrivableCases() {
-        String filepath = getClass().getClassLoader().getResource("config/Drivable_cases.txt").getFile();
-        ArrayList<String> cases = getTextFile(filepath);
-        HashMap<WayType,HashMap<String,ResizingArray<String[]>>> drivableCases = new HashMap<>();
+    public HashMap<WayType, HashMap<String, ResizingArray<String[]>>> parseDrivableCases() {
+        ArrayList<String> cases = getTextFile("config/Drivable_cases.txt");
+        HashMap<WayType, HashMap<String, ResizingArray<String[]>>> drivableCases = new HashMap<>();
 
         WayType wayType = WayType.valueOf(cases.get(0));
-        drivableCases.put(wayType,new HashMap<>());
+        drivableCases.put(wayType, new HashMap<>());
         String[] tokens;
         String vehicleType = "";
         String vehicleDrivable = "";
@@ -236,24 +248,22 @@ class TextHandler {
     }
 
     public HashMap<String,Integer> parseSpeedDefaults(){
-        String filepath = getClass().getClassLoader().getResource("config/Speed_cases.txt").getFile();
-        ArrayList<String> cases = getTextFile(filepath);
+        ArrayList<String> cases = getTextFile("config/Speed_cases.txt");
         HashMap<String,Integer> speedDefaults = new HashMap<>();
-        for(int i = 0 ; i<cases.size() ; i++){
+        for(int i = 0 ; i < cases.size() ; i++){
             String line = cases.get(i);
             String[] tokens = line.split(" ");
-            speedDefaults.put(tokens[0],Integer.valueOf(tokens[1]));
+            speedDefaults.put(tokens[0], Integer.valueOf(tokens[1]));
         }
         return speedDefaults;
     }
 
 
-    public HashMap<WayType,ResizingArray<String[]>> parseWayTypeCases(){
-        HashMap<WayType,ResizingArray<String[]>>  wayTypeCases = new HashMap<>();
+    public HashMap<WayType, ResizingArray<String[]>> parseWayTypeCases(){
+        HashMap<WayType, ResizingArray<String[]>>  wayTypeCases = new HashMap<>();
 
-        String pathToCasesFile = getClass().getClassLoader().getResource("config/WayTypeCases.txt").getFile();
-        ArrayList<String> cases = getTextFile(pathToCasesFile);
-        String wayCase = "";
+        ArrayList<String> cases = getTextFile("config/WayTypeCases.txt");
+        String wayCase;
         WayType wayType = null;
         for(int i = 0; i < cases.size() ; i++) {
             wayCase = cases.get(i);
@@ -262,10 +272,10 @@ class TextHandler {
                 i++;
             }else{
                 String[] tokens = wayCase.split(" ");
-                if(wayTypeCases.get(wayType)==null){
-                    wayTypeCases.put(wayType,new ResizingArray<>());
+                if(wayTypeCases.get(wayType) == null){
+                    wayTypeCases.put(wayType, new ResizingArray<>());
                 }
-                wayTypeCases.get(wayType).add(new String[]{tokens[0],tokens[1]});
+                wayTypeCases.get(wayType).add(new String[]{tokens[0], tokens[1]});
             }
         }
         return wayTypeCases;

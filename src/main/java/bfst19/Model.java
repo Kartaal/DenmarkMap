@@ -41,7 +41,7 @@ public class Model{
 
     //used for addresstesting
     public Model(String dirPath) {
-        this.dirPath = dirPath;
+        Model.dirPath = dirPath;
         //this keeps the cities and the default streets files in memory, it's about 1mb for Zealand of memory
         AddressParser.getInstance().setDefaults();
         AddressParser.getInstance().setCities();
