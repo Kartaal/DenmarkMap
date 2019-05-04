@@ -50,13 +50,13 @@ public class ControllerRoutePanel {
         instructions.init(controller);
         controller.getModel().addPathObserver(this::setRouteType);
 
-        textFieldFrom.init(controller);
+        textFieldFrom.init(controller, "current");
         textFieldFrom.setOnResponseListener(response -> {
             fromPoint = response;
             tryToFindPath();
         });
 
-        textFieldTo.init(controller);
+        textFieldTo.init(controller, "secondary");
         textFieldTo.setOnResponseListener(response -> {
             toPoint = response;
             tryToFindPath();
@@ -69,6 +69,7 @@ public class ControllerRoutePanel {
 
     @FXML
     private void returnToBarPanel(ActionEvent actionEvent) {
+        Pin.secondaryPin = null;
         controller.setUpBar();
     }
 
@@ -97,7 +98,6 @@ public class ControllerRoutePanel {
     private void setRouteType(){
         removeInstructions();
         String toggleGroupValue;
-        //TODO: Find out what to do if none is selected what to do
 
         ToggleButton selectedToggleButton = (ToggleButton) toggleRouteType.getSelectedToggle();
         toggleGroupValue = selectedToggleButton.getId();
@@ -119,10 +119,9 @@ public class ControllerRoutePanel {
 
         if(changed) {
             System.out.println(vehicleToggle.toString());
-
-            //TODO: Should be enabled when the problem is fixed
-            //setUpInstructions()
-
+            //Changed setUpInstructions with the below code, since the idea is to make a new path for bikes, and
+            //the setup is always called by an observer when the path is found.
+            tryToFindPath();
         }
     }
 
@@ -133,19 +132,16 @@ public class ControllerRoutePanel {
 
     private void tryToFindPath(){
         if(toPoint != fromPoint && toPoint != null && fromPoint != null) {
-            System.out.println("PATHFINDING");
+            System.out.println("PATHFINDING for: " + vehicleToggle.toString());
             System.out.println(toPoint + " " + fromPoint);
             toId = controller.getNearestRoad(toPoint).getId();
             fromId = controller.getNearestRoad(fromPoint).getId();
-            Iterable<Edge> path = controller.getPath(fromId,toId,vehicleToggle,false);
-            //TODO Insert pathfinding code here. fromId == start vertex id, toId ==
 
+            Iterable<Edge> path = controller.getPath(fromId, toId, vehicleToggle,true);
             controller.addPath(path);
 
-            toPoint = null;
-            fromPoint = null;
-
-
+            //toPoint = null;
+            //fromPoint = null;
         }
     }
 }

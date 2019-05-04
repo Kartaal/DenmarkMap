@@ -24,7 +24,7 @@ public class ControllerBarPanel {
         this.controller = controller;
         setMenuButton();
         setSearchButton();
-        autoTextField.init(controller);
+        autoTextField.init(controller, "current");
     }
 
     //Sets up MenuPanel when MenuButton is pressed

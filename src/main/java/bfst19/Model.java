@@ -176,7 +176,9 @@ public class Model{
 
     // Does this contain the in
     public Iterator<Edge> pathIterator(){
+        if(foundPath != null && foundPath.size() > 0)
         return foundPath.iterator().next().iterator();
+        else return null;
     }
 
     public Iterator<String[]> colorIterator() {

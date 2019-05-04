@@ -20,6 +20,8 @@ public class AutoTextField extends TextField {
 
     private ContextMenu addressDropDown;
 
+    private String tag;
+
     public AutoTextField(){
         super();
 
@@ -34,16 +36,19 @@ public class AutoTextField extends TextField {
         this.listener = listener;
     }
 
-    public void init(Controller controller){
+    public void init(Controller controller, String tag){
         this.setStyle("-fx-min-width: 300; -fx-min-height: 40");
         this.controller = controller;
         this.model = controller.getModel();
+        this.tag = tag;
     }
 
     public void parseSearch(){
         //Observer is added when it is needed and removed after a response has been given
-        model.addFoundMatchesObserver(this::showResults);
-        controller.parseSearchText(getText());
+        if(getText() != null && !getText().equals("")) {
+            model.addFoundMatchesObserver(this::showResults);
+            controller.parseSearchText(getText());
+        }
     }
 
     public void showResults(){
@@ -109,8 +114,16 @@ public class AutoTextField extends TextField {
     //this.getText() er måske mere korrekt at skrive da man siger at det er klassen extended metode istedet for bare at skrive (getText())
     //Skal ikke være i controller da teksten fra AutoTextField skal sendes ud af denne klasse...
     private void panAddress(float x, float y){
+
+        if(tag.equals("current")){
+            Pin.currentPin = new Pin(x*model.getLonfactor(), y);
+        }else{
+            Pin.secondaryPin = new Pin(x*model.getLonfactor(), y);
+        }
+
         controller.panToPoint(x, y);
         controller.setUpInfoPanel(this.getText(), x, y);
+
 
         if(listener != null) listener.getResponse(new Point2D(x*Model.getLonfactor(), y));
     }
