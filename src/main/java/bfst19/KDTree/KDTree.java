@@ -104,7 +104,7 @@ public class KDTree implements Serializable {
     public OSMNode getNearestNeighbor(Point2D point) {
         //Returns node of the nearest neighbor to a point
         int count = 0;
-        OSMNode closestElement = null;
+        OSMNode closestElement;
         float x = (float)point.getX();
         float y = (float)point.getY();
         float[] vals = {x, y, 0.0F, 0.0F};
@@ -134,10 +134,9 @@ public class KDTree implements Serializable {
         ResizingArray<OSMNode> queryList;
         //A bounding box is created from a x,y point, and with a width,height from that point.
         //When we decrease the x,y point, we have to add twice that value to width,height to insure it grows by a square
-        //TODO: check if it even grows like a square. It might not currently.
-        vals[0] -= 0.00001;
+        vals[0] -= 0.00001 / Model.getLonfactor();
         vals[1] -= 0.00001;
-        vals[2] += 0.00002;
+        vals[2] += 0.00002 / Model.getLonfactor();
         vals[3] += 0.00002;
 
         bbox = new BoundingBox(vals[0], vals[1], vals[2], vals[3]);
@@ -163,7 +162,7 @@ public class KDTree implements Serializable {
         if (!node.isEmpty()) {
             for (BoundingBoxable value : node.values) {
                 if (queryBB.intersects(value.getBB())) {
-                    returnElements.add((Drawable) value);
+                    returnElements.add(value);
                 }
             }
             return  returnElements;
@@ -237,6 +236,7 @@ public class KDTree implements Serializable {
     public KDNode getRoot() {
         return root;
     }
+
     public BoundingBoxable select(ResizingArray<Drawable> a, int k, int lo, int hi, Comparator<BoundingBoxable> comp)
     {
         if(a.isEmpty()) {
