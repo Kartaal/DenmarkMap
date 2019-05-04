@@ -42,7 +42,7 @@ public class ResizingArray<T> implements Serializable, Iterable<T>  {
     public T get(int index) {
         if (0 > index || index > n) throw new ArrayIndexOutOfBoundsException("tried to acess index " + index + " out of an array with length "+a.length);
         //dont know why i have to cast to type T
-        return (T)a[index];
+        return (T) a[index];
     }
 
     public void add(Object item) {
@@ -63,6 +63,7 @@ public class ResizingArray<T> implements Serializable, Iterable<T>  {
     public Iterator<T> iterator() {
         return new ArrayIterator();
     }
+
     class ArrayIterator implements Iterator<T> {
         int current = 0;  // the current element we are looking at
 
@@ -82,7 +83,13 @@ public class ResizingArray<T> implements Serializable, Iterable<T>  {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            return (T)a[current++];
+            return (T) a[current++];
+        }
+    }
+
+    public void addAll(Object[] arr){
+        for (Object o : arr){
+            add(o);
         }
     }
 }

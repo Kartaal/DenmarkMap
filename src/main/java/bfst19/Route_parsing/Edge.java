@@ -94,13 +94,16 @@ public class Edge implements Serializable {
 
     public boolean isForwardAllowed(Vehicle type, int id) {
         Drivabillity drivable = getDrivableFromVehicleType(type);
+        if(type == Vehicle.ABSTRACTVEHICLE){
+            return true;
+        }
         if(drivable==Drivabillity.BOTHWAYS){
             return true;
         }else if(v.getId()==id) {
             if(drivable==Drivabillity.FORWARD){
                 return true;
             }
-        //this will actually never happen, as the dataset never has data in such a way that it never happens
+            //this will actually never happen, as the dataset never has data in such a way that it never happens
         }else if(w.getId()==id){
             if(drivable==Drivabillity.BACKWARD){
                 return true;

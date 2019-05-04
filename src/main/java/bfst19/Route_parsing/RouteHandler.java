@@ -4,15 +4,15 @@ import bfst19.Calculator;
 import bfst19.Line.OSMNode;
 import bfst19.Line.OSMWay;
 import bfst19.Model;
+import bfst19.TextHandler;
 import bfst19.WayType;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Set;
 
 public class RouteHandler{
-    private Model model;
-    private EdgeWeightedGraph G;
+    private static EdgeWeightedGraph G;
     private HashMap<WayType,HashMap<String, ResizingArray<String[]>>> drivableCases;
     private HashMap<WayType,HashMap<Vehicle, Drivabillity>> drivabillty;
     private HashMap<WayType,HashMap<Vehicle, Drivabillity>> defaultDrivabillty;
@@ -24,11 +24,10 @@ public class RouteHandler{
         this.G = G;
     }*/
 
-    public RouteHandler(Model model, EdgeWeightedGraph G) {
-        this.model = model;
+    public RouteHandler(EdgeWeightedGraph G) {
         this.G = G;
-        speedDefaults = model.parseSpeedDefaults("src/main/resources/config/Speed_cases.txt");
-        drivableCases = model.parseDrivableCases("src/main/resources/config/Drivable_cases.txt");
+        speedDefaults = TextHandler.getInstance().parseSpeedDefaults("src/main/resources/config/Speed_cases.txt");
+        drivableCases = TextHandler.getInstance().parseDrivableCases("src/main/resources/config/Drivable_cases.txt");
         drivabillty = new HashMap<>();
 
         for(WayType wayType : drivableCases.keySet()){
@@ -53,7 +52,6 @@ public class RouteHandler{
 
     public Iterable<Edge> findPath(OSMNode startNode, OSMNode endNode,Vehicle type,boolean fastestpath){
         DijkstraSP shortpath = new DijkstraSP(G,startNode,endNode, type,fastestpath);
-        model.previousPath = shortpath;
         Iterable<Edge> path = shortpath.pathTo(endNode.getId());
         return path;
     }
@@ -94,9 +92,9 @@ public class RouteHandler{
             OSMNode currentNode = way.get(i);
 
             float previousNodeLat = previousnode.getLat();
-            float previousNodeLon = (float) (previousnode.getLon()/model.getLonfactor());
+            float previousNodeLon = (float) (previousnode.getLon()/Model.getLonfactor());
             float currentNodeLat = currentNode.getLat();
-            float currentNodeLon = (float) (currentNode.getLon()/model.getLonfactor());
+            float currentNodeLon = (float) (currentNode.getLon()/Model.getLonfactor());
 
             float length = Calculator.calculateDistanceInMeters(previousNodeLat,previousNodeLon,currentNodeLat,currentNodeLon);
 
@@ -136,6 +134,28 @@ public class RouteHandler{
         return G.adj(id);
     }
 
+    public static boolean isTraversableNode(OSMNode node, Vehicle type){
+        Iterable<Edge> adj = G.adj(node.getId());
+        for(Edge edge : adj){
+            if(edge.isForwardAllowed(type,node.getId())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static String getArbitraryAdjRoadName(OSMNode node){
+        Iterable<Edge> adj = G.adj(node.getId());
+        Iterator<Edge> iterator = adj.iterator();
+        while(iterator.hasNext()) {
+            Edge edge = iterator.next();
+            if (!edge.getName().equals("")) {
+                return edge.getName();
+            }
+        }
+        return "No Name Found";
+    }
+
     public void finishNodeGraph(){
         System.out.println(G.E());
         System.out.println(G.V());
@@ -149,3 +169,4 @@ public class RouteHandler{
         return G;
     }
 }
+

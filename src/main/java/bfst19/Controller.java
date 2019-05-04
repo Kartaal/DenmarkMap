@@ -1,6 +1,8 @@
 package bfst19;
 import bfst19.Line.OSMNode;
 import bfst19.Route_parsing.Edge;
+import bfst19.Route_parsing.ResizingArray;
+import bfst19.Route_parsing.RouteHandler;
 import bfst19.Route_parsing.Vehicle;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -26,6 +28,8 @@ public class Controller {
     private static boolean kdTreeBoolean = false;
     private long time;
     private OSMNode[] nodeIDs = new OSMNode[2];
+    private OSMNode closestNode;
+    private String closestRoad;
 
 
 
@@ -35,6 +39,9 @@ public class Controller {
 
     @FXML
     private Text scaleText;
+
+    @FXML
+    private Text closestRoadText;
 
     @FXML
     private BorderPane borderPane;
@@ -265,65 +272,58 @@ public class Controller {
     private void onMouseDragged(MouseEvent e) {
         //pans based on difference between mousePressed event and current mouse coords
         if (e.isPrimaryButtonDown()) mapCanvas.pan(e.getX() - x, e.getY() - y);
-        x =(float) e.getX();
-        y =(float) e.getY();
+        x = (float) e.getX();
+        y = (float) e.getY();
     }
 
     @FXML
     private void onMousePressed(MouseEvent e) {
-        x =(float) e.getX();
-        y =(float) e.getY();
-
+        x = (float) e.getX();
+        y = (float) e.getY();
+        setClosestRoadText(x,y);
 
         long prevtime = time;
         time = System.nanoTime();
 
+        if(e.isPrimaryButtonDown()){
+            //System.out.println(Math.abs((-time + prevtime) / 1e8));
+            if (Math.abs((-time + prevtime) / 1e8) <= 2){
+                closestNode = model.getNearestRoad(mapCanvas.getModelCoords(x,y), Vehicle.CAR);
+                if(nodeIDs[0] == null){
+                    if(closestNode != null) {
+                        nodeIDs[0] = closestNode;
+                        System.out.println(closestNode.getId());
+                        nodeIDs[1] = null;
+                    }
 
-        //System.out.println(Math.abs((-time + prevtime) / 1e8));
-        if (Math.abs((-time + prevtime) / 1e8) <= 3){
-            OSMNode something = model.getNearestRoad(mapCanvas.getModelCoords(x,y));
-            if(nodeIDs[0] == null){
-                if(something!=null) {
-                    nodeIDs[0] = something;
-                    System.out.println(something.getId());
+                } else if(nodeIDs[1] == null){
+                    nodeIDs[1] = closestNode;
+                    System.out.println(closestNode.getId());
+                    Iterable<Edge> path = model.findPath(nodeIDs[0],nodeIDs[1], Vehicle.CAR, fastestBoolean);
+                    if(path != null){
+                        model.clearPath();
+                        model.addPath(path);
+                    }
+                    mapCanvas.repaint();
+
+                    nodeIDs[0] = null;
                     nodeIDs[1] = null;
                 }
-
-            } else if(nodeIDs[1] == null){
-                nodeIDs[1] = something;
-                System.out.println(something.getId());
-                double time = System.nanoTime();
-                Iterable<Edge> path = model.findPath(nodeIDs[0],nodeIDs[1], Vehicle.CAR, fastestBoolean);
-                System.out.println(System.nanoTime()-time);
-                if(path != null){
-                    model.clearPath();
-                    model.addPath(path);
-                }else{
-                    System.out.println("no path found");
-                }
-                mapCanvas.repaint();
-                //enable to debug pathfinding
-                /*Iterable<Iterable<Edge>> paths = model.previousPath.paths();
-                for(Iterable<Edge> somepath : paths){
-                    mapCanvas.drawPath(somepath.iterator());
-                }*/
-
-                nodeIDs[0] = null;
-                nodeIDs[1] = null;
             }
-
-
-
         }
 
         if(e.isSecondaryButtonDown()){
-            OSMNode something = model.getNearestRoad(mapCanvas.getModelCoords(x,y));
-            double lonfactor = model.getLonfactor();
-            System.out.println(lonfactor);
-            System.out.println("Nearest OSMNode: " + something);
+            // nothing at the moment
         }
     }
 
+    @FXML
+    public void onMouseMoved(MouseEvent e){
+        /*float contX = (float) e.getX();
+        float contY = (float) e.getY();
+        System.out.println(setClosestRoad(contX, contY));*/
+
+    }
 
     public static boolean KdTreeBoolean() {
         return kdTreeBoolean;
@@ -345,5 +345,10 @@ public class Controller {
 
     public void removePointOfInterestItem(PointOfInterestItem pointOfInterestItem){ model.removePointOfInterestItem(pointOfInterestItem);}
 
+    private void setClosestRoadText(float contx, float conty){
+        OSMNode tempClosest = model.getNearestRoad(mapCanvas.getModelCoords(contx,conty), Vehicle.ABSTRACTVEHICLE);
+        closestRoad = RouteHandler.getArbitraryAdjRoadName(tempClosest);
+        closestRoadText.setText(closestRoad);
+    }
 
 }
