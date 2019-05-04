@@ -301,12 +301,12 @@ public class Model{
     }
 
 
-    OSMNode getNearestRoad(Point2D point){
+    OSMNode getNearestRoad(Point2D point, Vehicle type){
         try{
             ResizingArray<OSMNode> nodeList = new ResizingArray<>();
 
             for(WayType wayType: RouteHandler.getDrivableWayTypes()){
-                OSMNode checkNeighbor = kdTreeMap.get(wayType).getNearestNeighbor(point);
+                OSMNode checkNeighbor = kdTreeMap.get(wayType).getNearestNeighbor(point, type);
                 if(checkNeighbor != null) {
                     nodeList.add(checkNeighbor);
                 }
@@ -326,7 +326,7 @@ public class Model{
 
     OSMNode getNearestBuilding(Point2D point){
         try {
-            OSMNode closestElement = kdTreeMap.get(WayType.BUILDING).getNearestNeighbor(point);
+            OSMNode closestElement = kdTreeMap.get(WayType.BUILDING).getNearestNeighbor(point, Vehicle.ABSTRACTVEHICLE);
 
             if(closestElement == null){
                 throw new nothingNearbyException();

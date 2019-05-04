@@ -4,6 +4,8 @@ import bfst19.Calculator;
 import bfst19.Line.OSMNode;
 import bfst19.Model;
 import bfst19.Route_parsing.ResizingArray;
+import bfst19.Route_parsing.RouteHandler;
+import bfst19.Route_parsing.Vehicle;
 import javafx.geometry.Point2D;
 import java.io.Serializable;
 import java.util.*;
@@ -101,7 +103,7 @@ public class KDTree implements Serializable {
         return currNode;
     }
 
-    public OSMNode getNearestNeighbor(Point2D point) {
+    public OSMNode getNearestNeighbor(Point2D point, Vehicle type) {
         //Returns node of the nearest neighbor to a point
         int count = 0;
         OSMNode closestElement;
@@ -109,7 +111,7 @@ public class KDTree implements Serializable {
         float y = (float)point.getY();
         float[] vals = {x, y, 0.0F, 0.0F};
         BoundingBox bbox = new BoundingBox(vals[0], vals[1], vals[2], vals[3]);
-        ResizingArray<OSMNode> queryList = nodeRangeQuery(bbox);
+        ResizingArray<OSMNode> queryList = nodeRangeQuery(bbox, type);
 
 
         while(queryList.isEmpty()){
@@ -119,7 +121,7 @@ public class KDTree implements Serializable {
             if(count >= 5000){
                 return null;
             }
-            queryList = growBoundingBox(vals);
+            queryList = growBoundingBox(vals, type);
         }
 
         closestElement = Calculator.getClosestNode(point, queryList);
@@ -128,7 +130,7 @@ public class KDTree implements Serializable {
 
     }
 
-    private ResizingArray<OSMNode> growBoundingBox(float[] vals) {
+    private ResizingArray<OSMNode> growBoundingBox(float[] vals, Vehicle type) {
         //Take the values of the bounding box, increase them slightly
         BoundingBox bbox;
         ResizingArray<OSMNode> queryList;
@@ -140,7 +142,7 @@ public class KDTree implements Serializable {
         vals[3] += 0.00002;
 
         bbox = new BoundingBox(vals[0], vals[1], vals[2], vals[3]);
-        queryList = nodeRangeQuery(bbox);
+        queryList = nodeRangeQuery(bbox, type);
         return queryList;
     }
 
@@ -188,15 +190,15 @@ public class KDTree implements Serializable {
     }
 
     //Method for finding elements in the KDTree that intersects a BoundingBox
-    public ResizingArray<OSMNode> nodeRangeQuery(BoundingBox bbox) {
+    public ResizingArray<OSMNode> nodeRangeQuery(BoundingBox bbox, Vehicle type) {
         ResizingArray<OSMNode> returnElements = new ResizingArray<>();
-        nodeRangeQuery(bbox, root, returnElements);
+        nodeRangeQuery(bbox, root, returnElements, type);
         return returnElements;
     }
 
     //Recursive checks down through the KDTree
     //Almost equal to rangeQuery(), however this returns a node instead, with a different structure.
-    private ResizingArray<OSMNode> nodeRangeQuery(BoundingBox queryBB, KDNode node, ResizingArray<OSMNode> returnElements) {
+    private ResizingArray<OSMNode> nodeRangeQuery(BoundingBox queryBB, KDNode node, ResizingArray<OSMNode> returnElements, Vehicle type) {
         //Return null if current node is null to stop endless recursion
         if (node == null) return null;
 
@@ -206,7 +208,11 @@ public class KDTree implements Serializable {
         if (!node.isEmpty()) {
             for (BoundingBoxable value : node.values) {
                 if (queryBB.intersects(value.getBB())) {
-                    returnElements.addAll(value.getNodes());
+                    for(OSMNode queryNode: value.getNodes()){
+                        if(RouteHandler.isTraversableNode(queryNode,type)){
+                            returnElements.add(queryNode);
+                        }
+                    }
                 }
             }
             return returnElements;
@@ -217,7 +223,7 @@ public class KDTree implements Serializable {
             if (node.nodeL.bb.intersects(queryBB)) {
                 //Make temporary list to keep elements, so null returns don't cause problems
                 //Check the left subtree for elements intersecting BoundingBox
-                nodeRangeQuery(queryBB, node.nodeL, returnElements);
+                nodeRangeQuery(queryBB, node.nodeL, returnElements, type);
 
             }
         }
@@ -225,7 +231,7 @@ public class KDTree implements Serializable {
             //Check whether or not to query right subtree
             if (node.nodeR.bb.intersects(queryBB)) {
                 //Check the right subtree for elements intersecting BoundingBox
-                nodeRangeQuery(queryBB, node.nodeR, returnElements);
+                nodeRangeQuery(queryBB, node.nodeR, returnElements, type);
             }
         }
 

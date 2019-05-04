@@ -2,6 +2,7 @@ package bfst19;
 import bfst19.Line.OSMNode;
 import bfst19.Route_parsing.Edge;
 import bfst19.Route_parsing.ResizingArray;
+import bfst19.Route_parsing.RouteHandler;
 import bfst19.Route_parsing.Vehicle;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -287,7 +288,7 @@ public class Controller {
         if(e.isPrimaryButtonDown()){
             //System.out.println(Math.abs((-time + prevtime) / 1e8));
             if (Math.abs((-time + prevtime) / 1e8) <= 2){
-                closestNode = model.getNearestRoad(mapCanvas.getModelCoords(x,y));
+                closestNode = model.getNearestRoad(mapCanvas.getModelCoords(x,y), Vehicle.CAR);
                 if(nodeIDs[0] == null){
                     if(closestNode != null) {
                         nodeIDs[0] = closestNode;
@@ -345,8 +346,8 @@ public class Controller {
     public void removePointOfInterestItem(PointOfInterestItem pointOfInterestItem){ model.removePointOfInterestItem(pointOfInterestItem);}
 
     private void setClosestRoadText(float contx, float conty){
-        OSMNode tempClosest = model.getNearestRoad(mapCanvas.getModelCoords(contx,conty));
-        ResizingArray<Edge> adj = model.getRouteHandler().getAdjacentEdges(tempClosest.getId());
+        OSMNode tempClosest = model.getNearestRoad(mapCanvas.getModelCoords(contx,conty), Vehicle.ABSTRACTVEHICLE);
+        ResizingArray<Edge> adj = RouteHandler.getAdjacentEdges(tempClosest.getId());
         closestRoad = adj.get(0).getName();
         if(closestRoad.equals("")){
             closestRoad = "No Name Found";
