@@ -21,7 +21,6 @@ import static javax.xml.stream.XMLStreamConstants.*;
 
 public class Model{
 
-
     private RouteHandler routeHandler;
     private static float lonfactor = 1.0f;
     private String datasetName;
@@ -300,13 +299,12 @@ public class Model{
         AddressParser.getInstance().parseSearch(proposedAddress,this);
     }
 
-
-    OSMNode getNearestRoad(Point2D point){
+    OSMNode getNearestRoad(Point2D point, Vehicle type){
         try{
             ResizingArray<OSMNode> nodeList = new ResizingArray<>();
 
             for(WayType wayType: RouteHandler.getDrivableWayTypes()){
-                OSMNode checkNeighbor = kdTreeMap.get(wayType).getNearestNeighbor(point);
+                OSMNode checkNeighbor = kdTreeMap.get(wayType).getNearestNeighbor(point, type);
                 if(checkNeighbor != null) {
                     nodeList.add(checkNeighbor);
                 }
@@ -322,24 +320,6 @@ public class Model{
             e.printStackTrace();
             return null;
         }
-    }
-
-    OSMNode getNearestBuilding(Point2D point){
-        try {
-            OSMNode closestElement = kdTreeMap.get(WayType.BUILDING).getNearestNeighbor(point);
-
-            if(closestElement == null){
-                throw new nothingNearbyException();
-            }
-
-            return closestElement;
-
-        }catch(nothingNearbyException e){
-            e.printStackTrace();
-            return null;
-        }
-
-
     }
 
     public HashMap<String, Integer> parseSpeedDefaults(String s) {

@@ -131,8 +131,8 @@ public class RouteHandler{
         drivabillty =(HashMap<WayType, HashMap<Vehicle, Drivabillity>>) defaultDrivabillty.clone();
     }*/
 
-    public Iterable<Edge> getAdj(int id, Vehicle type) {
-        return G.adj(id,type);
+    public Iterable<Edge> getAdj(int id) {
+        return G.adj(id);
     }
 
     public void finishNodeGraph(){
@@ -148,6 +148,16 @@ public class RouteHandler{
 
     public ResizingArray<Edge> getAdjacentEdges(int id){
         return G.getAdjacentEdges(id);
+    }
+
+    public boolean isTraversableNode(OSMNode node, Vehicle type){
+        Iterable<Edge> adj = G.adj(node.getId());
+        for(Edge edge : adj){
+            if(edge.isForwardAllowed(type,node.getId())){
+                return true;
+            }
+        }
+        return false;
     }
 
 }
