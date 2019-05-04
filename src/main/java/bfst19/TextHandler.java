@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class TextHandler {
+public class TextHandler {
     private static TextHandler textHandler;
 
     public static TextHandler getInstance(){

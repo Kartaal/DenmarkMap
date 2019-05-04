@@ -78,7 +78,7 @@ public class Model{
                 maxlat = input.readFloat();
                 maxlon = input.readFloat();
                 lonfactor = input.readFloat();
-                routeHandler = new RouteHandler(this,(EdgeWeightedGraph)input.readObject());
+                routeHandler = new RouteHandler((EdgeWeightedGraph)input.readObject());
             }
             time += System.nanoTime();
             System.out.printf("Load time: %.1fs\n", time / 1e9);
@@ -92,7 +92,7 @@ public class Model{
                 OSMSource = new BufferedInputStream(new FileInputStream(filename));
             }
             EdgeWeightedGraph nodeGraph = new EdgeWeightedGraph();
-            routeHandler = new RouteHandler(this,nodeGraph);
+            routeHandler = new RouteHandler(nodeGraph);
             OSMParser.parseOSM(OSMSource,routeHandler,this,textHandler,wayTypeCases);
             time += System.nanoTime();
             System.out.printf("parse time: %.1fs\n", time / 1e9);
@@ -340,17 +340,5 @@ public class Model{
         }
 
 
-    }
-
-    public HashMap<String, Integer> parseSpeedDefaults(String s) {
-        return textHandler.parseSpeedDefaults(s);
-    }
-
-    public HashMap<WayType, HashMap<String, ResizingArray<String[]>>> parseDrivableCases(String s) {
-        return textHandler.parseDrivableCases(s);
-    }
-
-    public RouteHandler getRouteHandler() {
-        return routeHandler;
     }
 }
