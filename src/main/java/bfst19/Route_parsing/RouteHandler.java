@@ -147,11 +147,13 @@ public class RouteHandler{
     public static String getArbitraryAdjRoadName(OSMNode node){
         Iterable<Edge> adj = G.adj(node.getId());
         Iterator<Edge> iterator = adj.iterator();
-        if(iterator.hasNext()){
-            return iterator.next().getName();
-        }else {
-            return "No Name Found";
+        while(iterator.hasNext()) {
+            Edge edge = iterator.next();
+            if (!edge.getName().equals("")) {
+                return edge.getName();
+            }
         }
+        return "No Name Found";
     }
 
     public void finishNodeGraph(){
