@@ -67,7 +67,7 @@ public class EdgeWeightedGraph implements Serializable {
     public Iterable<Edge> adj(int v) {
         validateVertex(v);
         ResizingArray adjacent = adj.get(v);
-        return adjacent;
+        return (Iterable<Edge>) adjacent;
     }
 
     public int degree(int v) {
@@ -120,5 +120,8 @@ public class EdgeWeightedGraph implements Serializable {
         StdOut.println(G);
     }*/
 
-}
+    public ResizingArray<Edge> getAdjacentEdges(int id) {
+        return adj.get(id);
+    }
 
+}
