@@ -63,6 +63,8 @@ $
 SERVICE
 %
 CAR 2
+junction roundabout 0
+oneway yes 0
 %
 BIKE 2
 %
@@ -71,6 +73,8 @@ $
 ROAD_RESIDENTIAL
 %
 CAR 2
+junction roundabout 0
+oneway yes 0
 %
 BIKE 2
 %

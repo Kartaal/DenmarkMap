@@ -33,7 +33,6 @@ public class DijkstraSP {
             int v = pq.delMin();
             for (Edge e : G.adj(v)) {
                 relax(e, v, type, fastestPath,endNode);
-                if (e.getOtherEnd(v) == end) return;
             }
         }
 
@@ -45,13 +44,14 @@ public class DijkstraSP {
     private void relax(Edge e,int vertexV ,Vehicle type, boolean fastestPath, OSMNode endNode) {
         //the intent is to get both ends of the edge so we use e.getOtherEnd to do so
             int v = vertexV, w = e.getOtherEnd(v);
-            if (distTo[w] > distTo[v] + e.getWeight(type, fastestPath)) {
+            if (distTo[w] > distTo[v] + e.getWeight(type, fastestPath) && e.isForwardAllowed(type,v)) {
                 distTo[w] = distTo[v] + e.getWeight(type, fastestPath);
                 edgeTo[w] = e;
                 OSMNode toNode = e.getThisEndNode(w);
                 double heuristic = AStar.Heuristic(type,fastestPath,toNode.getLat(),toNode.getLon(),endNode.getLat(),endNode.getLon());
                 if (pq.contains(w)) pq.decreaseKey(w, distTo[w]+heuristic);
                 else                pq.insert(w, distTo[w]+heuristic);
+                if (e.getOtherEnd(v) == endNode.getId()) return;
             }
         }
 

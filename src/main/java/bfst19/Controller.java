@@ -298,6 +298,8 @@ public class Controller {
                 if(path != null){
                     model.clearPath();
                     model.addPath(path);
+                }else{
+                    System.out.println("no path found");
                 }
                 mapCanvas.repaint();
                 //enable to debug pathfinding
