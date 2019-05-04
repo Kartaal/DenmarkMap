@@ -347,11 +347,7 @@ public class Controller {
 
     private void setClosestRoadText(float contx, float conty){
         OSMNode tempClosest = model.getNearestRoad(mapCanvas.getModelCoords(contx,conty), Vehicle.ABSTRACTVEHICLE);
-        ResizingArray<Edge> adj = RouteHandler.getAdjacentEdges(tempClosest.getId());
-        closestRoad = adj.get(0).getName();
-        if(closestRoad.equals("")){
-            closestRoad = "No Name Found";
-        }
+        closestRoad = RouteHandler.getArbitraryAdjRoadName(tempClosest);
         closestRoadText.setText(closestRoad);
     }
 

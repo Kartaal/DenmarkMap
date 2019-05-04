@@ -144,17 +144,13 @@ public class RouteHandler{
         return false;
     }
 
-    public static ResizingArray<Edge> getAdjacentEdges(int id) {
-        return G.getAdjacentEdges(id);
-    }
-
     public static String getArbitraryAdjRoadName(OSMNode node){
         Iterable<Edge> adj = G.adj(node.getId());
         Iterator<Edge> iterator = adj.iterator();
         if(iterator.hasNext()){
             return iterator.next().getName();
         }else {
-            return "";
+            return "No Name Found";
         }
     }
 
