@@ -1,4 +1,4 @@
-    package bfst19;
+package bfst19;
 
 import org.junit.Test;
 
@@ -8,7 +8,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 public class AddressTest {
-    String datasetName = "denmark Database";
+    String datasetName = "data/denmark Database";
     Model model = new Model(datasetName);
 
 
@@ -90,7 +90,7 @@ public class AddressTest {
             assertEquals("Valby Maskinfabriksvej", address.getStreetName().trim());
         assertEquals("1", address.getHouseNumber().trim());
         assertEquals("1", address.getFloor().trim());
-        assertEquals("TH.", address.getSide().trim());
+        assertEquals("th.", address.getSide().trim());
         assertEquals("2500", address.getPostcode().trim());
         assertEquals("Valby", address.getCity().trim());
     }

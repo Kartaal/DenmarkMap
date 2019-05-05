@@ -148,13 +148,13 @@ $
 TERTIARY
 highway tertiary
 highway tertiary_link
+highway unclassified
 $
 SERVICE
 highway service
 $
 ROAD_RESIDENTIAL
 highway residential
-highway unclassified
 $
 CYCLEWAY
 highway cycleway

@@ -33,6 +33,7 @@ public class DijkstraSP {
             int v = pq.delMin();
             for (Edge e : G.adj(v)) {
                 relax(e, v, type, fastestPath,endNode);
+                if (e.getOtherEnd(v) == endNode.getId()) return;
             }
         }
 
@@ -51,7 +52,6 @@ public class DijkstraSP {
                 double heuristic = AStar.Heuristic(type,fastestPath,toNode.getLat(),toNode.getLon(),endNode.getLat(),endNode.getLon());
                 if (pq.contains(w)) pq.decreaseKey(w, distTo[w]+heuristic);
                 else                pq.insert(w, distTo[w]+heuristic);
-                if (e.getOtherEnd(v) == endNode.getId()) return;
             }
         }
 

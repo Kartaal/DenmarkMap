@@ -24,7 +24,7 @@ public class Controller {
     private Model model;
     float x, y;
     private double factor, oldDeterminant;
-    private boolean fastestBoolean = false;
+    private boolean fastestBoolean = true;
     private static boolean kdTreeBoolean = false;
     private long time;
     private OSMNode[] nodeIDs = new OSMNode[2];

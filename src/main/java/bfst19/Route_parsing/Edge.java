@@ -50,6 +50,8 @@ public class Edge implements Serializable {
     //this is code dublication
     public double getLength(){return length; }
 
+    public int getSpeedlLimit(){return speedlLimit;}
+
     public OSMNode getV(){
         return v;
     }
