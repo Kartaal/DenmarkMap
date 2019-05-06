@@ -30,7 +30,7 @@ public class AddressParser {
 
 	public void parseSearch(String proposedAddress, Model model) {
 		Address a = AddressParser.getInstance().singleSearch(proposedAddress);
-		//if the address does not have a city or a streetname, get the string's matches from the default file and display them
+		//if the address does not have a city or a street name, get the string's matches from the default file and display them
 		if(a.getStreetName().equals("Unknown") || a.getCity().equals("")) {
 			ArrayList<String[]> possibleMatches =
 					AddressParser.getInstance().getMatchesFromDefault(proposedAddress, false);
@@ -75,7 +75,7 @@ public class AddressParser {
 			b.postcode = cityMatch[2];
 		}
 
-		String streetMatch = checkStreet(proposedAddress,cityMatch);
+		String streetMatch = checkStreet(proposedAddress, cityMatch);
 		//if a city is found, we try to find a street in that cities streets.txt file that matches the proposed address
 		if(!streetMatch.equals("")){
 			proposedAddress = proposedAddress.replaceAll(streetMatch.toLowerCase(),"");
@@ -157,7 +157,7 @@ public class AddressParser {
 	//Checks if the start of the address matches any the streets in the street names file
 	// if a match is found, the builders street field is set to the match
 	// which is returned to be removed from the address.
-	public String checkStreet(String address,String[] cityMatch) {
+	public String checkStreet(String address, String[] cityMatch) {
 		if (cityMatch[0].equals("")) {
 			return "";
 		} else {

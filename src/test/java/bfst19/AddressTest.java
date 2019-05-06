@@ -57,7 +57,7 @@ public class AddressTest {
 
     @Test
     public void testAddressWithStreetHousenumberPostCodeAndCity(){
-        Address address = AddressParser.getInstance().singleSearch("Tommelise 48,7500 Holstebro");
+        Address address = AddressParser.getInstance().singleSearch("Tommelise 48,7500 Holstebro", );
         assertEquals("Tommelise", address.getStreetName().trim());
         assertEquals("48", address.getHouseNumber().trim());
         assertEquals("7500", address.getPostcode().trim());
@@ -66,7 +66,7 @@ public class AddressTest {
 
     @Test
     public void testAddressWithLettersInHouseNumberWithDanLetters(){
-        Address address = AddressParser.getInstance().singleSearch("Sauntevænget 5B,3100 Hornbæk");
+        Address address = AddressParser.getInstance().singleSearch("Sauntevænget 5B,3100 Hornbæk", );
         assertEquals("Sauntevænget", address.getStreetName().trim());
         assertEquals("5B", address.getHouseNumber().trim());
         assertEquals("3100", address.getPostcode().trim());
@@ -75,7 +75,7 @@ public class AddressTest {
 
     @Test
     public void testAddressWithStreetFloorAndCityWithDanLetters(){
-        Address address = AddressParser.getInstance().singleSearch("Månen 13, 1, 8850 Bjerringbro");
+        Address address = AddressParser.getInstance().singleSearch("Månen 13, 1, 8850 Bjerringbro", );
         assertEquals("Månen", address.getStreetName().trim());
         assertEquals("13", address.getHouseNumber().trim());
         assertEquals("1", address.getFloor().trim());
@@ -86,7 +86,7 @@ public class AddressTest {
 
     @Test
     public void testAddressWithStreetFloorSideAndCity(){
-        Address address = AddressParser.getInstance().singleSearch("Valby Maskinfabriksvej 1, 1, TH. 2500 Valby ");
+        Address address = AddressParser.getInstance().singleSearch("Valby Maskinfabriksvej 1, 1, TH. 2500 Valby ", );
             assertEquals("Valby Maskinfabriksvej", address.getStreetName().trim());
         assertEquals("1", address.getHouseNumber().trim());
         assertEquals("1", address.getFloor().trim());
@@ -97,7 +97,7 @@ public class AddressTest {
 
     @Test
     public void testAddressWithStreetAndPostcodeNoCity(){
-        Address address = AddressParser.getInstance().singleSearch("Pingels Alle 47 3700");
+        Address address = AddressParser.getInstance().singleSearch("Pingels Alle 47 3700", );
         assertEquals("Pingels Alle", address.getStreetName().trim());
         assertEquals("47", address.getHouseNumber().trim());
         assertEquals("3700", address.getPostcode().trim());
@@ -107,7 +107,7 @@ public class AddressTest {
 
     @Test
     public void testAddressWithStreetAndPostcodeMismatchingCity(){
-        Address address = AddressParser.getInstance().singleSearch("Solskiftevej 8 2300 København");
+        Address address = AddressParser.getInstance().singleSearch("Solskiftevej 8 2300 København", );
         assertEquals("Solskiftevej", address.getStreetName().trim());
         assertEquals("8", address.getHouseNumber().trim());
         assertEquals("2300", address.getPostcode().trim());

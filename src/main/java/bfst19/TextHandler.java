@@ -144,6 +144,7 @@ class TextHandler {
 		try {
 			//Handling whether filepath is for a config or a database file
 			BufferedReader reader;
+
 			//hasInputFile becomes false when trying to get the POI file (while using bornholm.zip as input)
 			if(!hasInputFile) {
 				InputStream fileStream = getClass().getClassLoader().getResourceAsStream(filepath);
