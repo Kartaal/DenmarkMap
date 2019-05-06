@@ -19,6 +19,8 @@ class TextHandler {
 		return textHandler;
 	}
 
+	private TextHandler() {	}
+
 	public void setHasInputFile(boolean hasInput) {
 		hasInputFile = hasInput;
 	}
