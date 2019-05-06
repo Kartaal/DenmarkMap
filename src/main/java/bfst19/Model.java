@@ -20,7 +20,7 @@ public class Model{
 	private static float lonfactor = 1.0f;
 	private String datasetName;
 	private static String dirPath;
-	private TextHandler textHandler = new TextHandler();
+	private TextHandler textHandler = TextHandler.getInstance();
 
 	private List<Runnable> colorObservers = new ArrayList<>();
 	private List<Runnable> foundMatchesObservers = new ArrayList<>();
