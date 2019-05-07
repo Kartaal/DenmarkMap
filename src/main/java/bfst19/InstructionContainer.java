@@ -34,8 +34,9 @@ public class InstructionContainer extends VBox {
 
     public void addInstructions() {
         Iterator<Edge> pathIterator = controller.getpathIterator();
-        Edge edge = pathIterator.next();
-        Edge currentEdge = pathIterator.next();
+        if (pathIterator!=null) {
+            Edge edge = pathIterator.next();
+            Edge currentEdge = pathIterator.next();
 
         //this section is to establish which ends of the two startingedges are the "head" and "base"
         // being which direction we are going
@@ -72,27 +73,27 @@ public class InstructionContainer extends VBox {
 
             double angle = Calculator.angleBetween2Lines(previousBase, previousHead, currentBase, currentHead);
 
-            if (45 < angle && angle < 180) {
-                System.out.println("turn left");
-            }
-            if (180 < angle && angle < 315) {
-                System.out.println("turn right");
-            }
+                if (45 < angle && angle < 180) {
+                    System.out.println("turn left");
+                }
+                if (180 < angle && angle < 315) {
+                    System.out.println("turn right");
+                }
 
-            previousBase = currentBase;
-            previousHead = currentHead;
+                previousBase = currentBase;
+                previousHead = currentHead;
 
 
-            double length = currentEdge.getLength();
-            String name = currentEdge.getName();
-            double currentLength = 0.0;
+                double length = currentEdge.getLength();
+                String name = currentEdge.getName();
+                double currentLength = 0.0;
 
-            while (pathIterator.hasNext()) {
+                while (pathIterator.hasNext()) {
 
-                currentEdge = pathIterator.next();
-                currentHead = currentEdge.getOtherEndNode(previousHead);
-                currentBase = currentEdge.getOtherEndNode(currentHead);
-                currentLength = currentEdge.getLength();
+                    currentEdge = pathIterator.next();
+                    currentHead = currentEdge.getOtherEndNode(previousHead);
+                    currentBase = currentEdge.getOtherEndNode(currentHead);
+                    currentLength = currentEdge.getLength();
 
                 angle = Calculator.angleBetween2Lines(previousBase, previousHead, currentBase, currentHead);
                 String direction = "";
@@ -117,9 +118,10 @@ public class InstructionContainer extends VBox {
                     }
                 }
 
-                length += currentLength;
-                previousBase = currentBase;
-                previousHead = currentHead;
+                    length += currentLength;
+                    previousBase = currentBase;
+                    previousHead = currentHead;
+                }
             }
         }
 
@@ -130,6 +132,8 @@ public class InstructionContainer extends VBox {
         getChildren().add(instruction);
     }
 
-
+    public void removeAllChildren(){
+        getChildren().clear();
+    }
 
 }

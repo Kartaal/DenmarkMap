@@ -3,10 +3,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import java.net.URL?>
 <?import javafx.scene.control.ToggleButton?>
@@ -16,6 +14,7 @@
 <?import javafx.scene.layout.HBox?>
 
 <?import bfst19.InstructionContainer?>
+<?import bfst19.AutoTextField?>
 <VBox alignment="CENTER" prefWidth="300.0" fx:id="outerPane" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 0);" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bfst19.ControllerRoutePanel">
    <children>
 
@@ -32,13 +31,13 @@
            </graphic>
        </Button>
 
+      <AutoTextField fx:id="textFieldFrom" promptText="From " >
+          <VBox.margin>
+              <Insets bottom="20.0" />
+          </VBox.margin>
+      </AutoTextField>
 
-
-      <TextField fx:id="textFieldFra" promptText="From ">
-         <VBox.margin>
-            <Insets bottom="5.0" />
-         </VBox.margin></TextField>
-      <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="27.0" prefWidth="80.0" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);">
+      <Button fx:id="switchButton" alignment="CENTER" contentDisplay="CENTER" onAction="#switchText" mnemonicParsing="false" prefHeight="27.0" prefWidth="80.0" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);">
          <graphic>
             <ImageView fx:id="switchBtn" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -46,11 +45,16 @@
                </image>
             </ImageView>
          </graphic>
+          <VBox.margin>
+              <Insets bottom="20.0" />
+          </VBox.margin>
       </Button>
-      <TextField fx:id="textFieldTil" promptText="To ">
-         <VBox.margin>
-             <Insets bottom="5.0" top="5.0" right="5.0" left="5.0"/>
-         </VBox.margin></TextField>
+
+       <AutoTextField fx:id="textFieldTo" promptText="To ">
+                <VBox.margin>
+                    <Insets bottom="5.0" />
+                </VBox.margin>
+       </AutoTextField>
 
        <Pane style="-fx-background-color: #0c74ff">
            <HBox alignment="CENTER">
@@ -87,6 +91,23 @@
                        </ImageView>
                    </graphic>
                </ToggleButton>
+
+                    <ToggleButton  fx:id="fastestPathButton" onAction="#setRouteType" styleClass="fastestPathButton" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" >
+                           <graphic>
+                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="/fastpath.png" />
+                                    </image>
+                                </ImageView>
+                            </graphic>
+
+                        <HBox.margin>
+                            <Insets left="140.0" />
+                        </HBox.margin>
+                    </ToggleButton>
+
+
+
                <padding>
                    <Insets bottom="5.0" top="5.0" right="5.0" left="0.5"/>
                </padding>
@@ -98,10 +119,15 @@
        </Pane>
 
 
-      <ScrollPane prefHeight="200.0" prefWidth="290.0" VBox.vgrow="ALWAYS">
+      <ScrollPane fx:id="scrollInstructions" prefHeight="200.0" prefWidth="290.0" VBox.vgrow="ALWAYS">
         <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
-            <InstructionContainer fx:id="instructions"></InstructionContainer>
+            <VBox fx:id="vboxInstructions" minHeight="200" prefWidth="200">
+                <children>
+                    <InstructionContainer fx:id="instructions"></InstructionContainer>
+                </children>
+
+            </VBox>
+
         </content>
       </ScrollPane>
    </children>

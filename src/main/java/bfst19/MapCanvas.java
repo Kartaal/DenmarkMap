@@ -148,10 +148,17 @@ public class MapCanvas extends Canvas {
             Iterator<Edge> iterator = controller.getpathIterator();
             drawPath(iterator);
         }
-        Pin pin = Pin.currentPin;
-        if(pin != null) {
-            pin.drawPin(gc, transform);
+
+        Pin cPin = Pin.currentPin;
+        if(cPin != null) {
+            cPin.drawPin(gc, transform);
         }
+
+        Pin sPin = Pin.secondaryPin;
+        if(sPin != null) {
+            sPin.drawPin(gc, transform);
+        }
+
     }
 
     public void drawPath(Iterator<Edge> iterator) {
@@ -233,7 +240,6 @@ public class MapCanvas extends Canvas {
         x=x*model.getLonfactor();
         Point2D point = transform.transform(x,y);
         //System.out.println("X: " + x + " Y: " + y);
-        Pin.currentPin = new Pin(x, y);
 
         pan(centerX-point.getX(),centerY-point.getY());
 

@@ -6,6 +6,7 @@ import bfst19.Route_parsing.Vehicle;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Point2D;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -30,8 +31,6 @@ public class Controller {
     private OSMNode[] nodeIDs = new OSMNode[2];
     private OSMNode closestNode;
     private String closestRoad;
-
-
 
     //This only means that .fxml can use this field despite visibility
     @FXML
@@ -333,6 +332,18 @@ public class Controller {
 
     }
 
+    public void addPath(Iterable<Edge> path) {
+        if(path != null){
+            model.clearPath();
+            model.addPath(path);
+        }
+        mapCanvas.repaint();
+    }
+
+    public Iterable<Edge> getPath(int startNode, int endNode, Vehicle type, boolean b) {
+        return model.findPath(startNode,endNode, type,b);
+    }
+
     public static boolean KdTreeBoolean() {
         return kdTreeBoolean;
     }
@@ -358,5 +369,7 @@ public class Controller {
         closestRoad = RouteHandler.getArbitraryAdjRoadName(tempClosest);
         closestRoadText.setText(closestRoad);
     }
+
+    public OSMNode getNearestRoad(Point2D point2D){ return model.getNearestRoad(point2D); }
 
 }

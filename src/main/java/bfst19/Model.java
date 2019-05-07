@@ -210,7 +210,9 @@ public class Model{
 
     // Does this contain the in
     public Iterator<Edge> pathIterator(){
+        if(foundPath != null && foundPath.size() > 0)
         return foundPath.iterator().next().iterator();
+        else return null;
     }
 
     public Iterator<String[]> colorIterator() {
@@ -379,4 +381,6 @@ public class Model{
 	public ArrayList<String> parseColorCases(String s){
 		return textHandler.getConfigFile(s);
 	}
+    public HashMap<WayType, HashMap<String, ResizingArray<String[]>>> parseDrivableCases(String s) { return textHandler.parseDrivableCases(s); }
+
 }
