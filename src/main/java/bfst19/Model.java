@@ -100,7 +100,7 @@ public class Model{
             } else {
                 OSMSource = new BufferedInputStream(new FileInputStream(filename));
             }
-            EdgeWeightedGraph nodeGraph = new EdgeWeightedGraph();
+			EdgeWeightedDigraph nodeGraph = new EdgeWeightedDigraph();
             routeHandler = new RouteHandler(nodeGraph);
             OSMParser.parseOSM(OSMSource,routeHandler,this,textHandler,wayTypeCases);
             time += System.nanoTime();
@@ -146,7 +146,7 @@ public class Model{
 		maxlat = input.readFloat();
 		maxlon = input.readFloat();
 		lonfactor = input.readFloat();
-		routeHandler = new RouteHandler((EdgeWeightedGraph) input.readObject());
+		routeHandler = new RouteHandler((EdgeWeightedDigraph)input.readObject());
 	}
 
     public void addFoundMatchesObserver(Runnable observer) {

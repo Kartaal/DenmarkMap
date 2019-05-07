@@ -157,8 +157,8 @@ public class MapCanvas extends Canvas {
     public void drawPath(Iterator<Edge> iterator) {
         while(iterator.hasNext()){
             Edge edge = iterator.next();
-            OSMNode first = edge.getV();
-            OSMNode second = edge.getW();
+            OSMNode first = edge.either();
+            OSMNode second = edge.other();
 
             gc.setLineWidth(0.1 * (1/(100/(getDeterminant()))));
             gc.setStroke(Color.RED);

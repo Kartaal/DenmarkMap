@@ -8,6 +8,22 @@ import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/** documentation
+ * This class is a singleton responsible for parsing search-strings
+ * and returning available information from the given string.
+ * To accomplish this, it uses a builder for keeping track of variables,
+ * and uses 1 main method parseSearch, and 2 helper methods to do so.
+ *
+ * The first helper method is singlesearch, where it breaks down
+ * the string into chunks and attempts to mactch it to data in the database
+ * by first looking for a city, then looking in that city for streetnames
+ * and then looking for a specific housenumber on that street.
+ * The second is getMatchesFromDefault where it has utilizes binarysearch to search through
+ * default collection of streetnames with matching city/postcode.
+ *
+ * parseSearch first calls singlesearch on the string, then looks at how much infomation
+ * it found in the string and then returns different information based on the completeness the address
+ * */
 public class AddressParser {
 
 	private static AddressParser addressParser = null;
@@ -28,6 +44,20 @@ public class AddressParser {
 		addressParser = this;
 	}
 
+	/**
+	 *
+	 * @param proposedAddress
+	 * @param model
+	 *  * the propsedAddress is first given to singleSearch to attempt
+	 *  * to find a single address to match the given string, if a complete
+	 *  * address is not found, it returns different information depending on completeness
+	 *  * if no streetname was found, it gets any matches from the default
+	 *  * and returns, if no housenumber was found get the addresses on that street
+	 *  * and return them, if the address has a streetname, a city/postcode and a housenumber
+	 *  * then return it.
+	 *  This method does not actually return anything, but does but the matches into model's observable
+	 *  array of matches, and then notifies the observers.
+	 */
 	public void parseSearch(String proposedAddress, Model model) {
 		Address a = AddressParser.getInstance().singleSearch(proposedAddress);
 		//if the address does not have a city or a street name, get the string's matches from the default file and display them
@@ -42,9 +72,12 @@ public class AddressParser {
 					model.addFoundMatch(new String[]{match[0],match[1],match[2]});
 				}
 			}
+		//if a address has a streetName it will also have a city because of the way singleSearch searches for street names
 		}else if(a.getHouseNumber()==null){
-			//if the housenumber is null, bet all the addresses housenumbers from the streets file and display them
-			ArrayList<String[]> possibleAddresses = AddressParser.getInstance().getAddress(a.getCity(),a.getPostcode(),a.getStreetName(),"",false);
+			//if the house number is null, bet all the addresses house numbers from the streets file and display them
+			ArrayList<String[]> possibleAddresses = AddressParser.getInstance().getAddress(a.getCity(),
+					a.getPostcode(), a.getStreetName(),"",false);
+			//if the house number is null, get all the addresses house numbers from the streets file and display them
 			if (possibleAddresses != null) {
 				model.clearMatches();
 				String street = a.getStreetName();
@@ -55,7 +88,7 @@ public class AddressParser {
 				}
 			}
 		}else{
-			//if those 3 fields are filled, just put the address in the ui will handle the rest
+			//if those 3 fields are filled, just put the address in, the ui will handle the rest
 			model.clearMatches();
 			model.addFoundMatch(new String[]{String.valueOf(a.getLon()),
 					String.valueOf(a.getLat()), a.getStreetName(), a.getHouseNumber(),
@@ -64,10 +97,19 @@ public class AddressParser {
 		model.notifyFoundMatchesObservers();
 	}
 
+	/**
+	 * @param proposedAddress
+	 *  * Breaks the proposed address into 4 parts, checking the string for
+	 *  * city/postcode removing recognized information
+	 *  * doing the same for streetnames, then using regex to recognize housenumber, floor
+	 *  * and side. Then if enough information is found it gets the remaining data
+	 *  * from the database with getAddress and returns it to parseSearch.
+	 * @return Address
+	 */
 	public Address singleSearch(String proposedAddress){
 		Builder b = new Builder();
 		proposedAddress = proposedAddress.toLowerCase().trim();
-		String[] cityMatch = CityCheck(proposedAddress);
+		String[] cityMatch = checkCity(proposedAddress);
 		//it checks if a city is found in the cities.txt file or not and replaces it if found
 		if(!(cityMatch[0].equals(""))) {
 			proposedAddress = proposedAddress.replaceAll(cityMatch[0].toLowerCase(), "");
@@ -121,6 +163,20 @@ public class AddressParser {
 		return b.build();
 	}
 
+	/**
+	 *
+	 * @param city
+	 * @param postcode
+	 * @param streetName
+	 * @param houseNumber
+	 * @param singleSearch
+	 *   * gets the data for specific address/street from a textfile with the given
+	 *   * parameters and the helper class Texthandler.
+	 *   * city, postcode and streetName is information needed to
+	 *   * locate the address in the database, and the housenumber is used if a specific
+	 *   * address on the street is required, indicated by the singleSearch boolean.
+	 * @return Arraylist of address(es)
+	 */
 	//this method gets an address' remaining information from the streetname text file,
 	// this information is called addressfields in this method, but is perhaps not the best name
 	public ArrayList<String[]> getAddress( String city,
@@ -154,10 +210,18 @@ public class AddressParser {
 		return null;
 	}
 
+	/**
+	 * @param proposedAddress
+	 * @param cityMatch
+	 *   * Checks if the proposedAddress starts with any of the streets in the citymatch
+	 *   * and if so returns the string to remove & the streetName
+	 * @return partion to remove from proposedAddress and matching streetName
+	 */
+	//Checks if the start of the proposedAddress matches any the streets in the street names file
 	//Checks if the start of the address matches any the streets in the street names file
 	// if a match is found, the builders street field is set to the match
-	// which is returned to be removed from the address.
-	public String checkStreet(String address, String[] cityMatch) {
+	// which is returned to be removed from the proposedAddress.
+	public String checkStreet(String proposedAddress, String[] cityMatch) {
 		if (cityMatch[0].equals("")) {
 			return "";
 		} else {
@@ -165,7 +229,7 @@ public class AddressParser {
 			String mostCompleteMatch = "";
 			for (int i = 0; i < streetsInCity.size(); i++) {
 				String line = streetsInCity.get(i);
-				if (address.startsWith(line.toLowerCase())) {
+				if (proposedAddress.startsWith(line.toLowerCase())) {
 					if (line.length() > mostCompleteMatch.length()) {
 						mostCompleteMatch = line;
 					}
@@ -175,7 +239,17 @@ public class AddressParser {
 		}
 	}
 
-	public String[] CityCheck(String proposedAddress){
+	/**
+	 *
+	 * @param proposedAddress
+	 * Checks the proposedAddress if it ends with either city, post or both
+	 * from a list of cities+postcodes kept in Addressparser's memory as one of it's fields
+	 * Here it assumes a postcode to be the most significant of a city and postcode,
+	 * so if a pair is mismatched it assumes the postcode to be correct.
+	 * Returns the string to be removed from the proposedAddress, and a city + postcode
+	 * @return partition to remove from search-string and a matching city + +postcode
+	 */
+	public String[] checkCity(String proposedAddress){
 		String currentCity = "", currentPostcode = "", mostCompleteMatch = "",
 				bestPostCodeMatch = "", bestCityMatch = "";
 		String[] match = new String[]{"","",""};
@@ -232,6 +306,18 @@ public class AddressParser {
 		}
 		return "";
 	}
+
+	/**
+	 *
+	 * @param proposedAddress
+	 * @param singleSearch
+	 * Uses a proposedAddress to look for a streetname in a collection of all streetnames
+	 * in the database sorted lexicographically by the Address classes toString method
+	 * It uses binarysearch to locate the given information for the given string and
+	 * either returns the first found match, or all matches starting with the proposedAddress
+	 * indicated by the singleSearch boolean
+	 * @return match(s) from default
+	 */
 	//basically binary search using string.compareTo to determine if you should look in the upper or lower sub-array
 	//it ignores case for compares, but returns the raw data
 	public ArrayList<String[]> getMatchesFromDefault(String proposedAddress,boolean singleSearch){
@@ -271,7 +357,7 @@ public class AddressParser {
 		proposedAddress = proposedAddress.toLowerCase();
 		String currentIndexString = defaults[mid];
 		//traverses up the default array until it's no longer a match
-		while(currentIndexString.toLowerCase().startsWith(proposedAddress)){
+		while(currentIndexString.toLowerCase().startsWith(proposedAddress) && lo < 0) {
 			String[] matchTokens = currentIndexString.split(" QQQ ");
 			matches.add(matchTokens);
 			currentIndexString = defaults[lo];
@@ -289,6 +375,7 @@ public class AddressParser {
 		return matches;
 	}
 
+	/*<---------------------------Setup methods ------------------------------> */
 	public void setDefaults(){
 		ArrayList<String> defaults = TextHandler.getInstance().getDefault(Model.getDirPath());
 		AddressParser.defaults = new String[defaults.size()];
@@ -306,7 +393,9 @@ public class AddressParser {
 			postcodes[i] = tokens[1];
 		}
 	}
+	/*<----------------------------------------------------------------------> */
 
+	/*<----------------------builder + regex methods ------------------------> */
 	public class Builder {
 		private int id;
 		private float lat, lon;
