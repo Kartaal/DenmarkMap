@@ -75,10 +75,13 @@ public class ControllerRoutePanel {
     @FXML
     public void switchText(ActionEvent actionEvent) {
         if (textFieldTo != null && textFieldFrom != null){
-            String textTo = textFieldTo.getText();
-            String textFrom = textFieldFrom.getText();
-            textFieldTo.setText(textFrom);
-            textFieldFrom.setText(textTo);
+            removeInstructions();
+            String tempText = textFieldTo.getText();
+            textFieldTo.setText(textFieldFrom.getText());
+            textFieldFrom.setText(tempText);
+            Point2D temp = fromPoint;
+            fromPoint = toPoint;
+            toPoint = temp;
             tryToFindPath();
         }
     }
@@ -158,7 +161,7 @@ public class ControllerRoutePanel {
     }
 
     public void removeInstructions(){
-        vboxInstructions.getChildren().remove(instructions);
+        instructions.removeAllChildren();
     }
 
 

@@ -132,6 +132,8 @@ public class InstructionContainer extends VBox {
         getChildren().add(instruction);
     }
 
-
+    public void removeAllChildren(){
+        getChildren().clear();
+    }
 
 }
