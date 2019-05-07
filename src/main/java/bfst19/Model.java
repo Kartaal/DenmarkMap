@@ -20,6 +20,7 @@ import java.util.zip.ZipInputStream;
 import static javax.xml.stream.XMLStreamConstants.*;
 
 public class Model{
+
     private RouteHandler routeHandler;
     private static float lonfactor = 1.0f;
     private String datasetName;
@@ -300,7 +301,6 @@ public class Model{
         AddressParser.getInstance().parseSearch(proposedAddress,this);
     }
 
-
     OSMNode getNearestRoad(Point2D point, Vehicle type){
         try{
             ResizingArray<OSMNode> nodeList = new ResizingArray<>();
@@ -339,6 +339,15 @@ public class Model{
             return null;
         }
 
+    public HashMap<String, Integer> parseSpeedDefaults(String s) {
+        return textHandler.parseSpeedDefaults(s);
+    }
 
+    public HashMap<WayType, HashMap<String, ResizingArray<String[]>>> parseDrivableCases(String s) {
+        return textHandler.parseDrivableCases(s);
+    }
+
+    public RouteHandler getRouteHandler() {
+        return routeHandler;
     }
 }

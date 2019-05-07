@@ -57,12 +57,12 @@ public class Calculator {
         double distanceToQueryPoint;
         OSMNode closestElement = null;
 
-        for(OSMNode checkNode: queryList){
+        for(int i = 0; i < queryList.size(); i++){
             //We check distance from node to point, and then report if its closer than our previously known closest point.
-            distanceToQueryPoint = checkNode.distanceTo(point);
+            distanceToQueryPoint = queryList.get(i).distanceTo(point);
             if(distanceToQueryPoint < closestDistance){
                 closestDistance = distanceToQueryPoint;
-                closestElement = checkNode;
+                closestElement = queryList.get(i);
             }
         }
         return closestElement;

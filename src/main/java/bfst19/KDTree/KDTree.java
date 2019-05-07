@@ -109,10 +109,9 @@ public class KDTree implements Serializable {
         OSMNode closestElement;
         float x = (float)point.getX();
         float y = (float)point.getY();
-        float[] vals = {x, y, 0.0F, 0.0F};
-        BoundingBox bbox = new BoundingBox(vals[0], vals[1], vals[2], vals[3]);
+        float[] vals = {x, y, 0.0F, 0.0F};  //infinitesimal values to make a square rangequery call
+        BoundingBox bbox = new BoundingBox(vals[0], vals[1], vals[2], vals[3]); //generate boundingbox with aforementioned values
         ResizingArray<OSMNode> queryList = nodeRangeQuery(bbox, type);
-
 
         while(queryList.isEmpty()){
             //While the queryList is empty, the rangequery box should be slightly bigger, increased the range of the rangequery

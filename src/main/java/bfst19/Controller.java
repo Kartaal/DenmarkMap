@@ -18,6 +18,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 public class Controller {
 
@@ -280,13 +281,14 @@ public class Controller {
     private void onMousePressed(MouseEvent e) {
         x = (float) e.getX();
         y = (float) e.getY();
-        setClosestRoadText(x,y);
+
 
         long prevtime = time;
         time = System.nanoTime();
 
         if(e.isPrimaryButtonDown()){
             //System.out.println(Math.abs((-time + prevtime) / 1e8));
+            //Todo: delete this part in the final commit. This is here for debugging purposes
             if (Math.abs((-time + prevtime) / 1e8) <= 2){
                 closestNode = model.getNearestRoad(mapCanvas.getModelCoords(x,y), Vehicle.CAR);
                 if(nodeIDs[0] == null){
@@ -313,7 +315,7 @@ public class Controller {
         }
 
         if(e.isSecondaryButtonDown()){
-            // nothing at the moment
+            setClosestRoadText(x,y);
         }
     }
 

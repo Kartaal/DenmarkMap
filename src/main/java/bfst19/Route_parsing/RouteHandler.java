@@ -168,5 +168,19 @@ public class RouteHandler{
     public EdgeWeightedGraph getNodeGraph() {
         return G;
     }
-}
 
+    public ResizingArray<Edge> getAdjacentEdges(int id){
+        return G.getAdjacentEdges(id);
+    }
+
+    public boolean isTraversableNode(OSMNode node, Vehicle type){
+        Iterable<Edge> adj = G.adj(node.getId());
+        for(Edge edge : adj){
+            if(edge.isForwardAllowed(type,node.getId())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+}
