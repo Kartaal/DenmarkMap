@@ -1,119 +1,121 @@
 package bfst19.KDTree;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 public class KDNode implements Serializable {
-    BoundingBoxable[] values;
-    float split;
-    boolean vertical; //if true, splits on x
+	BoundingBoxable[] values;
+	private float split;
+	boolean vertical; //if true, splits on x
 
-    KDNode nodeL; //child
-    KDNode nodeR; //child
-    BoundingBox bb;
+	KDNode nodeL; //child
+	KDNode nodeR; //child
+	BoundingBox bb;
 
-    public KDNode(float split, boolean vertical) {
-        this.split = split;
-        this.vertical = vertical;
-        nodeL = nodeR = null;
-    }
-
-    //Sets up some arbitrary values that should be beyond the coords of Denmark
-    // Runs through the values in the node to find the encompassing bounding box
-    // Creates and sets the bounding box based on the values
-    private void makeNodeBB() {
-        double minX = 100, maxX = 0, minY = 100, maxY = 0;
-        for(BoundingBoxable valueBB : values) {
-            BoundingBox lineBB = valueBB.getBB();
-            if (lineBB.getMinX() < minX) {
-                minX = lineBB.getMinX();
-            }
-            if (lineBB.getMaxX() > maxX) {
-                maxX = lineBB.getMaxX();
-            }
-            if (lineBB.getMinY() < minY) {
-                minY = lineBB.getMinY();
-            }
-            if (lineBB.getMaxY() > maxY) {
-                maxY = lineBB.getMaxY();
-            }
-        }
+	KDNode(float split, boolean vertical) {
+		this.split = split;
+		this.vertical = vertical;
+		nodeL = nodeR = null;
+	}
 
 
-        bb = new BoundingBox(minX, minY, maxX-minX, maxY-minY);
-    }
+	private void makeNodeBB() {
+		double minX = 100, maxX = 0, minY = 100, maxY = 0;
+		//Sets up some arbitrary values that should be beyond the coords of Denmark
+		// Runs through the values in the node to find the encompassing bounding box
+		// Creates and sets the bounding box based on the values
+		for (BoundingBoxable valueBB : values) {
 
-    public void growToEncompassChildren() {
-        BoundingBox leftBB;
-        BoundingBox rightBB;
+			BoundingBox lineBB = valueBB.getBB();
 
-        if(nodeL == null && nodeR == null){
-            return;
-        }
+			if (lineBB.getMinX() < minX) {
+				minX = lineBB.getMinX();
+			}
+			if (lineBB.getMaxX() > maxX) {
+				maxX = lineBB.getMaxX();
+			}
+			if (lineBB.getMinY() < minY) {
+				minY = lineBB.getMinY();
+			}
+			if (lineBB.getMaxY() > maxY) {
+				maxY = lineBB.getMaxY();
+			}
+		}
 
-        if(nodeL == null){
-            rightBB = nodeR.getBB();
-            setBB(rightBB.getMinX(), rightBB.getMinY(), rightBB.getMaxX(), rightBB.getMaxY());
-            return;
-        }
+		bb = new BoundingBox(minX, minY, maxX - minX, maxY - minY);
+	}
 
-        if(nodeR == null){
-            leftBB = nodeL.getBB();
-            setBB(leftBB.getMinX(), leftBB.getMinY(), leftBB.getMaxX(), leftBB.getMaxY());
-            return;
-        }
+	//Grows the boundingBox to fit both children in it.
+	void growToEncompassChildren() {
+		BoundingBox leftBB;
+		BoundingBox rightBB;
 
-        leftBB = nodeL.getBB();
-        rightBB = nodeR.getBB();
+		if (nodeL == null && nodeR == null) {
+			return;
+		}
 
-        double minX = Double.min(leftBB.getMinX(),rightBB.getMinX());
-        double minY = Double.min(leftBB.getMinY(),rightBB.getMinY());
-        double maxX = Double.max(leftBB.getMaxX(),rightBB.getMaxX());
-        double maxY = Double.max(leftBB.getMaxY(),rightBB.getMaxY());
+		if (nodeL == null) {
+			rightBB = nodeR.getBB();
+			setBB(rightBB.getMinX(), rightBB.getMinY(), rightBB.getMaxX(), rightBB.getMaxY());
+			return;
+		}
 
-        setBB(minX, minY, maxX, maxY);
-    }
+		if (nodeR == null) {
+			leftBB = nodeL.getBB();
+			setBB(leftBB.getMinX(), leftBB.getMinY(), leftBB.getMaxX(), leftBB.getMaxY());
+			return;
+		}
 
-    void setBB(double minX, double minY, double maxX, double maxY) {
-        double width = maxX-minX;
-        double height = maxY-minY;
-        bb = new BoundingBox(minX,minY,width,height);
-    }
+		leftBB = nodeL.getBB();
+		rightBB = nodeR.getBB();
 
-    //Returns the value where the node split the data
-    // Needs vertical to figure out what exactly was split on
-    public float getSplit() {
-        return split;
-    }
+		double minX = Double.min(leftBB.getMinX(), rightBB.getMinX());
+		double minY = Double.min(leftBB.getMinY(), rightBB.getMinY());
+		double maxX = Double.max(leftBB.getMaxX(), rightBB.getMaxX());
+		double maxY = Double.max(leftBB.getMaxY(), rightBB.getMaxY());
 
-    //Returns a BoundingBox object representing the bounding box of all the elements in the node
-    public BoundingBox getBB() {
-        return bb;
-    }
+		setBB(minX, minY, maxX, maxY);
+	}
 
-    //For testing
-    public KDNode getNodeL() {
-        return nodeL;
-    }
+	void setBB(double minX, double minY, double maxX, double maxY) {
+		double width = maxX - minX;
+		double height = maxY - minY;
+		bb = new BoundingBox(minX, minY, width, height);
+	}
 
-    //For testing
-    public KDNode getNodeR() {
-        return nodeR;
-    }
+	//Returns the value where the node split the data
+	// Needs vertical to figure out what exactly was split on
+	public float getSplit() {
+		return split;
+	}
 
-    public void setValues(List<BoundingBoxable> valueList) {
-        values = new BoundingBoxable[valueList.size()];
-        for(int i = 0 ; i < valueList.size() ; i++){
-            values[i] = valueList.get(i);
-        }
+	//Returns a BoundingBox object representing the bounding box of all the elements in the node
+	private BoundingBox getBB() {
+		return bb;
+	}
 
-        //Create BoundingBox for the KDNode
-        makeNodeBB();
-    }
+	//For testing
+	public KDNode getNodeL() {
+		return nodeL;
+	}
 
-    public boolean isEmpty(){
-        return values == null;
-    }
+	//For testing
+	public KDNode getNodeR() {
+		return nodeR;
+	}
+
+	void setValues(List<BoundingBoxable> valueList) {
+		values = new BoundingBoxable[valueList.size()];
+		for (int i = 0; i < valueList.size(); i++) {
+			values[i] = valueList.get(i);
+		}
+
+		//Create BoundingBox for the KDNode
+		makeNodeBB();
+	}
+
+	boolean isEmpty() {
+		return values != null;
+	}
 
 }

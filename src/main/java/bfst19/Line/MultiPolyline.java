@@ -3,7 +3,6 @@ package bfst19.Line;
 import bfst19.KDTree.BoundingBox;
 import bfst19.KDTree.BoundingBoxable;
 import bfst19.KDTree.Drawable;
-import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.io.Serializable;
@@ -18,8 +17,8 @@ public class MultiPolyline implements Drawable, Serializable, BoundingBoxable {
 
 	public MultiPolyline(OSMRelation rel) {
 		lines = new ArrayList<>();
-		for (OSMWay way : rel){
-			Polyline addingLine = new Polyline(way,false);
+		for (OSMWay way : rel) {
+			Polyline addingLine = new Polyline(way, false);
 			add(addingLine);
 		}
 
@@ -27,7 +26,7 @@ public class MultiPolyline implements Drawable, Serializable, BoundingBoxable {
 		//Code copy pasted to KDTree
 		//Arbitrary values that should exceed the coords on Denmark
 		double minX = 100, maxX = 0, minY = 100, maxY = 0;
-		for(Polyline polyline : lines) {
+		for (Polyline polyline : lines) {
 			BoundingBox lineBB = polyline.getBB();
 			if (lineBB.getMinX() < minX) {
 				minX = lineBB.getMinX();
@@ -45,7 +44,7 @@ public class MultiPolyline implements Drawable, Serializable, BoundingBoxable {
 
 		this.centerX = (float) (minX + maxX) / 2;
 		this.centerY = (float) (minY + maxY) / 2;
-		bb = new BoundingBox(minX, minY, maxX-minX, maxY-minY);
+		bb = new BoundingBox(minX, minY, maxX - minX, maxY - minY);
 	}
 
 	private void add(Polyline addingLine) {
@@ -83,32 +82,32 @@ public class MultiPolyline implements Drawable, Serializable, BoundingBoxable {
 	}
 
 	@Override
-	public void stroke(GraphicsContext gc,double singlePixelLength) {
+	public void stroke(GraphicsContext gc, double singlePixelLength) {
 		gc.beginPath();
-		trace(gc,singlePixelLength);
+		trace(gc, singlePixelLength);
 		gc.stroke();
 	}
 
-	public void trace(GraphicsContext gc,double singlePixelLength) {
-		for (Polyline p : lines) p.trace(gc,singlePixelLength);
+	public void trace(GraphicsContext gc, double singlePixelLength) {
+		for (Polyline p : lines) p.trace(gc, singlePixelLength);
 	}
 
 	@Override
-	public void fill(GraphicsContext gc, double singlePixelLength,double percentOfScreenArea) {
+	public void fill(GraphicsContext gc, double singlePixelLength, double percentOfScreenArea) {
 		gc.beginPath();
-		double area = (bb.getMaxX()-bb.getMinX())*(bb.getMaxY()-bb.getMinY());
-		if(area<percentOfScreenArea){
+		double area = (bb.getMaxX() - bb.getMinX()) * (bb.getMaxY() - bb.getMinY());
+		if (area < percentOfScreenArea) {
 			return;
 		}
-		trace(gc,singlePixelLength);
+		trace(gc, singlePixelLength);
 		gc.fill();
 	}
 
 	@Override
-	public OSMNode[] getNodes(){
+	public OSMNode[] getNodes() {
 		ArrayList<OSMNode> nodes = new ArrayList<>();
 
-		for(Polyline line: lines){
+		for (Polyline line : lines) {
 			ArrayList<OSMNode> tempList = new ArrayList<>(Arrays.asList(line.getNodes()));
 			nodes.addAll(tempList);
 		}

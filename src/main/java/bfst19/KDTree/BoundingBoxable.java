@@ -4,11 +4,12 @@ package bfst19.KDTree;
 import bfst19.Line.OSMNode;
 
 public interface BoundingBoxable {
-    float getCenterX();
 
-    float getCenterY();
+	float getCenterX();
 
-    BoundingBox getBB();
+	float getCenterY();
 
-    OSMNode[] getNodes();
+	BoundingBox getBB();
+
+	OSMNode[] getNodes();
 }

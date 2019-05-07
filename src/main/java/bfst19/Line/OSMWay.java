@@ -15,23 +15,23 @@ public class OSMWay {
 		return id;
 	}
 
-	public OSMNode get(int index){
-	    return ways.get(index);
-    }
+	public OSMNode get(int index) {
+		return ways.get(index);
+	}
 
 	public OSMNode getFirst() {
 		return get(0);
 	}
 
 	public OSMNode getLast() {
-		return get(ways.size()-1);
+		return get(ways.size() - 1);
 	}
 
-    public int size() {
-    return ways.size();
+	public int size() {
+		return ways.size();
 	}
 
-    public void add(OSMNode osmNode) {
-	    ways.add(osmNode);
-    }
+	public void add(OSMNode osmNode) {
+		ways.add(osmNode);
+	}
 }
