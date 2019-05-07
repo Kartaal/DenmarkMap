@@ -25,6 +25,7 @@ public class Controller {
     private double factor, oldDeterminant;
     private boolean fastestBoolean = false;
     private static boolean kdTreeBoolean = false;
+    private boolean roadNameOnHover = false;
     private long time;
     private OSMNode[] nodeIDs = new OSMNode[2];
     private OSMNode closestNode;
@@ -251,8 +252,9 @@ public class Controller {
             case S:
 
                 break;
-            case E:
-
+            case U:
+                // do not enable on larger dataset than bornholm!!!
+                roadNameOnHover = !roadNameOnHover;
                 break;
 
         }
@@ -319,9 +321,15 @@ public class Controller {
 
     @FXML
     public void onMouseMoved(MouseEvent e){
-        /*float contX = (float) e.getX();
-        float contY = (float) e.getY();
-        System.out.println(setClosestRoad(contX, contY));*/
+        if (roadNameOnHover){
+
+            float contX = (float) e.getX();
+            float contY = (float) e.getY();
+
+            //If your dataset is small, this runs fine, however on larger dataset (denmark) never enable this
+
+            setClosestRoadText(contX, contY);
+        }
 
     }
 
