@@ -62,7 +62,7 @@ public class Model{
 		textHandler.parseWayColors(this);
 
 		//Check if program is run with input argument, if not use default file (binary bornholm)
-		String filename = null;
+		String filename;
 		if(hasInputFile) {
 			filename = args.get(0);
 		} else {
@@ -72,13 +72,16 @@ public class Model{
 
 		//this might not be optimal
 		String[] arr = filename.split("\\.");
-		datasetName = arr[0].replace("data/","") + " Database";
-		//Ensure that the directory path for database points to data folder if using input, if not use default database
-		if(hasInputFile) {
-			dirPath = "data/" + datasetName;
+
+		//When using jar, the file name might be an absolute path,
+		// so replace the last \ with \data\ for the database directory
+		if(hasInputFile) {						//Matches the last \
+			datasetName = arr[0].replaceAll("\\\\(?!.*)$", "\\data\\") + " Database";
 		} else {
-			dirPath = datasetName;
+			datasetName = arr[0].replace("data/", "") + " Database";
 		}
+
+		dirPath = datasetName;
 
 		InputStream OSMSource;
 		if (filename.endsWith(".obj")) {
@@ -237,7 +240,6 @@ public class Model{
 	}
 
 	public void writePointsOfInterest(){
-		Model.dirPath = "data/" + datasetName;
 		TextHandler.getInstance().writePointsOfInterest(dirPath, pointOfInterestItems);
 	}
 
@@ -376,6 +378,6 @@ public class Model{
 	}
 
 	public ArrayList<String> parseColorCases(String s){
-		return textHandler.parseWayColors(s);
+		return textHandler.getConfigFile(s);
 	}
 }

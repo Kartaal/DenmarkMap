@@ -27,6 +27,9 @@ class TextHandler {
 
 	public void makeDatabase(ArrayList<Address> addresses, String dirPath, String delimiter){
 		try{
+			//Make the data directory if it is missing
+			new File("data").mkdir();
+
 			File countryDir = new File(dirPath);
 //            if(countryDir.isDirectory()){
 //                deleteDirectoryRecursion(new File(dirPath));
@@ -147,7 +150,6 @@ class TextHandler {
 			//Handling whether filepath is for a config or a database file
 			BufferedReader reader;
 
-			//hasInputFile becomes false when trying to get the POI file (while using bornholm.zip as input)
 			if(!hasInputFile) {
 				InputStream fileStream = getClass().getClassLoader().getResourceAsStream(filepath);
 				reader = new BufferedReader(new InputStreamReader(
@@ -171,13 +173,14 @@ class TextHandler {
 		return null;
 	}
 
-	//Return ArrayList of colors
-	public ArrayList<String> parseWayColors(String filepath){
-		//TODO Shitty duplicate code :\
+	//getting a generic text file from a given path
+	public ArrayList<String> getConfigFile(String filepath){
 		try {
+			//Handling whether filepath is for a config or a database file
+
 			InputStream fileStream = getClass().getClassLoader().getResourceAsStream(filepath);
-			BufferedReader reader= new BufferedReader(new InputStreamReader(
-					fileStream, StandardCharsets.UTF_8));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(fileStream, StandardCharsets.UTF_8));
+
 			ArrayList<String> textFile = new ArrayList<>();
 			String line;
 			while((line = reader.readLine()) != null){
@@ -187,7 +190,7 @@ class TextHandler {
 
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.err.println("Failed to read color cases from " + filepath);
+			System.err.println("Failed to read config file at " + filepath);
 		}
 		return null;
 	}
@@ -215,7 +218,7 @@ class TextHandler {
 
 
 	public void parseWayColors(Model model){
-		ArrayList<String> cases = parseWayColors(model.getCurrentTypeColorTxt());
+		ArrayList<String> cases = getConfigFile(model.getCurrentTypeColorTxt());
 		model.clearColors();
 		int m = Integer.parseInt(cases.get(0));
 		for (int i = 1; i < m; i++) {
@@ -226,8 +229,7 @@ class TextHandler {
 	}
 
 	public HashMap<WayType, HashMap<String, ResizingArray<String[]>>> parseDrivableCases() {
-		String drivableCasesPath = hasInputFile ? "src/main/resources/config/Drivable_cases.txt" : "config/Drivable_cases.txt";
-		ArrayList<String> cases = getTextFile(drivableCasesPath);
+		ArrayList<String> cases = getConfigFile("config/Drivable_cases.txt");
 		HashMap<WayType, HashMap<String, ResizingArray<String[]>>> drivableCases = new HashMap<>();
 
 		WayType wayType = WayType.valueOf(cases.get(0));
@@ -257,9 +259,7 @@ class TextHandler {
 	}
 
 	public HashMap<String,Integer> parseSpeedDefaults(){
-		String speedCasesPath = hasInputFile ? "src/main/resources/config/Speed_cases.txt" : "config/Speed_cases.txt";
-
-		ArrayList<String> cases = getTextFile(speedCasesPath);
+		ArrayList<String> cases = getConfigFile("config/Speed_cases.txt");
 		HashMap<String,Integer> speedDefaults = new HashMap<>();
 		for(int i = 0 ; i < cases.size() ; i++){
 			String line = cases.get(i);
@@ -273,9 +273,7 @@ class TextHandler {
 	public HashMap<WayType, ResizingArray<String[]>> parseWayTypeCases(){
 		HashMap<WayType, ResizingArray<String[]>>  wayTypeCases = new HashMap<>();
 
-		String wayCasesPath = hasInputFile ? "src/main/resources/config/WayTypeCases.txt" : "config/WayTypeCases.txt";
-
-		ArrayList<String> cases = getTextFile(wayCasesPath);
+		ArrayList<String> cases = getConfigFile("config/WayTypeCases.txt");
 		String wayCase;
 		WayType wayType = null;
 		for(int i = 0; i < cases.size() ; i++) {
@@ -307,11 +305,18 @@ class TextHandler {
 
 	public void writePointsOfInterest(String dirPath, List<PointOfInterestItem> pointsOfInterest) {
 		try {
-			File pointsOfInterestFile = new File(dirPath+ "/pointsOfInterest.txt");
+			String poiPath;
+			if(hasInputFile) {
+				poiPath = dirPath.replaceAll("\\\\(?!.*)$", "\\data\\") + "/pointsOfInterest.txt";
+			} else {
+				poiPath = "data\\" + dirPath + "/pointsOfInterest.txt";
+			}
+
+			File pointsOfInterestFile = new File(poiPath);
 			if(pointsOfInterestFile.isFile()){
 				pointsOfInterestFile.delete();
 			}
-			BufferedWriter pointsOfInterestWriter = newBufferWriter(dirPath+ "/pointsOfInterest.txt");
+			BufferedWriter pointsOfInterestWriter = newBufferWriter(poiPath);
 
 			for(PointOfInterestItem pointOfInterest : pointsOfInterest){
 				pointsOfInterestWriter.write(pointOfInterest.toString()+"\n");

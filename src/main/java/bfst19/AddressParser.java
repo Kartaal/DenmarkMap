@@ -291,9 +291,9 @@ public class AddressParser {
 
 	public void setDefaults(){
 		ArrayList<String> defaults = TextHandler.getInstance().getDefault(Model.getDirPath());
-		this.defaults = new String[defaults.size()];
+		AddressParser.defaults = new String[defaults.size()];
 		for(int i = 0 ; i < defaults.size() ; i++ ){
-			this.defaults[i] = defaults.get(i);
+			AddressParser.defaults[i] = defaults.get(i);
 		}
 	}
 	public void setCities(){
