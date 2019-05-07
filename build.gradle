@@ -45,8 +45,7 @@ dependencies {
 	testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.3.1'
 	
 	// libaries
-	compile files('libs/algs4.jar')
-    compile fileTree(dir: 'libs', include: '*.jar')
+	compile files('src/main/resources/libs/algs4.jar')
 }
 
 // In this section you declare where to find the dependencies of your project
