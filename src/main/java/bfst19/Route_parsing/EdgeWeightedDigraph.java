@@ -6,7 +6,7 @@ import bfst19.ResizingArray;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class EdgeWeightedGraph implements Serializable {
+public class EdgeWeightedDigraph implements Serializable {
     //don't know what this is
     private static final String NEWLINE = System.getProperty("line.separator");
 
@@ -14,13 +14,13 @@ public class EdgeWeightedGraph implements Serializable {
     private int E;
     private ResizingArray<ResizingArray<Edge>> adj;
 
-    public EdgeWeightedGraph(){
+    public EdgeWeightedDigraph(){
         this.V = 0;
         this.E = 0;
         adj = new ResizingArray<>();
     }
 
-    public EdgeWeightedGraph(ArrayList<Long> V) {
+    public EdgeWeightedDigraph(ArrayList<Long> V) {
         if (V.size() == 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
         this.V = V.size();
         this.E = 0;
@@ -55,8 +55,8 @@ public class EdgeWeightedGraph implements Serializable {
     }
 
     public void addEdge(Edge e) {
-        int v = e.either();
-        int w = e.other();
+        int v = e.either().getId();
+        int w = e.other().getId();
         validateVertex(v);
         validateVertex(w);
         adj.get(v).add(e);
@@ -80,11 +80,11 @@ public class EdgeWeightedGraph implements Serializable {
         for (int v = 0; v < V; v++) {
             int selfLoops = 0;
             for (Edge e : adj(v)) {
-                if (e.other() > v) {
+                if (e.other().getId() > v) {
                     list.add(e);
                 }
                 // add only one copy of each self loop (self loops will be consecutive)
-                else if (e.other() == v) {
+                else if (e.other().getId() == v) {
                     if (selfLoops % 2 == 0) list.add(e);
                     selfLoops++;
                 }
@@ -116,7 +116,7 @@ public class EdgeWeightedGraph implements Serializable {
 
     /*public static void main(String[] args) {
         In in = new In(args[0]);
-        EdgeWeightedGraph G = new EdgeWeightedGraph(in);
+        EdgeWeightedDigraph G = new EdgeWeightedDigraph(in);
         StdOut.println(G);
     }*/
 

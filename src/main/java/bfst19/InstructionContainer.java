@@ -39,10 +39,10 @@ public class InstructionContainer extends VBox {
 
         //this section is to establish which ends of the two startingedges are the "head" and "base"
         // being which direction we are going
-        OSMNode previousV = edge.getV();
-        OSMNode previousW = edge.getW();
-        OSMNode newV = currentEdge.getV();
-        OSMNode newW = currentEdge.getW();
+        OSMNode previousV = edge.either();
+        OSMNode previousW = edge.other();
+        OSMNode newV = currentEdge.either();
+        OSMNode newW = currentEdge.other();
         if (edge != null && currentEdge != null) {
             OSMNode previousBase;
             OSMNode previousHead;
