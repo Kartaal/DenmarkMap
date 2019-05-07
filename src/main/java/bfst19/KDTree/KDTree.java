@@ -15,7 +15,7 @@ import java.util.*;
  * The constructor only initialises an empty tree which is filled with useful data
  * by using the insertAll() method.
  * The method rangeQuery() searches through the tree.
- * TODO nodeRangeQuery() jdoc
+ * nodeRangeQuery() finds Drivable OSMNodes for a given vehicle type and bounding box
  * Something about nodeRangeQuery() ?????????
  * This tree also supports finding the nearest neighbor with getNearestNeighbor().
  */
@@ -125,6 +125,7 @@ public class KDTree implements Serializable {
      * Once any amount of elements have been found, the OSMNode in a KDNode
      * with the closest Euclidean distance is returned.
      * @param point	The point used for finding the closest element in the tree.
+     * @param type The vehicle type to find driveable roads for.
      * @return		The OSMNode that has the shortest Euclidean distance to the point.
      */
     public OSMNode getNearestNeighbor(Point2D point, Vehicle type) {
@@ -144,7 +145,7 @@ public class KDTree implements Serializable {
             if(count >= 5000){
                 return null;
             }
-            queryList = growBoundingBox(vals, type);
+            queryList = growBoxNRQ(vals, type);
         }
 
         closestElement = Calculator.getClosestNode(point, queryList);
@@ -153,21 +154,25 @@ public class KDTree implements Serializable {
 
     }
 
-    private ResizingArray<OSMNode> growBoundingBox(float[] vals, Vehicle type) {
+    private BoundingBox growBoundingBox(float[] vals) {
         //Take the values of the bounding box, increase them slightly
-        BoundingBox bbox;
-        ResizingArray<OSMNode> queryList;
         //A bounding box is created from a x,y point, and with a width,height from that point.
-        //When we decrease the x,y point, we have to add twice that value to width,height to insure it grows by a square
+        //When we decrease the x,y point, we have to add twice that value to width, height to insure it grows by a square
         vals[0] -= 0.00001 / Model.getLonfactor();
         vals[1] -= 0.00001;
         vals[2] += 0.00002 / Model.getLonfactor();
         vals[3] += 0.00002;
+        return new BoundingBox(vals[0], vals[1], vals[2], vals[3]);
+    }
 
-        bbox = new BoundingBox(vals[0], vals[1], vals[2], vals[3]);
+    private ResizingArray<OSMNode> growBoxNRQ(float[] vals, Vehicle type){
+        //Grows the bounding box, and performs nodeRangeQuery to it.
+        ResizingArray<OSMNode> queryList;
+        BoundingBox bbox = growBoundingBox(vals);
         queryList = nodeRangeQuery(bbox, type);
         return queryList;
     }
+
 
     /**
      * Searches through the tree for the stored Drawable elements that lie
@@ -219,9 +224,11 @@ public class KDTree implements Serializable {
     }
 
     /**
-     * TODO JavaDoc for nodeRangeQuery()
-     * @param bbox
-     * @return
+     * Searches through the tree for the OSMNode objects inside the Drawable elements that lie
+     *  within the given BoundingBox.
+     * @param bbox  A BoundingBox that intersects all the elements returned.
+     * @param type  A vehicle type to check traversability on each OSMNode in the Drawable elements.
+     * @return	    A ResizingArray of OSMNodes intersecting the bbox BoundingBox
      */
     //Method for finding elements in the KDTree that intersects a BoundingBox
     public ResizingArray<OSMNode> nodeRangeQuery(BoundingBox bbox, Vehicle type) {
