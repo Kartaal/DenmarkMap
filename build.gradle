@@ -63,5 +63,5 @@ tasks.withType(JavaCompile) {
 }
 
 run {
-    args = ['data/bornholm.zip']
+    args = ['data/bornholm.osm.obj']
 }
