@@ -15,7 +15,6 @@
 
 <?import bfst19.InstructionContainer?>
 <?import bfst19.AutoTextField?>
-<?import javafx.scene.layout.BorderPane?>
 <VBox alignment="CENTER" prefWidth="300.0" fx:id="outerPane" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 0);" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bfst19.ControllerRoutePanel">
    <children>
 
@@ -32,15 +31,11 @@
            </graphic>
        </Button>
 
-
       <AutoTextField fx:id="textFieldFrom" promptText="From " >
           <VBox.margin>
               <Insets bottom="20.0" />
           </VBox.margin>
       </AutoTextField>
-
-
-
 
       <Button fx:id="switchButton" alignment="CENTER" contentDisplay="CENTER" onAction="#switchText" mnemonicParsing="false" prefHeight="27.0" prefWidth="80.0" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);">
          <graphic>
