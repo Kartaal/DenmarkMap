@@ -73,6 +73,17 @@ public class ControllerRoutePanel {
     }
 
     @FXML
+    public void switchText(ActionEvent actionEvent) {
+        if (textFieldTo != null && textFieldFrom != null){
+            String textTo = textFieldTo.getText();
+            String textFrom = textFieldFrom.getText();
+            textFieldTo.setText(textFrom);
+            textFieldFrom.setText(textTo);
+            tryToFindPath();
+        }
+    }
+
+    @FXML
     private void returnToBarPanel(ActionEvent actionEvent) {
         Pin.secondaryPin = null;
         controller.setUpBar();
