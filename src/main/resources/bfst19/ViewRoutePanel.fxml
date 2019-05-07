@@ -15,6 +15,7 @@
 
 <?import bfst19.InstructionContainer?>
 <?import bfst19.AutoTextField?>
+<?import javafx.scene.layout.BorderPane?>
 <VBox alignment="CENTER" prefWidth="300.0" fx:id="outerPane" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 0);" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bfst19.ControllerRoutePanel">
    <children>
 
@@ -96,15 +97,21 @@
                    </graphic>
                </ToggleButton>
 
-               <ToggleButton  fx:id="fastestPathButton" onAction="#setRouteType" styleClass="toggle-button" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0">
-                   <graphic>
-                       <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                               <Image url="/fastpath.png" />
-                           </image>
-                       </ImageView>
-                   </graphic>
-               </ToggleButton>
+                    <ToggleButton  fx:id="fastestPathButton" onAction="#setRouteType" styleClass="fastestPathButton" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" >
+                           <graphic>
+                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="/fastpath.png" />
+                                    </image>
+                                </ImageView>
+                            </graphic>
+
+                        <HBox.margin>
+                            <Insets left="150.0" />
+                        </HBox.margin>
+                    </ToggleButton>
+
+
 
                <padding>
                    <Insets bottom="5.0" top="5.0" right="5.0" left="0.5"/>
