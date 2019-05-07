@@ -22,6 +22,7 @@
                            onScroll="#onScroll"
                            onMousePressed="#onMousePressed"
                            onMouseDragged="#onMouseDragged"
+                           onMouseMoved="#onMouseMoved"
                 />
 
                 <BorderPane fx:id="borderPane" pickOnBounds="false" VBox.vgrow="ALWAYS">
@@ -32,7 +33,7 @@
 
                             <children>
                                 <BorderPane  prefWidth="${scene.width}"  >
-                                    <right >
+                                    <right>
                                         <HBox BorderPane.alignment="CENTER_RIGHT" >
                                             <Text fx:id="scaleText"  text=""/>
                                             <BorderPane >
@@ -54,6 +55,15 @@
                                             </BorderPane>
                                         </HBox>
                                     </right>
+                                    <center>
+                                        <HBox BorderPane.alignment="CENTER_RIGHT">
+
+                                            <Text fx:id="closestRoadText"  text=""/>
+
+                                        </HBox>
+
+                                    </center>
+
                                     <padding>
                                         <Insets left="5.0" right="10.0" />
                                     </padding>

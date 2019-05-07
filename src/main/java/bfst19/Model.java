@@ -16,38 +16,39 @@ import java.util.*;
 import java.util.zip.ZipInputStream;
 
 public class Model{
-	private RouteHandler routeHandler;
-	private static float lonfactor = 1.0f;
-	private String datasetName;
-	private static String dirPath;
+    private RouteHandler routeHandler;
+    private static float lonfactor = 1.0f;
+    private String datasetName;
+    private static String dirPath;
 	private TextHandler textHandler = TextHandler.getInstance();
+    public DijkstraSP previousPath;
 
-	private List<Runnable> colorObservers = new ArrayList<>();
-	private List<Runnable> foundMatchesObservers = new ArrayList<>();
-	private List<Runnable> pathObservers = new ArrayList<>();
-	private float minlat;
-	private float minlon;
-	private float maxlat;
-	private float maxlon;
+    private List<Runnable> colorObservers = new ArrayList<>();
+    private List<Runnable> foundMatchesObservers = new ArrayList<>();
+    private List<Runnable> pathObservers = new ArrayList<>();
+    private float minlat;
+    private float minlon;
+    private float maxlat;
+    private float maxlon;
 
-	private ObservableList<PointOfInterestItem> pointOfInterestItems = FXCollections.observableArrayList();
-	private String currentTypeColorTxt = "config/TypeColorsNormal.txt";
-	private HashMap<WayType,ResizingArray<String[]>> wayTypeCases = new HashMap<>();
-	private ObservableList<String[]> foundMatches = FXCollections.observableArrayList();
-	private ObservableList<String[]> typeColors = FXCollections.observableArrayList();
-	private ObservableList<Iterable<Edge>> foundPath = FXCollections.observableArrayList();
-	//todo change to other hashmaps or do something else
-	private Map<WayType, KDTree> kdTreeMap = new TreeMap<>();
+    private ObservableList<PointOfInterestItem> pointOfInterestItems = FXCollections.observableArrayList();
+    private String currentTypeColorTxt = "config/TypeColorsNormal.txt";
+    private HashMap<WayType,ResizingArray<String[]>> wayTypeCases = new HashMap<>();
+    private ObservableList<String[]> foundMatches = FXCollections.observableArrayList();
+    private ObservableList<String[]> typeColors = FXCollections.observableArrayList();
+    private ObservableList<Iterable<Edge>> foundPath = FXCollections.observableArrayList();
+    //todo change to other hashmaps or do something else
+    private Map<WayType, KDTree> kdTreeMap = new TreeMap<>();
 
-	//used for addresstesting
-	public Model(String dirPath) {
-		Model.dirPath = dirPath;
-		//this keeps the cities and the default streets files in memory, it's about 1mb for Zealand of memory
-		AddressParser.getInstance().setDefaults();
-		AddressParser.getInstance().setCities();
-	}
+    //used for addresstesting
+    public Model(String dirPath) {
+        this.dirPath = dirPath;
+        //this keeps the cities and the default streets files in memory, it's about 1mb for Zealand of memory
+        AddressParser.getInstance().setDefaults();
+        AddressParser.getInstance().setCities();
+    }
 
-	public Model(List<String> args) throws IOException, XMLStreamException, ClassNotFoundException {
+    public Model(List<String> args) throws IOException, XMLStreamException, ClassNotFoundException {
 		//Setup so TextHandler deals with bloody default database in jar file
 		boolean hasInputFile = !args.isEmpty();
 		textHandler.setHasInputFile(hasInputFile);
@@ -84,42 +85,43 @@ public class Model{
 		dirPath = datasetName;
 
 		InputStream OSMSource;
-		if (filename.endsWith(".obj")) {
-			long time = -System.nanoTime();
+        if (filename.endsWith(".obj")) {
+            long time = -System.nanoTime();
 			readObjFile(filename, hasInputFile);
-			time += System.nanoTime();
-			System.out.printf("Load time: %.1fs\n", time / 1e9);
-		} else {
-			long time = -System.nanoTime();
-			if (filename.endsWith(".zip")) {
-				ZipInputStream zip = new ZipInputStream(new BufferedInputStream(new FileInputStream(filename)));
-				zip.getNextEntry();
-				OSMSource = zip;
-			} else {
-				OSMSource = new BufferedInputStream(new FileInputStream(filename));
-			}
-			EdgeWeightedGraph nodeGraph = new EdgeWeightedGraph();
-			routeHandler = new RouteHandler(this,nodeGraph);
-			OSMParser.parseOSM(OSMSource,routeHandler,this,textHandler,wayTypeCases);
-			time += System.nanoTime();
-			System.out.printf("parse time: %.1fs\n", time / 1e9);
+            time += System.nanoTime();
+            System.out.printf("Load time: %.1fs\n", time / 1e9);
+        } else {
+            long time = -System.nanoTime();
+            if (filename.endsWith(".zip")) {
+                ZipInputStream zip = new ZipInputStream(new BufferedInputStream(new FileInputStream(filename)));
+                zip.getNextEntry();
+                OSMSource = zip;
+            } else {
+                OSMSource = new BufferedInputStream(new FileInputStream(filename));
+            }
+            EdgeWeightedGraph nodeGraph = new EdgeWeightedGraph();
+            routeHandler = new RouteHandler(nodeGraph);
+            OSMParser.parseOSM(OSMSource,routeHandler,this,textHandler,wayTypeCases);
+            time += System.nanoTime();
+            System.out.printf("parse time: %.1fs\n", time / 1e9);
 
-			try (ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(
-					new FileOutputStream(filename + ".obj")))) {
+            try (ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(
+                    new FileOutputStream(filename + ".obj")))) {
 
-				output.writeObject(kdTreeMap);
-				output.writeFloat(minlat);
-				output.writeFloat(minlon);
-				output.writeFloat(maxlat);
-				output.writeFloat(maxlon);
-				output.writeFloat(lonfactor);
-				output.writeObject(routeHandler.getNodeGraph());
-			}
-		}
-		setPointsOfInterest();
-		AddressParser.getInstance().setDefaults();
-		AddressParser.getInstance().setCities();
-	}
+                output.writeObject(kdTreeMap);
+                output.writeFloat(minlat);
+                output.writeFloat(minlon);
+                output.writeFloat(maxlat);
+                output.writeFloat(maxlon);
+                output.writeFloat(lonfactor);
+                output.writeObject(routeHandler.getNodeGraph());
+
+            }
+        }
+        setPointsOfInterest();
+        AddressParser.getInstance().setDefaults();
+        AddressParser.getInstance().setCities();
+    }
 
 	//Reads and object file located at filename,
 	// if hasInputFile is false it needs to read the file from a different location
@@ -143,145 +145,144 @@ public class Model{
 		maxlat = input.readFloat();
 		maxlon = input.readFloat();
 		lonfactor = input.readFloat();
-		routeHandler = new RouteHandler(this, (EdgeWeightedGraph) input.readObject());
+		routeHandler = new RouteHandler((EdgeWeightedGraph) input.readObject());
 	}
 
+    public void addFoundMatchesObserver(Runnable observer) {
+        foundMatchesObservers.add(observer);
+    }
 
-	public void addFoundMatchesObserver(Runnable observer) {
-		foundMatchesObservers.add(observer);
-	}
+    public void addColorObserver(Runnable observer) {
+        colorObservers.add(observer);
+    }
 
-	public void addColorObserver(Runnable observer) {
-		colorObservers.add(observer);
-	}
+    public void addPathObserver(Runnable observer){pathObservers.add(observer);}
 
-	public void addPathObserver(Runnable observer){pathObservers.add(observer);}
+    public void addPath(Iterable<Edge> path){
+        foundPath.add(path);
+        notifyPathObservers();
+    }
 
-	public void addPath(Iterable<Edge> path){
-		foundPath.add(path);
-		notifyPathObservers();
-	}
+    public void clearPath(){
+        if(!foundPath.isEmpty()){
+            foundPath.clear();
+            notifyPathObservers();
+        }
+    }
 
-	public void clearPath(){
-		if(!foundPath.isEmpty()){
-			foundPath.clear();
-			notifyPathObservers();
-		}
-	}
+    public void addFoundMatch(String[] match){
+        foundMatches.add(match);
+    }
 
-	public void addFoundMatch(String[] match){
-		foundMatches.add(match);
-	}
+    public void clearMatches(){
+        foundMatches.clear();
+    }
 
-	public void clearMatches(){
-		foundMatches.clear();
-	}
+    public void clearColors(){
+        if(!typeColors.isEmpty()){
+            typeColors.clear();
+        }
+    }
 
-	public void clearColors(){
-		if(!typeColors.isEmpty()){
-			typeColors.clear();
-		}
-	}
+    public void clearFoundMatchesObservers(){
+        foundMatchesObservers = new ArrayList<>();
+    }
 
-	public void clearFoundMatchesObservers(){
-		foundMatchesObservers = new ArrayList<>();
-	}
+    //notify observer methods run through each array of observers and calls their run() method which they themselves have defined
+    public void notifyFoundMatchesObservers() {
+        for (Runnable observer : foundMatchesObservers) {
+            observer.run();
+        }
+    }
 
-	//notify observer methods run through each array of observers and calls their run() method which they themselves have defined
-	public void notifyFoundMatchesObservers() {
-		for (Runnable observer : foundMatchesObservers) {
-			observer.run();
-		}
-	}
+    public void notifyColorObservers() {
+        for (Runnable observer : colorObservers) {
+            observer.run();
+        }
+    }
 
-	public void notifyColorObservers() {
-		for (Runnable observer : colorObservers) {
-			observer.run();
-		}
-	}
+    public void notifyPathObservers(){
+        for(Runnable observer : pathObservers) {
+            observer.run();
+        }
+    }
 
-	public void notifyPathObservers(){
-		for(Runnable observer : pathObservers) {
-			observer.run();
-		}
-	}
+    // Does this contain the in
+    public Iterator<Edge> pathIterator(){
+        return foundPath.iterator().next().iterator();
+    }
 
-	// Does this contain the in
-	public Iterator<Edge> pathIterator(){
-		return foundPath.iterator().next().iterator();
-	}
+    public Iterator<String[]> colorIterator() {
+        return typeColors.iterator();
+    }
 
-	public Iterator<String[]> colorIterator() {
-		return typeColors.iterator();
-	}
+    public Iterator<String[]> foundMatchesIterator() {
+        return foundMatches.iterator();
+    }
 
-	public Iterator<String[]> foundMatchesIterator() {
-		return foundMatches.iterator();
-	}
+    public ObservableList<PointOfInterestItem> pointOfInterestList(){ return pointOfInterestItems; }
 
-	public ObservableList<PointOfInterestItem> pointOfInterestList(){ return pointOfInterestItems; }
+    public void addPointOfInterestItem(PointOfInterestItem pointOfInterestItem){
+        for(PointOfInterestItem item : pointOfInterestItems){
+            if(pointOfInterestItem.equals(item)){
+                return;
+            }
+        }
+        pointOfInterestItems.add(pointOfInterestItem);
+    }
 
-	public void addPointOfInterestItem(PointOfInterestItem pointOfInterestItem){
-		for(PointOfInterestItem item : pointOfInterestItems){
-			if(pointOfInterestItem.equals(item)){
-				return;
-			}
-		}
-		pointOfInterestItems.add(pointOfInterestItem);
-	}
+    public void removePointOfInterestItem(PointOfInterestItem pointOfInterestItem) { pointOfInterestItems.remove(pointOfInterestItem);}
 
-	public void removePointOfInterestItem(PointOfInterestItem pointOfInterestItem) { pointOfInterestItems.remove(pointOfInterestItem);}
+    private void setPointsOfInterest(){
+        List<PointOfInterestItem> list = TextHandler.getInstance().getPointsOfInterest(dirPath);
+        for(PointOfInterestItem item : list){
+            pointOfInterestItems.add(item);
+        }
+    }
 
-	private void setPointsOfInterest(){
-		List<PointOfInterestItem> list = TextHandler.getInstance().getPointsOfInterest(dirPath);
-		for(PointOfInterestItem item : list){
-			pointOfInterestItems.add(item);
-		}
-	}
+    public void writePointsOfInterest(){
+        TextHandler.getInstance().writePointsOfInterest(dirPath,pointOfInterestItems);
+    }
 
-	public void writePointsOfInterest(){
-		TextHandler.getInstance().writePointsOfInterest(dirPath, pointOfInterestItems);
-	}
+    public String getCurrentTypeColorTxt(){
+        return currentTypeColorTxt;
+    }
 
-	public String getCurrentTypeColorTxt(){
-		return currentTypeColorTxt;
-	}
+    public void addTypeColors(String[] color){
+        typeColors.add(color);
+    }
 
-	public void addTypeColors(String[] color){
-		typeColors.add(color);
-	}
+    public void setMinlon(float minlon){
+        this.minlon = minlon;
+    }
 
-	public void setMinlon(float minlon){
-		this.minlon = minlon;
-	}
+    public void setMaxlon(float maxlon){
+        this.maxlon = maxlon;
+    }
 
-	public void setMaxlon(float maxlon){
-		this.maxlon = maxlon;
-	}
+    public void setMinlat(float minlat){ this.minlat = minlat;  }
 
-	public void setMinlat(float minlat){ this.minlat = minlat;  }
+    public void setMaxlat(float maxlat){
+        this.maxlat= maxlat;
+    }
 
-	public void setMaxlat(float maxlat){
-		this.maxlat= maxlat;
-	}
+    public void setLonfactor(float lonfactor){ this.lonfactor = lonfactor;}
 
-	public void setLonfactor(float lonfactor){ this.lonfactor = lonfactor;}
+    public void setKdTrees(Map<WayType, KDTree> kdTreeMap) {
+        this.kdTreeMap = kdTreeMap;
+    }
 
-	public void setKdTrees(Map<WayType, KDTree> kdTreeMap) {
-		this.kdTreeMap = kdTreeMap;
-	}
+    public float getMinlon(){
+        return minlon;
+    }
 
-	public float getMinlon(){
-		return minlon;
-	}
+    public float getMinlat() {
+        return minlat;
+    }
 
-	public float getMinlat() {
-		return minlat;
-	}
-
-	public float getMaxlat() {
-		return maxlat;
-	}
+    public float getMaxlat() {
+        return maxlat;
+    }
 
 	public float getMaxlon() {
 		return maxlon;
@@ -319,21 +320,20 @@ public class Model{
 		textHandler.parseWayColors(this);
 	}
 
-	public Iterable<Edge> findPath(int startId , int endId , Vehicle type , boolean fastestPath){
-		return routeHandler.findPath(startId,endId,type,fastestPath);
+	public Iterable<Edge> findPath(OSMNode startNode , OSMNode endNode , Vehicle type , boolean fastestPath){
+		return routeHandler.findPath(startNode,endNode,type,fastestPath);
 	}
 
 	public void parseSearch(String proposedAddress){
 		AddressParser.getInstance().parseSearch(proposedAddress,this);
 	}
 
-
-	OSMNode getNearestRoad(Point2D point){
+	OSMNode getNearestRoad(Point2D point, Vehicle type){
 		try{
-			ArrayList<OSMNode> nodeList = new ArrayList<>();
+			ResizingArray<OSMNode> nodeList = new ResizingArray<>();
 
 			for(WayType wayType: RouteHandler.getDrivableWayTypes()){
-				OSMNode checkNeighbor = kdTreeMap.get(wayType).getNearestNeighbor(point);
+				OSMNode checkNeighbor = kdTreeMap.get(wayType).getNearestNeighbor(point, type);
 				if(checkNeighbor != null) {
 					nodeList.add(checkNeighbor);
 				}
@@ -351,22 +351,20 @@ public class Model{
 		}
 	}
 
-	OSMNode getNearestBuilding(Point2D point){
+	OSMNode getNearestBuilding(Point2D point) {
 		try {
-			OSMNode closestElement = kdTreeMap.get(WayType.BUILDING).getNearestNeighbor(point);
+			OSMNode closestElement = kdTreeMap.get(WayType.BUILDING).getNearestNeighbor(point, Vehicle.ABSTRACTVEHICLE);
 
-			if(closestElement == null){
+			if (closestElement == null) {
 				throw new nothingNearbyException();
 			}
 
 			return closestElement;
 
-		}catch(nothingNearbyException e){
+		} catch (nothingNearbyException e) {
 			e.printStackTrace();
 			return null;
 		}
-
-
 	}
 
 	public HashMap<String, Integer> parseSpeedDefaults() {

@@ -8,16 +8,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-class TextHandler {
-	private static TextHandler textHandler;
-	private boolean hasInputFile;
 
-	public static TextHandler getInstance(){
-		if(textHandler == null){
-			textHandler = new TextHandler();
-		}
-		return textHandler;
-	}
+public class TextHandler {
+    private static TextHandler textHandler;
+    private boolean hasInputFile;
+
+    public static TextHandler getInstance(){
+        if(textHandler == null){
+            textHandler = new TextHandler();
+        }
+        return textHandler;
+    }
 
 	private TextHandler() {	}
 
@@ -25,126 +26,122 @@ class TextHandler {
 		hasInputFile = hasInput;
 	}
 
-	public void makeDatabase(ArrayList<Address> addresses, String dirPath, String delimiter){
-		try{
-			//Make the data directory if it is missing
-			new File("data").mkdir();
-
+    public void makeDatabase(ArrayList<Address> addresses, String dirPath, String delimiter){
+        try{
 			File countryDir = new File(dirPath);
 //            if(countryDir.isDirectory()){
 //                deleteDirectoryRecursion(new File(dirPath));
 //            }
-			countryDir.mkdir();
+            countryDir.mkdir();
 
-			String currentCityAndPostcode = "";
-			String currentStreet = "";
-			//this first step looks ugly and is perhaps unnecessary
-			BufferedWriter allStreetsInCountryWriter = newBufferWriter(dirPath + "/streets.txt");
-			BufferedWriter citiesInCountryWriter = newBufferWriter(dirPath+ "/cities.txt");
-			BufferedWriter streetsInCityWriter =  newStreetsInCityWriter(currentCityAndPostcode,dirPath);
-			BufferedWriter addressesInStreetWriter = newAddressesInStreetWriter(currentStreet,currentCityAndPostcode,dirPath);
-
-
-			for(Address address:addresses) {
-				//if the streetName remains the same, and the city changes we need to change the writers for streets and addresses,
-				//along with writing to the appropriate files, we also change the current city and postcode, and make the directory for it
-				//todo fix code dupes here
-				if (address.getStreetName().equals(currentStreet) && !(address.getCity() + delimiter + address.getPostcode()).equals(currentCityAndPostcode)) {
-
-					//flush writers to ensure no backlog gets deleted
-					streetsInCityWriter.flush();
-					addressesInStreetWriter.flush();
-
-					//redefine variables and make new dir
-					currentCityAndPostcode = address.getCity() + delimiter + address.getPostcode();
-					makeCityDir(currentCityAndPostcode,dirPath);
-					streetsInCityWriter = newStreetsInCityWriter(currentCityAndPostcode,dirPath);
-					addressesInStreetWriter = newAddressesInStreetWriter(currentStreet,currentCityAndPostcode,dirPath);
-
-					//write to the writers respective files
-					citiesInCountryWriter.write(currentCityAndPostcode + "\n");
-					streetsInCityWriter.write(currentStreet + "\n");
-					allStreetsInCountryWriter.write(currentStreet + delimiter + currentCityAndPostcode + "\n");
-
-				} else if (!(address.getCity() + delimiter + address.getPostcode()).equals(currentCityAndPostcode)) {
-					//if the city changes, flush the writers and change the writer for the streets in that city,
-					// write to the file with all the cities and make the cities directory, also change the current city and postcode
-					streetsInCityWriter.flush();
-
-					//redefine variables and make new dir
-					currentCityAndPostcode = address.getCity() + delimiter + address.getPostcode();
-					makeCityDir(currentCityAndPostcode,dirPath);
-					streetsInCityWriter = newStreetsInCityWriter(currentCityAndPostcode,dirPath);
-
-					//write to the writers respective files
-					citiesInCountryWriter.write(currentCityAndPostcode + "\n");
-				}else if (!address.getStreetName().equals(currentStreet)) {
-
-					//flush writers to ensure no backlog gets deleted
-					addressesInStreetWriter.flush();
-
-					//redefine variables
-					currentStreet = address.getStreetName();
+            String currentCityAndPostcode = "";
+            String currentStreet = "";
+            //this first step looks ugly and is perhaps unnecessary
+            BufferedWriter allStreetsInCountryWriter = newBufferWriter(dirPath + "/streets.txt");
+            BufferedWriter citiesInCountryWriter = newBufferWriter(dirPath+ "/cities.txt");
+            BufferedWriter streetsInCityWriter =  newStreetsInCityWriter(currentCityAndPostcode,dirPath);
+            BufferedWriter addressesInStreetWriter = newAddressesInStreetWriter(currentStreet,currentCityAndPostcode,dirPath);
 
 
-					addressesInStreetWriter = newAddressesInStreetWriter(currentStreet,currentCityAndPostcode,dirPath);
+            for(Address address:addresses) {
+                //if the streetName remains the same, and the city changes we need to change the writers for streets and addresses,
+                //along with writing to the appropriate files, we also change the current city and postcode, and make the directory for it
+                //todo fix code dupes here
+                if (address.getStreetName().equals(currentStreet) && !(address.getCity() + delimiter + address.getPostcode()).equals(currentCityAndPostcode)) {
 
-					//write to the writers respective files
-					streetsInCityWriter.write(currentStreet + "\n");
-					allStreetsInCountryWriter.write(currentStreet + delimiter + currentCityAndPostcode + "\n");
-				}
+                    //flush writers to ensure no backlog gets deleted
+                    streetsInCityWriter.flush();
+                    addressesInStreetWriter.flush();
 
-				addressesInStreetWriter.write(address.getLat() + " " + address.getLon() + " " + address.getHouseNumber() + "\n");
+                    //redefine variables and make new dir
+                    currentCityAndPostcode = address.getCity() + delimiter + address.getPostcode();
+                    makeCityDir(currentCityAndPostcode,dirPath);
+                    streetsInCityWriter = newStreetsInCityWriter(currentCityAndPostcode,dirPath);
+                    addressesInStreetWriter = newAddressesInStreetWriter(currentStreet,currentCityAndPostcode,dirPath);
 
-			}
+                    //write to the writers respective files
+                    citiesInCountryWriter.write(currentCityAndPostcode + "\n");
+                    streetsInCityWriter.write(currentStreet + "\n");
+                    allStreetsInCountryWriter.write(currentStreet + delimiter + currentCityAndPostcode + "\n");
 
-			//closes all writers
-			allStreetsInCountryWriter.close();
-			citiesInCountryWriter.close();
-			streetsInCityWriter.close();
-			addressesInStreetWriter.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+                } else if (!(address.getCity() + delimiter + address.getPostcode()).equals(currentCityAndPostcode)) {
+                    //if the city changes, flush the writers and change the writer for the streets in that city,
+                    // write to the file with all the cities and make the cities directory, also change the current city and postcode
+                    streetsInCityWriter.flush();
 
-	//<----------- Helper methods for makeDatabase ----------------------------------->
-	private BufferedWriter newAddressesInStreetWriter(String currentStreet, String currentCityAndPostcode, String dirPath) throws FileNotFoundException {
-		return newBufferWriter(dirPath + "/" + currentCityAndPostcode + "/" + currentStreet + ".txt");
-	}
+                    //redefine variables and make new dir
+                    currentCityAndPostcode = address.getCity() + delimiter + address.getPostcode();
+                    makeCityDir(currentCityAndPostcode,dirPath);
+                    streetsInCityWriter = newStreetsInCityWriter(currentCityAndPostcode,dirPath);
 
-	private BufferedWriter newStreetsInCityWriter(String currentCityAndPostcode, String dirPath) throws FileNotFoundException {
-		return newBufferWriter(dirPath+"/"+currentCityAndPostcode+"/streets.txt");
-	}
+                    //write to the writers respective files
+                    citiesInCountryWriter.write(currentCityAndPostcode + "\n");
+                }else if (!address.getStreetName().equals(currentStreet)) {
 
-	private BufferedWriter newBufferWriter(String dirPath) throws FileNotFoundException {
-		File file = new File(dirPath);
-		BufferedWriter writer = new BufferedWriter(
-				new OutputStreamWriter(new FileOutputStream(file,true), StandardCharsets.UTF_8));
-		return writer;
-	}
+                    //flush writers to ensure no backlog gets deleted
+                    addressesInStreetWriter.flush();
 
-	private void makeCityDir(String currentCityAndPostcode,String dirPath){
-		File cityDir = new File(dirPath + "/" + currentCityAndPostcode);
-		cityDir.mkdir();
-	}
+                    //redefine variables
+                    currentStreet = address.getStreetName();
 
-	private void deleteDirectoryRecursion(File file) throws IOException {
-		if (file.isDirectory()) {
-			File[] entries = file.listFiles();
-			if (entries != null) {
-				for (File entry : entries) {
-					deleteDirectoryRecursion(entry);
-				}
-			}
-		}
-		if (!file.delete()) {
-			throw new IOException("Failed to delete " + file);
-		}
-	}
-	//<----------------------------------------------------------------------------->
 
-	//getting a generic text file from a given path
+                    addressesInStreetWriter = newAddressesInStreetWriter(currentStreet,currentCityAndPostcode,dirPath);
+
+                    //write to the writers respective files
+                    streetsInCityWriter.write(currentStreet + "\n");
+                    allStreetsInCountryWriter.write(currentStreet + delimiter + currentCityAndPostcode + "\n");
+                }
+
+                addressesInStreetWriter.write(address.getLat() + " " + address.getLon() + " " + address.getHouseNumber() + "\n");
+
+            }
+
+            //closes all writers
+            allStreetsInCountryWriter.close();
+            citiesInCountryWriter.close();
+            streetsInCityWriter.close();
+            addressesInStreetWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //<----------- Helper methods for makeDatabase ----------------------------------->
+    private BufferedWriter newAddressesInStreetWriter(String currentStreet, String currentCityAndPostcode, String dirPath) throws FileNotFoundException, UnsupportedEncodingException {
+        return newBufferWriter(dirPath + "/" + currentCityAndPostcode + "/" + currentStreet + ".txt");
+    }
+
+    private BufferedWriter newStreetsInCityWriter(String currentCityAndPostcode, String dirPath) throws FileNotFoundException, UnsupportedEncodingException {
+        return newBufferWriter(dirPath+"/"+currentCityAndPostcode+"/streets.txt");
+    }
+
+    private BufferedWriter newBufferWriter(String dirPath) throws FileNotFoundException, UnsupportedEncodingException {
+        File file = new File(dirPath);
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file,true),"UTF-8"));
+        return writer;
+    }
+
+    private void makeCityDir(String currentCityAndPostcode,String dirPath){
+        File cityDir = new File(dirPath + "/" + currentCityAndPostcode);
+        cityDir.mkdir();
+    }
+
+    private void deleteDirectoryRecursion(File file) throws IOException {
+        if (file.isDirectory()) {
+            File[] entries = file.listFiles();
+            if (entries != null) {
+                for (File entry : entries) {
+                    deleteDirectoryRecursion(entry);
+                }
+            }
+        }
+        if (!file.delete()) {
+            throw new IOException("Failed to delete " + file);
+        }
+    }
+    //<----------------------------------------------------------------------------->
+
+    //getting a generic textfile from a given path
 	public ArrayList<String> getTextFile(String filepath){
 		try {
 			//Handling whether filepath is for a config or a database file
@@ -173,7 +170,7 @@ class TextHandler {
 		return null;
 	}
 
-	//getting a generic text file from a given path
+	//getting a config text file from a given path
 	public ArrayList<String> getConfigFile(String filepath){
 		try {
 			//Handling whether filepath is for a config or a database file
@@ -195,25 +192,23 @@ class TextHandler {
 		return null;
 	}
 
-	//<--------Helper methods for getting specific kinds of text files--------------->
-	public ArrayList<String> getCities(String dirPath){
-		return getTextFile(dirPath + "/cities.txt");
-	}
+    //<--------Helper methods for getting specific kinds of textfiles--------------->
+    public ArrayList<String> getCities( String dirPath){
+        return getTextFile(dirPath + "/cities.txt");
+    }
 
-	public ArrayList<String> getStreetsInCity(String city, String postcode){
-		return getTextFile(Model.getDirPath() + "/" +
-				city + Model.getDelimeter() + postcode + "/streets.txt");
-	}
+    public ArrayList<String> getStreetsInCity( String city, String postcode){
+        return getTextFile(Model.getDirPath() + "/" + city + Model.getDelimeter() + postcode + "/streets.txt");
+    }
 
-	public ArrayList<String> getAddressesOnStreet(String city,String postcode,String streetName){
-		return getTextFile(Model.getDirPath() + "/" +
-				city + Model.getDelimeter() + postcode + "/" + streetName + ".txt");
-	}
+    public ArrayList<String> getAddressesOnStreet(String city,String postcode,String streetName){
+        return getTextFile(Model.getDirPath() + "/" + city + Model.getDelimeter() + postcode + "/" + streetName + ".txt");
+    }
 
-	public ArrayList<String> getDefault(String dirPath) {
-		return getTextFile(dirPath + "/streets.txt");
-	}
-	//<----------------------------------------------------------------------------->
+    public ArrayList<String> getDefault(String dirPath) {
+        return getTextFile(dirPath + "/streets.txt");
+    }
+    //<----------------------------------------------------------------------------->
 
 
 
@@ -292,19 +287,22 @@ class TextHandler {
 		return wayTypeCases;
 	}
 
-	public ArrayList<String[]> parseCitiesAndPostcodes(String dirPath){
-		ArrayList<String> citiesTextFile = getCities(dirPath);
-		ArrayList<String[]> citiesAndPostcodes = new ArrayList<>();
-		for(int i = 0 ; i<citiesTextFile.size()-1 ; i++){
-			String line = citiesTextFile.get(i);
-			String[] tokens = line.split(" QQQ ");
-			citiesAndPostcodes.add(tokens);
-		}
-		return citiesAndPostcodes;
-	}
+    public ArrayList<String[]> parseCitiesAndPostcodes(String dirPath){
+        ArrayList<String> citiesTextFile = getCities(dirPath);
+        ArrayList<String[]> citiesAndPostcodes = new ArrayList<>();
+        for(int i = 0 ; i<citiesTextFile.size()-1 ; i++){
+            String line = citiesTextFile.get(i);
+            String[] tokens = line.split(" QQQ ");
+            citiesAndPostcodes.add(tokens);
+        }
+        return citiesAndPostcodes;
+    }
 
 	public void writePointsOfInterest(String dirPath, List<PointOfInterestItem> pointsOfInterest) {
 		try {
+			//Make the data and database directories if it is missing
+			new File("data\\" + dirPath).mkdirs();
+
 			String poiPath;
 			if(hasInputFile) {
 				poiPath = dirPath.replaceAll("\\\\(?!.*)$", "\\data\\") + "/pointsOfInterest.txt";
@@ -330,19 +328,19 @@ class TextHandler {
 		}
 	}
 
-	public List<PointOfInterestItem> getPointsOfInterest(String dirPath){
-		File databaseDir = new File(dirPath + "/pointsOfInterest.txt");
-		ArrayList<PointOfInterestItem> pointsOfInterest = new ArrayList<>();
-		if(databaseDir.isFile()) {
-			ArrayList<String> pointOfInterestFile = textHandler.getTextFile(dirPath + "/pointsOfInterest.txt");
-			for (String pointOfInterest : pointOfInterestFile) {
-				String[] pointOFInterestFields = pointOfInterest.split(Model.getDelimeter());
-				String address = pointOFInterestFields[0];
-				float x =(float) (Float.valueOf(pointOFInterestFields[1])*Model.getLonfactor());
-				float y = Float.valueOf(pointOFInterestFields[2]);
-				pointsOfInterest.add(new PointOfInterestItem(address, x, y));
-			}
-		}
-		return pointsOfInterest;
-	}
+    public List<PointOfInterestItem> getPointsOfInterest(String dirPath){
+        File databaseDir = new File(dirPath + "/pointsOfInterest.txt");
+        ArrayList<PointOfInterestItem> pointsOfInterest = new ArrayList<>();
+        if(databaseDir.isFile()) {
+            ArrayList<String> pointOfInterestFile = textHandler.getTextFile(dirPath + "/pointsOfInterest.txt");
+            for (String pointOfInterest : pointOfInterestFile) {
+                String[] pointOFInterestFields = pointOfInterest.split(Model.getDelimeter());
+                String address = pointOFInterestFields[0];
+                float x =(float) (Float.valueOf(pointOFInterestFields[1])*Model.getLonfactor());
+                float y = Float.valueOf(pointOFInterestFields[2]);
+                pointsOfInterest.add(new PointOfInterestItem(address,x,y));
+            }
+        }
+        return pointsOfInterest;
+    }
 }

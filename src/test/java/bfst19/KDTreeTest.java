@@ -155,11 +155,15 @@ public class KDTreeTest {
 		BoundingBox bb = new BoundingBox(minPoint.getX(), minPoint.getY(),
 				maxPoint.getX()-minPoint.getX(), maxPoint.getY()-minPoint.getY());
 
-		List<Drawable> list = ((List<Drawable>) kdTreeMap.get(WayType.SERVICE).rangeQuery(bb));
+		Iterable<Drawable> startList = kdTreeMap.get(WayType.SERVICE).rangeQuery(bb);
+		List<Drawable> endList = new ArrayList<>();
+		for(Drawable d : startList){
+			endList.add(d);
+		}
 
 		//Convert lists to set to disregard the order of the elements
 		Set<Drawable> fullSet = new HashSet<>(fullList);
-		Set<Drawable> returnSet = new HashSet<>(list);
+		Set<Drawable> returnSet = new HashSet<>(endList);
 
 		assertEquals(fullSet, returnSet);
 	}
@@ -179,9 +183,12 @@ public class KDTreeTest {
 				maxPoint.getX()-minPoint.getX(), maxPoint.getY()-minPoint.getY());
 
 
-		List<Drawable> list = ((List<Drawable>) kdTreeMap.get(WayType.SERVICE).rangeQuery(bb));
-
-		assertEquals(midList, list);
+		Iterable<Drawable> startList = kdTreeMap.get(WayType.SERVICE).rangeQuery(bb);
+		List<Drawable> endList = new ArrayList<>();
+		for(Drawable d : startList){
+			endList.add(d);
+		}
+		assertEquals(midList, endList);
 	}
 
 
@@ -199,8 +206,14 @@ public class KDTreeTest {
 				maxPoint.getX()-minPoint.getX(), maxPoint.getY()-minPoint.getY());
 
 		List<Drawable> emptyList = new ArrayList<>();
+		Iterable<Drawable> startList = kdTreeMap.get(WayType.SERVICE).rangeQuery(bb);
+		List<Drawable> endList = new ArrayList<>();
+		for(Drawable d : startList){
+			endList.add(d);
+		}
 
-		assertEquals(emptyList, kdTreeMap.get(WayType.SERVICE).rangeQuery(bb));
+
+		assertEquals(emptyList,endList);
 	}
 
 

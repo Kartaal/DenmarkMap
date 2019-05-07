@@ -8,8 +8,8 @@ import java.util.HashMap;
 public class Edge implements Serializable {
     //allways set length and speedlimit as the same unit of measurement, currently km
     String name;
-    private double length;
-    private double speedlLimit;
+    private float length;
+    private int speedlLimit;
     //-1 = you can't drive here
     //0 node v to node w
     //1 node w to node v
@@ -69,7 +69,7 @@ public class Edge implements Serializable {
         return w.getId();
     }
 
-    public int getOtherEnd(long id){
+    public int getOtherEnd(int id){
         if(id==w.getId()){
             return v.getId();
         }
@@ -84,15 +84,26 @@ public class Edge implements Serializable {
         }
     }
 
+    public OSMNode getThisEndNode(int id) {
+        if (id == w.getId()) {
+            return w;
+        } else {
+            return v;
+        }
+    }
+
     public boolean isForwardAllowed(Vehicle type, int id) {
         Drivabillity drivable = getDrivableFromVehicleType(type);
+        if(type == Vehicle.ABSTRACTVEHICLE){
+            return true;
+        }
         if(drivable==Drivabillity.BOTHWAYS){
             return true;
         }else if(v.getId()==id) {
             if(drivable==Drivabillity.FORWARD){
                 return true;
             }
-        //this will actually never happen, as the dataset never has data in such a way that it never happens
+            //this will actually never happen, as the dataset never has data in such a way that it never happens
         }else if(w.getId()==id){
             if(drivable==Drivabillity.BACKWARD){
                 return true;

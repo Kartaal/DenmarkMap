@@ -52,6 +52,8 @@ repositories {
 	jcenter()
 }
 
+applicationDefaultJvmArgs = ["-Xms256m", "-Xmx6144m"]
+
 jar {
 	manifest {
 		attributes 'Main-Class': mainClassName

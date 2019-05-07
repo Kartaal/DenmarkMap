@@ -148,23 +148,26 @@ public class MapCanvas extends Canvas {
         }
         if(hasPath){
             Iterator<Edge> iterator = controller.getpathIterator();
-            while(iterator.hasNext()){
-                Edge edge = iterator.next();
-                OSMNode first = edge.getV();
-                OSMNode second = edge.getW();
-
-                gc.setLineWidth(0.1 * (1/(100/(getDeterminant()))));
-                gc.setStroke(Color.RED);
-                gc.beginPath();
-                gc.moveTo(first.getLon(),first.getLat());
-                gc.lineTo(second.getLon(),second.getLat());
-                gc.stroke();
-            }
-
+            drawPath(iterator);
         }
         Pin pin = Pin.currentPin;
         if(pin != null) {
             pin.drawPin(gc, transform);
+        }
+    }
+
+    public void drawPath(Iterator<Edge> iterator) {
+        while(iterator.hasNext()){
+            Edge edge = iterator.next();
+            OSMNode first = edge.getV();
+            OSMNode second = edge.getW();
+
+            gc.setLineWidth(0.1 * (1/(100/(getDeterminant()))));
+            gc.setStroke(Color.RED);
+            gc.beginPath();
+            gc.moveTo(first.getLon(),first.getLat());
+            gc.lineTo(second.getLon(),second.getLat());
+            gc.stroke();
         }
     }
 
