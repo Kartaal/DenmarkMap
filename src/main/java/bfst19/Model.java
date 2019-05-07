@@ -10,21 +10,17 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
 
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import java.io.*;
 import java.util.*;
 import java.util.zip.ZipInputStream;
-
-import static javax.xml.stream.XMLStreamConstants.*;
 
 public class Model{
     private RouteHandler routeHandler;
     private static float lonfactor = 1.0f;
     private String datasetName;
     private static String dirPath;
-    private TextHandler textHandler = new TextHandler();
+	private TextHandler textHandler = TextHandler.getInstance();
     public DijkstraSP previousPath;
 
     private List<Runnable> colorObservers = new ArrayList<>();
@@ -36,7 +32,7 @@ public class Model{
     private float maxlon;
 
     private ObservableList<PointOfInterestItem> pointOfInterestItems = FXCollections.observableArrayList();
-    private String currentTypeColorTxt = "src/main/resources/config/TypeColorsNormal.txt";
+    private String currentTypeColorTxt = "config/TypeColorsNormal.txt";
     private HashMap<WayType,ResizingArray<String[]>> wayTypeCases = new HashMap<>();
     private ObservableList<String[]> foundMatches = FXCollections.observableArrayList();
     private ObservableList<String[]> typeColors = FXCollections.observableArrayList();
@@ -53,33 +49,45 @@ public class Model{
     }
 
     public Model(List<String> args) throws IOException, XMLStreamException, ClassNotFoundException {
+		//Setup so TextHandler deals with bloody default database in jar file
+		boolean hasInputFile = !args.isEmpty();
+		textHandler.setHasInputFile(hasInputFile);
 
-        //Changed from field to local variable so it can be garbage collected
-        Map<WayType, ResizingArray<Drawable>> ways = new EnumMap<>(WayType.class);
-        for (WayType type : WayType.values()) {
-            ways.put(type, new ResizingArray<>());
-        }
+		//Changed from field to local variable so it can be garbage collected
+		Map<WayType, ResizingArray<Drawable>> ways = new EnumMap<>(WayType.class);
+		for (WayType type : WayType.values()) {
+			ways.put(type, new ResizingArray<>());
+		}
 
-        wayTypeCases = textHandler.parseWayTypeCases("src/main/resources/config/WayTypeCases.txt");
-        textHandler.ParseWayColors(this);
+		wayTypeCases = textHandler.parseWayTypeCases();
+		textHandler.parseWayColors(this);
 
-        String filename = args.get(0);
-        //this might not be optimal
-        String[] arr = filename.split("\\.");
-        datasetName = arr[0].replace("data/","") + " Database";
-        dirPath = "data/"+datasetName;
-        InputStream OSMSource;
+		//Check if program is run with input argument, if not use default file (binary bornholm)
+		String filename;
+		if(hasInputFile) {
+			filename = args.get(0);
+		} else {
+			filename = "bornholm.zip.obj";
+		}
+
+
+		//this might not be optimal
+		String[] arr = filename.split("\\.");
+
+		//When using jar, the file name might be an absolute path,
+		// so replace the last \ with \data\ for the database directory
+		if(hasInputFile) {						//Matches the last \
+			datasetName = arr[0].replaceAll("\\\\(?!.*)$", "\\data\\") + " Database";
+		} else {
+			datasetName = arr[0].replace("data/", "") + " Database";
+		}
+
+		dirPath = datasetName;
+
+		InputStream OSMSource;
         if (filename.endsWith(".obj")) {
             long time = -System.nanoTime();
-            try (ObjectInputStream input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(filename)))) {
-                kdTreeMap = (Map<WayType, KDTree>) input.readObject();
-                minlat = input.readFloat();
-                minlon = input.readFloat();
-                maxlat = input.readFloat();
-                maxlon = input.readFloat();
-                lonfactor = input.readFloat();
-                routeHandler = new RouteHandler((EdgeWeightedGraph)input.readObject());
-            }
+			readObjFile(filename, hasInputFile);
             time += System.nanoTime();
             System.out.printf("Load time: %.1fs\n", time / 1e9);
         } else {
@@ -115,7 +123,30 @@ public class Model{
         AddressParser.getInstance().setCities();
     }
 
+	//Reads and object file located at filename,
+	// if hasInputFile is false it needs to read the file from a different location
+	private void readObjFile(String filename, boolean hasInputFile) throws IOException, ClassNotFoundException {
+		if(hasInputFile) {
+			try (ObjectInputStream input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(filename)))) {
+				initFieldsFromObjFile(input);
+			}
+		} else {
+			try (ObjectInputStream input = new ObjectInputStream(new BufferedInputStream(getClass().getClassLoader().getResourceAsStream(filename)))) {
+				initFieldsFromObjFile(input);
+			}
+		}
+	}
 
+	//Helper method to prevent code duplication that merely sets up the fields.
+	private void initFieldsFromObjFile(ObjectInputStream input) throws IOException, ClassNotFoundException {
+		kdTreeMap = (Map<WayType, KDTree>) input.readObject();
+		minlat = input.readFloat();
+		minlon = input.readFloat();
+		maxlat = input.readFloat();
+		maxlon = input.readFloat();
+		lonfactor = input.readFloat();
+		routeHandler = new RouteHandler((EdgeWeightedGraph) input.readObject());
+	}
 
     public void addFoundMatchesObserver(Runnable observer) {
         foundMatchesObservers.add(observer);
@@ -253,92 +284,98 @@ public class Model{
         return maxlat;
     }
 
-    public float getMaxlon() {
-        return maxlon;
-    }
+	public float getMaxlon() {
+		return maxlon;
+	}
 
 
-    public static String getDelimeter() {
-        return " QQQ ";
-    }
+	public static String getDelimeter() {
+		return " QQQ ";
+	}
 
-    public String getDatasetName() {
-        return datasetName;
-    }
-
-
-    //returns the ways of the given type within the given boundingbox
-    public ResizingArray<Drawable> getWaysOfType(WayType type, BoundingBox bbox) {
-        return kdTreeMap.get(type).rangeQuery(bbox);
-    }
-
-    public static double getLonfactor(){
-        return lonfactor;
-    }
-
-    public static String getDirPath(){
-        return dirPath;
-    }
-
-    public void switchColorScheme(boolean colorBlindEnabled) {
-        //TODO Remember to remove debug println
-        System.out.println("Colorblind mode enabled: " + colorBlindEnabled);
-
-        if (colorBlindEnabled) {
-            currentTypeColorTxt = ("src/main/resources/config/TypeColorsColorblind.txt");
-        }  else {
-            currentTypeColorTxt = ("src/main/resources/config/TypeColorsNormal.txt");
-        }
-        textHandler.ParseWayColors(this);
-    }
-
-    public Iterable<Edge> findPath(OSMNode startNode , OSMNode endNode , Vehicle type , boolean fastestPath){
-        return routeHandler.findPath(startNode,endNode,type,fastestPath);
-    }
-
-    public void parseSearch(String proposedAddress){
-        AddressParser.getInstance().parseSearch(proposedAddress,this);
-    }
+	public String getDatasetName() {
+		return datasetName;
+	}
 
 
-    OSMNode getNearestRoad(Point2D point, Vehicle type){
-        try{
-            ResizingArray<OSMNode> nodeList = new ResizingArray<>();
+	//returns the ways of the given type within the given boundingbox
+	public ResizingArray<Drawable> getWaysOfType(WayType type, BoundingBox bbox) {
+		return kdTreeMap.get(type).rangeQuery(bbox);
+	}
 
-            for(WayType wayType: RouteHandler.getDrivableWayTypes()){
-                OSMNode checkNeighbor = kdTreeMap.get(wayType).getNearestNeighbor(point, type);
-                if(checkNeighbor != null) {
-                    nodeList.add(checkNeighbor);
-                }
-            }
+	public static double getLonfactor(){
+		return lonfactor;
+	}
 
-            if(nodeList.isEmpty()){
-                throw new nothingNearbyException();
-            }
+	public static String getDirPath(){
+		return dirPath;
+	}
 
-            return Calculator.getClosestNode(point, nodeList);
+	public void switchColorScheme(boolean colorBlindEnabled) {
+		if (colorBlindEnabled) {
+			currentTypeColorTxt = ("config/TypeColorsColorblind.txt");
+		}  else {
+			currentTypeColorTxt = ("config/TypeColorsNormal.txt");
+		}
+		textHandler.parseWayColors(this);
+	}
 
-        }catch (nothingNearbyException e){
-            e.printStackTrace();
-            return null;
-        }
-    }
+	public Iterable<Edge> findPath(OSMNode startNode , OSMNode endNode , Vehicle type , boolean fastestPath){
+		return routeHandler.findPath(startNode,endNode,type,fastestPath);
+	}
 
-    OSMNode getNearestBuilding(Point2D point){
-        try {
-            OSMNode closestElement = kdTreeMap.get(WayType.BUILDING).getNearestNeighbor(point, Vehicle.ABSTRACTVEHICLE);
+	public void parseSearch(String proposedAddress){
+		AddressParser.getInstance().parseSearch(proposedAddress,this);
+	}
 
-            if(closestElement == null){
-                throw new nothingNearbyException();
-            }
+	OSMNode getNearestRoad(Point2D point, Vehicle type){
+		try{
+			ResizingArray<OSMNode> nodeList = new ResizingArray<>();
 
-            return closestElement;
+			for(WayType wayType: RouteHandler.getDrivableWayTypes()){
+				OSMNode checkNeighbor = kdTreeMap.get(wayType).getNearestNeighbor(point, type);
+				if(checkNeighbor != null) {
+					nodeList.add(checkNeighbor);
+				}
+			}
 
-        }catch(nothingNearbyException e){
-            e.printStackTrace();
-            return null;
-        }
+			if(nodeList.isEmpty()){
+				throw new nothingNearbyException();
+			}
 
+			return Calculator.getClosestNode(point, nodeList);
 
-    }
+		}catch (nothingNearbyException e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	OSMNode getNearestBuilding(Point2D point) {
+		try {
+			OSMNode closestElement = kdTreeMap.get(WayType.BUILDING).getNearestNeighbor(point, Vehicle.ABSTRACTVEHICLE);
+
+			if (closestElement == null) {
+				throw new nothingNearbyException();
+			}
+
+			return closestElement;
+
+		} catch (nothingNearbyException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public HashMap<String, Integer> parseSpeedDefaults() {
+		return textHandler.parseSpeedDefaults();
+	}
+
+	public HashMap<WayType, HashMap<String, ResizingArray<String[]>>> parseDrivableCases() {
+		return textHandler.parseDrivableCases();
+	}
+
+	public ArrayList<String> parseColorCases(String s){
+		return textHandler.getConfigFile(s);
+	}
 }
