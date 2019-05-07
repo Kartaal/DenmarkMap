@@ -4,7 +4,6 @@ import bfst19.Line.OSMNode;
 import bfst19.Route_parsing.Edge;
 import bfst19.KDTree.BoundingBox;
 import bfst19.KDTree.Drawable;
-import bfst19.Route_parsing.ResizingArray;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -29,7 +28,6 @@ public class MapCanvas extends Canvas {
     boolean hasPath = false;
     int detailLevel =1;
 
-    private boolean colorBlindEnabled = false;
     private double singlePixelLength;
     private double percentOfScreenArea;
 

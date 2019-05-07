@@ -1,13 +1,10 @@
 package bfst19;
 
-import bfst19.Route_parsing.ResizingArray;
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 
 public class TextHandler {
     private static TextHandler textHandler;

@@ -1,11 +1,8 @@
 package bfst19.Route_parsing;
 
-import bfst19.Calculator;
+import bfst19.*;
 import bfst19.Line.OSMNode;
 import bfst19.Line.OSMWay;
-import bfst19.Model;
-import bfst19.TextHandler;
-import bfst19.WayType;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -130,43 +127,48 @@ public class RouteHandler{
         drivabillty =(HashMap<WayType, HashMap<Vehicle, Drivabillity>>) defaultDrivabillty.clone();
     }*/
 
-	public Iterable<Edge> getAdj(int id, Vehicle type) {
-		return G.adj(id);
-	}
 
-	public static boolean isTraversableNode(OSMNode node, Vehicle type){
-		Iterable<Edge> adj = G.adj(node.getId());
-		for(Edge edge : adj){
-			if(edge.isForwardAllowed(type,node.getId())){
-				return true;
-			}
-		}
-		return false;
-	}
+    public Iterable<Edge> getAdj(int id, Vehicle type) {
+        return G.adj(id);
+    }
 
-	public static String getArbitraryAdjRoadName(OSMNode node){
-		Iterable<Edge> adj = G.adj(node.getId());
-		Iterator<Edge> iterator = adj.iterator();
-		while(iterator.hasNext()) {
-			Edge edge = iterator.next();
-			if (!edge.getName().equals("")) {
-				return edge.getName();
-			}
-		}
-		return "No Name Found";
-	}
+    public static boolean isTraversableNode(OSMNode node, Vehicle type){
+        Iterable<Edge> adj = G.adj(node.getId());
+        for(Edge edge : adj){
+            if(edge.isForwardAllowed(type,node.getId())){
+                return true;
+            }
+        }
+        return false;
+    }
 
-	public void finishNodeGraph(){
-		System.out.println(G.E());
-		System.out.println(G.V());
-		drivabillty = null;
-		defaultDrivabillty = null;
-		drivableCases = null;
-		G.trim();
-	}
+    public static String getArbitraryAdjRoadName(OSMNode node){
+        Iterable<Edge> adj = G.adj(node.getId());
+        Iterator<Edge> iterator = adj.iterator();
+        while(iterator.hasNext()) {
+            Edge edge = iterator.next();
+            if (!edge.getName().equals("")) {
+                return edge.getName();
+            }
+        }
+        return "No Name Found";
+    }
 
-	public EdgeWeightedGraph getNodeGraph() {
-		return G;
-	}
+    public void finishNodeGraph(){
+        System.out.println(G.E());
+        System.out.println(G.V());
+        drivabillty = null;
+        defaultDrivabillty = null;
+        drivableCases = null;
+        G.trim();
+    }
+
+    public EdgeWeightedGraph getNodeGraph() {
+        return G;
+    }
+
+    public ResizingArray<Edge> getAdjacentEdges(int id){
+        return G.getAdjacentEdges(id);
+    }
+
 }
-

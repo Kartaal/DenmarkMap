@@ -1,9 +1,7 @@
 package bfst19.Line;
 
-import bfst19.Route_parsing.ResizingArray;
+import bfst19.ResizingArray;
 
-import java.util.ArrayList;
-import java.util.function.LongSupplier;
 public class OSMWay {
 	ResizingArray<OSMNode> ways;
 	int id;

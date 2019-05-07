@@ -1,7 +1,6 @@
 package bfst19;
 import bfst19.Line.OSMNode;
 import bfst19.Route_parsing.Edge;
-import bfst19.Route_parsing.ResizingArray;
 import bfst19.Route_parsing.RouteHandler;
 import bfst19.Route_parsing.Vehicle;
 import javafx.collections.ObservableList;
@@ -280,13 +279,14 @@ public class Controller {
     private void onMousePressed(MouseEvent e) {
         x = (float) e.getX();
         y = (float) e.getY();
-        setClosestRoadText(x,y);
+
 
         long prevtime = time;
         time = System.nanoTime();
 
         if(e.isPrimaryButtonDown()){
             //System.out.println(Math.abs((-time + prevtime) / 1e8));
+            //Todo: delete this part in the final commit. This is here for debugging purposes
             if (Math.abs((-time + prevtime) / 1e8) <= 2){
                 closestNode = model.getNearestRoad(mapCanvas.getModelCoords(x,y), Vehicle.CAR);
                 if(nodeIDs[0] == null){
@@ -313,7 +313,7 @@ public class Controller {
         }
 
         if(e.isSecondaryButtonDown()){
-            // nothing at the moment
+            setClosestRoadText(x,y);
         }
     }
 

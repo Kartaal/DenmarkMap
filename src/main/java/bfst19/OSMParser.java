@@ -3,7 +3,6 @@ package bfst19;
 import bfst19.KDTree.Drawable;
 import bfst19.KDTree.KDTree;
 import bfst19.Line.*;
-import bfst19.Route_parsing.ResizingArray;
 import bfst19.Route_parsing.RouteHandler;
 
 import javax.xml.stream.XMLInputFactory;

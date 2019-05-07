@@ -16,6 +16,7 @@ import java.util.*;
 import java.util.zip.ZipInputStream;
 
 public class Model{
+
     private RouteHandler routeHandler;
     private static float lonfactor = 1.0f;
     private String datasetName;
