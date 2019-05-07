@@ -102,7 +102,7 @@
                             </graphic>
 
                         <HBox.margin>
-                            <Insets left="150.0" />
+                            <Insets left="140.0" />
                         </HBox.margin>
                     </ToggleButton>
 
