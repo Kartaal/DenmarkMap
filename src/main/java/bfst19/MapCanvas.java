@@ -29,7 +29,6 @@ public class MapCanvas extends Canvas {
     boolean hasPath = false;
     int detailLevel =1;
 
-    private boolean colorBlindEnabled = false;
     private double singlePixelLength;
     private double percentOfScreenArea;
 
