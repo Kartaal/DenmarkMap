@@ -17,6 +17,7 @@ public class ControllerRoutePanel {
 
 
     static Vehicle vehicleToggle= Vehicle.CAR;
+    static boolean fastestRoute = true;
 
     Point2D fromPoint, toPoint;
     int fromId, toId;
@@ -30,6 +31,9 @@ public class ControllerRoutePanel {
 
     @FXML
     private ToggleGroup toggleRouteType;
+
+    @FXML
+    private ToggleButton fastestPathButton;
 
     @FXML
     private InstructionContainer instructions;
@@ -48,7 +52,7 @@ public class ControllerRoutePanel {
     public void init(Controller controller) {
         this.controller = controller;
         instructions.init(controller);
-        controller.getModel().addPathObserver(this::setRouteType);
+        //controller.getModel().addPathObserver(this::);
 
         textFieldFrom.init(controller, "current");
         textFieldFrom.setOnResponseListener(response -> {
@@ -64,6 +68,7 @@ public class ControllerRoutePanel {
 
         setupToggle();
         car.setSelected(true);
+        fastestPathButton.setSelected(true);
 
     }
 
@@ -92,17 +97,32 @@ public class ControllerRoutePanel {
             if(newValue == null)
                 oldValue.setSelected(true);
         }));
+
     }
 
     @FXML
     private void setRouteType(){
         removeInstructions();
+
         String toggleGroupValue;
 
         ToggleButton selectedToggleButton = (ToggleButton) toggleRouteType.getSelectedToggle();
         toggleGroupValue = selectedToggleButton.getId();
 
         boolean changed = false;
+
+        //Fastest Path Button
+
+        if (fastestPathButton.isSelected()){
+            fastestRoute = true;
+            changed = true;
+        }
+        else{
+            fastestRoute = false;
+            changed = true;
+        }
+
+        //ToggleGroup
 
         if(toggleGroupValue.equals("car") && vehicleToggle != Vehicle.CAR){
             vehicleToggle = Vehicle.CAR;
@@ -119,6 +139,7 @@ public class ControllerRoutePanel {
 
         if(changed) {
             System.out.println(vehicleToggle.toString());
+            System.out.println(fastestRoute);
             //Changed setUpInstructions with the below code, since the idea is to make a new path for bikes, and
             //the setup is always called by an observer when the path is found.
             tryToFindPath();
@@ -137,7 +158,7 @@ public class ControllerRoutePanel {
             toId = controller.getNearestRoad(toPoint).getId();
             fromId = controller.getNearestRoad(fromPoint).getId();
 
-            Iterable<Edge> path = controller.getPath(fromId, toId, vehicleToggle,true);
+            Iterable<Edge> path = controller.getPath(fromId, toId, vehicleToggle, fastestRoute);
             controller.addPath(path);
 
             //toPoint = null;

@@ -95,6 +95,11 @@
                        </ImageView>
                    </graphic>
                </ToggleButton>
+
+               <ToggleButton text="fastest route" fx:id="fastestPathButton" onAction="#setRouteType" styleClass="toggle-button" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0">
+
+               </ToggleButton>
+
                <padding>
                    <Insets bottom="5.0" top="5.0" right="5.0" left="0.5"/>
                </padding>
