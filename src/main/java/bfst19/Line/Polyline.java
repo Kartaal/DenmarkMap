@@ -40,18 +40,18 @@ public class Polyline implements Drawable, Serializable, BoundingBoxable {
 		float xMax = way.get(0).getLon();
 		float yMin = way.get(0).getLat();
 		float yMax = way.get(0).getLat();
-		if (isOSMWay) {
+		if(isOSMWay){
 			nodes = new OSMNode[way.size()];
-			for (int i = 0; i < way.size(); i++) {
+			for (int i = 0 ; i < way.size() ; i++) {
 				nodes[i] = way.get(i);
 				xMin = Math.min(xMin, way.get(i).getLon());
 				xMax = Math.max(xMax, way.get(i).getLon());
 				yMin = Math.min(yMin, way.get(i).getLat());
 				yMax = Math.max(yMax, way.get(i).getLat());
 			}
-		} else {
+		}else{
 			coord = new float[way.size() * 2];
-			for (int i = 0; i < way.size(); i++) {
+			for (int i = 0 ; i < way.size() ; i++) {
 				coord[2 * i] = way.get(i).getLon();
 				coord[2 * i + 1] = way.get(i).getLat();
 				xMin = Math.min(xMin, way.get(i).getLon());
@@ -65,17 +65,17 @@ public class Polyline implements Drawable, Serializable, BoundingBoxable {
 		this.centerX = (xMin + xMax) / 2;
 		this.centerY = (yMin + yMax) / 2;
 
-		bb = new BoundingBox((double) xMin, (double) yMin, (xMax - xMin), (double) (yMax - yMin));
+		bb = new BoundingBox((double) xMin, (double) yMin, (xMax-xMin), (double) (yMax-yMin));
 	}
 
-	public void stroke(GraphicsContext gc, double singlePixelLength) {
+	public void stroke(GraphicsContext gc,double singlePixelLength) {
 		gc.beginPath();
-		trace(gc, singlePixelLength);
+		trace(gc,singlePixelLength);
 		gc.stroke();
 	}
 
 	public void trace(GraphicsContext gc, double singlePixelLength) {
-		if (nodes == null) {
+		if(nodes == null) {
 			//See constructor for explanation
 			gc.moveTo(coord[0], coord[1]);
 			float previousX = coord[0];
@@ -87,7 +87,7 @@ public class Polyline implements Drawable, Serializable, BoundingBoxable {
 					gc.lineTo(coord[i], coord[i + 1]);
 				}
 			}
-		} else {
+		}else {
 			OSMNode firstnode = nodes[0];
 			gc.moveTo(firstnode.getLon(), firstnode.getLat());
 			float previousX = firstnode.getLon();
@@ -103,24 +103,24 @@ public class Polyline implements Drawable, Serializable, BoundingBoxable {
 		}
 	}
 
-	public void fill(GraphicsContext gc, double singlePixelLength, double percentOfScreenArea) {
+	public void fill(GraphicsContext gc,double singlePixelLength,double percentOfScreenArea) {
 		gc.beginPath();
-		double area = (bb.getMaxX() - bb.getMinX()) * (bb.getMaxY() - bb.getMinY());
-		if (area < percentOfScreenArea) {
+		double area = (bb.getMaxX()-bb.getMinX())*(bb.getMaxY()-bb.getMinY());
+		if(area<percentOfScreenArea){
 			return;
 		}
-		trace(gc, singlePixelLength);
+		trace(gc,singlePixelLength);
 		gc.fill();
 	}
 
-	public double shortestDistance(Point2D point) {
+	public double shortestDistance(Point2D point){
 		double nodeDistance;
 		double closestDistance = Double.POSITIVE_INFINITY;
 
-		for (OSMNode node : nodes) {
+		for(OSMNode node: nodes){
 			nodeDistance = node.distanceTo(point);
 
-			if (nodeDistance < closestDistance) {
+			if(nodeDistance < closestDistance){
 				closestDistance = nodeDistance;
 			}
 		}
