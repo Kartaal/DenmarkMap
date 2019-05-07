@@ -10,6 +10,15 @@ import javafx.geometry.Point2D;
 import java.io.Serializable;
 import java.util.*;
 
+/**
+ * KDTree stores spatial data in KDNodes.
+ * The constructor only initialises an empty tree which is filled with useful data
+ * by using the insertAll() method.
+ * The method rangeQuery() searches through the tree.
+ * TODO nodeRangeQuery() jdoc
+ * Something about nodeRangeQuery() ?????????
+ * This tree also supports finding the nearest neighbor with getNearestNeighbor().
+ */
 public class KDTree implements Serializable {
     private KDNode root;
     private static xComparator xComp = new xComparator();
@@ -21,6 +30,13 @@ public class KDTree implements Serializable {
         root = null;
     }
 
+    /**
+     * Inserts a ResizingArray of Drawable objects into the tree.
+     * If the ResizingArray is empty, only the root of the tree is created and
+     * its fields are set to arbitrary wrong values (assuming only Denmark or a subset
+     * is parsed).
+     * @param list	The ResizingArray of Drawable objects to be inserted into the tree.
+     */
     //Method for creating a KDTree from a list of Drawable
     public void insertAll(ResizingArray<Drawable> list) {
         //If tree is currently empty, do a lot of work
@@ -103,6 +119,14 @@ public class KDTree implements Serializable {
         return currNode;
     }
 
+    /**
+     * Retrieves the nearest neighbor by making a tiny BoundingBox around
+     * a point and iteratively increasing its size if no elements are found.
+     * Once any amount of elements have been found, the OSMNode in a KDNode
+     * with the closest Euclidean distance is returned.
+     * @param point	The point used for finding the closest element in the tree.
+     * @return		The OSMNode that has the shortest Euclidean distance to the point.
+     */
     public OSMNode getNearestNeighbor(Point2D point, Vehicle type) {
         //Returns node of the nearest neighbor to a point
         int count = 0;
@@ -145,6 +169,12 @@ public class KDTree implements Serializable {
         return queryList;
     }
 
+    /**
+     * Searches through the tree for the stored Drawable elements that lie
+     * within the given BoundingBox.
+     * @param bbox	A BoundingBox that intersects all the elements returned.
+     * @return		A ResizingArray of elements intersecting the bbox BoundingBox.
+     */
     //Method for finding elements in the KDTree that intersects a BoundingBox
     public ResizingArray<Drawable> rangeQuery(BoundingBox bbox) {
         ResizingArray<Drawable> returnElements = new ResizingArray<>();
@@ -188,6 +218,11 @@ public class KDTree implements Serializable {
         return returnElements;
     }
 
+    /**
+     * TODO JavaDoc for nodeRangeQuery()
+     * @param bbox
+     * @return
+     */
     //Method for finding elements in the KDTree that intersects a BoundingBox
     public ResizingArray<OSMNode> nodeRangeQuery(BoundingBox bbox, Vehicle type) {
         ResizingArray<OSMNode> returnElements = new ResizingArray<>();

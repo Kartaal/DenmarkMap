@@ -3,6 +3,10 @@ package bfst19.KDTree;
 import java.io.Serializable;
 import java.util.Comparator;
 
+/**
+ * @see java.util.Comparator
+ * A comparator that takes two BoundingBoxable objects and compares their center y values.
+ */
 //Innerclass comparator for Y dimension
 public class yComparator implements Comparator<BoundingBoxable>, Serializable {
     //This calculation is made to convert from float to int because Comparator interface requires it
