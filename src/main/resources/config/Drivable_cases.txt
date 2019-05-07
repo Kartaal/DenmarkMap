@@ -24,6 +24,7 @@ BIKE -1
 cycleway:right lane 0
 cycleway:right track 0
 cycleway:left track 0
+cycleway track 2
 cycle yes 2
 %
 WALKING -1
@@ -40,6 +41,7 @@ BIKE -1
 cycleway:right lane 0
 cycleway:right track 0
 cycleway:left track 0
+cycleway track 2
 cycle yes 2
 %
 WALKING -1

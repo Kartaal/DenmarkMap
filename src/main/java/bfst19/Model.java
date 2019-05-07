@@ -4,20 +4,16 @@ import bfst19.Exceptions.nothingNearbyException;
 import bfst19.KDTree.BoundingBox;
 import bfst19.KDTree.Drawable;
 import bfst19.KDTree.KDTree;
+import bfst19.Line.OSMNode;
 import bfst19.Route_parsing.*;
-import bfst19.Line.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
 
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import java.io.*;
 import java.util.*;
 import java.util.zip.ZipInputStream;
-
-import static javax.xml.stream.XMLStreamConstants.*;
 
 public class Model{
     private RouteHandler routeHandler;

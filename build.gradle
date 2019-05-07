@@ -43,6 +43,7 @@ dependencies {
 	// Use JUnit 5’s legacy support for JUnit 4 
 	testCompileOnly 'junit:junit: 4.12'
 	testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.3.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.4.2'
 }
 
 // In this section you declare where to find the dependencies of your project
