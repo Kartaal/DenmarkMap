@@ -1,10 +1,10 @@
 package bfst19.Route_parsing;
 
 import bfst19.Line.OSMNode;
+import bfst19.ResizingArray;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class EdgeWeightedGraph implements Serializable {
     //don't know what this is

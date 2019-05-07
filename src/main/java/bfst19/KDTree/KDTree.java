@@ -3,7 +3,7 @@ package bfst19.KDTree;
 import bfst19.Calculator;
 import bfst19.Line.OSMNode;
 import bfst19.Model;
-import bfst19.Route_parsing.ResizingArray;
+import bfst19.ResizingArray;
 import bfst19.Route_parsing.RouteHandler;
 import bfst19.Route_parsing.Vehicle;
 import javafx.geometry.Point2D;

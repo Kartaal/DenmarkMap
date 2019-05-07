@@ -10,14 +10,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
 
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import java.io.*;
 import java.util.*;
 import java.util.zip.ZipInputStream;
-
-import static javax.xml.stream.XMLStreamConstants.*;
 
 public class Model{
 
@@ -324,30 +320,20 @@ public class Model{
         }
     }
 
-    OSMNode getNearestBuilding(Point2D point){
+    OSMNode getNearestBuilding(Point2D point) {
         try {
             OSMNode closestElement = kdTreeMap.get(WayType.BUILDING).getNearestNeighbor(point, Vehicle.ABSTRACTVEHICLE);
 
-            if(closestElement == null){
+            if (closestElement == null) {
                 throw new nothingNearbyException();
             }
 
             return closestElement;
 
-        }catch(nothingNearbyException e){
+        } catch (nothingNearbyException e) {
             e.printStackTrace();
             return null;
         }
-
-    public HashMap<String, Integer> parseSpeedDefaults(String s) {
-        return textHandler.parseSpeedDefaults(s);
     }
 
-    public HashMap<WayType, HashMap<String, ResizingArray<String[]>>> parseDrivableCases(String s) {
-        return textHandler.parseDrivableCases(s);
-    }
-
-    public RouteHandler getRouteHandler() {
-        return routeHandler;
-    }
 }

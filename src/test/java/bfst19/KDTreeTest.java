@@ -7,7 +7,6 @@ import bfst19.KDTree.KDTree;
 import bfst19.Line.OSMNode;
 import bfst19.Line.OSMWay;
 import bfst19.Line.Polyline;
-import bfst19.Route_parsing.ResizingArray;
 import javafx.geometry.Point2D;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;

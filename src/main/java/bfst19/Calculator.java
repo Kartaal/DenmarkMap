@@ -1,10 +1,7 @@
 package bfst19;
 
 import bfst19.Line.OSMNode;
-import bfst19.Route_parsing.ResizingArray;
 import javafx.geometry.Point2D;
-
-import java.util.ArrayList;
 
 public class Calculator {
     public static float angleBetween2Lines(OSMNode A1, OSMNode A2, OSMNode B1, OSMNode B2) {

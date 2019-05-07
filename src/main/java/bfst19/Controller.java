@@ -1,7 +1,6 @@
 package bfst19;
 import bfst19.Line.OSMNode;
 import bfst19.Route_parsing.Edge;
-import bfst19.Route_parsing.ResizingArray;
 import bfst19.Route_parsing.RouteHandler;
 import bfst19.Route_parsing.Vehicle;
 import javafx.collections.ObservableList;
@@ -18,7 +17,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.util.Duration;
 
 public class Controller {
 

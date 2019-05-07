@@ -1,12 +1,9 @@
 package bfst19;
 
-import bfst19.Route_parsing.ResizingArray;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class TextHandler {
     private static TextHandler textHandler;

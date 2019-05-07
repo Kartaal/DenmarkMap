@@ -43,6 +43,10 @@ dependencies {
 	// Use JUnit 5’s legacy support for JUnit 4 
 	testCompileOnly 'junit:junit: 4.12'
 	testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.3.1'
+	
+	// libaries
+	compile files('libs/algs4.jar')
+    compile fileTree(dir: 'libs', include: '*.jar')
 }
 
 // In this section you declare where to find the dependencies of your project
@@ -59,6 +63,7 @@ jar {
 		attributes 'Main-Class': mainClassName
 	}
 }
+
 
 applicationDefaultJvmArgs = ["-Xms256m", "-Xmx6144m"]
 
