@@ -53,37 +53,55 @@ public class AutoTextField extends TextField {
 
     public void showResults(){
         model.clearFoundMatchesObservers();
-        addAddressesToDropDown();
-        if (!addressDropDown.isShowing()) {
+        if (addAddressesToDropDown()) {
             addressDropDown.show(this, Side.BOTTOM, 0, 0);
         }
 
     }
 
     //TODO: Add ScrollPane and limit height
-    private void addAddressesToDropDown() {
+    private boolean addAddressesToDropDown() {
             List<CustomMenuItem> menuItems = new LinkedList<>();
             ArrayList<Label> addressLabels = new ArrayList<>();
             Iterator<String[]> iterator = controller.getFoundMatchesIterator();
             if(iterator.hasNext()) {
                 String[] firstMatch = iterator.next();
+
                 //this means that the match is a complete address
                 if (firstMatch.length == 8) {
                     panAddress(Float.valueOf(firstMatch[0]), Float.valueOf(firstMatch[1]));
-                    return;
+                    addressDropDown.getItems().clear();
+                    menuItems.add(new CustomMenuItem(new Label(this.getText()),true));
+
+                    //return;
                     //and the rest of the address is passed of to some other part of the UI.
                 } else if (firstMatch.length == 4) {
                     addressLabels.add(new Label(firstMatch[0] + " " + firstMatch[1] + " " + firstMatch[2] + " " + firstMatch[3]));
+                    System.out.println(firstMatch[0] + " " + firstMatch[1] + " " + firstMatch[2] + " " + firstMatch[3]);
+
                     while (iterator.hasNext()) {
+
                         String[] match = iterator.next();
+
+                        System.out.println(firstMatch[0] + " " + match[1] + " " + match[2] + " " + match[3]);
+
+
                         Label labelAddress = new Label(match[0] + " " + match[1] + " " + match[2] + " " + match[3]);
+
                         addressLabels.add(labelAddress);
                     }
                 } else {
                     addressLabels.add(new Label(firstMatch[0] + " " + firstMatch[1] + " " + firstMatch[2]));
+                    System.out.println(firstMatch[0] + " " + firstMatch[0] + " " + firstMatch[1] + " " + firstMatch[2]);
+
                     while (iterator.hasNext()) {
                         String[] match = iterator.next();
+
+                        System.out.println(firstMatch[0] + " " + match[1] + " " + match[2]);
+
+
                         Label labelAddress = new Label(match[0] + " " + match[1] + " " + match[2]);
+
                         addressLabels.add(labelAddress);
                     }
                 }
@@ -104,6 +122,8 @@ public class AutoTextField extends TextField {
 
             addressDropDown.getItems().clear();
             addressDropDown.getItems().addAll(menuItems);
+
+            return true;
 
     }
 
