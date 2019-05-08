@@ -331,27 +331,21 @@ public class Model{
 		AddressParser.getInstance().parseSearch(proposedAddress,this);
 	}
 
-	OSMNode getNearestRoad(Point2D point, Vehicle type){
-		try{
-			ResizingArray<OSMNode> nodeList = new ResizingArray<>();
+	OSMNode getNearestRoad(Point2D point, Vehicle type) throws nothingNearbyException {
+		ResizingArray<OSMNode> nodeList = new ResizingArray<>();
 
-			for(WayType wayType: RouteHandler.getDrivableWayTypes()){
-				OSMNode checkNeighbor = kdTreeMap.get(wayType).getNearestNeighbor(point, type);
-				if(checkNeighbor != null) {
-					nodeList.add(checkNeighbor);
-				}
+		for (WayType wayType : RouteHandler.getDrivableWayTypes()) {
+			OSMNode checkNeighbor = kdTreeMap.get(wayType).getNearestNeighbor(point, type);
+			if (checkNeighbor != null) {
+				nodeList.add(checkNeighbor);
 			}
-
-			if(nodeList.isEmpty()){
-				throw new nothingNearbyException();
-			}
-
-			return Calculator.getClosestNode(point, nodeList);
-
-		}catch (nothingNearbyException e){
-			e.printStackTrace();
-			return null;
 		}
+
+		if (nodeList.isEmpty()) {
+			throw new nothingNearbyException();
+		}
+
+		return Calculator.getClosestNode(point, nodeList);
 	}
 
 	OSMNode getNearestBuilding(Point2D point) {

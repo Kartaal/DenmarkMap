@@ -1,4 +1,6 @@
 package bfst19;
+
+import bfst19.Exceptions.nothingNearbyException;
 import bfst19.Line.OSMNode;
 import bfst19.Route_parsing.Edge;
 import bfst19.Route_parsing.RouteHandler;
@@ -10,14 +12,14 @@ import javafx.geometry.Point2D;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-
-import java.io.IOException;
-import java.util.Iterator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+
+import java.io.IOException;
+import java.util.Iterator;
 
 public class Controller {
 
@@ -51,7 +53,7 @@ public class Controller {
     public void init(Model model) {
         //TODO: figure out init methods
         this.model = model;
-        mapCanvas.init(model,this);
+        mapCanvas.init(model, this);
 
 
         oldDeterminant = mapCanvas.getDeterminant();
@@ -70,7 +72,7 @@ public class Controller {
 
     //Methods from model which are used by the class AutoTextField
 
-    public Model getModel(){
+    public Model getModel() {
         return model;
     }
 
@@ -80,20 +82,23 @@ public class Controller {
     }
     */
 
-    public Iterator<String[]> getFoundMatchesIterator(){
+    public Iterator<String[]> getFoundMatchesIterator() {
         return model.foundMatchesIterator();
     }
-    public Iterator<Edge> getpathIterator(){
+
+    public Iterator<Edge> getpathIterator() {
         return model.pathIterator();
     }
 
-    public void parseSearchText(String searchText){
+    public void parseSearchText(String searchText) {
         model.parseSearch(searchText);
     }
 
-    public void parseTheme(boolean colorBlindEnabled){ model.switchColorScheme(colorBlindEnabled);}
+    public void parseTheme(boolean colorBlindEnabled) {
+        model.switchColorScheme(colorBlindEnabled);
+    }
 
-    public void parseOnlyRoadsMode(boolean enabled){
+    public void parseOnlyRoadsMode(boolean enabled) {
         mapCanvas.toggleNonRoads(enabled);
         mapCanvas.repaint();
     }
@@ -102,7 +107,7 @@ public class Controller {
     public void setUpPointOfInterestPanel() {
         VBox vBox = null;
 
-        if(borderPane.getLeft() != null){
+        if (borderPane.getLeft() != null) {
             borderPane.setLeft(null);
         }
 
@@ -120,29 +125,29 @@ public class Controller {
     }
 
     //Initialize InfoPanel
-    public void setUpInfoPanel(String adress, float x, float y){
-            VBox vBox = null;
+    public void setUpInfoPanel(String adress, float x, float y) {
+        VBox vBox = null;
 
-            if(borderPane.getRight() != null){
-                borderPane.setRight(null);
-            }
+        if (borderPane.getRight() != null) {
+            borderPane.setRight(null);
+        }
 
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("InfoPanel.fxml"));
-            try {
-                vBox = fxmlLoader.load();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("InfoPanel.fxml"));
+        try {
+            vBox = fxmlLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-            borderPane.setRight(vBox);
+        borderPane.setRight(vBox);
 
-            ControllerInfoPanel controllerInfoPanel = fxmlLoader.getController();
-            controllerInfoPanel.init(this, adress, x, y);
+        ControllerInfoPanel controllerInfoPanel = fxmlLoader.getController();
+        controllerInfoPanel.init(this, adress, x, y);
     }
 
     //Initialize BarPanel
-    public void setUpBar(){
-        if(borderPane.getLeft() != null){
+    public void setUpBar() {
+        if (borderPane.getLeft() != null) {
             borderPane.setLeft(null);
         }
 
@@ -166,8 +171,8 @@ public class Controller {
     }
 
     //Initialize MenuPanel
-    public void setupMenuPanel(){
-        if(borderPane.getLeft() != null){
+    public void setupMenuPanel() {
+        if (borderPane.getLeft() != null) {
             borderPane.setLeft(null);
         }
 
@@ -191,7 +196,7 @@ public class Controller {
 
     //Initialize RoutePanel
     public void setupRoutePanel() {
-        if(borderPane.getLeft() != null){
+        if (borderPane.getLeft() != null) {
             borderPane.setLeft(null);
         }
 
@@ -215,14 +220,14 @@ public class Controller {
     public void setScalebar() {
         // TODO findout and resolve getY so it can be getX, since it the te x-coor we want
         //todo fix using model to calculate distance
-        float minX = (float)mapCanvas.getModelCoords(0, 0).getY();
-        float maxX = (float)mapCanvas.getModelCoords(0, (float)mapCanvas.getHeight()).getY();
-        float y = (float) (mapCanvas.getModelCoords(0, 0).getX()/model.getLonfactor());
+        float minX = (float) mapCanvas.getModelCoords(0, 0).getY();
+        float maxX = (float) mapCanvas.getModelCoords(0, (float) mapCanvas.getHeight()).getY();
+        float y = (float) (mapCanvas.getModelCoords(0, 0).getX() / Model.getLonfactor());
         scaleText.setText(ScaleBar.getScaleText(minX, y, maxX, y, mapCanvas.getWidth()));
     }
 
-    public void panToPoint(double x, double y){
-        mapCanvas.panToPoint(x,y);
+    public void panToPoint(double x, double y) {
+        mapCanvas.panToPoint(x, y);
     }
 
     @FXML
@@ -233,7 +238,7 @@ public class Controller {
                 mapCanvas.repaint();
                 break;
             case P:
-                mapCanvas.panToPoint(14.8429560,55.0967440);
+                mapCanvas.panToPoint(14.8429560, 55.0967440);
                 break;
             case H:
                 fastestBoolean = !fastestBoolean;
@@ -251,8 +256,8 @@ public class Controller {
             case S:
 
                 break;
-            case U:
-                // do not enable on larger dataset than bornholm!!!
+            case F10:
+                // do not enable on larger dataset than bornholm or so, makes it very laggy!!!
                 roadNameOnHover = !roadNameOnHover;
                 break;
 
@@ -280,7 +285,6 @@ public class Controller {
     private void onMousePressed(MouseEvent e) {
         x = (float) e.getX();
         y = (float) e.getY();
-
 
         long prevtime = time;
         time = System.nanoTime();
@@ -316,8 +320,8 @@ public class Controller {
     }
 
     @FXML
-    public void onMouseMoved(MouseEvent e){
-        if (roadNameOnHover){
+    public void onMouseMoved(MouseEvent e) {
+        if (roadNameOnHover) {
 
             float contX = (float) e.getX();
             float contY = (float) e.getY();
@@ -330,7 +334,7 @@ public class Controller {
     }
 
     public void addPath(Iterable<Edge> path) {
-        if(path != null){
+        if (path != null) {
             model.clearPath();
             model.addPath(path);
         }
@@ -338,7 +342,7 @@ public class Controller {
     }
 
     public Iterable<Edge> getPath(OSMNode startNode, OSMNode endNode, Vehicle type, boolean b) {
-        return model.findPath(startNode,endNode, type,b);
+        return model.findPath(startNode, endNode, type, b);
     }
 
     public static boolean KdTreeBoolean() {
@@ -349,24 +353,40 @@ public class Controller {
         model.addPathObserver(instructionContainer::showInstructions);
     }
 
-    public BorderPane getBorderPane(){
+    public BorderPane getBorderPane() {
         return borderPane;
     }
 
-    public ObservableList<PointOfInterestItem> pointOfInterestList(){
+    public ObservableList<PointOfInterestItem> pointOfInterestList() {
         return model.pointOfInterestList();
     }
 
-    public void addPointsOfInterestItem(PointOfInterestItem pointOfInterestItem) { model.addPointOfInterestItem(pointOfInterestItem);}
+    public void addPointsOfInterestItem(PointOfInterestItem pointOfInterestItem) {
+        model.addPointOfInterestItem(pointOfInterestItem);
+    }
 
-    public void removePointOfInterestItem(PointOfInterestItem pointOfInterestItem){ model.removePointOfInterestItem(pointOfInterestItem);}
+    public void removePointOfInterestItem(PointOfInterestItem pointOfInterestItem) {
+        model.removePointOfInterestItem(pointOfInterestItem);
+    }
 
-    private void setClosestRoadText(float contx, float conty){
-        OSMNode tempClosest = model.getNearestRoad(mapCanvas.getModelCoords(contx,conty), Vehicle.ABSTRACTVEHICLE);
+    private void setClosestRoadText(float contx, float conty) {
+        OSMNode tempClosest = null;
+        try {
+            tempClosest = model.getNearestRoad(mapCanvas.getModelCoords(contx, conty), Vehicle.ABSTRACTVEHICLE);
+        } catch (nothingNearbyException e) {
+            e.printStackTrace();
+        }
         closestRoad = RouteHandler.getArbitraryAdjRoadName(tempClosest);
         closestRoadText.setText(closestRoad);
     }
 
-    public OSMNode getNearestRoad(Point2D point2D, Vehicle type){ return model.getNearestRoad(point2D, type); }
+    public OSMNode getNearestRoad(Point2D point2D, Vehicle type) {
+        try {
+            return model.getNearestRoad(point2D, type);
+        } catch (nothingNearbyException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 }
