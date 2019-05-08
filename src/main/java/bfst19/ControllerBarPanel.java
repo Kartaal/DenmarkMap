@@ -28,6 +28,10 @@ public class ControllerBarPanel {
 
 	@FXML
 	private void openRoute(ActionEvent actionEvent) {
+		Pin.currentPin = null;
+		Pin.secondaryPin = null;
+		controller.getModel().clearPath();
+		controller.repaint();
 		controller.setupRoutePanel();
 	}
 
