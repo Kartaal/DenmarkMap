@@ -13,10 +13,13 @@
 <?import javafx.scene.control.ToggleGroup?>
 <VBox fx:id="MenuPanel" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="200.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bfst19.ControllerMenuPanel">
    <children>
+
       <VBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 0);">
          <children>
+
             <HBox prefHeight="60.0" prefWidth="300.0" style="-fx-background-color: lightgrey;">
                <children>
+
                   <Button fx:id="backButton" mnemonicParsing="false" onAction="#returnToBarPanel" onMouseEntered="#setBackBtnEffect" onMouseExited="#setBackBtnEffectNone" style="-fx-background-color: lightgrey;">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -29,6 +32,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
+
                   <Label text="Menu">
                      <HBox.margin>
                         <Insets left="10.0" top="10.0" />
@@ -42,7 +46,8 @@
                   <Insets bottom="10.0" />
                </VBox.margin>
             </HBox>
-            <RadioButton mnemonicParsing="false" text="Default" onAction="#setToggleTheme" >
+
+            <RadioButton fx:id="defaultMode" mnemonicParsing="false" text="Default" onAction="#setToggleTheme" >
                <VBox.margin>
                   <Insets bottom="5.0" left="20.0" right="5.0" top="5.0" />
                </VBox.margin>
@@ -50,28 +55,35 @@
                   <ToggleGroup fx:id="toggleTheme"/>
                </toggleGroup>
             </RadioButton>
-            <RadioButton mnemonicParsing="false" text="Color Blind Mode" toggleGroup="$toggleTheme" onAction="#setToggleTheme">
+
+            <RadioButton fx:id="colorBlind" mnemonicParsing="false" text="Color Blind Mode" toggleGroup="$toggleTheme" onAction="#setToggleTheme">
                <VBox.margin>
                   <Insets bottom="5.0" left="20.0" right="5.0" top="5.0" />
                </VBox.margin>
 
             </RadioButton>
-            <RadioButton mnemonicParsing="false" text="Roads Only Mode" toggleGroup="$toggleTheme" onAction="#setToggleTheme">
+
+            <RadioButton fx:id="roadsOnly" mnemonicParsing="false" text="Roads Only Mode" toggleGroup="$toggleTheme" onAction="#setToggleTheme">
                <VBox.margin>
                   <Insets bottom="5.0" left="20.0" right="5.0" top="5.0" />
                </VBox.margin>
 
             </RadioButton>
          </children>
+
          <VBox.margin>
             <Insets />
          </VBox.margin>
+
          <padding>
             <Insets bottom="20.0" />
          </padding>
       </VBox>
+
    </children>
+
    <opaqueInsets>
       <Insets />
    </opaqueInsets>
+
 </VBox>
