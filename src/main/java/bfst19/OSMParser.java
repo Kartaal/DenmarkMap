@@ -150,10 +150,6 @@ public class OSMParser {
 								}
 							}
 
-							if(id == 187212423 ){
-								System.out.println("oboop");
-							}
-
 							//string[0]=waytype's name, strings[1] = k for the case, strings = v for the case.
 							for(Map.Entry<WayType,ResizingArray<String[]>> wayTypeEntry : wayTypeCases.entrySet()){
 								WayType wayType = wayTypeEntry.getKey();

@@ -59,7 +59,6 @@ public class AutoTextField extends TextField {
 
     }
 
-    //TODO: Add ScrollPane and limit height
     private boolean addAddressesToDropDown() {
             List<CustomMenuItem> menuItems = new LinkedList<>();
             ArrayList<Label> addressLabels = new ArrayList<>();
@@ -77,14 +76,10 @@ public class AutoTextField extends TextField {
                     //and the rest of the address is passed of to some other part of the UI.
                 } else if (firstMatch.length == 4) {
                     addressLabels.add(new Label(firstMatch[0] + " " + firstMatch[1] + " " + firstMatch[2] + " " + firstMatch[3]));
-                    System.out.println(firstMatch[0] + " " + firstMatch[1] + " " + firstMatch[2] + " " + firstMatch[3]);
 
                     while (iterator.hasNext()) {
 
                         String[] match = iterator.next();
-
-                        System.out.println(firstMatch[0] + " " + match[1] + " " + match[2] + " " + match[3]);
-
 
                         Label labelAddress = new Label(match[0] + " " + match[1] + " " + match[2] + " " + match[3]);
 
@@ -92,12 +87,9 @@ public class AutoTextField extends TextField {
                     }
                 } else {
                     addressLabels.add(new Label(firstMatch[0] + " " + firstMatch[1] + " " + firstMatch[2]));
-                    System.out.println(firstMatch[0] + " " + firstMatch[0] + " " + firstMatch[1] + " " + firstMatch[2]);
 
                     while (iterator.hasNext()) {
                         String[] match = iterator.next();
-
-                        System.out.println(firstMatch[0] + " " + match[1] + " " + match[2]);
 
 
                         Label labelAddress = new Label(match[0] + " " + match[1] + " " + match[2]);

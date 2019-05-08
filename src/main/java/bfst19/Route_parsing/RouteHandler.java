@@ -190,8 +190,6 @@ public class RouteHandler{
     }
 
     public void finishNodeGraph(){
-        System.out.println(G.E());
-        System.out.println(G.V());
         drivabillty = null;
         drivableCases = null;
         G.trim();

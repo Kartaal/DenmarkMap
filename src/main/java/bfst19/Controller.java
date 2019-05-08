@@ -156,7 +156,7 @@ public class Controller {
             hBox = fxmlLoader.load();
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Failed to load from FXMLLoader associated with ViewBarPanel.fxml");
+            System.err.println("Failed to load from FXMLLoader associated with ViewBarPanel.fxml");
         }
 
         borderPane.setLeft(hBox);
@@ -179,7 +179,7 @@ public class Controller {
             VBox = fxmlLoader.load();
         } catch (IOException event) {
             event.printStackTrace();
-            System.out.println("Failed to load from FXMLLoader associated with ViewMenuPanel.fxml");
+            System.err.println("Failed to load from FXMLLoader associated with ViewMenuPanel.fxml");
         }
 
         borderPane.setLeft(VBox);
@@ -203,7 +203,7 @@ public class Controller {
             VBox = fxmlLoader.load();
         } catch (IOException event) {
             event.printStackTrace();
-			System.out.println("Failed to load from FXMLLoader associated with ViewRoutePanel.fxml");
+			System.err.println("Failed to load from FXMLLoader associated with ViewRoutePanel.fxml");
         }
 
         borderPane.setLeft(VBox);
@@ -286,20 +286,17 @@ public class Controller {
         time = System.nanoTime();
 
         if(e.isPrimaryButtonDown()){
-            //System.out.println(Math.abs((-time + prevtime) / 1e8));
             //Todo: delete this part in the final commit. This is here for debugging purposes
             if (Math.abs((-time + prevtime) / 1e8) <= 2){
                 closestNode = model.getNearestRoad(mapCanvas.getModelCoords(x,y), Vehicle.BIKE);
                 if(nodeIDs[0] == null){
                     if(closestNode != null) {
                         nodeIDs[0] = closestNode;
-                        System.out.println(closestNode.getId());
                         nodeIDs[1] = null;
                     }
 
                 } else if(nodeIDs[1] == null){
                     nodeIDs[1] = closestNode;
-                    System.out.println(closestNode.getId());
                     Iterable<Edge> path = model.findPath(nodeIDs[0],nodeIDs[1], Vehicle.BIKE, fastestBoolean);
                     if(path != null){
                         model.clearPath();

@@ -71,7 +71,6 @@ public class DijkstraSP {
     public Iterable<Edge> pathTo(int v) {
         validateVertex(v);
         if (!hasPathTo(v)){
-            System.out.println("boop");
             return null;
         }
         Stack<Edge> path = new Stack<>();

@@ -68,7 +68,6 @@ public class AddressParser {
 
 			if (possibleMatches != null) {
 				model.clearMatches();
-				System.out.println(possibleMatches.size());
 				for (String[] match : possibleMatches) {
 					model.addFoundMatch(new String[]{match[0],match[1],match[2]});
 				}
@@ -152,9 +151,7 @@ public class AddressParser {
 			ArrayList<String[]> something = getAddress(city,postcode,streetname,houseNumber,true);
 
 			String[] address = something.get(0);
-			for(String string : address){
-				System.out.println(string);
-			}
+
 			if(!address[0].equals("")) {
 				b.lat = Float.valueOf(address[0]);
 				b.lon = Float.valueOf(address[1]);
@@ -366,13 +363,14 @@ public class AddressParser {
 			currentIndexString = currentIndexStringRaw.toLowerCase();
 			lo--;
 		}
-		currentIndexString = defaults[mid+1];
+		currentIndexStringRaw = defaults[mid+1];
+		currentIndexString = currentIndexStringRaw.toLowerCase();
 		int hi = mid + 2;
 		//traverses down the default array until it's no longer a match
 		while(currentIndexString.startsWith(proposedAddress) && hi < defaults.length){
 			String[] matchTokens = currentIndexStringRaw.split(" QQQ ");
 			matches.add(matchTokens);
-            currentIndexStringRaw = defaults[lo];
+            currentIndexStringRaw = defaults[hi];
             currentIndexString = currentIndexStringRaw.toLowerCase();
 			hi++;
 		}

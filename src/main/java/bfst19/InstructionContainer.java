@@ -71,15 +71,6 @@ public class InstructionContainer extends VBox {
                 currentHead = newV;
             }
 
-            double angle = Calculator.angleBetween2Lines(previousBase, previousHead, currentBase, currentHead);
-
-                if (45 < angle && angle < 180) {
-                    System.out.println("turn left");
-                }
-                if (180 < angle && angle < 315) {
-                    System.out.println("turn right");
-                }
-
                 previousBase = currentBase;
                 previousHead = currentHead;
 
@@ -87,6 +78,7 @@ public class InstructionContainer extends VBox {
                 double length = currentEdge.getLength();
                 String name = currentEdge.getName();
                 double currentLength = 0.0;
+                double angle = 0;
 
                 while (pathIterator.hasNext()) {
 

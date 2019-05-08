@@ -153,8 +153,6 @@ public class ControllerRoutePanel {
         }
 
         if(changed) {
-            System.out.println(vehicleToggle.toString());
-            System.out.println(fastestRoute);
             //Changed setUpInstructions with the below code, since the idea is to make a new path for bikes, and
             //the setup is always called by an observer when the path is found.
             tryToFindPath();
@@ -168,8 +166,6 @@ public class ControllerRoutePanel {
 
     private void tryToFindPath(){
         if(toPoint != fromPoint && toPoint != null && fromPoint != null) {
-            System.out.println("PATHFINDING for: " + vehicleToggle.toString());
-            System.out.println(toPoint + " " + fromPoint);
             toNode = controller.getNearestRoad(toPoint, vehicleToggle);
             fromNode = controller.getNearestRoad(fromPoint, vehicleToggle);
 
