@@ -4,7 +4,6 @@ import bfst19.Line.OSMNode;
 import bfst19.Route_parsing.Edge;
 import bfst19.KDTree.BoundingBox;
 import bfst19.KDTree.Drawable;
-import bfst19.Route_parsing.ResizingArray;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -29,7 +28,6 @@ public class MapCanvas extends Canvas {
     boolean hasPath = false;
     int detailLevel =1;
 
-    private boolean colorBlindEnabled = false;
     private double singlePixelLength;
     private double percentOfScreenArea;
 
@@ -150,17 +148,24 @@ public class MapCanvas extends Canvas {
             Iterator<Edge> iterator = controller.getpathIterator();
             drawPath(iterator);
         }
-        Pin pin = Pin.currentPin;
-        if(pin != null) {
-            pin.drawPin(gc, transform);
+
+        Pin cPin = Pin.currentPin;
+        if(cPin != null) {
+            cPin.drawPin(gc, transform);
         }
+
+        Pin sPin = Pin.secondaryPin;
+        if(sPin != null) {
+            sPin.drawPin(gc, transform);
+        }
+
     }
 
     public void drawPath(Iterator<Edge> iterator) {
         while(iterator.hasNext()){
             Edge edge = iterator.next();
-            OSMNode first = edge.getV();
-            OSMNode second = edge.getW();
+            OSMNode first = edge.either();
+            OSMNode second = edge.other();
 
             gc.setLineWidth(0.1 * (1/(100/(getDeterminant()))));
             gc.setStroke(Color.RED);
@@ -235,7 +240,6 @@ public class MapCanvas extends Canvas {
         x=x*model.getLonfactor();
         Point2D point = transform.transform(x,y);
         //System.out.println("X: " + x + " Y: " + y);
-        Pin.currentPin = new Pin(x, y);
 
         pan(centerX-point.getX(),centerY-point.getY());
 

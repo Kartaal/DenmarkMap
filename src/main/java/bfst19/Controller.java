@@ -1,12 +1,12 @@
 package bfst19;
 import bfst19.Line.OSMNode;
 import bfst19.Route_parsing.Edge;
-import bfst19.Route_parsing.ResizingArray;
 import bfst19.Route_parsing.RouteHandler;
 import bfst19.Route_parsing.Vehicle;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Point2D;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -26,12 +26,11 @@ public class Controller {
     private double factor, oldDeterminant;
     private boolean fastestBoolean = true;
     private static boolean kdTreeBoolean = false;
+    private boolean roadNameOnHover = false;
     private long time;
     private OSMNode[] nodeIDs = new OSMNode[2];
     private OSMNode closestNode;
     private String closestRoad;
-
-
 
     //This only means that .fxml can use this field despite visibility
     @FXML
@@ -252,8 +251,9 @@ public class Controller {
             case S:
 
                 break;
-            case E:
-
+            case U:
+                // do not enable on larger dataset than bornholm!!!
+                roadNameOnHover = !roadNameOnHover;
                 break;
 
         }
@@ -280,13 +280,14 @@ public class Controller {
     private void onMousePressed(MouseEvent e) {
         x = (float) e.getX();
         y = (float) e.getY();
-        setClosestRoadText(x,y);
+
 
         long prevtime = time;
         time = System.nanoTime();
 
         if(e.isPrimaryButtonDown()){
             //System.out.println(Math.abs((-time + prevtime) / 1e8));
+            //Todo: delete this part in the final commit. This is here for debugging purposes
             if (Math.abs((-time + prevtime) / 1e8) <= 2){
                 closestNode = model.getNearestRoad(mapCanvas.getModelCoords(x,y), Vehicle.BIKE);
                 if(nodeIDs[0] == null){
@@ -313,16 +314,34 @@ public class Controller {
         }
 
         if(e.isSecondaryButtonDown()){
-            // nothing at the moment
+            setClosestRoadText(x,y);
         }
     }
 
     @FXML
     public void onMouseMoved(MouseEvent e){
-        /*float contX = (float) e.getX();
-        float contY = (float) e.getY();
-        System.out.println(setClosestRoad(contX, contY));*/
+        if (roadNameOnHover){
 
+            float contX = (float) e.getX();
+            float contY = (float) e.getY();
+
+            //If your dataset is small, this runs fine, however on larger dataset (denmark) never enable this
+
+            setClosestRoadText(contX, contY);
+        }
+
+    }
+
+    public void addPath(Iterable<Edge> path) {
+        if(path != null){
+            model.clearPath();
+            model.addPath(path);
+        }
+        mapCanvas.repaint();
+    }
+
+    public Iterable<Edge> getPath(OSMNode startNode, OSMNode endNode, Vehicle type, boolean b) {
+        return model.findPath(startNode,endNode, type,b);
     }
 
     public static boolean KdTreeBoolean() {
@@ -350,5 +369,7 @@ public class Controller {
         closestRoad = RouteHandler.getArbitraryAdjRoadName(tempClosest);
         closestRoadText.setText(closestRoad);
     }
+
+    public OSMNode getNearestRoad(Point2D point2D, Vehicle type){ return model.getNearestRoad(point2D, type); }
 
 }

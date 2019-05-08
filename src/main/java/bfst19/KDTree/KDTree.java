@@ -3,13 +3,22 @@ package bfst19.KDTree;
 import bfst19.Calculator;
 import bfst19.Line.OSMNode;
 import bfst19.Model;
-import bfst19.Route_parsing.ResizingArray;
+import bfst19.ResizingArray;
 import bfst19.Route_parsing.RouteHandler;
 import bfst19.Route_parsing.Vehicle;
 import javafx.geometry.Point2D;
 import java.io.Serializable;
 import java.util.*;
 
+/**
+ * KDTree stores spatial data in KDNodes.
+ * The constructor only initialises an empty tree which is filled with useful data
+ * by using the insertAll() method.
+ * The method rangeQuery() searches through the tree.
+ * nodeRangeQuery() finds Drivable OSMNodes for a given vehicle type and bounding box
+ * Something about nodeRangeQuery() ?????????
+ * This tree also supports finding the nearest neighbor with getNearestNeighbor().
+ */
 public class KDTree implements Serializable {
     private KDNode root;
     private static xComparator xComp = new xComparator();
@@ -21,6 +30,13 @@ public class KDTree implements Serializable {
         root = null;
     }
 
+    /**
+     * Inserts a ResizingArray of Drawable objects into the tree.
+     * If the ResizingArray is empty, only the root of the tree is created and
+     * its fields are set to arbitrary wrong values (assuming only Denmark or a subset
+     * is parsed).
+     * @param list	The ResizingArray of Drawable objects to be inserted into the tree.
+     */
     //Method for creating a KDTree from a list of Drawable
     public void insertAll(ResizingArray<Drawable> list) {
         //If tree is currently empty, do a lot of work
@@ -103,16 +119,24 @@ public class KDTree implements Serializable {
         return currNode;
     }
 
+    /**
+     * Retrieves the nearest neighbor by making a tiny BoundingBox around
+     * a point and iteratively increasing its size if no elements are found.
+     * Once any amount of elements have been found, the OSMNode in a KDNode
+     * with the closest Euclidean distance is returned.
+     * @param point	The point used for finding the closest element in the tree.
+     * @param type The vehicle type to find driveable roads for.
+     * @return		The OSMNode that has the shortest Euclidean distance to the point.
+     */
     public OSMNode getNearestNeighbor(Point2D point, Vehicle type) {
         //Returns node of the nearest neighbor to a point
         int count = 0;
         OSMNode closestElement;
         float x = (float)point.getX();
         float y = (float)point.getY();
-        float[] vals = {x, y, 0.0F, 0.0F};
-        BoundingBox bbox = new BoundingBox(vals[0], vals[1], vals[2], vals[3]);
+        float[] vals = {x, y, 0.0F, 0.0F};  //infinitesimal values to make a square rangequery call
+        BoundingBox bbox = new BoundingBox(vals[0], vals[1], vals[2], vals[3]); //generate boundingbox with aforementioned values
         ResizingArray<OSMNode> queryList = nodeRangeQuery(bbox, type);
-
 
         while(queryList.isEmpty()){
             //While the queryList is empty, the rangequery box should be slightly bigger, increased the range of the rangequery
@@ -121,7 +145,7 @@ public class KDTree implements Serializable {
             if(count >= 5000){
                 return null;
             }
-            queryList = growBoundingBox(vals, type);
+            queryList = growBoxNRQ(vals, type);
         }
 
         closestElement = Calculator.getClosestNode(point, queryList);
@@ -130,22 +154,32 @@ public class KDTree implements Serializable {
 
     }
 
-    private ResizingArray<OSMNode> growBoundingBox(float[] vals, Vehicle type) {
+    private BoundingBox growBoundingBox(float[] vals) {
         //Take the values of the bounding box, increase them slightly
-        BoundingBox bbox;
-        ResizingArray<OSMNode> queryList;
         //A bounding box is created from a x,y point, and with a width,height from that point.
-        //When we decrease the x,y point, we have to add twice that value to width,height to insure it grows by a square
+        //When we decrease the x,y point, we have to add twice that value to width, height to insure it grows by a square
         vals[0] -= 0.00001 / Model.getLonfactor();
         vals[1] -= 0.00001;
         vals[2] += 0.00002 / Model.getLonfactor();
         vals[3] += 0.00002;
+        return new BoundingBox(vals[0], vals[1], vals[2], vals[3]);
+    }
 
-        bbox = new BoundingBox(vals[0], vals[1], vals[2], vals[3]);
+    private ResizingArray<OSMNode> growBoxNRQ(float[] vals, Vehicle type){
+        //Grows the bounding box, and performs nodeRangeQuery to it.
+        ResizingArray<OSMNode> queryList;
+        BoundingBox bbox = growBoundingBox(vals);
         queryList = nodeRangeQuery(bbox, type);
         return queryList;
     }
 
+
+    /**
+     * Searches through the tree for the stored Drawable elements that lie
+     * within the given BoundingBox.
+     * @param bbox	A BoundingBox that intersects all the elements returned.
+     * @return		A ResizingArray of elements intersecting the bbox BoundingBox.
+     */
     //Method for finding elements in the KDTree that intersects a BoundingBox
     public ResizingArray<Drawable> rangeQuery(BoundingBox bbox) {
         ResizingArray<Drawable> returnElements = new ResizingArray<>();
@@ -189,6 +223,13 @@ public class KDTree implements Serializable {
         return returnElements;
     }
 
+    /**
+     * Searches through the tree for the OSMNode objects inside the Drawable elements that lie
+     *  within the given BoundingBox.
+     * @param bbox  A BoundingBox that intersects all the elements returned.
+     * @param type  A vehicle type to check traversability on each OSMNode in the Drawable elements.
+     * @return	    A ResizingArray of OSMNodes intersecting the bbox BoundingBox
+     */
     //Method for finding elements in the KDTree that intersects a BoundingBox
     public ResizingArray<OSMNode> nodeRangeQuery(BoundingBox bbox, Vehicle type) {
         ResizingArray<OSMNode> returnElements = new ResizingArray<>();

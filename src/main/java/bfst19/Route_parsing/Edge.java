@@ -5,9 +5,21 @@ import bfst19.Line.OSMNode;
 import java.io.Serializable;
 import java.util.HashMap;
 
+/**
+ * Represents a relation between two nodes in the digraph,
+ * thus it holds the two nodes that are connected, a length, a name, and a speedlimit.
+ *
+ * Very similar to algs4's DirectedEdge class, with modifications
+ * to accommodate two different weights depending on if it's a fastest path
+ * or not. The most notable difference that is not traversabillity and weight
+ * is that one edge represents all relations between two points, and therefore
+ * includes a drivabillity for each supported vehicle type.
+ * This does complicate getting the tail/head of any edge, as it's dependent on
+ * the direction of traversal.
+ */
 public class Edge implements Serializable {
     //allways set length and speedlimit as the same unit of measurement, currently km
-    String name;
+    private String name;
     private float length;
     private int speedlLimit;
     //-1 = you can't drive here
@@ -19,7 +31,13 @@ public class Edge implements Serializable {
     private OSMNode w;
 
 
-    public Edge(float length, int speedlLimit, OSMNode v, OSMNode w,String name,HashMap<Vehicle, Drivabillity> vehicleTypeToDrivable) {
+    public Edge(float length, int speedlLimit, OSMNode v, OSMNode w,
+                String name,HashMap<Vehicle, Drivabillity> vehicleTypeToDrivable) {
+        if (v.getId() < 0) throw new IllegalArgumentException("vertex index must be a nonnegative integer");
+        if (w.getId() < 0) throw new IllegalArgumentException("vertex index must be a nonnegative integer");
+        if (Double.isNaN(length)) throw new IllegalArgumentException("Weight is NaN");
+        if (Double.isNaN(speedlLimit)) throw new IllegalArgumentException("Weight is NaN");
+
         this.length = length;
         this.speedlLimit = speedlLimit;
         this.v = v;
@@ -47,28 +65,16 @@ public class Edge implements Serializable {
         }
     }
 
-    //this is code dublication
     public double getLength(){return length; }
+  
+    public String getName(){return name;}
 
-    public int getSpeedlLimit(){return speedlLimit;}
-
-    public OSMNode getV(){
+    public OSMNode either(){
         return v;
     }
 
-    public OSMNode getW(){
+    public OSMNode other(){
         return w;
-    }
-
-
-    public String getName(){return name;}
-
-    public int either(){
-        return v.getId();
-    }
-
-    public int other(){
-        return w.getId();
     }
 
     public int getOtherEnd(int id){
@@ -78,19 +84,19 @@ public class Edge implements Serializable {
         return w.getId();
     }
 
-    public OSMNode getOtherEndNode(OSMNode node) {
-        if (node.getId() == w.getId()) {
-            return v;
-        } else {
-            return w;
-        }
-    }
-
     public OSMNode getThisEndNode(int id) {
         if (id == w.getId()) {
             return w;
         } else {
             return v;
+        }
+    }
+
+    public OSMNode getOtherEndNode(OSMNode node) {
+        if (node.getId() == w.getId()) {
+            return v;
+        } else {
+            return w;
         }
     }
 
@@ -123,13 +129,6 @@ public class Edge implements Serializable {
             return drivabillity[2];
         }
         return Drivabillity.NOWAY;
-    }
-
-    public int compareTo(Edge e, Vehicle type, boolean fastestPath) {
-        double firstWeight = getWeight(type,fastestPath);
-        double secondWeight = e.getWeight(type,fastestPath);
-
-        return Double.compare(firstWeight,secondWeight);
     }
 
     @Override

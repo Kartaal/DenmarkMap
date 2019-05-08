@@ -7,6 +7,7 @@ import javafx.scene.transform.Affine;
 public class Pin {
 
     public static Pin currentPin = null;
+    public static Pin secondaryPin = null;
 
     private double lat, lon;
     private Image image;

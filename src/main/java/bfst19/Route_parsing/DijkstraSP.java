@@ -1,6 +1,8 @@
 package bfst19.Route_parsing;
 
 import bfst19.Line.OSMNode;
+import bfst19.ResizingArray;
+import edu.princeton.cs.algs4.IndexMinPQ;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -9,9 +11,9 @@ public class DijkstraSP {
     private double[] distTo;          // distTo[v] = distance  of shortest s->v path
     private Edge[] edgeTo;    // edgeTo[v] = last edge on shortest s->v path
     private IndexMinPQ<Double> pq;    // priority queue of vertices    // priority queue of vertices
-    private EdgeWeightedGraph G;
+    private EdgeWeightedDigraph G;
 
-    public DijkstraSP(EdgeWeightedGraph G, OSMNode startNode, OSMNode endNode, Vehicle type, boolean fastestPath) {
+    public DijkstraSP(EdgeWeightedDigraph G, OSMNode startNode, OSMNode endNode, Vehicle type, boolean fastestPath) {
         /*for (Edge e : G.edges()) {
             if (e.getWeight() < 0)
                 throw new IllegalArgumentException("edge " + e + " has negative weight");
@@ -94,7 +96,7 @@ public class DijkstraSP {
     // check optimality conditions:
     // (i) for all edges e:            distTo[e.to()] <= distTo[e.from()] + e.weight()
     // (ii) for all edge e on the SPT: distTo[e.to()] == distTo[e.from()] + e.weight()
-    private boolean check(EdgeWeightedGraph G, int s, Vehicle type, boolean fastestPath) {
+    private boolean check(EdgeWeightedDigraph G, int s, Vehicle type, boolean fastestPath) {
 
         // check that edge weights are nonnegative
         for (Edge e : G.edges()) {

@@ -4,6 +4,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * KDNode is the class for objects that make up the tree structure of KDTree.
+ * This is used for storing spatial data as BoundingBoxable arrays.
+ * The values stored can only be set using the associated setter method.
+ * It is possible to make the internal BoundingBox based on the internal values
+ * or the BoundingBoxes of the KDNodes stored at the child pointers, nodeL and nodeR.
+ */
 public class KDNode implements Serializable {
     BoundingBoxable[] values;
     float split;
