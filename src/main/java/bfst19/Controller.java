@@ -286,34 +286,6 @@ public class Controller {
         x = (float) e.getX();
         y = (float) e.getY();
 
-        long prevtime = time;
-        time = System.nanoTime();
-
-        if(e.isPrimaryButtonDown()){
-            //Todo: delete this part in the final commit. This is here for debugging purposes
-            if (Math.abs((-time + prevtime) / 1e8) <= 2){
-                closestNode = model.getNearestRoad(mapCanvas.getModelCoords(x,y), Vehicle.BIKE);
-                if(nodeIDs[0] == null){
-                    if(closestNode != null) {
-                        nodeIDs[0] = closestNode;
-                        nodeIDs[1] = null;
-                    }
-
-                } else if(nodeIDs[1] == null){
-                    nodeIDs[1] = closestNode;
-                    Iterable<Edge> path = model.findPath(nodeIDs[0],nodeIDs[1], Vehicle.BIKE, fastestBoolean);
-                    if(path != null){
-                        model.clearPath();
-                        model.addPath(path);
-                    }
-                    mapCanvas.repaint();
-
-                    nodeIDs[0] = null;
-                    nodeIDs[1] = null;
-                }
-            }
-        }
-
         if(e.isSecondaryButtonDown()){
             setClosestRoadText(x,y);
         }
