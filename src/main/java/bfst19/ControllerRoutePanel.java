@@ -1,5 +1,6 @@
 package bfst19;
 
+import bfst19.Line.OSMNode;
 import bfst19.Route_parsing.Edge;
 import bfst19.Route_parsing.Vehicle;
 import javafx.event.ActionEvent;
@@ -20,7 +21,7 @@ public class ControllerRoutePanel {
     static boolean fastestRoute = true;
 
     Point2D fromPoint, toPoint;
-    int fromId, toId;
+    OSMNode fromNode, toNode;
 
 
     @FXML
@@ -169,10 +170,10 @@ public class ControllerRoutePanel {
         if(toPoint != fromPoint && toPoint != null && fromPoint != null) {
             System.out.println("PATHFINDING for: " + vehicleToggle.toString());
             System.out.println(toPoint + " " + fromPoint);
-            toId = controller.getNearestRoad(toPoint).getId();
-            fromId = controller.getNearestRoad(fromPoint).getId();
+            toNode = controller.getNearestRoad(toPoint, vehicleToggle);
+            fromNode = controller.getNearestRoad(fromPoint, vehicleToggle);
 
-            Iterable<Edge> path = controller.getPath(fromId, toId, vehicleToggle, fastestRoute);
+            Iterable<Edge> path = controller.getPath(fromNode, toNode, vehicleToggle, fastestRoute);
             controller.addPath(path);
 
             //toPoint = null;

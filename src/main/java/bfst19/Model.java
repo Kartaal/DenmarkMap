@@ -370,17 +370,4 @@ public class Model{
 		}
 	}
 
-	public HashMap<String, Integer> parseSpeedDefaults() {
-		return textHandler.parseSpeedDefaults();
-	}
-
-	public HashMap<WayType, HashMap<String, ResizingArray<String[]>>> parseDrivableCases() {
-		return textHandler.parseDrivableCases();
-	}
-
-	public ArrayList<String> parseColorCases(String s){
-		return textHandler.getConfigFile(s);
-	}
-    public HashMap<WayType, HashMap<String, ResizingArray<String[]>>> parseDrivableCases(String s) { return textHandler.parseDrivableCases(s); }
-
 }

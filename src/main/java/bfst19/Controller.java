@@ -340,7 +340,7 @@ public class Controller {
         mapCanvas.repaint();
     }
 
-    public Iterable<Edge> getPath(int startNode, int endNode, Vehicle type, boolean b) {
+    public Iterable<Edge> getPath(OSMNode startNode, OSMNode endNode, Vehicle type, boolean b) {
         return model.findPath(startNode,endNode, type,b);
     }
 
@@ -370,6 +370,6 @@ public class Controller {
         closestRoadText.setText(closestRoad);
     }
 
-    public OSMNode getNearestRoad(Point2D point2D){ return model.getNearestRoad(point2D); }
+    public OSMNode getNearestRoad(Point2D point2D, Vehicle type){ return model.getNearestRoad(point2D, type); }
 
 }
