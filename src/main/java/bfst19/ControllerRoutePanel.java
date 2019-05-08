@@ -81,7 +81,6 @@ public class ControllerRoutePanel {
 
 	@FXML
 	private void returnToBarPanel(ActionEvent actionEvent) {
-		Pin.secondaryPin = null;
 		controller.setUpBar();
 	}
 
