@@ -40,7 +40,7 @@ public class AutoTextField extends TextField {
 		this.tag = tag;
 	}
 
-	private void parseSearch() {
+	void parseSearch() {
 		if (getText() != null && !getText().equals("")) {
 			model.addFoundMatchesObserver(this::showResults);
 			controller.parseSearchText(getText());

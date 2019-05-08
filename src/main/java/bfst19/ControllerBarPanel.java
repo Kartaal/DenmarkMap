@@ -36,7 +36,7 @@ public class ControllerBarPanel {
 	}
 
 	private void setSearchButton() {
-		searchButton.setOnAction(e -> autoTextField.showResults());
+		searchButton.setOnAction(e -> autoTextField.parseSearch());
 	}
 
 	@FXML
