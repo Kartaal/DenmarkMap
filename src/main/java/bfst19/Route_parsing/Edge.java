@@ -66,7 +66,7 @@ public class Edge implements Serializable {
     }
 
     public double getLength(){return length; }
-
+  
     public String getName(){return name;}
 
     public OSMNode either(){
