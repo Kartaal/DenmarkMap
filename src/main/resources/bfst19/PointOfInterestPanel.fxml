@@ -9,15 +9,12 @@
 
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.Label?>
-<VBox prefHeight="500.0" prefWidth="200.0" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 0);" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bfst19.ControllerPointOfInterestPanel">
+<VBox prefHeight="500.0" prefWidth="300.0" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 0);" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bfst19.ControllerPointOfInterestPanel">
    <children>
 
       <HBox alignment="center" prefWidth="200.0">
 
       <Button fx:id="backButton" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#returnToBarPanel" onMouseEntered="#setBackBtnEffect" onMouseExited="#setBackBtnEffectNone" style="-fx-background-color: white;">
-         <VBox.margin>
-            <Insets bottom="5.0" right="250.0" />
-         </VBox.margin>
          <graphic>
             <ImageView fx:id="backBtnPointOfInterest" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -27,12 +24,12 @@
          </graphic>
       </Button>
 
-         <HBox.margin>
-            <Insets left="5.0" />
-         </HBox.margin>
-
          <Label>
             Point Of interests
+
+            <HBox.margin>
+               <Insets right="130.0" left="5"/>
+            </HBox.margin>
          </Label>
 
       </HBox>
