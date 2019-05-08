@@ -35,13 +35,11 @@ public class ControllerMenuPanel implements BackBtnEffect {
 
 	private void setState() {
 
-		if (colorBlindMode && !roadsOnlyMode){
+		if (colorBlindMode && !roadsOnlyMode) {
 			colorBlind.setSelected(true);
-		}
-		else if(!colorBlindMode && roadsOnlyMode){
+		} else if (!colorBlindMode && roadsOnlyMode) {
 			roadsOnly.setSelected(true);
-		}
-		else if(!colorBlindMode && !roadsOnlyMode){
+		} else if (!colorBlindMode && !roadsOnlyMode) {
 			defaultMode.setSelected(true);
 		}
 

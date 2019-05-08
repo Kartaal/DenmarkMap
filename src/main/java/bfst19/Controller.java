@@ -64,7 +64,9 @@ public class Controller {
 		return model;
 	}
 
-	public void repaint() { mapCanvas.repaint();}
+	public void repaint() {
+		mapCanvas.repaint();
+	}
 
 	Iterator<String[]> getFoundMatchesIterator() {
 		return model.foundMatchesIterator();

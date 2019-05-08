@@ -143,9 +143,9 @@ public class RouteHandler {
 	 * two points as the length of the edge.
 	 * After all the edges have been made, it resets drivabillity.
 	 *
-	 * @param way a way to add
-	 * @param type the WayType
-	 * @param name the name of the way
+	 * @param way        a way to add
+	 * @param type       the WayType
+	 * @param name       the name of the way
 	 * @param speedlimit the speed limit of the way
 	 */
 	public void addWayToNodeGraph(OSMWay way, WayType type, String name, int speedlimit) {

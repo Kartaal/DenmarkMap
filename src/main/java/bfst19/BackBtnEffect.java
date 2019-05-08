@@ -2,7 +2,9 @@ package bfst19;
 
 interface BackBtnEffect {
 
-    private void setBackBtnEffect(){}
+	private void setBackBtnEffect() {
+	}
 
-    private void setBackBtnEffectNone(){}
+	private void setBackBtnEffectNone() {
+	}
 }

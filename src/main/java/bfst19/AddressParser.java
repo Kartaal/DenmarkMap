@@ -227,8 +227,9 @@ class AddressParser {
 	/**
 	 * Checks if the proposedAddress starts with any of the streets in the citymatch
 	 * and if so returns the string to remove & the streetName
+	 *
 	 * @param proposedAddress the proposed address
-	 * @param cityMatch the city + postcode found in checkCity
+	 * @param cityMatch       the city + postcode found in checkCity
 	 * @return String the substring to remove from proposedAddress and matching streetName
 	 */
 
@@ -256,6 +257,7 @@ class AddressParser {
 	 * Here it assumes a postcode to be the most significant of a city and postcode,
 	 * so if a pair is mismatched it assumes the postcode to be correct.
 	 * Returns the string to be removed from the proposedAddress, and a city + postcode
+	 *
 	 * @param proposedAddress the proposed address
 	 * @return String[] the partitions to remove from search-string and a matching city + +postcode
 	 */
@@ -323,9 +325,10 @@ class AddressParser {
 	 * It uses binarysearch to locate the given information for the given string and
 	 * either returns the first found match, or all matches starting with the proposedAddress
 	 * indicated by the singleSearch boolean
+	 *
 	 * @param proposedAddress the proposed address
-	 * @param singleSearch if its single search or not
-	 * @return ArrayList<String[]> match(s) from default
+	 * @param singleSearch    if its single search or not
+	 * @return ArrayList<String   [   ]> match(s) from default
 	 */
 
 	ArrayList<String[]> getMatchesFromDefault(String proposedAddress, boolean singleSearch) {

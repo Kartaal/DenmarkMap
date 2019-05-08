@@ -15,8 +15,8 @@ class IndexMinPQ<Key extends Comparable<Key>> {
 		this.maxN = maxN;
 		n = 0;
 		keys = (Key[]) new Comparable[maxN + 1];    // make this of length maxN??
-		pq   = new int[maxN + 1];
-		qp   = new int[maxN + 1];                   // make this of length maxN??
+		pq = new int[maxN + 1];
+		qp = new int[maxN + 1];                   // make this of length maxN??
 		for (int i = 0; i <= maxN; i++)
 			qp[i] = -1;
 	}
@@ -49,10 +49,10 @@ class IndexMinPQ<Key extends Comparable<Key>> {
 		int min = pq[1];
 		exch(1, n--);
 		sink(1);
-		assert min == pq[n+1];
+		assert min == pq[n + 1];
 		qp[min] = -1;        // delete
 		keys[min] = null;    // to help with garbage collection
-		pq[n+1] = -1;        // not needed
+		pq[n + 1] = -1;        // not needed
 		return min;
 	}
 
@@ -91,16 +91,16 @@ class IndexMinPQ<Key extends Comparable<Key>> {
 	}
 
 	private void swim(int k) {
-		while (k > 1 && greater(k/2, k)) {
-			exch(k, k/2);
-			k = k/2;
+		while (k > 1 && greater(k / 2, k)) {
+			exch(k, k / 2);
+			k = k / 2;
 		}
 	}
 
 	private void sink(int k) {
-		while (2*k <= n) {
-			int j = 2*k;
-			if (j < n && greater(j, j+1)) j++;
+		while (2 * k <= n) {
+			int j = 2 * k;
+			if (j < n && greater(j, j + 1)) j++;
 			if (!greater(k, j)) break;
 			exch(k, j);
 			k = j;

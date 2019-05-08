@@ -12,9 +12,11 @@ import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
 import org.junit.Before;
 import org.junit.Test;
+
 import java.util.*;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class KDTreeTest {
 	Map<WayType, KDTree> kdTreeMap = new TreeMap<>();
@@ -37,7 +39,7 @@ public class KDTreeTest {
 		}
 
 		//Setup transform
-		transform.prependScale(1,-1, 0, 0);
+		transform.prependScale(1, -1, 0, 0);
 
 		//Set up a bunch of nodes for putting in ways
 		OSMNode node = new OSMNode(0, 14.7999881f, 55.2672338f);
@@ -113,7 +115,7 @@ public class KDTreeTest {
 		fullList.add(line);
 
 		//Make and populate KDTrees for each WayType
-		for(Map.Entry<WayType, ResizingArray<Drawable>> entry : ways.entrySet()) {
+		for (Map.Entry<WayType, ResizingArray<Drawable>> entry : ways.entrySet()) {
 			KDTree typeTree = new KDTree();
 			//Add entry values to KDTree
 			typeTree.insertAll(entry.getValue());
@@ -124,7 +126,7 @@ public class KDTreeTest {
 
 
 	@Test
-	public void testServiceKDTreeExists(){
+	public void testServiceKDTreeExists() {
 		KDNode l = kdTreeMap.get(WayType.SERVICE).getRoot().getNodeL();
 		KDNode r = kdTreeMap.get(WayType.SERVICE).getRoot().getNodeR();
 
@@ -134,7 +136,7 @@ public class KDTreeTest {
 
 
 	@Test
-	public void testDitchKDTreeNotExists(){
+	public void testDitchKDTreeNotExists() {
 
 		//Tests that root's left and right child are null
 		assertTrue(kdTreeMap.get(WayType.DITCH).getRoot().getNodeL() == null && kdTreeMap.get(WayType.DITCH).getRoot().getNodeR() == null);
@@ -142,7 +144,7 @@ public class KDTreeTest {
 
 
 	@Test
-	public void testGetAllServiceLines(){
+	public void testGetAllServiceLines() {
 		//Tests that KDTree for SERVICE WayType has as many elements
 
 		//Actual min and max coords
@@ -152,11 +154,11 @@ public class KDTreeTest {
 		Point2D maxPoint = getModelCoords(14.9497670f, -55.3675671f);
 		//BoundingBox with a BB bigger than the coords to catch everything
 		BoundingBox bb = new BoundingBox(minPoint.getX(), minPoint.getY(),
-				maxPoint.getX()-minPoint.getX(), maxPoint.getY()-minPoint.getY());
+				maxPoint.getX() - minPoint.getX(), maxPoint.getY() - minPoint.getY());
 
 		Iterable<Drawable> startList = kdTreeMap.get(WayType.SERVICE).rangeQuery(bb);
 		List<Drawable> endList = new ArrayList<>();
-		for(Drawable d : startList){
+		for (Drawable d : startList) {
 			endList.add(d);
 		}
 
@@ -169,7 +171,7 @@ public class KDTreeTest {
 
 
 	@Test
-	public void testGetMiddleHalfServiceLines(){
+	public void testGetMiddleHalfServiceLines() {
 		//Tests rangeQuery gets the correct x-middle elements of the KDTree for SERVICE WayType
 
 		//Actual min and max coords for 2 middle elements
@@ -179,12 +181,12 @@ public class KDTreeTest {
 		Point2D minPoint = getModelCoords(14.799689428710938f, -55.267134802246094f);
 		Point2D maxPoint = getModelCoords(14.80047117f, -55.2676666809f);
 		BoundingBox bb = new BoundingBox(minPoint.getX(), minPoint.getY(),
-				maxPoint.getX()-minPoint.getX(), maxPoint.getY()-minPoint.getY());
+				maxPoint.getX() - minPoint.getX(), maxPoint.getY() - minPoint.getY());
 
 
 		Iterable<Drawable> startList = kdTreeMap.get(WayType.SERVICE).rangeQuery(bb);
 		List<Drawable> endList = new ArrayList<>();
-		for(Drawable d : startList){
+		for (Drawable d : startList) {
 			endList.add(d);
 		}
 		assertEquals(midList, endList);
@@ -192,7 +194,7 @@ public class KDTreeTest {
 
 
 	@Test
-	public void testCheckEmptyQueryBox(){
+	public void testCheckEmptyQueryBox() {
 		//Tests that KDTree for SERVICE WayType has as many elements
 
 		//Actual min and max coords
@@ -202,25 +204,25 @@ public class KDTreeTest {
 		Point2D maxPoint = getModelCoords(11f, -23f);
 		//BoundingBox with a BB bigger than the coords to catch everything
 		BoundingBox bb = new BoundingBox(minPoint.getX(), minPoint.getY(),
-				maxPoint.getX()-minPoint.getX(), maxPoint.getY()-minPoint.getY());
+				maxPoint.getX() - minPoint.getX(), maxPoint.getY() - minPoint.getY());
 
 		List<Drawable> emptyList = new ArrayList<>();
 		Iterable<Drawable> startList = kdTreeMap.get(WayType.SERVICE).rangeQuery(bb);
 		List<Drawable> endList = new ArrayList<>();
-		for(Drawable d : startList){
+		for (Drawable d : startList) {
 			endList.add(d);
 		}
 
 
-		assertEquals(emptyList,endList);
+		assertEquals(emptyList, endList);
 	}
 
 
 	//Test helper method
 	Point2D getModelCoords(double x, double y) {
-		try{
-			return transform.inverseTransform(x,y);
-		}catch (NonInvertibleTransformException e) {
+		try {
+			return transform.inverseTransform(x, y);
+		} catch (NonInvertibleTransformException e) {
 			e.printStackTrace();
 			return null;
 		}

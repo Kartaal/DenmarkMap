@@ -245,7 +245,7 @@ public class MapCanvas extends Canvas {
 		singlePixelLength = Math.sqrt(Math.pow(singleXPixelLength, 2) + Math.pow(singleYPixelLength, 2));
 
 		//7 was chosen arbitrarily for looking suitable
-		percentOfScreenArea = (singleXPixelLength*7)*singleYPixelLength*7;
+		percentOfScreenArea = (singleXPixelLength * 7) * singleYPixelLength * 7;
 
 		repaint();
 	}

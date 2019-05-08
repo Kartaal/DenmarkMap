@@ -108,11 +108,9 @@ public class Edge implements Serializable {
 
 		if (drivable == Drivabillity.BOTHWAYS) {
 			return true;
-		}
-		else if (v.getId() == id) {
+		} else if (v.getId() == id) {
 			return drivable == Drivabillity.FORWARD;
-		}
-		else if (w.getId() == id) {
+		} else if (w.getId() == id) {
 			return drivable == Drivabillity.BACKWARD;
 			//this will actually never happen, due to the dataset structure
 		}
@@ -123,11 +121,9 @@ public class Edge implements Serializable {
 
 		if (type == Vehicle.CAR) {
 			return drivabillity[0];
-		}
-		else if (type == Vehicle.WALKING) {
+		} else if (type == Vehicle.WALKING) {
 			return drivabillity[1];
-		}
-		else if (type == Vehicle.BIKE) {
+		} else if (type == Vehicle.BIKE) {
 			return drivabillity[2];
 		}
 
