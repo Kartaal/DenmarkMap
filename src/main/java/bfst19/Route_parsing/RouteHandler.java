@@ -177,17 +177,20 @@ public class RouteHandler{
         return false;
     }
 
-    public static String getArbitraryAdjRoadName(OSMNode node){
-        Iterable<Edge> adj = G.adj(node.getId());
-        Iterator<Edge> iterator = adj.iterator();
-        while(iterator.hasNext()) {
-            Edge edge = iterator.next();
-            if (!edge.getName().equals("")) {
-                return edge.getName();
-            }
-        }
-        return "No Name Found";
-    }
+	public static String getArbitraryAdjRoadName(OSMNode node) {
+		if (node == null) {
+			return "No Name Found";
+		}
+		Iterable<Edge> adj = G.adj(node.getId());
+		Iterator<Edge> iterator = adj.iterator();
+		while (iterator.hasNext()) {
+			Edge edge = iterator.next();
+			if (!edge.getName().equals("")) {
+				return edge.getName();
+			}
+		}
+		return "No Name Found";
+	}
 
     public void finishNodeGraph(){
         System.out.println(G.E());
