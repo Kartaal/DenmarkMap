@@ -80,7 +80,7 @@ public class OSMParser {
 						case "way":
 							id = Long.parseLong(reader.getAttributeValue(null, "id"));
 							//unknown waytype is default
-							type = WayType.UNKNOWN;
+							type = null;
 							//id is also 0 as the default for the same reason
 							way = new OSMWay(0);
 							idToWayIndex.add(id);
@@ -169,7 +169,7 @@ public class OSMParser {
 
 							switch (k){
 								case "relation":
-									type = WayType.UNKNOWN;
+									type = null;
 									rel = new OSMRelation();
 									break;
 								case "member":
@@ -183,7 +183,7 @@ public class OSMParser {
 							}
 							break;
 						case "relation":
-							type = WayType.UNKNOWN;
+							type = null;
 							rel = new OSMRelation();
 							break;
 						case "member":
@@ -212,7 +212,9 @@ public class OSMParser {
 							if (type == WayType.COASTLINE) {
 								coast.add(way);
 							} else {
-								ways.get(type).add(new Polyline(way,isNodeGraphWay));
+							    if(type!=null){
+                                    ways.get(type).add(new Polyline(way,isNodeGraphWay));
+                                }
 							}
 
 							if(b.hasFields()) {
