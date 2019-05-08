@@ -122,9 +122,6 @@ $
 SCRUB
 natural scrub
 $
-BARRIER
-power plant
-$
 UNDERBRIDGE
 man_made bridge
 $
