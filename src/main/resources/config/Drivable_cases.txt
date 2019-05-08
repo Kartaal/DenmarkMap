@@ -54,14 +54,9 @@ CAR 2
 junction roundabout 0
 oneway yes 0
 %
-BIKE -1
-cycleway:right lane 0
-cycleway track 2
-highway unclassified 2
+BIKE 2
 %
-WALKING -1
-sidewalk both 2
-foot yes 2
+WALKING 2
 $
 SERVICE
 %
