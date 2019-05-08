@@ -5,7 +5,10 @@ import bfst19.KDTree.BoundingBox;
 import bfst19.KDTree.Drawable;
 import bfst19.KDTree.KDTree;
 import bfst19.Line.OSMNode;
-import bfst19.Route_parsing.*;
+import bfst19.Route_parsing.Edge;
+import bfst19.Route_parsing.EdgeWeightedDigraph;
+import bfst19.Route_parsing.RouteHandler;
+import bfst19.Route_parsing.Vehicle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
@@ -15,69 +18,60 @@ import java.io.*;
 import java.util.*;
 import java.util.zip.ZipInputStream;
 
-public class Model{
+public class Model {
 
-    private RouteHandler routeHandler;
-    private static float lonfactor = 1.0f;
-    private String datasetName;
-    private static String dirPath;
+	private static float lonfactor = 1.0f;
+	private static String dirPath;
+	private RouteHandler routeHandler;
 	private TextHandler textHandler = TextHandler.getInstance();
-    public DijkstraSP previousPath;
 
-    private List<Runnable> colorObservers = new ArrayList<>();
-    private List<Runnable> foundMatchesObservers = new ArrayList<>();
-    private List<Runnable> pathObservers = new ArrayList<>();
-    private float minlat;
-    private float minlon;
-    private float maxlat;
-    private float maxlon;
+	private List<Runnable> colorObservers = new ArrayList<>();
+	private List<Runnable> foundMatchesObservers = new ArrayList<>();
+	private List<Runnable> pathObservers = new ArrayList<>();
+	private float minlat;
+	private float minlon;
+	private float maxlat;
+	private float maxlon;
 
-    private ObservableList<PointOfInterestItem> pointOfInterestItems = FXCollections.observableArrayList();
-    private String currentTypeColorTxt = "config/TypeColorsNormal.txt";
-    private HashMap<WayType,ResizingArray<String[]>> wayTypeCases = new HashMap<>();
-    private ObservableList<String[]> foundMatches = FXCollections.observableArrayList();
-    private ObservableList<String[]> typeColors = FXCollections.observableArrayList();
-    private ObservableList<Iterable<Edge>> foundPath = FXCollections.observableArrayList();
-    //todo change to other hashmaps or do something else
-    private Map<WayType, KDTree> kdTreeMap = new TreeMap<>();
+	private ObservableList<PointOfInterestItem> pointOfInterestItems = FXCollections.observableArrayList();
+	private String currentTypeColorTxt = "config/TypeColorsNormal.txt";
+	private ObservableList<String[]> foundMatches = FXCollections.observableArrayList();
+	private ObservableList<String[]> typeColors = FXCollections.observableArrayList();
+	private ObservableList<Iterable<Edge>> foundPath = FXCollections.observableArrayList();
+	private Map<WayType, KDTree> kdTreeMap = new TreeMap<>();
 
-    //used for addresstesting
-    public Model(String dirPath) {
-        this.dirPath = dirPath;
-        //this keeps the cities and the default streets files in memory, it's about 1mb for Zealand of memory
-        AddressParser.getInstance().setDefaults();
-        AddressParser.getInstance().setCities();
-    }
+	//used for address testing
+	public Model(String dirPath) {
+		Model.dirPath = dirPath;
 
-    public Model(List<String> args) throws IOException, XMLStreamException, ClassNotFoundException {
-		//Setup so TextHandler deals with bloody default database in jar file
+		AddressParser.getInstance().setDefaults();
+		AddressParser.getInstance().setCities();
+	}
+
+	public Model(List<String> args) throws IOException, XMLStreamException, ClassNotFoundException {
+
+		//Setup so TextHandler deals with default database in jar file
 		boolean hasInputFile = !args.isEmpty();
 		textHandler.setHasInputFile(hasInputFile);
 
-		//Changed from field to local variable so it can be garbage collected
-		Map<WayType, ResizingArray<Drawable>> ways = new EnumMap<>(WayType.class);
-		for (WayType type : WayType.values()) {
-			ways.put(type, new ResizingArray<>());
-		}
-
-		wayTypeCases = textHandler.parseWayTypeCases();
+		HashMap<WayType, ResizingArray<String[]>> wayTypeCases = textHandler.parseWayTypeCases();
 		textHandler.parseWayColors(this);
 
-		//Check if program is run with input argument, if not use default file (binary bornholm)
+		//Check if program is run with input argument, if not use default file (binary denmark)
 		String filename;
-		if(hasInputFile) {
+		if (hasInputFile) {
 			filename = args.get(0);
 		} else {
+			//TODO add denmark!!!!!!!
 			filename = "amager.zip.obj";
 		}
 
-
-		//this might not be optimal
 		String[] arr = filename.split("\\.");
 
 		//When using jar, the file name might be an absolute path,
 		// so replace the last \ with \data\ for the database directory
-		if(hasInputFile) {						//Matches the last \
+		String datasetName;
+		if (hasInputFile) {                        //Matches the last \
 			datasetName = arr[0].replaceAll("\\\\(?!.*)$", "\\data\\") + " Database";
 		} else {
 			datasetName = arr[0].replace("data/", "") + " Database";
@@ -86,53 +80,77 @@ public class Model{
 		dirPath = datasetName;
 
 		InputStream OSMSource;
-        if (filename.endsWith(".obj")) {
-            long time = -System.nanoTime();
+		if (filename.endsWith(".obj")) {
+			long time = -System.nanoTime();
 			readObjFile(filename, hasInputFile);
-            time += System.nanoTime();
-            System.out.printf("Load time: %.1fs\n", time / 1e9);
-        } else {
-            long time = -System.nanoTime();
-            if (filename.endsWith(".zip")) {
-                ZipInputStream zip = new ZipInputStream(new BufferedInputStream(new FileInputStream(filename)));
-                zip.getNextEntry();
-                OSMSource = zip;
-            } else {
-                OSMSource = new BufferedInputStream(new FileInputStream(filename));
-            }
+
+			time += System.nanoTime();
+			System.out.printf("Load time: %.1fs\n", time / 1e9);
+
+		} else {
+			long time = -System.nanoTime();
+
+			if (filename.endsWith(".zip")) {
+				ZipInputStream zip = new ZipInputStream(new BufferedInputStream(new FileInputStream(filename)));
+				zip.getNextEntry();
+				OSMSource = zip;
+			} else {
+				OSMSource = new BufferedInputStream(new FileInputStream(filename));
+			}
+
 			EdgeWeightedDigraph nodeGraph = new EdgeWeightedDigraph();
-            routeHandler = new RouteHandler(nodeGraph);
-            OSMParser.parseOSM(OSMSource,routeHandler,this,textHandler,wayTypeCases);
-            time += System.nanoTime();
-            System.out.printf("parse time: %.1fs\n", time / 1e9);
+			routeHandler = new RouteHandler(nodeGraph);
+			OSMParser.parseOSM(OSMSource, routeHandler, this, textHandler, wayTypeCases);
 
-            try (ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(
-                    new FileOutputStream(filename + ".obj")))) {
+			time += System.nanoTime();
+			System.out.printf("parse time: %.1fs\n", time / 1e9);
 
-                output.writeObject(kdTreeMap);
-                output.writeFloat(minlat);
-                output.writeFloat(minlon);
-                output.writeFloat(maxlat);
-                output.writeFloat(maxlon);
-                output.writeFloat(lonfactor);
-                output.writeObject(routeHandler.getNodeGraph());
+			try (ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(
+					new FileOutputStream(filename + ".obj")))) {
 
-            }
-        }
-        setPointsOfInterest();
-        AddressParser.getInstance().setDefaults();
-        AddressParser.getInstance().setCities();
-    }
+				output.writeObject(kdTreeMap);
+				output.writeFloat(minlat);
+				output.writeFloat(minlon);
+				output.writeFloat(maxlat);
+				output.writeFloat(maxlon);
+				output.writeFloat(lonfactor);
+				output.writeObject(routeHandler.getNodeGraph());
+			}
+		}
 
-	//Reads and object file located at filename,
-	// if hasInputFile is false it needs to read the file from a different location
+		setPointsOfInterest();
+		AddressParser.getInstance().setDefaults();
+		AddressParser.getInstance().setCities();
+	}
+
+	static String getDelimeter() {
+		return " QQQ ";
+	}
+
+	public static double getLonfactor() {
+		return lonfactor;
+	}
+
+	void setLonfactor(float lonfactor) {
+		Model.lonfactor = lonfactor;
+	}
+
+	static String getDirPath() {
+		return dirPath;
+	}
+
+	//Reads an object file located at filename,
+	// if hasInputFile is false, it needs to read the file from a different location
 	private void readObjFile(String filename, boolean hasInputFile) throws IOException, ClassNotFoundException {
-		if(hasInputFile) {
-			try (ObjectInputStream input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(filename)))) {
+		if (hasInputFile) {
+			try (ObjectInputStream input = new ObjectInputStream(
+					new BufferedInputStream(new FileInputStream(filename)))) {
 				initFieldsFromObjFile(input);
 			}
+
 		} else {
-			try (ObjectInputStream input = new ObjectInputStream(new BufferedInputStream(getClass().getClassLoader().getResourceAsStream(filename)))) {
+			try (ObjectInputStream input = new ObjectInputStream(
+					new BufferedInputStream(getClass().getClassLoader().getResourceAsStream(filename)))) {
 				initFieldsFromObjFile(input);
 			}
 		}
@@ -146,189 +164,175 @@ public class Model{
 		maxlat = input.readFloat();
 		maxlon = input.readFloat();
 		lonfactor = input.readFloat();
-		routeHandler = new RouteHandler((EdgeWeightedDigraph)input.readObject());
+		routeHandler = new RouteHandler((EdgeWeightedDigraph) input.readObject());
 	}
 
-    public void addFoundMatchesObserver(Runnable observer) {
-        foundMatchesObservers.add(observer);
-    }
+	void addFoundMatchesObserver(Runnable observer) {
+		foundMatchesObservers.add(observer);
+	}
 
-    public void addColorObserver(Runnable observer) {
-        colorObservers.add(observer);
-    }
+	void addColorObserver(Runnable observer) {
+		colorObservers.add(observer);
+	}
 
-    public void addPathObserver(Runnable observer){pathObservers.add(observer);}
+	void addPathObserver(Runnable observer) {
+		pathObservers.add(observer);
+	}
 
-    public void addPath(Iterable<Edge> path){
-        foundPath.add(path);
-        notifyPathObservers();
-    }
+	void addPath(Iterable<Edge> path) {
+		foundPath.add(path);
+		notifyPathObservers();
+	}
 
-    public void clearPath(){
-        if(!foundPath.isEmpty()){
-            foundPath.clear();
-            notifyPathObservers();
-        }
-    }
+	void clearPath() {
+		if (!foundPath.isEmpty()) {
+			foundPath.clear();
+			notifyPathObservers();
+		}
+	}
 
-    public void addFoundMatch(String[] match){
-        foundMatches.add(match);
-    }
+	void addFoundMatch(String[] match) {
+		foundMatches.add(match);
+	}
 
-    public void clearMatches(){
-        foundMatches.clear();
-    }
+	void clearMatches() {
+		foundMatches.clear();
+	}
 
-    public void clearColors(){
-        if(!typeColors.isEmpty()){
-            typeColors.clear();
-        }
-    }
+	void clearColors() {
+		if (!typeColors.isEmpty()) {
+			typeColors.clear();
+		}
+	}
 
-    public void clearFoundMatchesObservers(){
-        foundMatchesObservers = new ArrayList<>();
-    }
+	void clearFoundMatchesObservers() {
+		foundMatchesObservers = new ArrayList<>();
+	}
 
-    //notify observer methods run through each array of observers and calls their run() method which they themselves have defined
-    public void notifyFoundMatchesObservers() {
-        for (Runnable observer : foundMatchesObservers) {
-            observer.run();
-        }
-    }
+	void notifyFoundMatchesObservers() {
+		for (Runnable observer : foundMatchesObservers) {
+			observer.run();
+		}
+	}
 
-    public void notifyColorObservers() {
-        for (Runnable observer : colorObservers) {
-            observer.run();
-        }
-    }
+	void notifyColorObservers() {
+		for (Runnable observer : colorObservers) {
+			observer.run();
+		}
+	}
 
-    public void notifyPathObservers(){
-        for(Runnable observer : pathObservers) {
-            observer.run();
-        }
-    }
+	private void notifyPathObservers() {
+		for (Runnable observer : pathObservers) {
+			observer.run();
+		}
+	}
 
-    // Does this contain the in
-    public Iterator<Edge> pathIterator(){
-        if(foundPath != null && foundPath.size() > 0)
-        return foundPath.iterator().next().iterator();
-        else return null;
-    }
+	Iterator<Edge> pathIterator() {
+		if (foundPath != null && foundPath.size() > 0)
+			return foundPath.iterator().next().iterator();
+		else return null;
+	}
 
-    public Iterator<String[]> colorIterator() {
-        return typeColors.iterator();
-    }
+	Iterator<String[]> colorIterator() {
+		return typeColors.iterator();
+	}
 
-    public Iterator<String[]> foundMatchesIterator() {
-        return foundMatches.iterator();
-    }
+	Iterator<String[]> foundMatchesIterator() {
+		return foundMatches.iterator();
+	}
 
-    public ObservableList<PointOfInterestItem> pointOfInterestList(){ return pointOfInterestItems; }
+	ObservableList<PointOfInterestItem> pointOfInterestList() {
+		return pointOfInterestItems;
+	}
 
-    public void addPointOfInterestItem(PointOfInterestItem pointOfInterestItem){
-        for(PointOfInterestItem item : pointOfInterestItems){
-            if(pointOfInterestItem.equals(item)){
-                return;
-            }
-        }
-        pointOfInterestItems.add(pointOfInterestItem);
-    }
+	void addPointOfInterestItem(PointOfInterestItem pointOfInterestItem) {
 
-    public void removePointOfInterestItem(PointOfInterestItem pointOfInterestItem) { pointOfInterestItems.remove(pointOfInterestItem);}
+		for (PointOfInterestItem item : pointOfInterestItems) {
+			if (pointOfInterestItem.equals(item)) {
+				return;
+			}
+		}
 
-    private void setPointsOfInterest(){
-        List<PointOfInterestItem> list = TextHandler.getInstance().getPointsOfInterest(dirPath);
-        for(PointOfInterestItem item : list){
-            pointOfInterestItems.add(item);
-        }
-    }
+		pointOfInterestItems.add(pointOfInterestItem);
+	}
 
-    public void writePointsOfInterest(){
-        TextHandler.getInstance().writePointsOfInterest(dirPath,pointOfInterestItems);
-    }
+	void removePointOfInterestItem(PointOfInterestItem pointOfInterestItem) {
+		pointOfInterestItems.remove(pointOfInterestItem);
+	}
 
-    public String getCurrentTypeColorTxt(){
-        return currentTypeColorTxt;
-    }
+	private void setPointsOfInterest() {
+		List<PointOfInterestItem> list = TextHandler.getInstance().getPointsOfInterest(dirPath);
+		pointOfInterestItems.addAll(list);
+	}
 
-    public void addTypeColors(String[] color){
-        typeColors.add(color);
-    }
+	void writePointsOfInterest() {
+		TextHandler.getInstance().writePointsOfInterest(dirPath, pointOfInterestItems);
+	}
 
-    public void setMinlon(float minlon){
-        this.minlon = minlon;
-    }
+	String getCurrentTypeColorTxt() {
+		return currentTypeColorTxt;
+	}
 
-    public void setMaxlon(float maxlon){
-        this.maxlon = maxlon;
-    }
+	void addTypeColors(String[] color) {
+		typeColors.add(color);
+	}
 
-    public void setMinlat(float minlat){ this.minlat = minlat;  }
+	void setKdTrees(Map<WayType, KDTree> kdTreeMap) {
+		this.kdTreeMap = kdTreeMap;
+	}
 
-    public void setMaxlat(float maxlat){
-        this.maxlat= maxlat;
-    }
+	float getMinlon() {
+		return minlon;
+	}
 
-    public void setLonfactor(float lonfactor){ this.lonfactor = lonfactor;}
+	void setMinlon(float minlon) {
+		this.minlon = minlon;
+	}
 
-    public void setKdTrees(Map<WayType, KDTree> kdTreeMap) {
-        this.kdTreeMap = kdTreeMap;
-    }
+	float getMinlat() {
+		return minlat;
+	}
 
-    public float getMinlon(){
-        return minlon;
-    }
+	void setMinlat(float minlat) {
+		this.minlat = minlat;
+	}
 
-    public float getMinlat() {
-        return minlat;
-    }
+	float getMaxlat() {
+		return maxlat;
+	}
 
-    public float getMaxlat() {
-        return maxlat;
-    }
+	void setMaxlat(float maxlat) {
+		this.maxlat = maxlat;
+	}
 
-	public float getMaxlon() {
+	float getMaxlon() {
 		return maxlon;
 	}
 
-
-	public static String getDelimeter() {
-		return " QQQ ";
+	void setMaxlon(float maxlon) {
+		this.maxlon = maxlon;
 	}
 
-	public String getDatasetName() {
-		return datasetName;
-	}
-
-
-	//returns the ways of the given type within the given boundingbox
-	public ResizingArray<Drawable> getWaysOfType(WayType type, BoundingBox bbox) {
+	ResizingArray<Drawable> getWaysOfType(WayType type, BoundingBox bbox) {
 		return kdTreeMap.get(type).rangeQuery(bbox);
 	}
 
-	public static double getLonfactor(){
-		return lonfactor;
-	}
-
-	public static String getDirPath(){
-		return dirPath;
-	}
-
-	public void switchColorScheme(boolean colorBlindEnabled) {
+	void switchColorScheme(boolean colorBlindEnabled) {
 		if (colorBlindEnabled) {
 			currentTypeColorTxt = ("config/TypeColorsColorblind.txt");
-		}  else {
+		} else {
 			currentTypeColorTxt = ("config/TypeColorsNormal.txt");
 		}
+
 		textHandler.parseWayColors(this);
 	}
 
-	public Iterable<Edge> findPath(OSMNode startNode , OSMNode endNode , Vehicle type , boolean fastestPath){
-		return routeHandler.findPath(startNode,endNode,type,fastestPath);
+	Iterable<Edge> findPath(OSMNode startNode, OSMNode endNode, Vehicle type, boolean fastestPath) {
+		return routeHandler.findPath(startNode, endNode, type, fastestPath);
 	}
 
-	public void parseSearch(String proposedAddress){
-		AddressParser.getInstance().parseSearch(proposedAddress,this);
+	void parseSearch(String proposedAddress) {
+		AddressParser.getInstance().parseSearch(proposedAddress, this);
 	}
 
 	OSMNode getNearestRoad(Point2D point, Vehicle type) throws nothingNearbyException {
@@ -348,7 +352,7 @@ public class Model{
 		return Calculator.getClosestNode(point, nodeList);
 	}
 
-	OSMNode getNearestBuilding(Point2D point) {
+	/*OSMNode getNearestBuilding(Point2D point) {
 		try {
 			OSMNode closestElement = kdTreeMap.get(WayType.BUILDING).getNearestNeighbor(point, Vehicle.ABSTRACTVEHICLE);
 
@@ -362,6 +366,5 @@ public class Model{
 			e.printStackTrace();
 			return null;
 		}
-	}
-
+	}*/
 }

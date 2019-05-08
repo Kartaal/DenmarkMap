@@ -1,99 +1,116 @@
 package bfst19;
 
 
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 
 
 class Instruction extends HBox {
 
+	Instruction(double length, String direction, String road) {
+		super();
+		this.setStyle("-fx-min-width: 260; -fx-padding: 10; -fx-spacing: 2");
+		getChildren().addAll(addImage(direction), makeLengthText(length), makeDirectionPane(direction), makeRoadNameText(road));
+	}
 
-    Instruction(double length, String direction, String road){
-        super();
-        this.setStyle("-fx-min-width: 260; -fx-padding: 10; -fx-spacing: 2");
-        getChildren().addAll(addImage(direction), makeLengthText(length), makeDirectionPane(direction), makeRoadNameText(road));
-    }
+	private Pane makeLengthText(double length) {
+		int lengthRound = Calculator.round(length);
+		Pane lengthPane = new Pane();
+		Label lengthText = new Label();
 
-    public Pane makeLengthText(double length){
-        int lengthRound = Calculator.round(length);
-        Pane lengthPane = new Pane();
-        Label lengthText = new Label();
-        lengthText.setText((lengthRound) + "m then ");
-        lengthPane.getChildren().add(lengthText);
-        return lengthPane;
-    }
+		lengthText.setText((lengthRound) + "m then");
+		lengthPane.getChildren().add(lengthText);
 
-    public Pane makeDirectionPane(String direction){
-        Pane directionPane = new Pane();
-        Label directionLabel = new Label();
-        String directionText = makeDirectionText(direction);
-        directionLabel.setText(directionText);
-        directionPane.getChildren().add(directionLabel);
-        return directionPane;
+		return lengthPane;
+	}
 
-    }
-    public String makeDirectionText(String direction){
-        String dir ="";
-        if(direction.equals("right")){
-            dir= "turn "+direction;
-        }else if(direction.equals("left")){
-            dir= "turn "+direction;
-        }else if(direction.equals("keep right")){
-            dir= direction;
-        }else if(direction.equals("keep left")) {
-            dir = direction;
-        }else if(direction.equals("u-turn")){
-            dir = "make a u-turn";
-        } else if (direction.equals("")){
-            // should be changed
-            dir= "drive straight";
-        }
-        return dir;
-    }
+	private Pane makeDirectionPane(String direction) {
+		Pane directionPane = new Pane();
+		Label directionLabel = new Label();
 
-    public Pane makeRoadNameText(String roadName){
-        Pane roadNamePane = new Pane();
-        Label roadNameText = new Label();
-        if(!roadName.equals("")){
-            roadNameText.setText(" onto "+roadName);
-        }else{
-            roadNameText.setText(roadName);
-        }
+		String directionText = makeDirectionText(direction);
+		directionLabel.setText(directionText);
+		directionPane.getChildren().add(directionLabel);
 
-        roadNamePane.getChildren().add(roadNameText);
-        return roadNamePane;
-    }
+		return directionPane;
+	}
 
-    public Pane addImage(String dir){
+	private String makeDirectionText(String direction) {
+		String dir = "";
 
-        ImageView imageView= new ImageView();
-        Image image= new Image("/white.png", true);
-        Pane pane = new Pane();
+		switch (direction) {
+			case "right":
+				dir = "turn " + direction;
+				break;
+			case "left":
+				dir = "turn " + direction;
+				break;
+			case "keep right":
+				dir = direction;
+				break;
+			case "keep left":
+				dir = direction;
+				break;
+			case "u-turn":
+				dir = "make a u-turn";
+				break;
+			case "":
+				dir = "drive straight";
+				break;
+		}
+		return dir;
+	}
 
-        if (dir.equals("right")){
-            image= new Image("/right.png", true);
-        } else if (dir.equals("left")){
-            image= new Image("/left.png", true);
-        } else if(dir.equals("keep right")){
-            image= new Image("/slight right.png", true);
-        }else if(dir.equals("keep left")){
-            image= new Image("/slight left.png", true);
-        } else if (dir.equals("u-turn")){
-            image= new Image("/Uturn.png", true);
-        } else if (dir.equals("")) {
-            image = new Image("/straight.png", true);
-        }
+	private Pane makeRoadNameText(String roadName) {
+		Pane roadNamePane = new Pane();
+		Label roadNameText = new Label();
 
-        imageView.setImage(image);
+		if (!roadName.equals("")) {
+			roadNameText.setText("onto " + roadName);
+		} else {
+			roadNameText.setText(roadName);
+		}
 
-        pane.getChildren().add(imageView);
-        return pane;
+		roadNamePane.getChildren().add(roadNameText);
 
-    }
+		return roadNamePane;
+	}
 
+	private Pane addImage(String dir) {
+
+		ImageView imageView = new ImageView();
+		Image image = new Image("/white.png", true);
+		Pane pane = new Pane();
+
+		switch (dir) {
+			case "right":
+				image = new Image("/right.png", true);
+				break;
+			case "left":
+				image = new Image("/left.png", true);
+				break;
+			case "keep right":
+				image = new Image("/slight right.png", true);
+				break;
+			case "keep left":
+				image = new Image("/slight left.png", true);
+				break;
+			case "u-turn":
+				image = new Image("/Uturn.png", true);
+				break;
+			case "":
+				image = new Image("/straight.png", true);
+				break;
+		}
+
+		imageView.setImage(image);
+		pane.getChildren().add(imageView);
+
+		return pane;
+	}
 }
 
 

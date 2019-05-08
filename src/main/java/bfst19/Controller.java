@@ -25,280 +25,279 @@ import java.util.Iterator;
 
 public class Controller {
 
-    private Model model;
-    private float x, y;
-    private boolean roadNameOnHover = false;
-    static final DropShadow dropShadow = new DropShadow(BlurType.ONE_PASS_BOX,
-            Color.rgb(0,0,0,0.3), 10, 0, 0, 0);
+	static final DropShadow dropShadow = new DropShadow(BlurType.ONE_PASS_BOX,
+			Color.rgb(0, 0, 0, 0.3), 10, 0, 0, 0);
+	private Model model;
+	private float x, y;
+	private boolean roadNameOnHover = false;
+	@FXML
+	private MapCanvas mapCanvas;
 
+	@FXML
+	private Text scaleText;
 
-    @FXML
-    private MapCanvas mapCanvas;
+	@FXML
+	private Text closestRoadText;
 
-    @FXML
-    private Text scaleText;
+	@FXML
+	private BorderPane borderPane;
 
-    @FXML
-    private Text closestRoadText;
+	public Controller() {
+	}
 
-    @FXML
-    private BorderPane borderPane;
+	public void init(Model model) {
+		this.model = model;
+		mapCanvas.init(model, this);
 
-    public Controller() {}
+		setScalebar();
+		setUpBar();
 
-    public void init(Model model) {
-        this.model = model;
-        mapCanvas.init(model, this);
+		// update scalebar when the mxxproperty has changed. The lambda expression
+		// sets the method changed from the interface (ChangeListener).
+		// mxxProperty() Defines the X coordinate scaling element of the 3x4 matrix.
+		mapCanvas.transform.mxxProperty().addListener((observable, oldVal, newVal) -> {
+			setScalebar();
+		});
+	}
 
-        setScalebar();
-        setUpBar();
+	public Model getModel() {
+		return model;
+	}
 
-        // update scalebar when the mxxproperty has changed. The lambda expression
-        // sets the method changed from the interface (ChangeListener).
-        // mxxProperty() Defines the X coordinate scaling element of the 3x4 matrix.
-        mapCanvas.transform.mxxProperty().addListener((observable, oldVal, newVal) -> {
-            setScalebar();
-        });
-    }
+	Iterator<String[]> getFoundMatchesIterator() {
+		return model.foundMatchesIterator();
+	}
 
-    public Model getModel() {
-        return model;
-    }
+	Iterator<Edge> getPathIterator() {
+		return model.pathIterator();
+	}
 
-    Iterator<String[]> getFoundMatchesIterator() {
-        return model.foundMatchesIterator();
-    }
+	void parseSearchText(String searchText) {
+		model.parseSearch(searchText);
+	}
 
-    Iterator<Edge> getPathIterator() {
-        return model.pathIterator();
-    }
+	void parseTheme(boolean colorBlindEnabled) {
+		model.switchColorScheme(colorBlindEnabled);
+	}
 
-    void parseSearchText(String searchText) {
-        model.parseSearch(searchText);
-    }
+	void parseOnlyRoadsMode(boolean enabled) {
+		mapCanvas.toggleNonRoads(enabled);
+		mapCanvas.repaint();
+	}
 
-    void parseTheme(boolean colorBlindEnabled) {
-        model.switchColorScheme(colorBlindEnabled);
-    }
+	void setUpPointOfInterestPanel() {
+		VBox vBox = null;
 
-    void parseOnlyRoadsMode(boolean enabled) {
-        mapCanvas.toggleNonRoads(enabled);
-        mapCanvas.repaint();
-    }
+		if (borderPane.getLeft() != null) {
+			borderPane.setLeft(null);
+		}
 
-    void setUpPointOfInterestPanel() {
-        VBox vBox = null;
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("PointOfInterestPanel.fxml"));
 
-        if (borderPane.getLeft() != null) {
-            borderPane.setLeft(null);
-        }
+		try {
+			vBox = fxmlLoader.load();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("PointOfInterestPanel.fxml"));
+		borderPane.setLeft(vBox);
 
-        try {
-            vBox = fxmlLoader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+		ControllerPointOfInterestPanel controllerPointOfInterestPanel = fxmlLoader.getController();
+		controllerPointOfInterestPanel.init(this);
+	}
 
-        borderPane.setLeft(vBox);
+	void setUpInfoPanel(String address, float x, float y) {
+		VBox vBox = null;
 
-        ControllerPointOfInterestPanel controllerPointOfInterestPanel = fxmlLoader.getController();
-        controllerPointOfInterestPanel.init(this);
-    }
+		if (borderPane.getRight() != null) {
+			borderPane.setRight(null);
+		}
 
-    void setUpInfoPanel(String address, float x, float y) {
-        VBox vBox = null;
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("InfoPanel.fxml"));
 
-        if (borderPane.getRight() != null) {
-            borderPane.setRight(null);
-        }
+		try {
+			vBox = fxmlLoader.load();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("InfoPanel.fxml"));
+		borderPane.setRight(vBox);
 
-        try {
-            vBox = fxmlLoader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+		ControllerInfoPanel controllerInfoPanel = fxmlLoader.getController();
+		controllerInfoPanel.init(this, address, x, y);
+	}
 
-        borderPane.setRight(vBox);
+	void setUpBar() {
 
-        ControllerInfoPanel controllerInfoPanel = fxmlLoader.getController();
-        controllerInfoPanel.init(this, address, x, y);
-    }
+		if (borderPane.getLeft() != null) {
+			borderPane.setLeft(null);
+		}
 
-    void setUpBar() {
+		HBox hBox = null;
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ViewBarPanel.fxml"));
 
-        if (borderPane.getLeft() != null) {
-            borderPane.setLeft(null);
-        }
+		try {
+			hBox = fxmlLoader.load();
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.err.println("Failed to load from FXMLLoader associated with ViewBarPanel.fxml");
+		}
 
-        HBox hBox = null;
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ViewBarPanel.fxml"));
+		borderPane.setLeft(hBox);
+		ControllerBarPanel controllerBarPanel = fxmlLoader.getController();
+		controllerBarPanel.init(this);
+	}
 
-        try {
-            hBox = fxmlLoader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Failed to load from FXMLLoader associated with ViewBarPanel.fxml");
-        }
+	void setupMenuPanel() {
+		if (borderPane.getLeft() != null) {
+			borderPane.setLeft(null);
+		}
 
-        borderPane.setLeft(hBox);
-        ControllerBarPanel controllerBarPanel = fxmlLoader.getController();
-        controllerBarPanel.init(this);
-    }
+		VBox VBox = null;
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ViewMenuPanel.fxml"));
 
-    void setupMenuPanel() {
-        if (borderPane.getLeft() != null) {
-            borderPane.setLeft(null);
-        }
+		try {
+			VBox = fxmlLoader.load();
+		} catch (IOException event) {
+			event.printStackTrace();
+			System.err.println("Failed to load from FXMLLoader associated with ViewMenuPanel.fxml");
+		}
 
-        VBox VBox = null;
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ViewMenuPanel.fxml"));
+		borderPane.setLeft(VBox);
+		ControllerMenuPanel controllerMenuPanel = fxmlLoader.getController();
+		controllerMenuPanel.init(this);
+	}
 
-        try {
-            VBox = fxmlLoader.load();
-        } catch (IOException event) {
-            event.printStackTrace();
-            System.err.println("Failed to load from FXMLLoader associated with ViewMenuPanel.fxml");
-        }
+	void setupRoutePanel() {
+		if (borderPane.getLeft() != null) {
+			borderPane.setLeft(null);
+		}
 
-        borderPane.setLeft(VBox);
-        ControllerMenuPanel controllerMenuPanel = fxmlLoader.getController();
-        controllerMenuPanel.init(this);
-    }
+		VBox VBox = null;
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ViewRoutePanel.fxml"));
 
-    void setupRoutePanel() {
-        if (borderPane.getLeft() != null) {
-            borderPane.setLeft(null);
-        }
+		try {
+			VBox = fxmlLoader.load();
+		} catch (IOException event) {
+			event.printStackTrace();
+			System.err.println("Failed to load from FXMLLoader associated with ViewRoutePanel.fxml");
+		}
 
-        VBox VBox = null;
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ViewRoutePanel.fxml"));
+		borderPane.setLeft(VBox);
+		ControllerRoutePanel controllerRoutePanel = fxmlLoader.getController();
+		controllerRoutePanel.init(this);
+	}
 
-        try {
-            VBox = fxmlLoader.load();
-        } catch (IOException event) {
-            event.printStackTrace();
-            System.err.println("Failed to load from FXMLLoader associated with ViewRoutePanel.fxml");
-        }
+	private void setScalebar() {
+		//flipped weird, have to getY when needing x and vice versa
+		float minX = (float) mapCanvas.getModelCoords(0, 0).getY();
+		float maxX = (float) mapCanvas.getModelCoords(0, (float) mapCanvas.getHeight()).getY();
+		float y = (float) (mapCanvas.getModelCoords(0, 0).getX() / Model.getLonfactor());
+		scaleText.setText(ScaleBar.getScaleText(minX, y, maxX, y, mapCanvas.getWidth()));
+	}
 
-        borderPane.setLeft(VBox);
-        ControllerRoutePanel controllerRoutePanel = fxmlLoader.getController();
-        controllerRoutePanel.init(this);
-    }
+	void panToPoint(double x, double y) {
+		mapCanvas.panToPoint(x, y);
+	}
 
-    private void setScalebar() {
-        //flipped weird, have to getY when needing x and vice versa
-        float minX = (float) mapCanvas.getModelCoords(0, 0).getY();
-        float maxX = (float) mapCanvas.getModelCoords(0, (float) mapCanvas.getHeight()).getY();
-        float y = (float) (mapCanvas.getModelCoords(0, 0).getX() / Model.getLonfactor());
-        scaleText.setText(ScaleBar.getScaleText(minX, y, maxX, y, mapCanvas.getWidth()));
-    }
+	@FXML
+	private void onKeyPressed(KeyEvent e) {
+		switch (e.getCode()) {
+			case F10:
+				// do not enable on larger dataset than bornholm or so, makes it very laggy!!!
+				roadNameOnHover = !roadNameOnHover;
+				break;
+		}
+	}
 
-    void panToPoint(double x, double y) {
-        mapCanvas.panToPoint(x, y);
-    }
+	@FXML
+	private void onScroll(ScrollEvent e) {
+		// the zoomfactor as calculated based on the distance moved by the "scroll"
+		//The pow part is just about trial and error to find a good amount of zoom per "scroll"
+		double factor = Math.pow(1.01, e.getDeltaY());
+		mapCanvas.zoom(factor, e.getX(), e.getY());
+	}
 
-    @FXML
-    private void onKeyPressed(KeyEvent e) {
-        switch (e.getCode()) {
-            case F10:
-                // do not enable on larger dataset than bornholm or so, makes it very laggy!!!
-                roadNameOnHover = !roadNameOnHover;
-                break;
-        }
-    }
+	@FXML
+	private void onMouseDragged(MouseEvent e) {
+		if (e.isPrimaryButtonDown()) mapCanvas.pan(e.getX() - x, e.getY() - y);
+		x = (float) e.getX();
+		y = (float) e.getY();
+	}
 
-    @FXML
-    private void onScroll(ScrollEvent e) {
-        // the zoomfactor as calculated based on the distance moved by the "scroll"
-        //The pow part is just about trial and error to find a good amount of zoom per "scroll"
-        double factor = Math.pow(1.01, e.getDeltaY());
-        mapCanvas.zoom(factor, e.getX(), e.getY());
-    }
+	@FXML
+	private void onMousePressed(MouseEvent e) {
+		x = (float) e.getX();
+		y = (float) e.getY();
 
-    @FXML
-    private void onMouseDragged(MouseEvent e) {
-        if (e.isPrimaryButtonDown()) mapCanvas.pan(e.getX() - x, e.getY() - y);
-        x = (float) e.getX();
-        y = (float) e.getY();
-    }
+		if (e.isSecondaryButtonDown()) {
+			setClosestRoadText(x, y);
+		}
+	}
 
-    @FXML
-    private void onMousePressed(MouseEvent e) {
-        x = (float) e.getX();
-        y = (float) e.getY();
+	@FXML
+	public void onMouseMoved(MouseEvent e) {
+		//If your dataset is small, this runs fine, however on larger dataset (denmark) never enable this
+		if (roadNameOnHover) {
+			float continuousX = (float) e.getX();
+			float continuousY = (float) e.getY();
 
-        if(e.isSecondaryButtonDown()){
-            setClosestRoadText(x,y);
-        }
-    }
+			setClosestRoadText(continuousX, continuousY);
+		}
+	}
 
-    @FXML
-    public void onMouseMoved(MouseEvent e) {
-        //If your dataset is small, this runs fine, however on larger dataset (denmark) never enable this
-        if (roadNameOnHover) {
-            float continuousX = (float) e.getX();
-            float continuousY = (float) e.getY();
+	void addPath(Iterable<Edge> path) {
+		if (path != null) {
+			model.clearPath();
+			model.addPath(path);
+		}
+		mapCanvas.repaint();
+	}
 
-            setClosestRoadText(continuousX, continuousY);
-        }
-    }
+	Iterable<Edge> getPath(OSMNode startNode, OSMNode endNode, Vehicle type, boolean b) {
+		return model.findPath(startNode, endNode, type, b);
+	}
 
-    void addPath(Iterable<Edge> path) {
-        if (path != null) {
-            model.clearPath();
-            model.addPath(path);
-        }
-        mapCanvas.repaint();
-    }
+	void addPathObserver(InstructionContainer instructionContainer) {
+		model.addPathObserver(instructionContainer::showInstructions);
+	}
 
-    Iterable<Edge> getPath(OSMNode startNode, OSMNode endNode, Vehicle type, boolean b) {
-        return model.findPath(startNode, endNode, type, b);
-    }
+	BorderPane getBorderPane() {
+		return borderPane;
+	}
 
-    void addPathObserver(InstructionContainer instructionContainer) {
-        model.addPathObserver(instructionContainer::showInstructions);
-    }
+	ObservableList<PointOfInterestItem> pointOfInterestList() {
+		return model.pointOfInterestList();
+	}
 
-    BorderPane getBorderPane() {
-        return borderPane;
-    }
+	void addPointsOfInterestItem(PointOfInterestItem pointOfInterestItem) {
+		model.addPointOfInterestItem(pointOfInterestItem);
+	}
 
-    ObservableList<PointOfInterestItem> pointOfInterestList() {
-        return model.pointOfInterestList();
-    }
+	void removePointOfInterestItem(PointOfInterestItem pointOfInterestItem) {
+		model.removePointOfInterestItem(pointOfInterestItem);
+	}
 
-    void addPointsOfInterestItem(PointOfInterestItem pointOfInterestItem) {
-        model.addPointOfInterestItem(pointOfInterestItem);
-    }
+	private void setClosestRoadText(float continuousX, float continuousY) {
+		OSMNode tempClosest = null;
 
-    void removePointOfInterestItem(PointOfInterestItem pointOfInterestItem) {
-        model.removePointOfInterestItem(pointOfInterestItem);
-    }
+		try {
+			tempClosest = model.getNearestRoad(mapCanvas.getModelCoords(continuousX, continuousY), Vehicle.ABSTRACTVEHICLE);
+		} catch (nothingNearbyException e) {
+			e.printStackTrace();
+		}
 
-    private void setClosestRoadText(float continuousX, float continuousY) {
-        OSMNode tempClosest = null;
+		String closestRoad = RouteHandler.getArbitraryAdjRoadName(tempClosest);
+		closestRoadText.setText(closestRoad);
+	}
 
-        try {
-            tempClosest = model.getNearestRoad(mapCanvas.getModelCoords(continuousX, continuousY), Vehicle.ABSTRACTVEHICLE);
-        } catch (nothingNearbyException e) {
-            e.printStackTrace();
-        }
-
-        String closestRoad = RouteHandler.getArbitraryAdjRoadName(tempClosest);
-        closestRoadText.setText(closestRoad);
-    }
-
-    OSMNode getNearestRoad(Point2D point2D, Vehicle type) {
-        try {
-            return model.getNearestRoad(point2D, type);
-        } catch (nothingNearbyException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+	OSMNode getNearestRoad(Point2D point2D, Vehicle type) {
+		try {
+			return model.getNearestRoad(point2D, type);
+		} catch (nothingNearbyException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 }
