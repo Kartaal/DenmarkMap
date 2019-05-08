@@ -71,5 +71,5 @@ tasks.withType(JavaCompile) {
 }
 
 run {
-    args = ['data/amager.zip']
+    args = ['data/bornholm.zip']
 }
