@@ -25,7 +25,6 @@ public enum WayType {
 	CEMETERY(false,6),
 	SQUARE(false,5),
 	SCRUB(false,10),
-	BARRIER(true,14),
 	UNDERBRIDGE(false, 12 ),
 
 	FOOTWAY(true,500),
