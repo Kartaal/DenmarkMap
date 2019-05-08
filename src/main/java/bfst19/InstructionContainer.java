@@ -11,7 +11,7 @@ public class InstructionContainer extends VBox {
 
 	public InstructionContainer() {
 		super();
-	}
+	}//boop
 
 	public void init(Controller controller) {
 		this.setStyle("-fx-min-width: 280; -fx-min-height: 400;");
