@@ -26,9 +26,9 @@ public class TextHandler {
     public void makeDatabase(ArrayList<Address> addresses, String dirPath, String delimiter){
         try{
 			File countryDir = new File(dirPath);
-//            if(countryDir.isDirectory()){
-//                deleteDirectoryRecursion(new File(dirPath));
-//            }
+            if(countryDir.isDirectory()){
+                deleteDirectoryRecursion(new File(dirPath));
+            }
             countryDir.mkdir();
 
             String currentCityAndPostcode = "";
