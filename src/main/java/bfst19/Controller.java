@@ -24,7 +24,7 @@ public class Controller {
     private Model model;
     float x, y;
     private double factor, oldDeterminant;
-    private boolean fastestBoolean = false;
+    private boolean fastestBoolean = true;
     private static boolean kdTreeBoolean = false;
     private boolean roadNameOnHover = false;
     private long time;
@@ -289,7 +289,7 @@ public class Controller {
             //System.out.println(Math.abs((-time + prevtime) / 1e8));
             //Todo: delete this part in the final commit. This is here for debugging purposes
             if (Math.abs((-time + prevtime) / 1e8) <= 2){
-                closestNode = model.getNearestRoad(mapCanvas.getModelCoords(x,y), Vehicle.CAR);
+                closestNode = model.getNearestRoad(mapCanvas.getModelCoords(x,y), Vehicle.BIKE);
                 if(nodeIDs[0] == null){
                     if(closestNode != null) {
                         nodeIDs[0] = closestNode;
@@ -300,7 +300,7 @@ public class Controller {
                 } else if(nodeIDs[1] == null){
                     nodeIDs[1] = closestNode;
                     System.out.println(closestNode.getId());
-                    Iterable<Edge> path = model.findPath(nodeIDs[0],nodeIDs[1], Vehicle.CAR, fastestBoolean);
+                    Iterable<Edge> path = model.findPath(nodeIDs[0],nodeIDs[1], Vehicle.BIKE, fastestBoolean);
                     if(path != null){
                         model.clearPath();
                         model.addPath(path);

@@ -35,7 +35,7 @@ public class DijkstraSP {
             int v = pq.delMin();
             for (Edge e : G.adj(v)) {
                 relax(e, v, type, fastestPath,endNode);
-                if (e.getOtherEnd(v) == endNode.getId()) break;
+                if (e.getOtherEnd(v) == endNode.getId()) return;
             }
         }
 
@@ -54,7 +54,6 @@ public class DijkstraSP {
                 double heuristic = AStar.Heuristic(type,fastestPath,toNode.getLat(),toNode.getLon(),endNode.getLat(),endNode.getLon());
                 if (pq.contains(w)) pq.decreaseKey(w, distTo[w]+heuristic);
                 else                pq.insert(w, distTo[w]+heuristic);
-                if (e.getOtherEnd(v) == endNode.getId()) return;
             }
         }
 
@@ -71,7 +70,10 @@ public class DijkstraSP {
     //maybe doing this is not optimal
     public Iterable<Edge> pathTo(int v) {
         validateVertex(v);
-        if (!hasPathTo(v)) return null;
+        if (!hasPathTo(v)){
+            System.out.println("boop");
+            return null;
+        }
         Stack<Edge> path = new Stack<>();
         for (Edge e = edgeTo[v]; e != null; e = edgeTo[v]) {
             v = e.getOtherEnd(v);
@@ -121,7 +123,7 @@ public class DijkstraSP {
         for (int v = 0; v < G.V(); v++) {
             for (Edge e : G.adj(v)) {
                 int w = e.getOtherEnd(v);
-                if (distTo[v] + e.getWeight(type,fastestPath) < distTo[w]) {
+                if (distTo[v] + e.getWeight(type,fastestPath) < distTo[w] && e.isForwardAllowed(type,v)) {
                     System.err.println("edge " + e + " not relaxed");
                     return false;
                 }
@@ -133,7 +135,7 @@ public class DijkstraSP {
             if (edgeTo[w] == null) continue;
             Edge e = edgeTo[w];
             int v = e.getOtherEnd(w);
-            if (w != e.other().getId()) return false;
+            if (w != e.getOtherEnd(v)) return false;
             if (distTo[v] + e.getWeight(type,fastestPath) != distTo[w]) {
                 System.err.println("edge " + e + " on shortest path not tight");
                 return false;
