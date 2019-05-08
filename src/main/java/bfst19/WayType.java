@@ -33,7 +33,7 @@ public enum WayType {
 	MOTORWAY(true,Integer.MIN_VALUE ),
 	PRIMARY(true,Integer.MIN_VALUE),
 	SECONDARY(true,5),
-	TERTIARY(true,300),
+	TERTIARY(true,5),
 	SERVICE(true,200),
 	ROAD_RESIDENTIAL(true,100),
 	CYCLEWAY(true,500),
