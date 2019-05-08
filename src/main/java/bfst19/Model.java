@@ -228,7 +228,7 @@ public class Model {
 	}
 
 	Iterator<Edge> pathIterator() {
-		if (foundPath != null && foundPath.size() > 0)
+		if (foundPath.size() > 0)
 			return foundPath.iterator().next().iterator();
 		else return null;
 	}
