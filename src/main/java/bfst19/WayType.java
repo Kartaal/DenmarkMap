@@ -1,6 +1,5 @@
 package bfst19;
 public enum WayType {
-	//TODO: separate into different WayTypes
 	RECREATION(false,10),
 	PARKING(false, 7),
 	FARMLAND(false,10),
@@ -40,7 +39,7 @@ public enum WayType {
 
 	SUBWAY(true,5),
 
-	BRIDGE(false,6),
+	BRIDGE(false,Integer.MIN_VALUE),
 
 	RAILCONSTRUCTION(true,9),
 
@@ -57,7 +56,7 @@ public enum WayType {
 	BOUNDARY_ADMINISTRATIVE(true,1 ),
 	RAILWAY(true, Integer.MIN_VALUE),
 	MILLITARY(false, 14),
-	PEDESTRIAN(true,8 ),
+	PEDESTRIAN(true,500 ),
 	RAILWAY_PLATFORM(false,12 ),
 	AIRPORT_RUNWAY(true,10),
 	AIRPORT_TAXIWAY(true,10),
