@@ -5,122 +5,137 @@ import bfst19.Line.OSMNode;
 import java.io.Serializable;
 import java.util.HashMap;
 
+/**
+ * Represents a relation between two nodes in the digraph,
+ * thus it holds the two nodes that are connected, a length, a name, and a speedlimit.
+ * <p>
+ * Very similar to algs4's DirectedEdge class, with modifications
+ * to accommodate two different weights depending on if it's a fastest path
+ * or not. The most notable difference that is not traversabillity and weight
+ * is that one edge represents all relations between two points, and therefore
+ * includes a drivabillity for each supported vehicle type.
+ * This does complicate getting the tail/head of any edge, as it's dependent on
+ * the direction of traversal.
+ */
 public class Edge implements Serializable {
-    //allways set length and speedlimit as the same unit of measurement, currently km
-    String name;
-    private double length;
-    private double speedlLimit;
-    //-1 = you can't drive here
-    //0 node v to node w
-    //1 node w to node v
-    //2 both ways
-    private Drivabillity[] drivabillity;
-    private OSMNode v;
-    private OSMNode w;
-
-    public Edge(double length, double speedlLimit, OSMNode v, OSMNode w,String name,HashMap<Vehicle, Drivabillity> vehicleTypeToDrivable) {
-        this.length = length;
-        this.speedlLimit = speedlLimit;
-        this.v = v;
-        this.w = w;
-        this.name = name;
-        drivabillity = new Drivabillity[vehicleTypeToDrivable.keySet().size()];
-        drivabillity[0] = vehicleTypeToDrivable.get(Vehicle.CAR);
-        drivabillity[1] = vehicleTypeToDrivable.get(Vehicle.WALKING);
-        drivabillity[2] = vehicleTypeToDrivable.get(Vehicle.BIKE);
-    }
-
-    public double getWeight(Vehicle type, boolean fastestPath){
-        //if shortest path just return length,
-        // else we two cases for calculating the time of traversing the edge
-        if(fastestPath){
-            //if the vehicle type's speed is less than the speedlimit of this edge,
-            // we should use that instead
-            if(type.maxSpeed<speedlLimit){
-                return getLength() / type.maxSpeed;
-            }else {
-                return getLength() / speedlLimit;
-            }
-        }else{
-            return getLength();
-        }
-    }
-
-    //this is code dublication
-    public double getLength(){return length; }
-
-    public OSMNode getV(){
-        return v;
-    }
-
-    public OSMNode getW(){
-        return w;
-    }
+	private String name;
+	private float length;
+	private int speedLimit;
+	private Drivabillity[] drivabillity;
+	private OSMNode v;
+	private OSMNode w;
 
 
-    public String getName(){return name;}
+	public Edge(float length, int speedLimit, OSMNode v, OSMNode w,
+				String name, HashMap<Vehicle, Drivabillity> vehicleTypeToDrivable) {
+		if (v.getId() < 0) throw new IllegalArgumentException("vertex index must be a non-negative integer");
+		if (w.getId() < 0) throw new IllegalArgumentException("vertex index must be a non-negative integer");
+		if (Double.isNaN(length)) throw new IllegalArgumentException("Weight is NaN");
+		if (Double.isNaN(speedLimit)) throw new IllegalArgumentException("Weight is NaN");
 
-    //todo make these dependt on a call with a specific node
+		this.length = length;
+		this.speedLimit = speedLimit;
+		this.v = v;
+		this.w = w;
+		this.name = name;
 
-    public long either(){
-        return v.getAsLong();
-    }
+		drivabillity = new Drivabillity[vehicleTypeToDrivable.keySet().size()];
+		drivabillity[0] = vehicleTypeToDrivable.get(Vehicle.CAR);
+		drivabillity[1] = vehicleTypeToDrivable.get(Vehicle.WALKING);
+		drivabillity[2] = vehicleTypeToDrivable.get(Vehicle.BIKE);
+	}
 
-    public long other(){
-        return w.getAsLong();
-    }
+	double getWeight(Vehicle type, boolean fastestPath) {
 
-    public long getOtherEnd(long id){
-        if(id==w.getAsLong()){
-            return v.getAsLong();
-        }
-        return w.getAsLong();
-    }
+		if (fastestPath) {
 
-    public OSMNode getOtherEndNode(OSMNode node){
-        if(node.getAsLong()==w.getAsLong()){
-            return v;
-        }
-        return w;
-    }
+			if (type.maxSpeed < speedLimit) {
+				return getLength() / type.maxSpeed;
+			} else {
+				return getLength() / speedLimit;
+			}
 
-    public boolean isForwardAllowed(Vehicle type, long id) {
-        Drivabillity drivable = getDrivableFromVehicleType(type);
-        if(drivable==Drivabillity.BOTHWAYS){
-            return true;
-        }else if(v.getAsLong()==id) {
-            if(drivable==Drivabillity.FORWARD){
-                return true;
-            }
-            //this will actually never happen, as the dataset never has data in such a way that it never happens
-        }else if(w.getAsLong()==id){
-            if(drivable==Drivabillity.BACKWARD){
-                return true;
-            }
-        }
-        return false;
-    }
+		} else {
+			return getLength();
+		}
+	}
 
-    private Drivabillity getDrivableFromVehicleType(Vehicle type){
-        if(type==Vehicle.CAR){
-            return drivabillity[0];
-        }else if(type==Vehicle.WALKING){
-            return drivabillity[1];
-        }else if(type==Vehicle.BIKE){
-            return drivabillity[2];
-        }
-        return Drivabillity.NOWAY;
-    }
+	public double getLength() {
+		return length;
+	}
 
-    public int compareTo(Edge e, Vehicle type, boolean fastestPath) {
-        double firstWeight = getWeight(type,fastestPath);
-        double secondWeight = e.getWeight(type,fastestPath);
+	public String getName() {
+		return name;
+	}
 
-        return Double.compare(firstWeight,secondWeight);
-    }
+	public OSMNode either() {
+		return v;
+	}
 
-    @Override
-    public String toString(){
-        return "name: "+name +" Length: "+length+"m "+" bike: "+getDrivableFromVehicleType(Vehicle.BIKE)+" Car: "+getDrivableFromVehicleType(Vehicle.CAR)+" walking: "+getDrivableFromVehicleType(Vehicle.WALKING)+" "+speedlLimit+" Node v:" + v.toString() + " Node W:" + w.toString();
-    }
+	public OSMNode other() {
+		return w;
+	}
+
+	int getOtherEnd(int id) {
+		if (id == w.getId()) {
+			return v.getId();
+		}
+		return w.getId();
+	}
+
+	OSMNode getThisEndNode(int id) {
+		if (id == w.getId()) {
+			return w;
+		} else {
+			return v;
+		}
+	}
+
+	public OSMNode getOtherEndNode(OSMNode node) {
+		if (node.getId() == w.getId()) {
+			return v;
+		} else {
+			return w;
+		}
+	}
+
+	boolean isForwardAllowed(Vehicle type, int id) {
+		Drivabillity drivable = getDrivableFromVehicleType(type);
+
+		if (type == Vehicle.ABSTRACTVEHICLE) {
+			return true;
+		}
+
+		if (drivable == Drivabillity.BOTHWAYS) {
+			return true;
+		} else if (v.getId() == id) {
+			return drivable == Drivabillity.FORWARD;
+		} else if (w.getId() == id) {
+			return drivable == Drivabillity.BACKWARD;
+			//this will actually never happen, due to the dataset structure
+		}
+		return false;
+	}
+
+	private Drivabillity getDrivableFromVehicleType(Vehicle type) {
+
+		if (type == Vehicle.CAR) {
+			return drivabillity[0];
+		} else if (type == Vehicle.WALKING) {
+			return drivabillity[1];
+		} else if (type == Vehicle.BIKE) {
+			return drivabillity[2];
+		}
+
+		return Drivabillity.NOWAY;
+	}
+
+	@Override
+	public String toString() {
+		return "name: " + name + " Length: " + length + "m " + " bike: " + getDrivableFromVehicleType(Vehicle.BIKE) +
+				" Car: " + getDrivableFromVehicleType(Vehicle.CAR) +
+				" walking: " + getDrivableFromVehicleType(Vehicle.WALKING) + " " +
+				speedLimit + " Node v:" + v.toString() + " Node W:" + w.toString();
+	}
 }
+

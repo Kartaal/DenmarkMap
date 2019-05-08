@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:id="vboxList" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" pickOnBounds="false" prefHeight="300.0" prefWidth="150.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bfst19.ControllerInfoPanel">
+   <children>
+
+      <VBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="150.0" style="-fx-background-color: white; -fx-background-radius: 10px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);">
+         <children>
+
+            <Button alignment="TOP_LEFT" mnemonicParsing="false" onAction="#clearBtnAction" onMouseEntered="#setBackBtnEffect" onMouseExited="#setBackBtnEffectNone" prefHeight="20.0" prefWidth="20.0" style="-fx-background-color: white;">
+               <graphic>
+                  <ImageView fx:id="clearBtn" fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="/clear.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <VBox.margin>
+                  <Insets left="120.0" right="5.0" top="2.5" />
+               </VBox.margin>
+            </Button>
+
+            <Label fx:id="addressLabel" minHeight="20.0" minWidth="100.0">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </VBox.margin>
+               <font>
+                  <Font size="12.0" />
+               </font>
+            </Label>
+
+            <Label fx:id="latlon" minHeight="20.0" minWidth="100.0">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </VBox.margin>
+               <font>
+                  <Font size="12.0" />
+               </font>
+            </Label>
+
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="150.0">
+               <children>
+                  <Label text="Add point of interest">
+                     <font>
+                        <Font size="10.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                  </Label>
+      
+                  <Button mnemonicParsing="false" onAction="#addPointOfInterest" onMouseEntered="#setAddBtnEffect" onMouseExited="#setAddBtnEffectNone" prefHeight="30.0" prefWidth="30.0" style="-fx-background-color: white;">
+                     <graphic>
+                        <ImageView fx:id="addBtn" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="/add.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </HBox>
+
+         </children>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </VBox>
+
+   </children>
+   <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
+</VBox>

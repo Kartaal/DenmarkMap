@@ -22,17 +22,19 @@
                            onScroll="#onScroll"
                            onMousePressed="#onMousePressed"
                            onMouseDragged="#onMouseDragged"
+                           onMouseMoved="#onMouseMoved"
                 />
 
                 <BorderPane fx:id="borderPane" pickOnBounds="false" VBox.vgrow="ALWAYS">
 
                     <bottom>
+
                         <!--Start  ScaleBar -->
                         <Pane fx:id="scaleBar" BorderPane.alignment="BOTTOM_RIGHT" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);" prefWidth="${scene.width}" maxHeight="20" prefHeight="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" layoutX="180.0" layoutY="350.0" >
 
                             <children>
                                 <BorderPane  prefWidth="${scene.width}"  >
-                                    <right >
+                                    <right>
                                         <HBox BorderPane.alignment="CENTER_RIGHT" >
                                             <Text fx:id="scaleText"  text=""/>
                                             <BorderPane >
@@ -54,6 +56,14 @@
                                             </BorderPane>
                                         </HBox>
                                     </right>
+                                    <center>
+                                        <HBox BorderPane.alignment="CENTER_RIGHT">
+
+                                            <Text fx:id="closestRoadText"  text=""/>
+
+                                        </HBox>
+
+                                    </center>
                                     <padding>
                                         <Insets left="5.0" right="10.0" />
                                     </padding>

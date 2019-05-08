@@ -1,49 +1,46 @@
 package bfst19;
+
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-
-import java.util.Iterator;
 
 
 public class ControllerBarPanel {
 
-    @FXML
-    private Button menuButton;
-    @FXML
-    private AutoTextField autoTextField;
-    @FXML
-    private Button searchButton;
+	Controller controller;
+	@FXML
+	private Button menuButton;
+	@FXML
+	private AutoTextField autoTextField;
+	@FXML
+	private Button searchButton;
 
-    Controller controller;
+	public void init(Controller controller) {
+		this.controller = controller;
+		setMenuButton();
+		setSearchButton();
+		autoTextField.init(controller, "current");
+	}
 
-    //ControllerBarPanels initialize method, which initialize controller field and runs the AutoTextFields init.
-    public void init(Controller controller){
-        this.controller = controller;
-        setMenuButton();
-        setSearchButton();
-        autoTextField.init(controller);
-    }
+	private void setMenuButton() {
+		menuButton.setOnAction(e -> controller.setupMenuPanel());
+	}
 
-    //Sets up MenuPanel when MenuButton is pressed
-    public void setMenuButton(){
-        menuButton.setOnAction(e -> controller.setupMenuPanel());
-    }
+	@FXML
+	private void openRoute(ActionEvent actionEvent) {
+		Pin.currentPin = null;
+		Pin.secondaryPin = null;
+		controller.getModel().clearPath();
+		controller.repaint();
+		controller.setupRoutePanel();
+	}
 
-    //Sets up RoutePanel when RouteBtn is pressed
-    @FXML
-    private void openRoute(ActionEvent actionEvent) {
-        controller.setupRoutePanel();
-    }
+	private void setSearchButton() {
+		searchButton.setOnAction(e -> autoTextField.showResults());
+	}
 
-    //When SearchButton is pressed it runs AutoTextField's showResults method
-    public void setSearchButton(){
-        searchButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
-                autoTextField.showResults();
-            }
-        });
-    }
+	@FXML
+	private void openPointOfInterest(ActionEvent actionEvent) {
+		controller.setUpPointOfInterestPanel();
+	}
 }

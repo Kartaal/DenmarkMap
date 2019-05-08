@@ -3,12 +3,16 @@ package bfst19.KDTree;
 
 import bfst19.Line.OSMNode;
 
+/**
+ * Represents elements that can be stored in KDTrees based on their center point,
+ * have a BoundingBox and contain OSMNodes to be retrieved.
+ */
 public interface BoundingBoxable {
-    float getCenterX();
+	float getCenterX();
 
-    float getCenterY();
+	float getCenterY();
 
-    BoundingBox getBB();
+	BoundingBox getBB();
 
-    OSMNode[] getNodes();
+	OSMNode[] getNodes();
 }

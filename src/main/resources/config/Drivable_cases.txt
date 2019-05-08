@@ -24,6 +24,7 @@ BIKE -1
 cycleway:right lane 0
 cycleway:right track 0
 cycleway:left track 0
+cycleway track 2
 cycle yes 2
 %
 WALKING -1
@@ -36,15 +37,9 @@ CAR 2
 junction roundabout 0
 oneway yes 0
 %
-BIKE -1
-cycleway:right lane 0
-cycleway:right track 0
-cycleway:left track 0
-cycle yes 2
+BIKE 2
 %
-WALKING -1
-sidewalk both 2
-foot yes 2
+WALKING 2
 $
 TERTIARY
 %
@@ -52,17 +47,15 @@ CAR 2
 junction roundabout 0
 oneway yes 0
 %
-BIKE -1
-cycleway:right lane 0
-cycleway track 2
+BIKE 2
 %
-WALKING -1
-sidewalk both 2
-foot yes 2
+WALKING 2
 $
 SERVICE
 %
 CAR 2
+junction roundabout 0
+oneway yes 0
 %
 BIKE 2
 %
@@ -71,6 +64,16 @@ $
 ROAD_RESIDENTIAL
 %
 CAR 2
+junction roundabout 0
+oneway yes 0
+%
+BIKE 2
+%
+WALKING 2
+$
+TRACK
+%
+CAR -1
 %
 BIKE 2
 %

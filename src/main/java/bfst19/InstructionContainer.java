@@ -2,131 +2,139 @@ package bfst19;
 
 import bfst19.Line.OSMNode;
 import bfst19.Route_parsing.Edge;
-import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.util.Iterator;
 
 public class InstructionContainer extends VBox {
-    private static Controller controller;
+	private static Controller controller;
 
+	public InstructionContainer() {
+		super();
+	}
 
-    public InstructionContainer() {
-        super();
-    }
+	public void init(Controller controller) {
+		this.setStyle("-fx-min-width: 280; -fx-min-height: 400;");
+		InstructionContainer.controller = controller;
 
-    public void init(Controller controller) {
-        this.setStyle("-fx-min-width: 280; -fx-min-height: 400;");
-        this.controller = controller;
+		controller.addPathObserver(this);
+	}
 
-        controller.addPathObserver(this);
-    }
+	void showInstructions() {
+		addInstructions();
+	}
 
-    public void showInstructions() {
-        addInstructions();
-        /*
-        if(!instructionsPane.isShowing()){
-        }
-        */
-    }
+	private void addInstructions() {
+		Iterator<Edge> pathIterator = controller.getPathIterator();
 
-    public void addInstructions() {
-        Iterator<Edge> pathIterator = controller.getpathIterator();
-        Edge edge = pathIterator.next();
-        Edge currentEdge = pathIterator.next();
+		if (pathIterator != null) {
+			Edge edge = pathIterator.next();
+			Edge currentEdge = pathIterator.next();
 
-        //this section is to establish which ends of the two startingedges are the "head" and "base"
-        // being which direction we are going
-        OSMNode previousV = edge.getV();
-        OSMNode previousW = edge.getW();
-        OSMNode newV = currentEdge.getV();
-        OSMNode newW = currentEdge.getW();
-        if (edge != null && currentEdge != null) {
-            OSMNode previousBase;
-            OSMNode previousHead;
-            OSMNode currentBase;
-            OSMNode currentHead;
-            if (previousV.getAsLong() == newV.getAsLong()) {
-                previousHead = previousV;
-                previousBase = previousW;
-                currentBase = newV;
-                currentHead = newW;
-            } else if (previousW.getAsLong() == newV.getAsLong()) {
-                previousHead = previousW;
-                previousBase = previousV;
-                currentBase = newV;
-                currentHead = newW;
-            } else if (previousV.getAsLong() == newW.getAsLong()) {
-                previousHead = previousV;
-                previousBase = previousW;
-                currentBase = newW;
-                currentHead = newV;
-            } else {
-                previousHead = previousW;
-                previousBase = previousV;
-                currentBase = newW;
-                currentHead = newV;
-            }
+			//this section is to establish which ends of the two starting edges are the "head" and "base"
+			// being which direction we are going
+			OSMNode previousV = edge.either();
+			OSMNode previousW = edge.other();
+			OSMNode newV = currentEdge.either();
+			OSMNode newW = currentEdge.other();
 
-            double angle = Model.angleBetween2Lines(previousBase, previousHead, currentBase, currentHead);
+			if (edge != null && currentEdge != null) {
+				OSMNode previousBase;
+				OSMNode previousHead;
+				OSMNode currentBase;
+				OSMNode currentHead;
 
-            if (45 < angle && angle < 180) {
-                System.out.println("turn left");
-            }
-            if (180 < angle && angle < 315) {
-                System.out.println("turn right");
-            }
+				// 4 distinct cases
+				if (previousV.getId() == newV.getId()) {
+					previousHead = previousV;
+					previousBase = previousW;
+					currentBase = newV;
+					currentHead = newW;
 
-            previousBase = currentBase;
-            previousHead = currentHead;
+				} else if (previousW.getId() == newV.getId()) {
+					previousHead = previousW;
+					previousBase = previousV;
+					currentBase = newV;
+					currentHead = newW;
 
+				} else if (previousV.getId() == newW.getId()) {
+					previousHead = previousV;
+					previousBase = previousW;
+					currentBase = newW;
+					currentHead = newV;
 
-            double length = currentEdge.getLength();
-            String name = currentEdge.getName();
-            double currentLength = 0.0;
+				} else {
+					previousHead = previousW;
+					previousBase = previousV;
+					currentBase = newW;
+					currentHead = newV;
+				}
 
-            while (pathIterator.hasNext()) {
+				double length = edge.getLength();
+				String currentEdgeName = currentEdge.getName();
+				double angle = Calculator.angleBetween2Lines(previousBase, previousHead, currentBase, currentHead);
 
-                currentEdge = pathIterator.next();
-                currentHead = currentEdge.getOtherEndNode(previousHead);
-                currentBase = currentEdge.getOtherEndNode(currentHead);
-                currentLength = currentEdge.getLength();
+				String direction = getTurnAngleText(angle);
+				addNewInstruction(length, direction, currentEdgeName);
 
-                angle = Model.angleBetween2Lines(previousBase, previousHead, currentBase, currentHead);
-                String direction = "";
-                if(15 < angle && 45 > angle){
-                    direction = "keep left";
-                }else if (45 < angle && angle < 180) {
-                    direction = "left";
-                }else if(345 > angle && angle > 315){
-                    direction = "keep right";
-                }else if (180 < angle && angle < 315) {
-                    direction = "right";
-                }
-                if(currentLength>1.0) {
-                    String currentName = currentEdge.getName();
-                    if (direction.equals("left") || direction.equals("right") || !name.equals(currentName)) {
-                        addNewInstruction(length, direction, currentName);
-                        length = 0.0;
-                        name = currentName;
-                        direction = "";
-                    }
-                }
+				length = currentEdge.getLength();
+				String name = currentEdgeName;
 
-                length += currentLength;
-                previousBase = currentBase;
-                previousHead = currentHead;
-            }
-        }
+				previousBase = currentBase;
+				previousHead = currentHead;
 
-    }
+				while (pathIterator.hasNext()) {
 
-    public void addNewInstruction(double speed, String direction, String road){
-        Instruction instruction= new Instruction(speed,direction,road);
-        getChildren().add(instruction);
-    }
+					currentEdge = pathIterator.next();
+					currentHead = currentEdge.getOtherEndNode(previousHead);
+					currentBase = currentEdge.getOtherEndNode(currentHead);
+					double currentLength = currentEdge.getLength();
 
+					angle = Calculator.angleBetween2Lines(previousBase, previousHead, currentBase, currentHead);
+					direction = getTurnAngleText(angle);
 
+					if (currentLength > 1.0) {
+						String currentName = currentEdge.getName();
+
+						if (direction.equals("u-turn") || direction.equals("left") ||
+								direction.equals("right") || !name.equals(currentName)) {
+							addNewInstruction(length, direction, currentName);
+							length = 0.0;
+							name = currentName;
+						}
+					}
+
+					length += currentLength;
+					previousBase = currentBase;
+					previousHead = currentHead;
+				}
+			}
+		}
+	}
+
+	private String getTurnAngleText(double angle) {
+		String direction = "";
+		if (15 < angle && 45 > angle) {
+			direction = "keep left";
+		} else if (45 < angle && angle < 120) {
+			direction = "left";
+		} else if (345 > angle && angle > 315) {
+			direction = "keep right";
+		} else if (240 < angle && angle < 315) {
+			direction = "right";
+		} else if (120 < angle && angle < 240) {
+			direction = "u-turn";
+		}
+		return direction;
+	}
+
+	private void addNewInstruction(double speed, String direction, String road) {
+		Instruction instruction = new Instruction(speed, direction, road);
+		getChildren().add(instruction);
+	}
+
+	void removeAllChildren() {
+		getChildren().clear();
+	}
 
 }

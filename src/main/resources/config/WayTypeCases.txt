@@ -1,4 +1,4 @@
-52
+$
 BUILDING
 building yes
 building house
@@ -122,9 +122,6 @@ $
 SCRUB
 natural scrub
 $
-BARRIER
-power plant
-$
 UNDERBRIDGE
 man_made bridge
 $
@@ -148,13 +145,13 @@ $
 TERTIARY
 highway tertiary
 highway tertiary_link
+highway unclassified
 $
 SERVICE
 highway service
 $
 ROAD_RESIDENTIAL
 highway residential
-highway unclassified
 $
 CYCLEWAY
 highway cycleway

@@ -52,16 +52,21 @@ repositories {
 	jcenter()
 }
 
+applicationDefaultJvmArgs = ["-Xms256m", "-Xmx6144m"]
+
 jar {
 	manifest {
 		attributes 'Main-Class': mainClassName
 	}
 }
 
+
+applicationDefaultJvmArgs = ["-Xms256m", "-Xmx6144m"]
+
 tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
 }
 
 run {
-    args = ['data/bornholm.zip']
+    args = ['data/bornholm.zip.obj']
 }
