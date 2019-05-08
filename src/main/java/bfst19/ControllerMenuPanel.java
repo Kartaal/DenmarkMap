@@ -42,7 +42,7 @@ public class ControllerMenuPanel implements BackBtnEffect {
     private void setToggleTheme(){
         RadioButton selectedRadioButton = (RadioButton) toggleTheme.getSelectedToggle();
         String toggleGroupValue = selectedRadioButton.getText();
-        if(toggleGroupValue.equals("ColorBlind Mode")){
+        if(toggleGroupValue.equals("Color Blind Mode")){
             controller.parseTheme(true);
             controller.parseOnlyRoadsMode(false);
         }
@@ -50,7 +50,7 @@ public class ControllerMenuPanel implements BackBtnEffect {
             controller.parseTheme(false);
             controller.parseOnlyRoadsMode(true);
         }
-        else if (toggleGroupValue.equals("Dark Theme")){
+        else if (toggleGroupValue.equals("Default")){
             controller.parseTheme(false);
             controller.parseOnlyRoadsMode(false);
         }
