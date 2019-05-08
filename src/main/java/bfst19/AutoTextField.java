@@ -6,7 +6,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,11 +14,8 @@ public class AutoTextField extends TextField {
 
     Controller controller;
     Model model;
-
     private OnResponseListener<Point2D> listener;
-
     private ContextMenu addressDropDown;
-
     private String tag;
 
     public AutoTextField(){
@@ -28,116 +24,107 @@ public class AutoTextField extends TextField {
         addressDropDown = new ContextMenu();
         addressDropDown.setStyle("-fx-max-height: 400");
 
-        //Skal bruge onAction istedet, men den skal ikke være i controller da den kun skal aflæse om man klikker enter når man er inde i tekstfieldet
         setOnAction(event -> parseSearch());
     }
 
-    public void setOnResponseListener(OnResponseListener<Point2D> listener){
+    void setOnResponseListener(OnResponseListener<Point2D> listener){
         this.listener = listener;
     }
 
     public void init(Controller controller, String tag){
         this.setStyle("-fx-min-width: 300; -fx-min-height: 40");
+
         this.controller = controller;
         this.model = controller.getModel();
         this.tag = tag;
     }
 
-    public void parseSearch(){
-        //Observer is added when it is needed and removed after a response has been given
+    private void parseSearch(){
         if(getText() != null && !getText().equals("")) {
             model.addFoundMatchesObserver(this::showResults);
             controller.parseSearchText(getText());
         }
     }
 
-    public void showResults(){
+    void showResults(){
         model.clearFoundMatchesObservers();
         if (addAddressesToDropDown()) {
             addressDropDown.show(this, Side.BOTTOM, 0, 0);
         }
-
     }
 
     private boolean addAddressesToDropDown() {
-            List<CustomMenuItem> menuItems = new LinkedList<>();
-            ArrayList<Label> addressLabels = new ArrayList<>();
-            Iterator<String[]> iterator = controller.getFoundMatchesIterator();
-            if(iterator.hasNext()) {
-                String[] firstMatch = iterator.next();
 
-                //this means that the match is a complete address
-                if (firstMatch.length == 8) {
-                    panAddress(Float.valueOf(firstMatch[0]), Float.valueOf(firstMatch[1]));
-                    addressDropDown.getItems().clear();
-                    menuItems.add(new CustomMenuItem(new Label(this.getText()),true));
+        List<CustomMenuItem> menuItems = new LinkedList<>();
+        ResizingArray<Label> addressLabels = new ResizingArray<>();
+        Iterator<String[]> iterator = controller.getFoundMatchesIterator();
 
-                    //return;
-                    //and the rest of the address is passed of to some other part of the UI.
-                } else if (firstMatch.length == 4) {
-                    addressLabels.add(new Label(firstMatch[0] + " " + firstMatch[1] + " " + firstMatch[2] + " " + firstMatch[3]));
+        if(iterator.hasNext()) {
+            String[] firstMatch = iterator.next();
 
-                    while (iterator.hasNext()) {
+            //this means that the match is a complete address
+            if (firstMatch.length == 8) {
+                panAddress(Float.valueOf(firstMatch[0]), Float.valueOf(firstMatch[1]));
+                addressDropDown.getItems().clear();
+                menuItems.add(new CustomMenuItem(new Label(this.getText()),true));
 
-                        String[] match = iterator.next();
+            } else if (firstMatch.length == 4) {
+                addressLabels.add(new Label(firstMatch[0] + " " + firstMatch[1] + " " + firstMatch[2] + " " + firstMatch[3]));
 
-                        Label labelAddress = new Label(match[0] + " " + match[1] + " " + match[2] + " " + match[3]);
-
-                        addressLabels.add(labelAddress);
-                    }
-                } else {
-                    addressLabels.add(new Label(firstMatch[0] + " " + firstMatch[1] + " " + firstMatch[2]));
-
-                    while (iterator.hasNext()) {
-                        String[] match = iterator.next();
-
-
-                        Label labelAddress = new Label(match[0] + " " + match[1] + " " + match[2]);
-
-                        addressLabels.add(labelAddress);
-                    }
+                while (iterator.hasNext()) {
+                    String[] match = iterator.next();
+                    Label labelAddress = new Label(match[0] + " " + match[1] + " " + match[2] + " " + match[3]);
+                    addressLabels.add(labelAddress);
                 }
 
-                for (Label addressLabel : addressLabels) {
-                    CustomMenuItem item = new CustomMenuItem(addressLabel, true);
-                    menuItems.add(item);
+            } else {
+                addressLabels.add(new Label(firstMatch[0] + " " + firstMatch[1] + " " + firstMatch[2]));
 
-                    item.setOnAction((event) -> {
-                        setText(addressLabel.getText());
-                    });
+                while (iterator.hasNext()) {
+                    String[] match = iterator.next();
+                    Label labelAddress = new Label(match[0] + " " + match[1] + " " + match[2]);
+                    addressLabels.add(labelAddress);
                 }
+
             }
 
-            if(menuItems.size() == 0){
-                menuItems.add(new CustomMenuItem(new Label("No search result found"),true));
+            for (Label addressLabel : addressLabels) {
+
+                CustomMenuItem item = new CustomMenuItem(addressLabel, true);
+                menuItems.add(item);
+
+                item.setOnAction((event) -> setText(addressLabel.getText()));
             }
+        }
 
-            addressDropDown.getItems().clear();
-            addressDropDown.getItems().addAll(menuItems);
+        if(menuItems.size() == 0){
+            menuItems.add(new CustomMenuItem(new Label("No search result found"),true));
+        }
 
-            return true;
+        addressDropDown.getItems().clear();
+        addressDropDown.getItems().addAll(menuItems);
 
+        return true;
     }
 
     public void clear(){
         addressDropDown.getItems().clear();
     }
 
-    //this.getText() er måske mere korrekt at skrive da man siger at det er klassen extended metode istedet for bare at skrive (getText())
-    //Skal ikke være i controller da teksten fra AutoTextField skal sendes ud af denne klasse...
     private void panAddress(float x, float y){
 
         if(tag.equals("current")){
-            Pin.currentPin = new Pin(x*model.getLonfactor(), y);
+            Pin.currentPin = new Pin(x*Model.getLonfactor(), y);
+
         }else{
-            Pin.secondaryPin = new Pin(x*model.getLonfactor(), y);
+            Pin.secondaryPin = new Pin(x*Model.getLonfactor(), y);
         }
 
         controller.panToPoint(x, y);
-
         controller.setUpInfoPanel(this.getText(), x, y);
 
-
-        if(listener != null) listener.getResponse(new Point2D(x*Model.getLonfactor(), y));
+        if(listener != null) {
+            listener.getResponse(new Point2D(x * Model.getLonfactor(), y));
+        }
     }
 }

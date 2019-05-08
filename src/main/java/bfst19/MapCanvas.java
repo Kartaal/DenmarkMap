@@ -141,7 +141,7 @@ public class MapCanvas extends Canvas {
             }
         }
         if(hasPath){
-            Iterator<Edge> iterator = controller.getpathIterator();
+            Iterator<Edge> iterator = controller.getPathIterator();
             drawPath(iterator);
         }
 
@@ -173,35 +173,7 @@ public class MapCanvas extends Canvas {
     }
 
     private BoundingBox getExtentInModel(){
-        if(!Controller.KdTreeBoolean()){
-            return getBounds(); }
-        else{
-            return getBoundsDebug();
-        }
-    }
-
-    private BoundingBox getBoundsDebug() {
-        Bounds localBounds = this.getBoundsInLocal();
-        float minX =(float) localBounds.getMinX() + 250;
-        float maxX =(float) localBounds.getMaxX() - 250;
-        float minY =(float) localBounds.getMinY() + 250;
-        float maxY =(float) localBounds.getMaxY() - 250;
-
-        //Flip the boundingbox' y-coords, as the rendering is flipped, but the model isn't.
-        Point2D minPoint = getModelCoords(minX, maxY);
-        Point2D maxPoint = getModelCoords(maxX, minY);
-
-        gc.setStroke(Color.RED);
-        gc.beginPath();
-        gc.lineTo(minPoint.getX(), minPoint.getY());
-        gc.lineTo(minPoint.getX(), maxPoint.getY());
-        gc.lineTo(maxPoint.getX(), maxPoint.getY());
-        gc.lineTo(maxPoint.getX(), minPoint.getY());
-        gc.lineTo(minPoint.getX(), minPoint.getY());
-        gc.stroke();
-
-        return new BoundingBox((float)minPoint.getX(), (float)minPoint.getY(),
-                (float)(maxPoint.getX()-minPoint.getX()), (float)(maxPoint.getY()-minPoint.getY()));
+            return getBounds();
     }
 
     public BoundingBox getBounds() {

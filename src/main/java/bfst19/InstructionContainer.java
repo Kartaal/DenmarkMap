@@ -33,7 +33,7 @@ public class InstructionContainer extends VBox {
     }
 
     public void addInstructions() {
-        Iterator<Edge> pathIterator = controller.getpathIterator();
+        Iterator<Edge> pathIterator = controller.getPathIterator();
         if (pathIterator!=null) {
             Edge edge = pathIterator.next();
             Edge currentEdge = pathIterator.next();

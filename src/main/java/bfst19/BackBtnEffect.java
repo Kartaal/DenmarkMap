@@ -1,6 +1,6 @@
 package bfst19;
 
-public interface BackBtnEffect {
+interface BackBtnEffect {
 
     private void setBackBtnEffect(){}
 
