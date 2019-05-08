@@ -20,8 +20,8 @@ class View {
 		stage.setMinWidth(800);
 		stage.setMinHeight(600);
 		stage.setScene(scene);
+		stage.setTitle("Danmarkskort");
 		stage.show();
 	}
 
 }
-

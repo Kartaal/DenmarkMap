@@ -8,7 +8,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 public class AddressTest {
-	String datasetName = "data/denmark Database";
+	String datasetName = "data/denmark-latest Database";
 	Model model = new Model(datasetName);
 
 
@@ -23,10 +23,10 @@ public class AddressTest {
 	@Test
 	public void testGetAddressesFromDefault1() {
 		ArrayList<String[]> matches = AddressParser.getInstance().getMatchesFromDefault("Terrasserne", false);
-		String[] match1 = matches.get(0);
-		String[] expectedMatch1 = new String[]{"Terrasserne", "Brønshøj", "2700"};
-		String[] match2 = matches.get(1);
+		String[] match2 = matches.get(0);
 		String[] expectedMatch2 = new String[]{"Terrasserne", "Roskilde", "4000"};
+		String[] match1 = matches.get(1);
+		String[] expectedMatch1 = new String[]{"Terrasserne", "Brønshøj", "2700"};
 		assertArrayEquals(expectedMatch1, match1);
 		assertArrayEquals(expectedMatch2, match2);
 	}
@@ -34,10 +34,10 @@ public class AddressTest {
 	@Test
 	public void testGetAddressesFromDefault2() {
 		ArrayList<String[]> matches = AddressParser.getInstance().getMatchesFromDefault("Rued Langgaards Vej", false);
-		String[] match1 = matches.get(0);
-		String[] expectedMatch1 = new String[]{"Rued Langgaards Vej", "København S", "2300"};
-		String[] match2 = matches.get(1);
+		String[] match2 = matches.get(0);
 		String[] expectedMatch2 = new String[]{"Rued Langgaards Vej", "Vejle", "7100"};
+		String[] match1 = matches.get(1);
+		String[] expectedMatch1 = new String[]{"Rued Langgaards Vej", "København S", "2300"};
 		assertArrayEquals(expectedMatch1, match1);
 		assertArrayEquals(expectedMatch2, match2);
 	}
@@ -45,10 +45,10 @@ public class AddressTest {
 	@Test
 	public void testGetAddressesFromDefaultWithDanLetters() {
 		ArrayList<String[]> matches = AddressParser.getInstance().getMatchesFromDefault("Højderyggen", false);
-		String[] match1 = matches.get(0);
-		String[] expectedMatch1 = new String[]{"Højderyggen", "Vejle Øst", "7120"};
-		String[] match2 = matches.get(1);
+		String[] match2 = matches.get(0);
 		String[] expectedMatch2 = new String[]{"Højderyggen", "Herlev", "2730"};
+		String[] match1 = matches.get(1);
+		String[] expectedMatch1 = new String[]{"Højderyggen", "Vejle Øst", "7120"};
 		assertArrayEquals(expectedMatch1, match1);
 		assertArrayEquals(expectedMatch2, match2);
 	}

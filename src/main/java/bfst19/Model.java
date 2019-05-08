@@ -43,7 +43,7 @@ public class Model {
 	//used for address testing
 	public Model(String dirPath) {
 		Model.dirPath = dirPath;
-
+        TextHandler.getInstance().setHasInputFile(true);
 		AddressParser.getInstance().setDefaults();
 		AddressParser.getInstance().setCities();
 	}
