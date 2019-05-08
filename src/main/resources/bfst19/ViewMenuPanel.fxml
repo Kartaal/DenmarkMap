@@ -42,19 +42,13 @@
                   <Insets bottom="10.0" />
                </VBox.margin>
             </HBox>
-            <RadioButton mnemonicParsing="false" text="Default"  onAction="#setToggleTheme">
+            <RadioButton mnemonicParsing="false" text="Default" onAction="#setToggleTheme" >
                <VBox.margin>
                   <Insets bottom="5.0" left="20.0" right="5.0" top="5.0" />
                </VBox.margin>
                <toggleGroup>
                   <ToggleGroup fx:id="toggleTheme"/>
                </toggleGroup>
-            </RadioButton>
-            <RadioButton mnemonicParsing="false" text="Black/White Mode"  toggleGroup="$toggleTheme"  onAction="#setToggleTheme">
-               <VBox.margin>
-                  <Insets bottom="5.0" left="20.0" right="5.0" top="5.0" />
-               </VBox.margin>
-
             </RadioButton>
             <RadioButton mnemonicParsing="false" text="Color Blind Mode" toggleGroup="$toggleTheme" onAction="#setToggleTheme">
                <VBox.margin>

@@ -27,11 +27,11 @@ class AddressParser {
 	private static AddressParser addressParser = null;
 	//a collection of the default searching file if there is no hit for checkCity
 	private static String[] defaults;
-	final String houseRegex = "(?<house>([0-9]{1,3} ?[a-zA-Z]?))?";
-	final String floorRegex = "(?<floor>([1-9]{1,3}\\.?)|(1st\\.)|(st\\.))?";
-	final String sideRegex = "(?<side>th\\.?|tv\\.?|mf\\.?|md\\.?|([0-9]{1,3}\\.?))?";
+	private final String houseRegex = "(?<house>([0-9]{1,3} ?[a-zA-Z]?))?";
+	private final String floorRegex = "(?<floor>([1-9]{1,3}\\.?)|(1st\\.)|(st\\.))?";
+	private final String sideRegex = "(?<side>th\\.?|tv\\.?|mf\\.?|md\\.?|([0-9]{1,3}\\.?))?";
 	//This only checks the remainder of the string at the end for house number, floor and side for the address.
-	final String[] regex = {
+	private final String[] regex = {
 			"^" + houseRegex + ",? ?" + floorRegex + ",? ?" + sideRegex + ",?$"
 	};
 	/* Pattern:A regular expression, specified as a string, must first be compiled into an instance of this class
@@ -39,7 +39,7 @@ class AddressParser {
 	 * Stream.map: Returns a stream consisting of the results of applying the given function to the elements of this stream.
 	 * Pattern. compile: Compiles the given regular expression into a pattern.
 	 */
-	final Pattern[] patterns =
+	private final Pattern[] patterns =
 			Arrays.stream(regex).map(Pattern::compile).toArray(Pattern[]::new);
 	private String[] postcodes;
 	private String[] cities;
@@ -160,7 +160,7 @@ class AddressParser {
 			String houseNumber = b.houseNumber;
 			ArrayList<String[]> tempAddress = getAddress(city, postcode, streetname, houseNumber, true);
 
-			String[] address = tempAddress.get(0);
+			String[] address = tempAddress != null ? tempAddress.get(0) : new String[0];
 
 			if (!address[0].equals("")) {
 				b.lat = Float.valueOf(address[0]);

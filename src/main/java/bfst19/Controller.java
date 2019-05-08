@@ -9,12 +9,15 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
+import javafx.scene.effect.BlurType;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import java.io.IOException;
@@ -25,6 +28,9 @@ public class Controller {
     private Model model;
     private float x, y;
     private boolean roadNameOnHover = false;
+    static final DropShadow dropShadow = new DropShadow(BlurType.ONE_PASS_BOX,
+            Color.rgb(0,0,0,0.3), 10, 0, 0, 0);
+
 
     @FXML
     private MapCanvas mapCanvas;

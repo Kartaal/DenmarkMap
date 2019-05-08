@@ -8,10 +8,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 
 
-public class Instruction extends HBox {
+class Instruction extends HBox {
 
 
-    public Instruction (double length, String direction, String road){
+    Instruction(double length, String direction, String road){
         super();
         this.setStyle("-fx-min-width: 260; -fx-padding: 10; -fx-spacing: 2");
         getChildren().addAll(addImage(direction), makeLengthText(length), makeDirectionPane(direction), makeRoadNameText(road));

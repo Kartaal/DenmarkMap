@@ -3,10 +3,7 @@ package bfst19;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.effect.BlurType;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
 
 public class ControllerInfoPanel implements BackBtnEffect {
 
@@ -37,8 +34,7 @@ public class ControllerInfoPanel implements BackBtnEffect {
 
     @FXML
     private void setBackBtnEffect(){
-        DropShadow dropShadow = new DropShadow(BlurType.ONE_PASS_BOX, Color.rgb(0,0,0,0.3), 10, 0, 0, 0);
-        clearBtn.setEffect(dropShadow);
+        clearBtn.setEffect(Controller.dropShadow);
     }
 
     @FXML
@@ -46,8 +42,7 @@ public class ControllerInfoPanel implements BackBtnEffect {
 
     @FXML
     private void setAddBtnEffect(){
-        DropShadow dropShadow = new DropShadow(BlurType.ONE_PASS_BOX, Color.rgb(0,0,0,0.3), 10, 0, 0, 0);
-        addBtn.setEffect(dropShadow);
+        addBtn.setEffect(Controller.dropShadow);
     }
 
     @FXML
@@ -57,7 +52,6 @@ public class ControllerInfoPanel implements BackBtnEffect {
     private void clearBtnAction(){
         controller.getBorderPane().setRight(null);
     }
-
 
     private void setAddressCoordsLabels(){
         addressLabel.setText(address);

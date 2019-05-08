@@ -6,22 +6,16 @@ import bfst19.Route_parsing.Vehicle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
-import javafx.scene.effect.BlurType;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.ImageView;
 
 public class ControllerRoutePanel {
 
+    private static Vehicle vehicleToggle= Vehicle.CAR;
+    private static boolean fastestRoute = true;
 
-    static Vehicle vehicleToggle= Vehicle.CAR;
-    static boolean fastestRoute = true;
-
-    Point2D fromPoint, toPoint;
-    OSMNode fromNode, toNode;
+    private Point2D fromPoint, toPoint;
 
 
     @FXML
@@ -40,9 +34,6 @@ public class ControllerRoutePanel {
     private InstructionContainer instructions;
 
     @FXML
-    private VBox vboxInstructions;
-
-    @FXML
     private AutoTextField textFieldTo;
 
     @FXML
@@ -53,7 +44,6 @@ public class ControllerRoutePanel {
     public void init(Controller controller) {
         this.controller = controller;
         instructions.init(controller);
-        //controller.getModel().addPathObserver(this::);
 
         textFieldFrom.init(controller, "current");
         textFieldFrom.setOnResponseListener(response -> {
@@ -70,7 +60,6 @@ public class ControllerRoutePanel {
         setupToggle();
         car.setSelected(true);
         fastestPathButton.setSelected(true);
-
     }
 
     @FXML
@@ -78,11 +67,14 @@ public class ControllerRoutePanel {
         if (textFieldTo != null && textFieldFrom != null){
             removeInstructions();
             String tempText = textFieldTo.getText();
+
             textFieldTo.setText(textFieldFrom.getText());
             textFieldFrom.setText(tempText);
+
             Point2D temp = fromPoint;
             fromPoint = toPoint;
             toPoint = temp;
+
             tryToFindPath();
         }
     }
@@ -95,29 +87,21 @@ public class ControllerRoutePanel {
 
     @FXML
     private void setBackBtnEffect() {
-        DropShadow dropShadow = new DropShadow(BlurType.ONE_PASS_BOX, Color.rgb(0,0,0,0.4), 10, 0, 0, 0);
-        backBtnRoutePanel.setEffect(dropShadow);
+        backBtnRoutePanel.setEffect(Controller.dropShadow);
     }
 
     @FXML
     private void setBackBtnEffectNone() { backBtnRoutePanel.setEffect(null); }
-
-    @FXML
-    public void setUpInstructions(){
-        instructions.addInstructions();
-    }
 
     private void setupToggle(){
         toggleRouteType.selectedToggleProperty().addListener(((observable, oldValue, newValue) -> {
             if(newValue == null)
                 oldValue.setSelected(true);
         }));
-
     }
 
     @FXML
     private void setRouteType(){
-        removeInstructions();
 
         String toggleGroupValue;
 
@@ -128,11 +112,11 @@ public class ControllerRoutePanel {
 
         //Fastest Path Button
 
-        if (fastestPathButton.isSelected()){
+        if (fastestPathButton.isSelected() && !fastestRoute){
             fastestRoute = true;
             changed = true;
         }
-        else{
+        else if(!fastestPathButton.isSelected() && fastestRoute){
             fastestRoute = false;
             changed = true;
         }
@@ -153,27 +137,22 @@ public class ControllerRoutePanel {
         }
 
         if(changed) {
-            //Changed setUpInstructions with the below code, since the idea is to make a new path for bikes, and
-            //the setup is always called by an observer when the path is found.
+            removeInstructions();
             tryToFindPath();
         }
     }
 
-    public void removeInstructions(){
+    private void removeInstructions(){
         instructions.removeAllChildren();
     }
 
-
     private void tryToFindPath(){
         if(toPoint != fromPoint && toPoint != null && fromPoint != null) {
-            toNode = controller.getNearestRoad(toPoint, vehicleToggle);
-            fromNode = controller.getNearestRoad(fromPoint, vehicleToggle);
+            OSMNode toNode = controller.getNearestRoad(toPoint, vehicleToggle);
+            OSMNode fromNode = controller.getNearestRoad(fromPoint, vehicleToggle);
 
             Iterable<Edge> path = controller.getPath(fromNode, toNode, vehicleToggle, fastestRoute);
             controller.addPath(path);
-
-            //toPoint = null;
-            //fromPoint = null;
         }
     }
 }
