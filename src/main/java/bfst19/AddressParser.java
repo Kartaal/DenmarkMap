@@ -59,6 +59,7 @@ public class AddressParser {
 	 *  array of matches, and then notifies the observers.
 	 */
 	public void parseSearch(String proposedAddress, Model model) {
+		model.clearMatches();
 		Address a = AddressParser.getInstance().singleSearch(proposedAddress);
 		//if the address does not have a city or a street name, get the string's matches from the default file and display them
 		if(a.getStreetName().equals("Unknown") || a.getCity().equals("")) {
@@ -73,7 +74,7 @@ public class AddressParser {
 				}
 			}
 		//if a address has a streetName it will also have a city because of the way singleSearch searches for street names
-		}else if(a.getHouseNumber()==null){
+		}else if(a.getHouseNumber() == null){
 			//if the house number is null, bet all the addresses house numbers from the streets file and display them
 			ArrayList<String[]> possibleAddresses = AddressParser.getInstance().getAddress(a.getCity(),
 					a.getPostcode(), a.getStreetName(),"",false);
@@ -355,21 +356,24 @@ public class AddressParser {
 		ArrayList<String[]> matches = new ArrayList<>();
 		int lo = mid-1;
 		proposedAddress = proposedAddress.toLowerCase();
-		String currentIndexString = defaults[mid];
+		String currentIndexStringRaw = defaults[mid];
+		String currentIndexString = currentIndexStringRaw.toLowerCase();
 		//traverses up the default array until it's no longer a match
-		while(currentIndexString.toLowerCase().startsWith(proposedAddress) && lo < 0) {
-			String[] matchTokens = currentIndexString.split(" QQQ ");
+		while(currentIndexString.startsWith(proposedAddress) && lo >= 0) {
+			String[] matchTokens = currentIndexStringRaw.split(" QQQ ");
 			matches.add(matchTokens);
-			currentIndexString = defaults[lo];
+			currentIndexStringRaw = defaults[lo];
+			currentIndexString = currentIndexStringRaw.toLowerCase();
 			lo--;
 		}
 		currentIndexString = defaults[mid+1];
 		int hi = mid + 2;
 		//traverses down the default array until it's no longer a match
-		while(currentIndexString.toLowerCase().startsWith(proposedAddress)){
-			String[] matchTokens = currentIndexString.split(" QQQ ");
+		while(currentIndexString.startsWith(proposedAddress) && hi < defaults.length){
+			String[] matchTokens = currentIndexStringRaw.split(" QQQ ");
 			matches.add(matchTokens);
-			currentIndexString = defaults[hi];
+            currentIndexStringRaw = defaults[lo];
+            currentIndexString = currentIndexStringRaw.toLowerCase();
 			hi++;
 		}
 		return matches;

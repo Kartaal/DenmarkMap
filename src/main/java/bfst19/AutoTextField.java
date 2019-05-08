@@ -142,6 +142,7 @@ public class AutoTextField extends TextField {
         }
 
         controller.panToPoint(x, y);
+
         controller.setUpInfoPanel(this.getText(), x, y);
 
 
