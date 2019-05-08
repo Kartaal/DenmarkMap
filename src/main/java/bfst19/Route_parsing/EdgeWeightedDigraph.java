@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class EdgeWeightedDigraph implements Serializable {
-    //don't know what this is
+
     private static final String NEWLINE = System.getProperty("line.separator");
 
     private int V;
@@ -20,17 +20,11 @@ public class EdgeWeightedDigraph implements Serializable {
         adj = new ResizingArray<>();
     }
 
-    public EdgeWeightedDigraph(ArrayList<Long> V) {
-        if (V.size() == 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
-        this.V = V.size();
-        this.E = 0;
-        adj = new ResizingArray<>();
-    }
-
-    public int V() {
+    int V() {
         return V;
     }
 
+    //used for testing
     public int E() { return E; }
 
     // throw an IllegalArgumentException unless {@code 0 <= v < V}
@@ -40,13 +34,10 @@ public class EdgeWeightedDigraph implements Serializable {
     }
 
     private boolean isVertex(int id){
-        if(0<id&&id<V){
-            return true;
-        }
-        return false;
+        return 0 < id && id < V;
     }
 
-    public void addVertex(OSMNode node){
+    void addVertex(OSMNode node){
         if(!isVertex(node.getId())) {
             node.setId(V);
             adj.add(new ResizingArray<>());
@@ -54,31 +45,29 @@ public class EdgeWeightedDigraph implements Serializable {
         }
     }
 
-    public void addEdge(Edge e) {
+    void addEdge(Edge e) {
         int v = e.either().getId();
         int w = e.other().getId();
+
         validateVertex(v);
         validateVertex(w);
+
         adj.get(v).add(e);
         adj.get(w).add(e);
         E++;
     }
 
-    public Iterable<Edge> adj(int v) {
+    Iterable<Edge> adj(int v) {
         validateVertex(v);
         ResizingArray adjacent = adj.get(v);
         return (Iterable<Edge>) adjacent;
     }
 
-    public int degree(int v) {
-        validateVertex(v);
-        return adj.get(v).size();
-    }
-
-    public Iterable<Edge> edges() {
+    Iterable<Edge> edges() {
         ArrayList list = new ArrayList();
         for (int v = 0; v < V; v++) {
             int selfLoops = 0;
+
             for (Edge e : adj(v)) {
                 if (e.other().getId() > v) {
                     list.add(e);
@@ -93,35 +82,11 @@ public class EdgeWeightedDigraph implements Serializable {
         return list;
     }
 
-    public String toString() {
-        StringBuilder s = new StringBuilder();
-        s.append(V + " " + E + NEWLINE);
-        for (int v = 0; v < V; v++) {
-            s.append(v + ": ");
-            ResizingArray current = adj.get(v);
-            for (int i = 0 ; i<current.size() ; i++) {
-                s.append(current.get(i) + "  ");
-            }
-            s.append(NEWLINE);
-        }
-        return s.toString();
-    }
-
-    public void trim() {
+    void trim() {
         for( int i = 0 ; i < adj.size() ; i++){
             adj.get(i).trim();
         }
         adj.trim();
-    }
-
-    /*public static void main(String[] args) {
-        In in = new In(args[0]);
-        EdgeWeightedDigraph G = new EdgeWeightedDigraph(in);
-        StdOut.println(G);
-    }*/
-
-    public ResizingArray<Edge> getAdjacentEdges(int id) {
-        return adj.get(id);
     }
 
 }
