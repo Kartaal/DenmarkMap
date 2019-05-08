@@ -28,7 +28,9 @@ Egegade
 Elmegade
 Esromgade
 Ewaldsgade
+Fafnersgade
 Farumgade
+Fenrisgade
 Fensmarkgade
 Florsgade
 Fogedgården
@@ -57,10 +59,12 @@ Heinesgade
 Hellebækgade
 Henrik Pontoppidans Vej
 Henrik Rungs Gade
+Hermodsgade
 Hillerødgade
 Hiort Lorenzens Gade
 Holtegade
 Hornbækgade
+Hothers Plads
 Humlebækgade
 Husumgade
 Hyltebro
@@ -83,6 +87,7 @@ Læssøesgade
 Meinungsgade
 Midgårdsgade
 Mimersgade
+Mjølnerparken
 Murergade
 Møllegade
 Nannasgade
@@ -121,6 +126,7 @@ Schleppegrellsgade
 Sjællandsgade
 Skodsborggade
 Skotterupgade
+Skrivergangen
 Skyttegade
 Slejpnersgade
 Slotsgade
@@ -140,11 +146,13 @@ Thorupsgade
 Thyrasgade
 Tibirkegade
 Tikøbgade
+Titangade
 Tjørnegade
 Todesgade
 Tømrergade
 Udbygade
 Uffesgade
+Valhalsgade
 Vedbækgade
 Vulkangade
 Vævergade

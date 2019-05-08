@@ -59,7 +59,6 @@ Gåsebæksvej
 Harald Kiddes Vej
 Harrestrup Allé
 Herman Bangs Plads
-Hestehaven
 Hjalmar Bergstrøms Vej
 Horsekildevej
 Høffdingsvej
@@ -68,6 +67,7 @@ Ingrid Marievej
 J.P.E. Hartmanns Allé
 Jakob Knudsens Vej
 James Grievevej
+Jernæblevej
 Johan Krohns Vej
 Julius Lassens Vej
 Karensgade
@@ -79,7 +79,6 @@ Kirstinedalsvej
 Kjeldsgårdsvej
 Kløverbladsgade
 Kongeæblevej
-Kortstilkvej
 Krumtappen
 Lauravej
 Lillegade
@@ -93,12 +92,10 @@ Løgæblevej
 Mansasvej
 Mellemtoftevej
 Molbechsvej
-Monrads Allé
 Montagehalsvej
 Mosedalvej
 Mutzuvej
 Mølle Allé
-Nøddehaven
 Nørretofte Allé
 Ottiliavej
 Overbys Allé
@@ -116,7 +113,6 @@ Rasmus Rasks Vej
 Retortvej
 Rubinolavej
 Rughavevej
-Saxtorphsvej
 Scharlingsvej
 Selveje Allé
 Sibbernsvej

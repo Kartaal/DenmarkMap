@@ -1,3 +1,4 @@
+A.F. Kriegers Vej
 A.L. Drewsens Vej
 Abildgaardsgade
 Aggersborggade
@@ -6,6 +7,7 @@ Arendalsgade
 Bergensgade
 Blegdamsvej
 Brumleby
+Carl Johans Gade
 Classensgade
 Collinsgade
 Dag Hammarskjölds Allé
@@ -20,20 +22,27 @@ Folke Bernadottes Allé
 Forbindelsesvej
 Frederik V's Vej
 Fridtjof Nansens Plads
+Grenågade
+Gustav Adolfs Gade
 Hallinsgade
 Hardangergade
 Hedemannsgade
 Helgesensgade
 Henrik Harpestrengs Vej
 Hjalmar Brantings Plads
+Hobrogade
 Holsteinsgade
+Hovgaardsgade
 Høyensgade
 Indiakaj
 Indiavej
 Inge Lehmanns Vej
 Irmingersgade
 J.A. Schwartz Gade
+J.E. Ohlsens Gade
+Jagtvej
 Jens Juels Gade
+Jens Munks Gade
 Juliane Maries Vej
 Kalkbrænderihavnsgade
 Kastellet
@@ -44,6 +53,7 @@ Langelinie
 Langelinie Allé
 Langeliniekaj
 Lille Farimagsgade
+Lindenovsgade
 Lipkesgade
 Livjægergade
 Lundingsgade
@@ -63,6 +73,8 @@ Oslo Plads
 Pakhusvej
 Petersborgvej
 Præstøgade
+Randersgade
+Ribegade
 Ringstedgade
 Rosendalsgade
 Rosenvængets Allé
@@ -70,10 +82,14 @@ Rosenvængets Hovedvej
 Rosenvængets Sideallé
 Ryesgade
 Saabyesvej
+Sankt Jakobs Gade
+Sankt Jakobs Plads
+Sifs Plads
 Skovgaardsgade
 Slagelsegade
 Sortedam Dossering
 Sorøgade
+Spangbergsgade
 Stavangergade
 Steen Billes Gade
 Stockholmsgade
@@ -86,6 +102,9 @@ Trondhjems Plads
 Trondhjemsgade
 Universitetsparken
 Upsalagade
+Ved Hegnet
+Ved Vænget
+Victor Borges Plads
 Visbygade
 Voldmestergade
 Webersgade

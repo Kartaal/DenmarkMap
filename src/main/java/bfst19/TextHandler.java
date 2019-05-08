@@ -326,7 +326,7 @@ public class TextHandler {
 
 			String poiPath;
 			if (hasInputFile) {
-				// this regex gets the last \ in a string
+				// this regex matches the last \ in a string
 				poiPath = dirPath.replaceAll("\\\\(?!.*)$", "\\data\\") + "/pointsOfInterest.txt";
 			} else {
 				poiPath = "data\\" + dirPath + "/pointsOfInterest.txt";

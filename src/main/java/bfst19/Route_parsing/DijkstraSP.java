@@ -1,16 +1,14 @@
 package bfst19.Route_parsing;
 
 import bfst19.Line.OSMNode;
-import edu.princeton.cs.algs4.IndexMinPQ;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class DijkstraSP {
+class DijkstraSP {
 	private double[] distTo;          // distTo[v] = distance  of shortest s->v path
 	private Edge[] edgeTo;    // edgeTo[v] = last edge on shortest s->v path
 	private IndexMinPQ<Double> pq;    // priority queue of vertices
-	private EdgeWeightedDigraph G;
 
 	DijkstraSP(EdgeWeightedDigraph G, OSMNode startNode, OSMNode endNode, Vehicle type, boolean fastestPath) {
 
@@ -24,9 +22,7 @@ public class DijkstraSP {
 		}
 
 		distTo[start] = 0;
-		this.G = G;
 		validateVertex(start);
-
 
 		pq = new IndexMinPQ<>(G.V());
 		pq.insert(start, distTo[start]);

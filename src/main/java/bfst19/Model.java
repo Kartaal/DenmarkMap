@@ -71,7 +71,7 @@ public class Model {
 		//When using jar, the file name might be an absolute path,
 		// so replace the last \ with \data\ for the database directory
 		String datasetName;
-		if (hasInputFile) {                        //Matches the last \
+		if (hasInputFile) {                        //Matches the last \ in string
 			datasetName = arr[0].replaceAll("\\\\(?!.*)$", "\\data\\") + " Database";
 		} else {
 			datasetName = arr[0].replace("data/", "") + " Database";
@@ -81,14 +81,9 @@ public class Model {
 
 		InputStream OSMSource;
 		if (filename.endsWith(".obj")) {
-			long time = -System.nanoTime();
 			readObjFile(filename, hasInputFile);
 
-			time += System.nanoTime();
-			System.out.printf("Load time: %.1fs\n", time / 1e9);
-
 		} else {
-			long time = -System.nanoTime();
 
 			if (filename.endsWith(".zip")) {
 				ZipInputStream zip = new ZipInputStream(new BufferedInputStream(new FileInputStream(filename)));
@@ -101,9 +96,6 @@ public class Model {
 			EdgeWeightedDigraph nodeGraph = new EdgeWeightedDigraph();
 			routeHandler = new RouteHandler(nodeGraph);
 			OSMParser.parseOSM(OSMSource, routeHandler, this, textHandler, wayTypeCases);
-
-			time += System.nanoTime();
-			System.out.printf("parse time: %.1fs\n", time / 1e9);
 
 			try (ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(
 					new FileOutputStream(filename + ".obj")))) {

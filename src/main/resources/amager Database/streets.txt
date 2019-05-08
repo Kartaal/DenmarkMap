@@ -1,5 +1,6 @@
 A.C. Meyers Vænge QQQ København SV QQQ 2450
 A.F. Beyers Vej QQQ Vanløse QQQ 2720
+A.F. Kriegers Vej QQQ København Ø QQQ 2100
 A.H. Vedels Plads QQQ København K QQQ 1439
 A.L. Drewsens Vej QQQ København Ø QQQ 2100
 A.P. Møllers Allé QQQ Dragør QQQ 2791
@@ -217,6 +218,7 @@ Blommestien QQQ Valby QQQ 2500
 Blushøjvej QQQ København SV QQQ 2450
 Blykobbevej QQQ Kastrup QQQ 2770
 Blytsvej QQQ Frederiksberg QQQ 2000
+Blytækkervej QQQ København NV QQQ 2400
 Blå Karamel QQQ København K QQQ 1440
 Blåbærvej QQQ København NV QQQ 2400
 Blågårds Plads QQQ København N QQQ 2200
@@ -245,6 +247,7 @@ Borgbjergsvej QQQ København SV QQQ 2450
 Borgbygård Alle QQQ Kastrup QQQ 2770
 Borgdal QQQ Kastrup QQQ 2770
 Borgerbo QQQ København S QQQ 2300
+Borgergade QQQ København QQQ 1300
 Borgergade QQQ København K QQQ 1300
 Borgervænget QQQ Dragør QQQ 2791
 Borgmester Christiansens Gade QQQ København SV QQQ 2450
@@ -339,6 +342,7 @@ Carit Etlars Vej QQQ Frederiksberg C QQQ 1814
 Carl Bernhards Vej QQQ Frederiksberg C QQQ 1817
 Carl Feilbergs Vej QQQ Frederiksberg QQQ 2000
 Carl Jacobsens Vej QQQ Valby QQQ 2500
+Carl Johans Gade QQQ København Ø QQQ 2100
 Carl Langes Vej QQQ Valby QQQ 2500
 Carl Plougs Vej QQQ Frederiksberg C QQQ 1913
 Carl Th. Dreyers Vej QQQ Valby QQQ 2500
@@ -442,6 +446,7 @@ Dovregade QQQ København S QQQ 2300
 Dragør Stationsplads QQQ Dragør QQQ 2791
 Dragørhjørnet QQQ Dragør QQQ 2791
 Drechselsgade QQQ København S QQQ 2300
+Drejervej QQQ København NV QQQ 2400
 Drogdensgade QQQ København S QQQ 2300
 Drogdensvej QQQ Dragør QQQ 2791
 Dronning Dagmars Allé QQQ Valby QQQ 2500
@@ -558,6 +563,7 @@ F J Madsensvej QQQ Dragør QQQ 2791
 Fabrikmestervej QQQ København K QQQ 1437
 Fabriksområdet QQQ København K QQQ 1440
 Fadet QQQ København V QQQ 1799
+Fafnersgade QQQ København N QQQ 2200
 Fajancegade QQQ Valby QQQ 2500
 Fakse Tværgade QQQ København Ø QQQ 2100
 Faksegade QQQ København Ø QQQ 2100
@@ -579,6 +585,7 @@ Feldborgvej QQQ Kastrup QQQ 2770
 Femkløvervej QQQ København S QQQ 2300
 Femte Juni Plads QQQ Frederiksberg QQQ 2000
 Fengersvej QQQ Valby QQQ 2500
+Fenrisgade QQQ København N QQQ 2200
 Fensmarkgade QQQ København N QQQ 2200
 Ferskenvej QQQ København NV QQQ 2400
 Filippavej QQQ Frederiksberg C QQQ 1928
@@ -644,6 +651,7 @@ Frederiksberg Bredegade QQQ Frederiksberg QQQ 2000
 Frederiksberg Runddel QQQ Frederiksberg QQQ 2000
 Frederiksberggade QQQ København K QQQ 1459
 Frederiksborggade QQQ København K QQQ 1360
+Frederiksborgvej QQQ København NV QQQ 2400
 Frederiksgade QQQ København K QQQ 1265
 Frederiksgårds Allé QQQ Vanløse QQQ 2720
 Frederiksholms Kanal QQQ København K QQQ 1220
@@ -754,6 +762,7 @@ Granstien QQQ Dragør QQQ 2791
 Granvej QQQ Dragør QQQ 2791
 Greisvej QQQ København S QQQ 2300
 Grejsdalvej QQQ Kastrup QQQ 2770
+Grenågade QQQ København Ø QQQ 2100
 Griffenfeldsgade QQQ København N QQQ 2200
 Grindsted Alle QQQ Kastrup QQQ 2770
 Grithsvej QQQ Dragør QQQ 2791
@@ -763,6 +772,7 @@ Grusbakken QQQ Dragør QQQ 2791
 Grysgårdsvej QQQ København NV QQQ 2400
 Gråbrødrestræde QQQ København K QQQ 1156
 Gråbrødretorv QQQ København K QQQ 1154
+Gråspurvevej QQQ København NV QQQ 2400
 Gråstensgade QQQ København V QQQ 1677
 Grækenlandsvej QQQ København S QQQ 2300
 Grænsevænget QQQ Dragør QQQ 2791
@@ -793,6 +803,7 @@ Gullandsgade QQQ København S QQQ 2300
 Gullfossgade QQQ København S QQQ 2300
 Gulnarevej QQQ Kastrup QQQ 2770
 Gunløgsgade QQQ København S QQQ 2300
+Gustav Adolfs Gade QQQ København Ø QQQ 2100
 Gustav Bangs Gade QQQ København SV QQQ 2450
 Gustav Johannsens Vej QQQ Frederiksberg QQQ 2000
 Gyldenlakvej QQQ København S QQQ 2300
@@ -934,9 +945,9 @@ Herkules Alle QQQ Kastrup QQQ 2770
 Herluf Trolles Gade QQQ København K QQQ 1052
 Herman Bangs Plads QQQ Valby QQQ 2500
 Herman Triers Plads QQQ København V QQQ 1631
+Hermodsgade QQQ København N QQQ 2200
 Hesselvigvej QQQ Kastrup QQQ 2770
 Hessensgade QQQ København S QQQ 2300
-Hestehaven QQQ Valby QQQ 2500
 Hestemøllestræde QQQ København K QQQ 1464
 Hf. Bergmannshave QQQ København SV QQQ 2450
 Hf. Bryggen QQQ København S QQQ 2300
@@ -977,6 +988,7 @@ Hjalmar Brantings Plads QQQ København Ø QQQ 2100
 Hjertegræsvej QQQ Kastrup QQQ 2770
 Hjertensfrydsgade QQQ København K QQQ 1323
 Hjulmagerstien QQQ København S QQQ 2300
+Hobrogade QQQ København Ø QQQ 2100
 Hoffmeyersvej QQQ Frederiksberg QQQ 2000
 Holbergsgade QQQ København K QQQ 1057
 Holdkærs Ager QQQ Kastrup QQQ 2770
@@ -1002,10 +1014,12 @@ Hostrups Have QQQ Frederiksberg C QQQ 1954
 Hostrups Vænge QQQ Frederiksberg C QQQ 1950
 Hostrupsvej QQQ Frederiksberg C QQQ 1950
 Hotelvej QQQ Kastrup QQQ 2770
+Hothers Plads QQQ København N QQQ 2200
 Hovedgaden QQQ Dragør QQQ 2791
 Hovedstien QQQ Dragør QQQ 2791
 Hovedvagtsgade QQQ København K QQQ 1103
 Hovedvejen QQQ Frederiksberg QQQ 2000
+Hovgaardsgade QQQ København Ø QQQ 2100
 Hovmålvej QQQ København S QQQ 2300
 Howitzvej QQQ Frederiksberg QQQ 2000
 Hulgårdsvej QQQ København NV QQQ 2400
@@ -1074,6 +1088,7 @@ J.A. Schwartz Gade QQQ København Ø QQQ 2100
 J.C. Christensens Gade QQQ København S QQQ 2300
 J.C. Jacobsens Gade QQQ København V QQQ 1799
 J.C. Schiødtes Vej QQQ Frederiksberg QQQ 2000
+J.E. Ohlsens Gade QQQ København Ø QQQ 2100
 J.H. Deuntzers Gade QQQ København S QQQ 2300
 J.M. Thieles Vej QQQ Frederiksberg C QQQ 1961
 J.P.E. Hartmanns Allé QQQ Valby QQQ 2500
@@ -1082,6 +1097,7 @@ Jacob Fortlingsvej QQQ Kastrup QQQ 2770
 Jacob Holms Gade QQQ København S QQQ 2300
 Jacobys Alle QQQ Frederiksberg C QQQ 1806
 Jadegangen QQQ København S QQQ 2300
+Jagtvej QQQ København Ø QQQ 2100
 Jagtvej QQQ København N QQQ 2200
 Jakob Dannefærds Vej QQQ Frederiksberg C QQQ 1973
 Jakob Knudsens Vej QQQ Valby QQQ 2500
@@ -1100,12 +1116,14 @@ Jens Egebjergvej QQQ Kastrup QQQ 2770
 Jens Eyberts Plads QQQ Dragør QQQ 2791
 Jens Juels Gade QQQ København Ø QQQ 2100
 Jens Kofods Gade QQQ København K QQQ 1268
+Jens Munks Gade QQQ København Ø QQQ 2100
 Jens Otto Krags Gade QQQ København S QQQ 2300
 Jens Warmings Vej QQQ København S QQQ 2300
 Jerichausgade QQQ København V QQQ 1777
 Jernbanegade QQQ København V QQQ 1608
 Jernbanestien QQQ Frederiksberg QQQ 2000
 Jernkåsvej QQQ Kastrup QQQ 2770
+Jernæblevej QQQ Valby QQQ 2500
 Jershøj QQQ Kastrup QQQ 2770
 Jerslev Alle QQQ Kastrup QQQ 2770
 Jesper Brochmands Gade QQQ København N QQQ 2200
@@ -1278,7 +1296,6 @@ Kornskyldvej QQQ København S QQQ 2300
 Kornstykket QQQ Dragør QQQ 2791
 Korsgade QQQ København N QQQ 2200
 Korsikavej QQQ København S QQQ 2300
-Kortstilkvej QQQ Valby QQQ 2500
 Kraftværksvej QQQ København S QQQ 2300
 Kragebøl Alle QQQ Kastrup QQQ 2770
 Kretavej QQQ København S QQQ 2300
@@ -1397,6 +1414,7 @@ Limgården QQQ København S QQQ 2300
 Linde Alle QQQ Dragør QQQ 2791
 Lindegang QQQ København S QQQ 2300
 Lindehaven QQQ Valby QQQ 2500
+Lindenovsgade QQQ København Ø QQQ 2100
 Lindevangs Alle QQQ Frederiksberg QQQ 2000
 Lindevej QQQ Frederiksberg C QQQ 1877
 Lindevej QQQ Dragør QQQ 2791
@@ -1437,6 +1455,7 @@ Lupinvej QQQ Vanløse QQQ 2720
 Lybækgade QQQ København S QQQ 2300
 Lybækstræde QQQ Dragør QQQ 2791
 Lygtemagerstien QQQ København S QQQ 2300
+Lygten QQQ København NV QQQ 2400
 Lykkesholms Allé QQQ Frederiksberg C QQQ 1902
 Lyneborggade QQQ København S QQQ 2300
 Lynettevej QQQ København S QQQ 2300
@@ -1534,13 +1553,13 @@ Minørvej QQQ København K QQQ 1439
 Mirabellevej QQQ København NV QQQ 2400
 Misteltenvej QQQ Kastrup QQQ 2770
 Mitchellsgade QQQ København V QQQ 1568
+Mjølnerparken QQQ København N QQQ 2200
 Mjøsensgade QQQ København S QQQ 2300
 Molbechsvej QQQ Valby QQQ 2500
 Moldaugade QQQ København S QQQ 2300
 Molestien QQQ København SV QQQ 2450
 Moltkesvej QQQ Frederiksberg QQQ 2000
 Monica Zetterlunds Vej QQQ København SV QQQ 2450
-Monrads Allé QQQ Valby QQQ 2500
 Montagehalsvej QQQ Valby QQQ 2500
 Montagnevej QQQ København NV QQQ 2400
 Morbærvej QQQ København NV QQQ 2400
@@ -1561,6 +1580,7 @@ Murergade QQQ København N QQQ 2200
 Muslingestien QQQ København S QQQ 2300
 Musvitgangen QQQ København S QQQ 2300
 Musvitvej QQQ Dragør QQQ 2791
+Musvågevej QQQ København NV QQQ 2400
 Mutzuvej QQQ Valby QQQ 2500
 Myggenæsgade QQQ København S QQQ 2300
 Mynstersvej QQQ Frederiksberg C QQQ 1827
@@ -1672,7 +1692,6 @@ Nærumgade QQQ København N QQQ 2200
 Næsbyholmvej QQQ Brønshøj QQQ 2700
 Næstvedgade QQQ København Ø QQQ 2100
 Nøddebogade QQQ København N QQQ 2200
-Nøddehaven QQQ Valby QQQ 2500
 Nøddevang QQQ Kastrup QQQ 2770
 Nøragersmindevej QQQ Dragør QQQ 2791
 Nørholm Alle QQQ Kastrup QQQ 2770
@@ -1846,6 +1865,7 @@ Rahbeks Allé QQQ København V QQQ 1749
 Rahbeks Allé QQQ København V QQQ 1799
 Ramsingsvej QQQ Valby QQQ 2500
 Ramundsvej QQQ København S QQQ 2300
+Randersgade QQQ København Ø QQQ 2100
 Randkløve Alle QQQ Kastrup QQQ 2770
 Rantzausgade QQQ København N QQQ 2200
 Rasmus Rasks Vej QQQ Valby QQQ 2500
@@ -1855,6 +1875,7 @@ Ravnsborg Tværgade QQQ København N QQQ 2200
 Ravnsborggade QQQ København N QQQ 2200
 Reberbanegade QQQ København S QQQ 2300
 Rebildvej QQQ Vanløse QQQ 2720
+Rebslagervej QQQ København NV QQQ 2400
 Refshalevej QQQ København K QQQ 1432
 Refsnæsgade QQQ København N QQQ 2200
 Regitsevej QQQ København S QQQ 2300
@@ -1870,6 +1891,7 @@ Reverdilsgade QQQ København V QQQ 1701
 Reykjaviksgade QQQ København S QQQ 2300
 Rhodesiavej QQQ Kastrup QQQ 2770
 Rialtovej QQQ København S QQQ 2300
+Ribegade QQQ København Ø QQQ 2100
 Richard Boones Vej QQQ København SV QQQ 2450
 Richard Granholms Alle QQQ Kastrup QQQ 2770
 Richard Mortensens Vej QQQ København S QQQ 2300
@@ -1907,6 +1929,7 @@ Rosenørns Alle QQQ Frederiksberg C QQQ 1970
 Rosenørns Allé QQQ København V QQQ 1634
 Roskildevej QQQ Frederiksberg QQQ 2000
 Rossinisvej QQQ København SV QQQ 2450
+Rostgaardsvej QQQ Brønshøj QQQ 2700
 Rostrupsvej QQQ Frederiksberg QQQ 2000
 Rotterdam Alle QQQ Dragør QQQ 2791
 Rubikonvej QQQ København S QQQ 2300
@@ -1960,7 +1983,6 @@ Saabyesvej QQQ København Ø QQQ 2100
 Safirgangen QQQ København S QQQ 2300
 Sagasvej QQQ Frederiksberg C QQQ 1861
 Sallingvej QQQ Vanløse QQQ 2720
-Saltholm QQQ Kastrup QQQ 2770
 Saltholmsvej QQQ København S QQQ 2300
 Saltum Alle QQQ Kastrup QQQ 2770
 Saltværksvej QQQ Kastrup QQQ 2770
@@ -1979,6 +2001,8 @@ Sankt Gertruds Stræde QQQ København K QQQ 1129
 Sankt Hans Gade QQQ København N QQQ 2200
 Sankt Hans Gades Passage QQQ København N QQQ 2200
 Sankt Hans Torv QQQ København N QQQ 2200
+Sankt Jakobs Gade QQQ København Ø QQQ 2100
+Sankt Jakobs Plads QQQ København Ø QQQ 2100
 Sankt Jørgens Allé QQQ København V QQQ 1615
 Sankt Knuds Vej QQQ Frederiksberg C QQQ 1903
 Sankt Markus Alle QQQ Frederiksberg C QQQ 1922
@@ -1991,7 +2015,6 @@ Sankt Petri Passage QQQ København K QQQ 1165
 Sankt Thomas Alle QQQ Frederiksberg C QQQ 1824
 Sankt Thomas Plads QQQ Frederiksberg C QQQ 1820
 Saxogade QQQ København V QQQ 1662
-Saxtorphsvej QQQ Valby QQQ 2500
 Scandiagade QQQ København SV QQQ 2450
 Schacksgade QQQ København K QQQ 1365
 Scharlingsvej QQQ Valby QQQ 2500
@@ -2013,6 +2036,7 @@ Shetlandsgade QQQ København S QQQ 2300
 Siamvej QQQ København S QQQ 2300
 Sibbernsvej QQQ Valby QQQ 2500
 Siciliensgade QQQ København S QQQ 2300
+Sifs Plads QQQ København Ø QQQ 2100
 Sigbrits Allé QQQ København S QQQ 2300
 Sigerstedgade QQQ København V QQQ 1729
 Signelilvej QQQ København S QQQ 2300
@@ -2066,6 +2090,7 @@ Skovgaardsgade QQQ København Ø QQQ 2100
 Skovmarken QQQ Kastrup QQQ 2770
 Skovskadegangen QQQ København S QQQ 2300
 Skriverengen QQQ Dragør QQQ 2791
+Skrivergangen QQQ København N QQQ 2200
 Skriverstræde QQQ Dragør QQQ 2791
 Skurbyen QQQ Dragør QQQ 2791
 Skydebanegade QQQ København V QQQ 1709
@@ -2100,6 +2125,7 @@ Smålandsgade QQQ København S QQQ 2300
 Smålyngen QQQ Kastrup QQQ 2770
 Snaregade QQQ København K QQQ 1205
 Snebær Alle QQQ Kastrup QQQ 2770
+Sneppevej QQQ København NV QQQ 2400
 Sneserevej QQQ Kastrup QQQ 2770
 Snoghøj Alle QQQ Kastrup QQQ 2770
 Snorrebakken QQQ Kastrup QQQ 2770
@@ -2129,9 +2155,9 @@ Sorrentovej QQQ København S QQQ 2300
 Sortedam Dossering QQQ København Ø QQQ 2100
 Sortedam Dossering QQQ København N QQQ 2200
 Sorøgade QQQ København Ø QQQ 2100
+Spangbergsgade QQQ København Ø QQQ 2100
 Spaniensgade QQQ København S QQQ 2300
 Spanteloftvej QQQ København K QQQ 1439
-Sparresholmvej QQQ Brønshøj QQQ 2700
 Spartavej QQQ København S QQQ 2300
 Speditørvej QQQ København SV QQQ 2450
 Spentrup Alle QQQ Kastrup QQQ 2770
@@ -2226,6 +2252,7 @@ Studsbøl Alle QQQ Kastrup QQQ 2770
 Sturlasgade QQQ København S QQQ 2300
 Stægers Alle QQQ Frederiksberg QQQ 2000
 Stæhr Johansens Vej QQQ Frederiksberg QQQ 2000
+Stærevej QQQ København NV QQQ 2400
 Stærevænget QQQ Dragør QQQ 2791
 Støbegodsvej QQQ København SV QQQ 2450
 Støberigade QQQ København SV QQQ 2450
@@ -2289,6 +2316,7 @@ Søflygade QQQ København K QQQ 1432
 Søfortvej QQQ København S QQQ 2300
 Søgade QQQ Dragør QQQ 2791
 Søllerødgade QQQ København N QQQ 2200
+Sølvgade QQQ København QQQ 1307
 Sølvgade QQQ København K QQQ 1307
 Sønder Boulevard QQQ København V QQQ 1720
 Sønderborggade QQQ København Ø QQQ 2100
@@ -2369,6 +2397,7 @@ Tinggården QQQ København S QQQ 2300
 Tinghuset QQQ København K QQQ 1440
 Tingvej QQQ København S QQQ 2300
 Tirstrupvej QQQ Kastrup QQQ 2770
+Titangade QQQ København N QQQ 2200
 Tjæregade QQQ København SV QQQ 2450
 Tjørneengen QQQ Dragør QQQ 2791
 Tjørnegade QQQ København N QQQ 2200
@@ -2426,6 +2455,7 @@ Tulipanvej QQQ Vanløse QQQ 2720
 Tullinsgade QQQ København V QQQ 1618
 Tunisvej QQQ Kastrup QQQ 2770
 Turesensgade QQQ København K QQQ 1368
+Tuxensvej QQQ Brønshøj QQQ 2700
 Tværagervej QQQ København S QQQ 2300
 Tværstien QQQ Dragør QQQ 2791
 Tværvej QQQ Dragør QQQ 2791
@@ -2484,6 +2514,7 @@ Valby Torvegade QQQ Valby QQQ 2500
 Valbygårdsvej QQQ Valby QQQ 2500
 Valdemarsgade QQQ København V QQQ 1665
 Valgårdsvej QQQ Valby QQQ 2500
+Valhalsgade QQQ København N QQQ 2200
 Valhøjvej QQQ Valby QQQ 2500
 Valkendorfsgade QQQ København K QQQ 1151
 Valmuevej QQQ København S QQQ 2300
@@ -2500,6 +2531,7 @@ Ved Bellahøj Syd QQQ Brønshøj QQQ 2700
 Ved Diget QQQ Kastrup QQQ 2770
 Ved Glyptoteket QQQ København V QQQ 1575
 Ved Gærdet QQQ Kastrup QQQ 2770
+Ved Hegnet QQQ København Ø QQQ 2100
 Ved Kanalen QQQ København K QQQ 1413
 Ved Kastrupfortet QQQ København S QQQ 2300
 Ved Kløvermarken QQQ København S QQQ 2300
@@ -2519,6 +2551,7 @@ Ved Stranden QQQ København K QQQ 1061
 Ved Sønderport QQQ København S QQQ 2300
 Ved Vesterport QQQ København V QQQ 1612
 Ved Volden QQQ København K QQQ 1425
+Ved Vænget QQQ København Ø QQQ 2100
 Vedbækgade QQQ København N QQQ 2200
 Vedbøl Alle QQQ Kastrup QQQ 2770
 Vegas Alle QQQ Kastrup QQQ 2770
@@ -2567,6 +2600,7 @@ Viberupstræde QQQ Dragør QQQ 2791
 Vibevej QQQ København NV QQQ 2400
 Vibevej QQQ Dragør QQQ 2791
 Viby Alle QQQ Kastrup QQQ 2770
+Victor Borges Plads QQQ København Ø QQQ 2100
 Vierdiget QQQ Dragør QQQ 2791
 Vigerslev Allé QQQ København SV QQQ 2450
 Vigerslev Allé QQQ København QQQ 2500
@@ -2669,7 +2703,6 @@ Zytfensgade QQQ Dragør QQQ 2791
 Ålandsgade QQQ København S QQQ 2300
 Ålegårdsvænget QQQ Dragør QQQ 2791
 Åløkkevej QQQ Vanløse QQQ 2720
-Åmarkvej QQQ Hvidovre QQQ 2650
 Æblerosevej QQQ Kastrup QQQ 2770
 Æblestien QQQ København S QQQ 2300
 Æblevej QQQ København NV QQQ 2400

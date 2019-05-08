@@ -1,19 +1,23 @@
 Abrikosvej
 Bakkevej
+Blytækkervej
 Blåbærvej
 Blåmejsevej
 Bogfinkevej
 Borups Allé
 Brombærvej
+Drejervej
 Enebærvej
 Falkevej
 Ferskenvej
 Fordresgårdvej
+Frederiksborgvej
 Frederikssundsvej
 Genforeningspladsen
 Glentevej
 Gransangervej
 Grysgårdsvej
+Gråspurvevej
 Grøndalsvænge Allé
 Hejrevej
 Hillerødgade
@@ -23,6 +27,7 @@ Hvidkildevej
 Hyldebærvej
 Jordbærvej
 Kærsangervej
+Lygten
 Lærkevej
 Mandelvej
 Markvej
@@ -30,10 +35,12 @@ Mejsevænget
 Mirabellevej
 Montagnevej
 Morbærvej
+Musvågevej
 Mågevej
 Nattergalevej
 Pomonavej
 Rabarbervej
+Rebslagervej
 Reinettevej
 Ringduestien
 Rødkildevej
@@ -43,6 +50,8 @@ Rørsangervej
 Sangfuglestien
 Skovduestien
 Slåenvej
+Sneppevej
+Stærevej
 Svanevej
 Tornsangervej
 Tornskadestien
