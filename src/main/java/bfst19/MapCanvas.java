@@ -112,7 +112,7 @@ public class MapCanvas extends Canvas {
                     }
                 } else if (type.isRoadOrSimilar() && type.levelOfDetail() < detailLevel) {
 
-                    if (type != WayType.COASTLINE && type != WayType.UNKNOWN) {
+                    if (type != WayType.COASTLINE ) {
                         gc.setStroke(getColor(type));
                         gc.setLineWidth(0.1 * (1/(2000/(getDeterminant()))));
                         ways = model.getWaysOfType(type, getExtentInModel());
@@ -129,10 +129,6 @@ public class MapCanvas extends Canvas {
         }else{
             for(WayType type : WayType.values()){
                 if(type.isRoadOrSimilar() && type.levelOfDetail() < detailLevel){
-                    if(type == WayType.UNKNOWN) {
-                        // The unknown WayType is ways that have not been parsed to an implemented WayType,
-                        // so it's better to exclude it.
-                    }else{
                         gc.setStroke(getColor(type));
                         gc.setLineWidth(0.1 * (1/(2000/(getDeterminant()))));
                         ways = model.getWaysOfType(type, getExtentInModel());
@@ -140,7 +136,7 @@ public class MapCanvas extends Canvas {
                             Drawable way = ways.get(i);
                             way.stroke(gc,singlePixelLength);
                         }
-                    }
+
                 }
             }
         }

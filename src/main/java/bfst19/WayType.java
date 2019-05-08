@@ -15,12 +15,12 @@ public enum WayType {
 	PARK(false,6),
 	FOREST(false,Integer.MIN_VALUE ),
 	BEACH(false,14 ),
-	GRASS(false,5),
+	GRASS(false,2),
 	WATER(false,2),
 	PITCH(false,5),
 	STADIUM(false,13 ),
 	TRACK(true,500),
-	BROWNFIELD(false,Integer.MIN_VALUE ),//redundant maybe?
+	BROWNFIELD(false,Integer.MIN_VALUE ),
 	CONSTRUCTION(false,6),
 	ALLOTMENTS(false,8),
 	CEMETERY(false,6),
@@ -52,7 +52,7 @@ public enum WayType {
 	BUILDING(false,7),
 	RACEWAY(true,17),
 	QUARRY(false,12),
-	UNKNOWN(true,Integer.MIN_VALUE), //todo should not be anywhere STRICTLY FOR TESTING
+
 	DITCH(true,17),
 	BOUNDARY_ADMINISTRATIVE(true,1 ),
 	RAILWAY(true, Integer.MIN_VALUE),
