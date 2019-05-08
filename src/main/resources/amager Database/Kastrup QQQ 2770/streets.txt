@@ -1,0 +1,436 @@
+Adsbøl Alle
+Agerhønestien
+Akelejevej
+Aladdinvej
+Albøgevej
+Algiervej
+Alleen
+Almegård Alle
+Amager Landevej
+Amager Strandvej
+Ambra Alle
+Angolavej
+Anhøj
+Arkadevej
+Arkturus Alle
+Arnager Alle
+Arnborgvej
+Askeløkkevej
+Askov Alle
+Aspebakken
+Astridsvej
+Avlum Alle
+Avnbøl Alle
+Ballingvej
+Balsamvej
+Banevænget
+Barritvej
+Bastiansmindevej
+Bigumvej
+Bindslev Alle
+Birkevang
+Bjørnbaksvej
+Blykobbevej
+Blåhøjvej
+Blåklokkevej
+Blåregn Alle
+Bolbrovej
+Borgbygård Alle
+Borgdal
+Borrelyngen
+Brattingsborgvej
+Bredagervej
+Bredskiftevej
+Brenderupvej
+Bryggergården
+Bryrupvej
+Brændekildevej
+Brønderslev Alle
+Bygrænsen
+Bykæret
+Båringvej
+Bøgevang
+Bøllundvej
+Børkop Alle
+C.M. Larsens Alle
+Capellas Alle
+Castor Alle
+Christen Kolds Alle
+Corneliusmindevej
+Crilles Tønnesens Alle
+Cypres Alle
+Dagebøl Alle
+Dakar Alle
+Daugbjergvej
+Dernavej
+Dollerupvej
+Dronningborgvej
+Dueoddevej
+Durbanvej
+Egensevej
+Egtvedvej
+Egå Alle
+Ekkodal
+Ellehammersvej
+Englandsvej
+Engmarken
+Eskebøl Alle
+Estvad Alle
+Falhøj
+Falkevej
+Farsøvej
+Feldborgvej
+Filskovvej
+Finderupvej
+Fingervej A-Øst
+Fingervej B-Vest
+Finnedalsvej
+Finnegården
+Fjelstrupvej
+Flemløsevej
+Flyvervej
+Foldbyvej
+Fortgård Alle
+Fuglebækvej
+Følfodvej
+Gadbjergvej
+Gambiavej
+Gammel Kirkevej
+Gammel Skovvej
+Gammel Tårnby Maglebylille
+Gangstedvej
+Gartnertoften
+Gedstedvej
+Gemmas Alle
+Ghanavej
+Give Alle
+Gl. Strandstien
+Glamsbjergvej
+Granatvej
+Grejsdalvej
+Grindsted Alle
+Græsbøl Alle
+Gudmevej
+Guldblommevej
+Guldregn Alle
+Gulnarevej
+Gyldenvang Alle
+Hadsten Alle
+Hangargaden
+Hans Jægers Vænge
+Harald Jastraus Alle
+Haveforeningen Blommehaven
+Haveforeningen Kirkevang
+Haveforeningen Kongevang
+Haveforeningen Nordre Vang
+Haveforeningen Ringen
+Haveforeningen Sano
+Haveforeningen Selandia
+Haveforeningen Sommervirke
+Haveforeningen Uganda
+Haveforeningen Ved Pilegården
+Haveforeningen Æblehaven
+Havndalvej
+Helmer Søgårds Alle
+Herkules Alle
+Hesselvigvej
+Hf. Energien
+Hf. Mejlgården
+Hf. Stjernelund
+Hf. Sydgrænsen
+Hf. Søndervang
+Hf. Vestgrænsen
+Hindholm Alle
+Hjallerup Alle
+Hjertegræsvej
+Holdkærs Ager
+Hornevej
+Horsbøl Alle
+Hotelvej
+Hundslundvej
+Husbyvej
+Hvidstenvej
+Hyben Alle
+Hydrantvej
+Hyld Ager
+Høgildvej
+Høgsbrovej
+Højbjergvej
+Højgården
+Højskole Alle
+Hørby Alle
+Ilbro Alle
+Indenrigsvej
+Ingstrup Alle
+Irlandsvej
+Jacob Appels Alle
+Jacob Fortlingsvej
+Jeff Hammelevs Alle
+Jens Egebjergvej
+Jernkåsvej
+Jershøj
+Jerslev Alle
+Jetsmarkvej
+Johan Ekmans Alle
+Johannesburg Alle
+John Tranums Alle
+Jonshøj
+Julerosevej
+Jydeskær
+Kairovej
+Kajakvej
+Kamerunvej
+Kamillevej
+Karsestien
+Karupvej
+Kastrup Digevej
+Kastrup Strandpark
+Kastrup Tværvej A
+Kastrup Tværvej B
+Kastrup Tværvej C
+Kastrup Tværvej D
+Kastrup Tværvej E
+Kastrupgårdvej
+Kastruphusvej
+Kastrupkrogen
+Kastruplundgade
+Kastrupvej
+Kastrupvænge
+Kibækvej
+Killerupvej
+Kirstinehøj
+Klintebjergvej
+Klitrose Alle
+Klosterhedevej
+Kløvervænget
+Knarreborgvej
+Kofoed Jensens Alle
+Kollundvej
+Kongelundsvej
+Konvalvej
+Korningvej
+Kragebøl Alle
+Kristtorn Alle
+Krostræde
+Kullebakken
+Kystvejen
+Kølkærvej
+Kørvelstien
+Ladbyvej
+Ladegårdsvej
+Langbakken
+Langeskovvej
+Langesøvej
+Latyrus Alle
+Liberiavej
+Lillebakken
+Lindumvej
+Listedvej
+Lossepladsvej
+Lufthavnsboulevarden
+Lyngborgvej
+Lyrens Alle
+Løjtegårdshaven
+Løjtegårdsvej
+Magle Alle
+Maglebo
+Majbøl Alle
+Majdal
+Marslevvej
+Martoftevej
+Mejlskovvej
+Melstedvej
+Merkur Alle
+Misteltenvej
+Mosbøl Alle
+Moselundvej
+Mosrosevej
+Munkebjergvej
+Møldrupvej
+Nairobi Alle
+Natalvej
+Neptun Alle
+Nilensvej
+Nordmarksvej
+Nordrehøj Alle
+Nordstjerne Alle
+Nordvestvej
+Nubiensvej
+Ny Skelgårdsvej
+Nybøl Alle
+Nyhøj Alle
+Nyvang Alle
+Nøddevang
+Nørholm Alle
+Oberst Kochs Alle
+Ole Klokkersvej
+Oliefabriksvej
+Opmarchvej
+Orions Alle
+Otterupvej
+Otto Liebes Alle
+Petersdalvej
+Pilegård Alle
+Pilerækken
+Poppelvang
+Postparken
+Pretoria Alle
+Præstefælledvej
+Præstemarksvej
+Pyrus Alle
+Pårupvej
+Randkløve Alle
+Restrupvej
+Rhodesiavej
+Richard Granholms Alle
+Rimsøvej
+Ringbakken
+Risbyvej
+Risebækvej
+Rynkebyvej
+Ryslinge Alle
+Rytterstien
+Ryumgårdvej
+Råbjerg Alle
+Rådhusvænget
+Rødehøj
+Røllikevej
+Saltholm
+Saltum Alle
+Saltværksvej
+Salvievej
+Sandkåsvej
+Senegal Alle
+Sindingvej
+Sirgræsvej
+Sirius Alle
+Sivkærvej
+Sjørringvej
+Skalbjergvej
+Skarrildvej
+Skelgårdsstræde
+Skodsbøl Alle
+Skolelodsvej
+Skolevænget
+Skottegården
+Skovmarken
+Skyttehøj
+Skøjtevej
+Skøjtevænget
+Skørpingvej
+Smedekærvej
+Smålyngen
+Snebær Alle
+Sneserevej
+Snoghøj Alle
+Snorrebakken
+Soldugvej
+Solimanvej
+Somalivej
+Spentrup Alle
+Spicas Alle
+Spidslodden
+Starup Alle
+Stavlundvej
+Stendal
+Stenlængen
+Stillebækvej
+Stjernebakken
+Storedal
+Stubkærvej
+Studsbøl Alle
+Sudanvej
+Suezvej
+Svanevej
+Svanninge Alle
+Svejbæk Alle
+Sydvestvej
+Sydøstvej
+Syrefabriksvej
+Syvstjerne Alle
+Syvstjernevej
+Sønderholm Alle
+Søvang Alle
+Søvænget
+Tagetesstien
+Talosvej
+Tanavej
+Tanger Alle
+Teglkåsvej
+Tejn Alle
+Teknikervej
+Televænget
+Terminalgade
+Terminalvej Airside
+Terosevej
+Testrup Alle
+Theodor Philipsens Vej
+Thorsly Alle
+Thuja Alle
+Thyges Vænge
+Timianstien
+Timringvej
+Tingbakken
+Tirstrupvej
+Tobrukvej
+Tornholms Ager
+Torpebakken
+Tranehusvej
+Tripolisvej
+Troldhedevej
+Tunisvej
+Tårnby Torv
+Tårnbygårdvej
+Tårnbyhøj Alle
+Tårnbypark Alle
+Tårnbystræde
+Tårnbyvej
+Tømmerup Stationsvej
+Tømmerupstræde
+Tømmerupvang
+Tømmerupvej
+Tørsbøl Alle
+Ugandavej
+Uldumvej
+Uranus Alle
+Vadum Alle
+Ved Diget
+Ved Gærdet
+Ved Lergravene
+Ved Stationen
+Vedbøl Alle
+Vegas Alle
+Vejstrup Alle
+Vestavej
+Vestbirk Alle
+Vestermarie Alle
+Vestre Bygade
+Vestvej
+Viberupstræde
+Viby Alle
+Vilhelm Lauritzens Alle
+Villestoftevej
+Vindblæs Alle
+Vinkelhuse
+Vintergækvej
+Viskumvej
+Vittrup Alle
+Volmer Kjærs Alle
+Vonsildvej
+Vorgodvej
+Vosborgvej
+Vårvej
+Vægtergangen
+Vægterparken
+Wilhelm Hansens Alle
+Zambiavej
+Zinniavej
+Æblerosevej
+Ægyptensvej
+Ørbækvej
+Ørnstrupvej
+Ørtingvej
+Østbirk Alle
+Østerlarsvej
+Østermarievej
+Østvej

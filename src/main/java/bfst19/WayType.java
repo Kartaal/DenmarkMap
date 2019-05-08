@@ -1,7 +1,7 @@
 package bfst19;
 public enum WayType {
 	//TODO: separate into different WayTypes
-	RECREATION(false,10 ),
+	RECREATION(false,10),
 	PARKING(false, 7),
 	FARMLAND(false,10),
 	FARMYARD(false,10),
@@ -15,12 +15,12 @@ public enum WayType {
 	PARK(false,6),
 	FOREST(false,Integer.MIN_VALUE ),
 	BEACH(false,14 ),
-	GRASS(false,6),
+	GRASS(false,5),
 	WATER(false,2),
 	PITCH(false,5),
 	STADIUM(false,13 ),
-	TRACK(true,13),
-	BROWNFIELD(false,4),//redundant maybe?
+	TRACK(true,500),
+	BROWNFIELD(false,Integer.MIN_VALUE ),//redundant maybe?
 	CONSTRUCTION(false,6),
 	ALLOTMENTS(false,8),
 	CEMETERY(false,6),
@@ -29,22 +29,22 @@ public enum WayType {
 	BARRIER(true,14),
 	UNDERBRIDGE(false, 12 ),
 
-	FOOTWAY(true,14),
+	FOOTWAY(true,500),
 	MOTORWAY(true,Integer.MIN_VALUE ),
 	PRIMARY(true,Integer.MIN_VALUE),
 	SECONDARY(true,5),
-	TERTIARY(true,14),
-	SERVICE(true,10),
-	ROAD_RESIDENTIAL(true,9),
-	CYCLEWAY(true,14),
+	TERTIARY(true,300),
+	SERVICE(true,200),
+	ROAD_RESIDENTIAL(true,100),
+	CYCLEWAY(true,500),
 
-	SUBWAY(true,Integer.MIN_VALUE),
+	SUBWAY(true,5),
 
 	BRIDGE(false,6),
 
 	RAILCONSTRUCTION(true,9),
 
-	DISUSED(true,14),
+	DISUSED(true,30),
 
 	COASTLINE(true,12),
 	BOAT(true,Integer.MIN_VALUE),
@@ -52,7 +52,7 @@ public enum WayType {
 	BUILDING(false,7),
 	RACEWAY(true,17),
 	QUARRY(false,12),
-	UNKNOWN(true,Integer.MIN_VALUE), //should not be anywhere STRICTLY FOR TESTING
+	UNKNOWN(true,Integer.MIN_VALUE), //todo should not be anywhere STRICTLY FOR TESTING
 	DITCH(true,17),
 	BOUNDARY_ADMINISTRATIVE(true,1 ),
 	RAILWAY(true, Integer.MIN_VALUE),
@@ -64,7 +64,7 @@ public enum WayType {
 	BREAKWATER(false,12 );
 
 
-    private boolean isRoadOrSimilar;
+	private boolean isRoadOrSimilar;
 	//Originally it was shouldFill, because that is functionally the case,
 	// however the true commonality is that they are meant to be strokes, lines or similar
 	// and I could not come up with a better name.

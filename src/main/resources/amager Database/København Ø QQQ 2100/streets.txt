@@ -1,0 +1,100 @@
+A.L. Drewsens Vej
+Abildgaardsgade
+Aggersborggade
+Amerika Plads
+Arendalsgade
+Bergensgade
+Blegdamsvej
+Brumleby
+Classensgade
+Collinsgade
+Dag Hammarskjölds Allé
+Dampfærgevej
+Eckersbergsgade
+Edel Sauntes Allé
+Esther Møllers Vej
+Fakse Tværgade
+Faksegade
+Fiskedamsgade
+Folke Bernadottes Allé
+Forbindelsesvej
+Frederik V's Vej
+Fridtjof Nansens Plads
+Hallinsgade
+Hardangergade
+Hedemannsgade
+Helgesensgade
+Henrik Harpestrengs Vej
+Hjalmar Brantings Plads
+Holsteinsgade
+Høyensgade
+Indiakaj
+Indiavej
+Inge Lehmanns Vej
+Irmingersgade
+J.A. Schwartz Gade
+Jens Juels Gade
+Juliane Maries Vej
+Kalkbrænderihavnsgade
+Kastellet
+Kastelsvej
+Kristianiagade
+Kroghsgade
+Langelinie
+Langelinie Allé
+Langeliniekaj
+Lille Farimagsgade
+Lipkesgade
+Livjægergade
+Lundingsgade
+Lundsgade
+Malmøgade
+Mandalsgade
+Midtermolen
+Nordborggade
+Nordre Frihavnsgade
+Ny Blegdamsvej
+Næstvedgade
+Nørre Allé
+Odensegade
+Olof Palmes Gade
+Olufsvej
+Oslo Plads
+Pakhusvej
+Petersborgvej
+Præstøgade
+Ringstedgade
+Rosendalsgade
+Rosenvængets Allé
+Rosenvængets Hovedvej
+Rosenvængets Sideallé
+Ryesgade
+Saabyesvej
+Skovgaardsgade
+Slagelsegade
+Sortedam Dossering
+Sorøgade
+Stavangergade
+Steen Billes Gade
+Stockholmsgade
+Strandboulevarden
+Sønderborggade
+Søpassagen
+Trepkasgade
+Trianglen
+Trondhjems Plads
+Trondhjemsgade
+Universitetsparken
+Upsalagade
+Visbygade
+Voldmestergade
+Webersgade
+Wiedeweltsgade
+Wilhelm Marstrands Gade
+Willemoesgade
+Zinnsgade
+Østbanegade
+Øster Allé
+Øster Farimagsgade
+Øster Søgade
+Østerbrogade

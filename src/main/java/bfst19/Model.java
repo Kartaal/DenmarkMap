@@ -68,7 +68,7 @@ public class Model{
 		if(hasInputFile) {
 			filename = args.get(0);
 		} else {
-			filename = "bornholm.zip.obj";
+			filename = "amager.zip.obj";
 		}
 
 
