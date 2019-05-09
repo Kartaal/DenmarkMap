@@ -18,124 +18,124 @@ import java.util.HashMap;
  * the direction of traversal.
  */
 public class Edge implements Serializable {
-	private String name;
-	private float length;
-	private int speedLimit;
-	private Drivabillity[] drivabillity;
-	private OSMNode v;
-	private OSMNode w;
+    private String name;
+    private float length;
+    private int speedLimit;
+    private Drivabillity[] drivabillity;
+    private OSMNode v;
+    private OSMNode w;
 
 
-	public Edge(float length, int speedLimit, OSMNode v, OSMNode w,
-				String name, HashMap<Vehicle, Drivabillity> vehicleTypeToDrivable) {
-		if (v.getId() < 0) throw new IllegalArgumentException("vertex index must be a non-negative integer");
-		if (w.getId() < 0) throw new IllegalArgumentException("vertex index must be a non-negative integer");
-		if (Double.isNaN(length)) throw new IllegalArgumentException("Weight is NaN");
-		if (Double.isNaN(speedLimit)) throw new IllegalArgumentException("Weight is NaN");
+    public Edge(float length, int speedLimit, OSMNode v, OSMNode w,
+                String name, HashMap<Vehicle, Drivabillity> vehicleTypeToDrivable) {
+        if (v.getId() < 0) throw new IllegalArgumentException("vertex index must be a non-negative integer");
+        if (w.getId() < 0) throw new IllegalArgumentException("vertex index must be a non-negative integer");
+        if (Double.isNaN(length)) throw new IllegalArgumentException("Weight is NaN");
+        if (Double.isNaN(speedLimit)) throw new IllegalArgumentException("Weight is NaN");
 
-		this.length = length;
-		this.speedLimit = speedLimit;
-		this.v = v;
-		this.w = w;
-		this.name = name;
+        this.length = length;
+        this.speedLimit = speedLimit;
+        this.v = v;
+        this.w = w;
+        this.name = name;
 
-		drivabillity = new Drivabillity[vehicleTypeToDrivable.keySet().size()];
-		drivabillity[0] = vehicleTypeToDrivable.get(Vehicle.CAR);
-		drivabillity[1] = vehicleTypeToDrivable.get(Vehicle.WALKING);
-		drivabillity[2] = vehicleTypeToDrivable.get(Vehicle.BIKE);
-	}
+        drivabillity = new Drivabillity[vehicleTypeToDrivable.keySet().size()];
+        drivabillity[0] = vehicleTypeToDrivable.get(Vehicle.CAR);
+        drivabillity[1] = vehicleTypeToDrivable.get(Vehicle.WALKING);
+        drivabillity[2] = vehicleTypeToDrivable.get(Vehicle.BIKE);
+    }
 
-	double getWeight(Vehicle type, boolean fastestPath) {
+    double getWeight(Vehicle type, boolean fastestPath) {
 
-		if (fastestPath) {
+        if (fastestPath) {
 
-			if (type.maxSpeed < speedLimit) {
-				return getLength() / type.maxSpeed;
-			} else {
-				return getLength() / speedLimit;
-			}
+            if (type.maxSpeed < speedLimit) {
+                return getLength() / type.maxSpeed;
+            } else {
+                return getLength() / speedLimit;
+            }
 
-		} else {
-			return getLength();
-		}
-	}
+        } else {
+            return getLength();
+        }
+    }
 
-	public double getLength() {
-		return length;
-	}
+    public double getLength() {
+        return length;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public OSMNode either() {
-		return v;
-	}
+    public OSMNode either() {
+        return v;
+    }
 
-	public OSMNode other() {
-		return w;
-	}
+    public OSMNode other() {
+        return w;
+    }
 
-	int getOtherEnd(int id) {
-		if (id == w.getId()) {
-			return v.getId();
-		}
-		return w.getId();
-	}
+    int getOtherEnd(int id) {
+        if (id == w.getId()) {
+            return v.getId();
+        }
+        return w.getId();
+    }
 
-	OSMNode getThisEndNode(int id) {
-		if (id == w.getId()) {
-			return w;
-		} else {
-			return v;
-		}
-	}
+    OSMNode getThisEndNode(int id) {
+        if (id == w.getId()) {
+            return w;
+        } else {
+            return v;
+        }
+    }
 
-	public OSMNode getOtherEndNode(OSMNode node) {
-		if (node.getId() == w.getId()) {
-			return v;
-		} else {
-			return w;
-		}
-	}
+    public OSMNode getOtherEndNode(OSMNode node) {
+        if (node.getId() == w.getId()) {
+            return v;
+        } else {
+            return w;
+        }
+    }
 
-	boolean isForwardAllowed(Vehicle type, int id) {
-		Drivabillity drivable = getDrivableFromVehicleType(type);
+    boolean isForwardAllowed(Vehicle type, int id) {
+        Drivabillity drivable = getDrivableFromVehicleType(type);
 
-		if (type == Vehicle.ABSTRACTVEHICLE) {
-			return true;
-		}
+        if (type == Vehicle.ABSTRACTVEHICLE) {
+            return true;
+        }
 
-		if (drivable == Drivabillity.BOTHWAYS) {
-			return true;
-		} else if (v.getId() == id) {
-			return drivable == Drivabillity.FORWARD;
-		} else if (w.getId() == id) {
-			return drivable == Drivabillity.BACKWARD;
-			//this will actually never happen, due to the dataset structure
-		}
-		return false;
-	}
+        if (drivable == Drivabillity.BOTHWAYS) {
+            return true;
+        } else if (v.getId() == id) {
+            return drivable == Drivabillity.FORWARD;
+        } else if (w.getId() == id) {
+            return drivable == Drivabillity.BACKWARD;
+            //this will actually never happen, due to the dataset structure
+        }
+        return false;
+    }
 
-	private Drivabillity getDrivableFromVehicleType(Vehicle type) {
+    private Drivabillity getDrivableFromVehicleType(Vehicle type) {
 
-		if (type == Vehicle.CAR) {
-			return drivabillity[0];
-		} else if (type == Vehicle.WALKING) {
-			return drivabillity[1];
-		} else if (type == Vehicle.BIKE) {
-			return drivabillity[2];
-		}
+        if (type == Vehicle.CAR) {
+            return drivabillity[0];
+        } else if (type == Vehicle.WALKING) {
+            return drivabillity[1];
+        } else if (type == Vehicle.BIKE) {
+            return drivabillity[2];
+        }
 
-		return Drivabillity.NOWAY;
-	}
+        return Drivabillity.NOWAY;
+    }
 
-	@Override
-	public String toString() {
-		return "name: " + name + " Length: " + length + "m " + " bike: " + getDrivableFromVehicleType(Vehicle.BIKE) +
-				" Car: " + getDrivableFromVehicleType(Vehicle.CAR) +
-				" walking: " + getDrivableFromVehicleType(Vehicle.WALKING) + " " +
-				speedLimit + " Node v:" + v.toString() + " Node W:" + w.toString();
-	}
+    @Override
+    public String toString() {
+        return "name: " + name + " Length: " + length + "m " + " bike: " + getDrivableFromVehicleType(Vehicle.BIKE) +
+                " Car: " + getDrivableFromVehicleType(Vehicle.CAR) +
+                " walking: " + getDrivableFromVehicleType(Vehicle.WALKING) + " " +
+                speedLimit + " Node v:" + v.toString() + " Node W:" + w.toString();
+    }
 }
 

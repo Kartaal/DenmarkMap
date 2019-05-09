@@ -12,8 +12,8 @@ import java.util.Comparator;
  */
 //Innerclass comparator for Y dimension
 public class yComparator implements Comparator<BoundingBoxable>, Serializable {
-	//This calculation is made to convert from float to int because Comparator interface requires it
-	public int compare(BoundingBoxable a, BoundingBoxable b) {
-		return (int) (a.getCenterY() - b.getCenterY()) * 1000000;
-	}
+    //This calculation is made to convert from float to int because Comparator interface requires it
+    public int compare(BoundingBoxable a, BoundingBoxable b) {
+        return (int) (a.getCenterY() - b.getCenterY()) * 1000000;
+    }
 }

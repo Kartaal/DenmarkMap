@@ -55,6 +55,7 @@ repositories {
 applicationDefaultJvmArgs = ["-Xms256m", "-Xmx6144m"]
 
 jar {
+	zip64 true
 	manifest {
 		attributes 'Main-Class': mainClassName
 	}
@@ -68,5 +69,5 @@ tasks.withType(JavaCompile) {
 }
 
 run {
-    args = ['data/bornholm.zip']
+    args = ['data/denmark-latest.zip']
 }

@@ -11,17 +11,17 @@ import bfst19.Calculator;
  * algorithm to reduce the amount exploration required to find a path.
  */
 class AStar {
-	static float Heuristic(Vehicle type, boolean fastestPath, float startLat, float startLon, float endLat, float endLon) {
-		float weight;
+    static float Heuristic(Vehicle type, boolean fastestPath, float startLat, float startLon, float endLat, float endLon) {
+        float weight;
 
-		if (fastestPath) {
-			float distance = Calculator.calculateDistanceInMeters(startLat, startLon, endLat, endLon);
-			float maxSpeed = type.maxSpeed;
-			weight = distance / maxSpeed;
-		} else {
-			weight = Calculator.calculateDistanceInMeters(startLat, startLon, endLat, endLon);
-		}
+        if (fastestPath) {
+            float distance = Calculator.calculateDistanceInMeters(startLat, startLon, endLat, endLon);
+            float maxSpeed = type.maxSpeed;
+            weight = distance / maxSpeed;
+        } else {
+            weight = Calculator.calculateDistanceInMeters(startLat, startLon, endLat, endLon);
+        }
 
-		return weight;
-	}
+        return weight;
+    }
 }

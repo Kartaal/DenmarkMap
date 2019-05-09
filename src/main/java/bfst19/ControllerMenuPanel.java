@@ -7,84 +7,84 @@ import javafx.scene.image.ImageView;
 
 public class ControllerMenuPanel implements BackBtnEffect {
 
-	@FXML
-	ImageView backBtnMenu;
+    @FXML
+    ImageView backBtnMenu;
 
-	@FXML
-	ToggleGroup toggleTheme;
+    @FXML
+    ToggleGroup toggleTheme;
 
-	@FXML
-	RadioButton colorBlind;
+    @FXML
+    RadioButton colorBlind;
 
-	@FXML
-	RadioButton defaultMode;
+    @FXML
+    RadioButton defaultMode;
 
-	@FXML
-	RadioButton roadsOnly;
+    @FXML
+    RadioButton roadsOnly;
 
-	static boolean roadsOnlyMode;
-	static boolean colorBlindMode;
+    static boolean roadsOnlyMode;
+    static boolean colorBlindMode;
 
-	private Controller controller;
+    private Controller controller;
 
-	public void init(Controller controller) {
-		this.controller = controller;
-		setState();
+    public void init(Controller controller) {
+        this.controller = controller;
+        setState();
 
-	}
+    }
 
-	private void setState() {
+    private void setState() {
 
-		if (colorBlindMode && !roadsOnlyMode) {
-			colorBlind.setSelected(true);
-		} else if (!colorBlindMode && roadsOnlyMode) {
-			roadsOnly.setSelected(true);
-		} else if (!colorBlindMode && !roadsOnlyMode) {
-			defaultMode.setSelected(true);
-		}
+        if (colorBlindMode && !roadsOnlyMode) {
+            colorBlind.setSelected(true);
+        } else if (!colorBlindMode && roadsOnlyMode) {
+            roadsOnly.setSelected(true);
+        } else if (!colorBlindMode && !roadsOnlyMode) {
+            defaultMode.setSelected(true);
+        }
 
-	}
+    }
 
-	@FXML
-	private void returnToBarPanel() {
-		controller.setUpBar();
-	}
+    @FXML
+    private void returnToBarPanel() {
+        controller.setUpBar();
+    }
 
-	@FXML
-	private void setBackBtnEffect() {
-		backBtnMenu.setEffect(Controller.dropShadow);
-	}
+    @FXML
+    private void setBackBtnEffect() {
+        backBtnMenu.setEffect(Controller.dropShadow);
+    }
 
-	@FXML
-	private void setBackBtnEffectNone() {
-		backBtnMenu.setEffect(null);
-	}
+    @FXML
+    private void setBackBtnEffectNone() {
+        backBtnMenu.setEffect(null);
+    }
 
-	@FXML
-	private void setToggleTheme() {
-		RadioButton selectedRadioButton = (RadioButton) toggleTheme.getSelectedToggle();
-		String toggleGroupValue = selectedRadioButton.getText();
+    @FXML
+    private void setToggleTheme() {
+        RadioButton selectedRadioButton = (RadioButton) toggleTheme.getSelectedToggle();
+        String toggleGroupValue = selectedRadioButton.getText();
 
-		switch (toggleGroupValue) {
-			case "Color Blind Mode":
-				colorBlindMode = true;
-				roadsOnlyMode = false;
-				controller.parseTheme(colorBlindMode);
-				controller.parseOnlyRoadsMode(roadsOnlyMode);
-				break;
-			case "Roads Only Mode":
-				colorBlindMode = false;
-				roadsOnlyMode = true;
-				controller.parseTheme(colorBlindMode);
-				controller.parseOnlyRoadsMode(roadsOnlyMode);
-				break;
-			case "Default":
-				colorBlindMode = false;
-				roadsOnlyMode = false;
-				controller.parseTheme(colorBlindMode);
-				controller.parseOnlyRoadsMode(roadsOnlyMode);
-				break;
-		}
+        switch (toggleGroupValue) {
+            case "Color Blind Mode":
+                colorBlindMode = true;
+                roadsOnlyMode = false;
+                controller.parseTheme(colorBlindMode);
+                controller.parseOnlyRoadsMode(roadsOnlyMode);
+                break;
+            case "Roads Only Mode":
+                colorBlindMode = false;
+                roadsOnlyMode = true;
+                controller.parseTheme(colorBlindMode);
+                controller.parseOnlyRoadsMode(roadsOnlyMode);
+                break;
+            case "Default":
+                colorBlindMode = false;
+                roadsOnlyMode = false;
+                controller.parseTheme(colorBlindMode);
+                controller.parseOnlyRoadsMode(roadsOnlyMode);
+                break;
+        }
 
-	}
+    }
 }

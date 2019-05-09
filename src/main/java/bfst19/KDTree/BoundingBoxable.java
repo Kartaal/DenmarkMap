@@ -8,11 +8,11 @@ import bfst19.Line.OSMNode;
  * have a BoundingBox and contain OSMNodes to be retrieved.
  */
 public interface BoundingBoxable {
-	float getCenterX();
+    float getCenterX();
 
-	float getCenterY();
+    float getCenterY();
 
-	BoundingBox getBB();
+    BoundingBox getBB();
 
-	OSMNode[] getNodes();
+    OSMNode[] getNodes();
 }
